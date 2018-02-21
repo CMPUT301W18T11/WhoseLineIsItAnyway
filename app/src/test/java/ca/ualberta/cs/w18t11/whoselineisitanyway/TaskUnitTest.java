@@ -12,4 +12,12 @@ final public class TaskUnitTest
         final Task task = new Task(title, "");
         Assert.assertEquals(title, task.getTitle());
     }
+
+    @Test
+    final public void testGetLongerTitle()
+    {
+        final String longerTitle = "longer title";
+        final Task task = new Task(longerTitle, "");
+        Assert.assertEquals(longerTitle, task.getTitle());
+    }
 }
