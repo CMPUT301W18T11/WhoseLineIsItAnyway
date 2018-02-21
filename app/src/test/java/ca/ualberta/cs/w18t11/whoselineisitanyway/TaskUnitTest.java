@@ -44,4 +44,21 @@ final public class TaskUnitTest
         final Task task = new Task("", longerDescription);
         Assert.assertEquals(longerDescription, task.getDescription());
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    final public void testDescriptionTooLong()
+    {
+        final StringBuilder builder = new StringBuilder(301);
+        final String segment = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        Assert.assertEquals(segment.length(), 43);
+
+        for (int index = 0; index < 301 / 43; index += 1)
+        {
+            builder.append(segment);
+        }
+
+        final String tooLongDescription = builder.toString();
+        Assert.assertTrue(tooLongDescription.length() > 300);
+        final Task task = new Task("", tooLongDescription);
+    }
 }
