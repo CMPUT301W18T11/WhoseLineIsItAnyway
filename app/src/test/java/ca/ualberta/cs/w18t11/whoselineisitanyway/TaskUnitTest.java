@@ -28,4 +28,12 @@ final public class TaskUnitTest
         Assert.assertTrue(tooLongTitle.length() > 30);
         final Task task = new Task(tooLongTitle, "");
     }
+
+    @Test
+    final public void testGetDescription()
+    {
+        final String description = "description";
+        final Task task = new Task("", description);
+        Assert.assertEquals(description, task.getDescription());
+    }
 }
