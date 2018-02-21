@@ -4,7 +4,7 @@ final class Task
 {
     final private String title;
 
-    Task(String title, String description) throws IllegalArgumentException
+    Task(final String title, final String description) throws IllegalArgumentException
     {
         if (title.length() > 30)
         {
@@ -14,7 +14,7 @@ final class Task
         this.title = title;
     }
 
-    String getTitle()
+    final String getTitle()
     {
         return this.title;
     }
