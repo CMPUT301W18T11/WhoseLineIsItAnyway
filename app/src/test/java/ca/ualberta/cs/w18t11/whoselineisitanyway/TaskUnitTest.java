@@ -20,4 +20,12 @@ final public class TaskUnitTest
         final Task task = new Task(longerTitle, "");
         Assert.assertEquals(longerTitle, task.getTitle());
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    final public void testTitleTooLong()
+    {
+        final String tooLongTitle = "terrible title that is too long";
+        Assert.assertTrue(tooLongTitle.length() > 30);
+        final Task task = new Task(tooLongTitle, "");
+    }
 }
