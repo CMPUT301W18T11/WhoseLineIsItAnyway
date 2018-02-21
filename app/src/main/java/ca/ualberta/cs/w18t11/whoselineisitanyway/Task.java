@@ -13,6 +13,11 @@ final class Task
             throw new IllegalArgumentException("Task title cannot exceed 30 characters");
         }
 
+        if (description.length() > 300)
+        {
+            throw new IllegalArgumentException("Task description cannot exceed 300 characters");
+        }
+
         this.title = title;
         this.description = description;
     }
