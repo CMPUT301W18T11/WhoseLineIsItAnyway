@@ -4,6 +4,8 @@ final class Task
 {
     final private String title;
 
+    final private String description;
+
     Task(final String title, final String description) throws IllegalArgumentException
     {
         if (title.length() > 30)
@@ -12,6 +14,7 @@ final class Task
         }
 
         this.title = title;
+        this.description = description;
     }
 
     final String getTitle()
@@ -21,6 +24,6 @@ final class Task
 
     final String getDescription()
     {
-        return "description";
+        return this.description;
     }
 }
