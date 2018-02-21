@@ -36,4 +36,12 @@ final public class TaskUnitTest
         final Task task = new Task("", description);
         Assert.assertEquals(description, task.getDescription());
     }
+
+    @Test
+    final public void testGetLongerDescription()
+    {
+        final String longerDescription = "longer description";
+        final Task task = new Task("", longerDescription);
+        Assert.assertEquals(longerDescription, task.getDescription());
+    }
 }
