@@ -9,16 +9,14 @@ final public class TaskUnitTest
     final public void testGetTitle()
     {
         final String title = "title";
-        final Task task = new Task(title, "");
-        Assert.assertEquals(title, task.getTitle());
+        Assert.assertEquals(title, new Task(title, "").getTitle());
     }
 
     @Test
     final public void testGetLongerTitle()
     {
         final String longerTitle = "longer title";
-        final Task task = new Task(longerTitle, "");
-        Assert.assertEquals(longerTitle, task.getTitle());
+        Assert.assertEquals(longerTitle, new Task(longerTitle, "").getTitle());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -26,30 +24,31 @@ final public class TaskUnitTest
     {
         final String tooLongTitle = "terrible title that is too long";
         Assert.assertTrue(tooLongTitle.length() > 30);
-        final Task task = new Task(tooLongTitle, "");
+        new Task(tooLongTitle, "");
     }
 
     @Test
     final public void testGetDescription()
     {
         final String description = "description";
-        final Task task = new Task("", description);
-        Assert.assertEquals(description, task.getDescription());
+        Assert.assertEquals(description, new Task("", description).getDescription());
     }
 
     @Test
     final public void testGetLongerDescription()
     {
         final String longerDescription = "longer description";
-        final Task task = new Task("", longerDescription);
-        Assert.assertEquals(longerDescription, task.getDescription());
+        Assert.assertEquals(longerDescription,
+                new Task("", longerDescription).getDescription());
     }
 
     @Test(expected = IllegalArgumentException.class)
     final public void testDescriptionTooLong()
     {
         final StringBuilder builder = new StringBuilder(301);
-        final String segment = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        // Retrieved on 2018-02-21 from
+        // https://en.wikipedia.org/wiki/Longest_word_in_English#Personal_names
+        final String segment = "Brfxxccxxmnpcccclllmmnprxvclmnckssqlbb11116";
         Assert.assertEquals(segment.length(), 43);
 
         for (int index = 0; index < 301 / 43; index += 1)
@@ -59,6 +58,6 @@ final public class TaskUnitTest
 
         final String tooLongDescription = builder.toString();
         Assert.assertTrue(tooLongDescription.length() > 300);
-        final Task task = new Task("", tooLongDescription);
+        new Task("", tooLongDescription);
     }
 }
