@@ -18,4 +18,9 @@ final class Task
     {
         return this.title;
     }
+
+    final String getDescription()
+    {
+        return "description";
+    }
 }
