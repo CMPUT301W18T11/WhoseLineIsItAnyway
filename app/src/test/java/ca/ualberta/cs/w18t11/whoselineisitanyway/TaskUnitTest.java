@@ -58,4 +58,10 @@ final public class TaskUnitTest
         Assert.assertTrue(tooLongDescription.length() > 300);
         new Task("", tooLongDescription);
     }
+
+    @Test
+    final public void testGetStatus()
+    {
+        Assert.assertEquals(TaskStatus.REQUESTED, new Task("", "").getStatus());
+    }
 }
