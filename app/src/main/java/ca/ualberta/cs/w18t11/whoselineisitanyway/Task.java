@@ -6,6 +6,8 @@ final class Task
 
     final private String description;
 
+    final private TaskStatus status;
+
     Task(final String title, final String description) throws IllegalArgumentException
     {
         if (title.length() > 30)
@@ -20,6 +22,7 @@ final class Task
 
         this.title = title;
         this.description = description;
+        this.status = TaskStatus.REQUESTED;
     }
 
     final String getTitle()
@@ -30,5 +33,10 @@ final class Task
     final String getDescription()
     {
         return this.description;
+    }
+
+    final TaskStatus getStatus()
+    {
+        return this.status;
     }
 }
