@@ -46,9 +46,7 @@ final public class TaskUnitTest
     final public void testDescriptionTooLong()
     {
         final StringBuilder builder = new StringBuilder(301);
-        // Retrieved on 2018-02-21 from
-        // https://en.wikipedia.org/wiki/Longest_word_in_English#Personal_names
-        final String segment = "Brfxxccxxmnpcccclllmmnprxvclmnckssqlbb11116";
+        final String segment = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         Assert.assertEquals(segment.length(), 43);
 
         for (int index = 0; index < 301 / 43; index += 1)
