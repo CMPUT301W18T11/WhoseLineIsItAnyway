@@ -1,8 +1,26 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
-/**
- * Created by Marky on 2018-02-23.
- */
+import java.math.BigDecimal;
 
-public class Bid {
+public class Bid
+{
+    final private String providerId;
+
+    final private String taskId;
+
+    final private BigDecimal value;
+
+    Bid(final String providerId, final String taskId, final BigDecimal value)
+    {
+        this.providerId = providerId;
+        this.taskId = taskId;
+        this.value = value;
+    }
+
+    final int getProviderId() { return Integer.parseInt(this.providerId); }
+
+    final int getTaskId() { return Integer.parseInt(this.taskId); }
+
+    final BigDecimal getValue() { return this.value; }
+
 }
