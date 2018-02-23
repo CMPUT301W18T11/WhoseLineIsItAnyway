@@ -12,14 +12,19 @@ public class Bid
 
     Bid(final String providerId, final String taskId, final BigDecimal value) throws IllegalArgumentException
     {
-        if (value.compareTo(BigDecimal.ONE) < 0)
-        {
-            throw new IllegalArgumentException("Bid value must be greater than 0");
-        }
-
         if (providerId.isEmpty())
         {
             throw new IllegalArgumentException("Provider ID cannot be an empty string");
+        }
+
+        if (taskId.isEmpty())
+        {
+            throw new IllegalArgumentException("Task ID cannot be an empty string");
+        }
+
+        if (value.compareTo(BigDecimal.ONE) < 0)
+        {
+            throw new IllegalArgumentException("Bid value must be greater than 0");
         }
 
         this.providerId = providerId;

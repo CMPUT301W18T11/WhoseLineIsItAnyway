@@ -37,6 +37,14 @@ public class BidUnitTest
     }
 
     @Test(expected = IllegalArgumentException.class)
+    final public void testEmptyTaskId()
+    {
+        String emptyId = "";
+        Assert.assertTrue(emptyId.isEmpty());
+        new Bid("provider", emptyId, new BigDecimal(1));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     final public void testNegativValue()
     {
         BigDecimal negativeValue = new BigDecimal(-1);
