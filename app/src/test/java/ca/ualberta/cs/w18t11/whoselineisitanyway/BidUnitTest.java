@@ -15,10 +15,17 @@ public class BidUnitTest
     }
 
     @Test
-    final public void testTaskId()
+    final public void testGetTaskId()
     {
         final String id = "task";
         Assert.assertEquals(id, new Bid("provider", id, new BigDecimal(1)).getTaskId());
+    }
+
+    @Test
+    final public void testGetValue()
+    {
+        final BigDecimal value = new BigDecimal(1);
+        Assert.assertEquals(value, new Bid("provider", "task", value).getValue());
     }
 
     @Test(expected = IllegalArgumentException.class)
