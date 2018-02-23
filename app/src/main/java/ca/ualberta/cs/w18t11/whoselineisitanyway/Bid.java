@@ -10,8 +10,13 @@ public class Bid
 
     final private BigDecimal value;
 
-    Bid(final String providerId, final String taskId, final BigDecimal value)
+    Bid(final String providerId, final String taskId, final BigDecimal value) throws IllegalArgumentException
     {
+        if (value.compareTo(BigDecimal.ONE) < 0)
+        {
+            throw new IllegalArgumentException("Bid value must be greater than 0");
+        }
+
         this.providerId = providerId;
         this.taskId = taskId;
         this.value = value;
@@ -22,5 +27,4 @@ public class Bid
     final int getTaskId() { return Integer.parseInt(this.taskId); }
 
     final BigDecimal getValue() { return this.value; }
-
 }
