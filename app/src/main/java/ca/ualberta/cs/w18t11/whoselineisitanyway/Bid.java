@@ -24,7 +24,7 @@ public class Bid
 
     final String getProviderId() { return this.providerId; }
 
-    final int getTaskId() { return Integer.parseInt(this.taskId); }
+    final String getTaskId() { return this.taskId; }
 
     final BigDecimal getValue() { return this.value; }
 }

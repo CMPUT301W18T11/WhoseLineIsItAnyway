@@ -14,6 +14,13 @@ public class BidUnitTest
         Assert.assertEquals(id, new Bid(id, "task", new BigDecimal(1)).getProviderId());
     }
 
+    @Test
+    final public void testTaskId()
+    {
+        final String id = "task";
+        Assert.assertEquals(id, new Bid("provider", id, new BigDecimal(1)).getTaskId());
+    }
+
     @Test(expected = IllegalArgumentException.class)
     final public void testNegativValue()
     {
