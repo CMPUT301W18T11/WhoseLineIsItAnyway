@@ -7,6 +7,13 @@ import java.math.BigDecimal;
 
 public class BidUnitTest
 {
+    @Test
+    final public void testGetProviderId()
+    {
+        final String id = "provider";
+        Assert.assertEquals(id, new Bid(id, "task", new BigDecimal(1)).getProviderId());
+    }
+
     @Test(expected = IllegalArgumentException.class)
     final public void testNegativValue()
     {

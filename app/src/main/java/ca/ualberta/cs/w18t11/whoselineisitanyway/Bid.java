@@ -22,7 +22,7 @@ public class Bid
         this.value = value;
     }
 
-    final int getProviderId() { return Integer.parseInt(this.providerId); }
+    final String getProviderId() { return this.providerId; }
 
     final int getTaskId() { return Integer.parseInt(this.taskId); }
 
