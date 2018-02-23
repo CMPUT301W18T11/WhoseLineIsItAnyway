@@ -17,6 +17,11 @@ public class Bid
             throw new IllegalArgumentException("Bid value must be greater than 0");
         }
 
+        if (providerId.isEmpty())
+        {
+            throw new IllegalArgumentException("Provider ID cannot be an empty string");
+        }
+
         this.providerId = providerId;
         this.taskId = taskId;
         this.value = value;

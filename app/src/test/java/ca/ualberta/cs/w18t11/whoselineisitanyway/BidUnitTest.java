@@ -29,11 +29,19 @@ public class BidUnitTest
     }
 
     @Test(expected = IllegalArgumentException.class)
+    final public void testEmptyProviderId()
+    {
+        String emptyId = "";
+        Assert.assertTrue(emptyId.isEmpty());
+        new Bid(emptyId, "task", new BigDecimal(1));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     final public void testNegativValue()
     {
         BigDecimal negativeValue = new BigDecimal(-1);
         Assert.assertTrue(negativeValue.compareTo(BigDecimal.ZERO) < 0);
-        new Bid("", "", negativeValue);
+        new Bid("provider", "task", negativeValue);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -41,6 +49,6 @@ public class BidUnitTest
     {
         BigDecimal negativeValue = new BigDecimal(0);
         Assert.assertTrue(negativeValue.compareTo(BigDecimal.ZERO) == 0);
-        new Bid("", "", negativeValue);
+        new Bid("provider", "task", negativeValue);
     }
 }
