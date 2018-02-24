@@ -2,7 +2,7 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
 import java.util.ArrayList;
 
-public class T Manager
+public class Manager<T>
 {
     private ArrayList<T> items;
 
