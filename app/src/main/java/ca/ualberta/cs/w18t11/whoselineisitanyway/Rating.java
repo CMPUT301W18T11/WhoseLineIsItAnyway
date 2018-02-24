@@ -1,3 +1,5 @@
+package ca.ualberta.cs.w18t11.whoselineisitanyway;
+
 /**
  * Rating is a generalized class to hold ratings data about a user's performance in fulfilling
  * tasks they have agreed to perform. A rating is comprised of 4 things:
