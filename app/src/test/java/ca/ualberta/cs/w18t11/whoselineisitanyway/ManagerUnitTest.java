@@ -7,9 +7,32 @@ import java.math.BigDecimal;
 public class ManagerUnitTest
 {
     @Test(expected = IndexOutOfBoundsException.class)
-    final public void testGetOutOfRange() {
+    final public void testDeleteTask()
+    {
+        Manager<Task> manager = new Manager<Task>();
+        Task task = new Task("add", "add");
+        manager.add(task);
+        Assert.assertEquals(task, manager.get(0));
+        manager.delete(0);
+        manager.get(0);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    final public void testDeleteBid()
+    {
+        Manager<Bid> manager = new Manager<Bid>();
+        Bid bid = new Bid("add", "add", new BigDecimal(1));
+        manager.add(bid);
+        Assert.assertEquals(bid, manager.get(0));
+        manager.delete(0);
+        manager.get(0);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    final public void testDeleteOutOfRange()
+    {
         Manager<Integer> manager = new Manager<Integer>();
-        manager.get(1);
+        manager.delete(0);
     }
 
     @Test
@@ -32,16 +55,10 @@ public class ManagerUnitTest
         Assert.assertNotSame(wrongBid, bidManager.get(0));
     }
 
-    @Test
-    final public void testSetBid()
-    {
-        Manager<Bid> manager = new Manager<Bid>();
-        Bid addedBid = new Bid("add", "add", new BigDecimal(1));
-        Bid setBid = new Bid("set", "set", new BigDecimal(1));
-        manager.add(addedBid);
-        Assert.assertEquals(addedBid, manager.get(0));
-        manager.set(0, setBid);
-        Assert.assertEquals(setBid, manager.get(0));
+    @Test(expected = IndexOutOfBoundsException.class)
+    final public void testGetOutOfRange() {
+        Manager<Integer> manager = new Manager<Integer>();
+        manager.get(1);
     }
 
     @Test
@@ -54,5 +71,23 @@ public class ManagerUnitTest
         Assert.assertEquals(addedTask, manager.get(0));
         manager.set(0, setTask);
         Assert.assertEquals(setTask, manager.get(0));
+    }
+
+    @Test
+    final public void testSetBid()
+    {
+        Manager<Bid> manager = new Manager<Bid>();
+        Bid addedBid = new Bid("add", "add", new BigDecimal(1));
+        Bid setBid = new Bid("set", "set", new BigDecimal(1));
+        manager.add(addedBid);
+        Assert.assertEquals(addedBid, manager.get(0));
+        manager.set(0, setBid);
+        Assert.assertEquals(setBid, manager.get(0));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    final public void testSetOutOfRange() {
+        Manager<Integer> manager = new Manager<Integer>();
+        manager.set(1, new Integer(1));
     }
 }
