@@ -24,11 +24,35 @@ public class ManagerUnitTest
 
     @Test
     final public void testGetBid() {
-        Manager<Bid> taskManager = new Manager<Bid>();
+        Manager<Bid> bidManager = new Manager<Bid>();
         Bid addedBid = new Bid("provider", "task", new BigDecimal(1));
         Bid wrongBid = new Bid("provider", "task", new BigDecimal(1));
-        taskManager.add(addedBid);
-        Assert.assertEquals(addedBid, taskManager.get(0));
-        Assert.assertNotSame(wrongBid, taskManager.get(0));
+        bidManager.add(addedBid);
+        Assert.assertEquals(addedBid, bidManager.get(0));
+        Assert.assertNotSame(wrongBid, bidManager.get(0));
+    }
+
+    @Test
+    final public void testSetBid()
+    {
+        Manager<Bid> manager = new Manager<Bid>();
+        Bid addedBid = new Bid("add", "add", new BigDecimal(1));
+        Bid setBid = new Bid("set", "set", new BigDecimal(1));
+        manager.add(addedBid);
+        Assert.assertEquals(addedBid, manager.get(0));
+        manager.set(0, setBid);
+        Assert.assertEquals(setBid, manager.get(0));
+    }
+
+    @Test
+    final public void testSetTask()
+    {
+        Manager<Task> manager = new Manager<Task>();
+        Task addedTask = new Task("add", "add");
+        Task setTask = new Task("set", "set");
+        manager.add(addedTask);
+        Assert.assertEquals(addedTask, manager.get(0));
+        manager.set(0, setTask);
+        Assert.assertEquals(setTask, manager.get(0));
     }
 }
