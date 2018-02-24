@@ -6,28 +6,13 @@ public class T Manager
 {
     private ArrayList<T> items;
 
-    Manager()
-    {
+    Manager() { items = new ArrayList<T>(); }
 
-    }
+    public T get(int index) { return this.items.get(index); }
 
-    public T get()
-    {
+    public void add(T item) { this.items.add(item); }
 
-    }
+    public void set(int index, T value) { this.items.set(index, value); }
 
-    public void add()
-    {
-
-    }
-
-    public void set(int index, T value)
-    {
-
-    }
-
-    public void delete(int index)
-    {
-
-    }
+    public void delete(int index) { this.items.remove(index); }
 }
