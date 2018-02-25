@@ -1,5 +1,7 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
+import java.util.Objects;
+
 final class PhoneNumber
 {
     private final int countryCode;
@@ -46,5 +48,27 @@ final class PhoneNumber
     {
         return "+" + this.countryCode + " (" + this.areaCode + ") "
                 + this.exchangeCode + "-" + this.lineNumber;
+    }
+
+    @Override
+    public final int hashCode()
+    {
+        return Objects.hash(this.countryCode, this.areaCode, this.exchangeCode, this.lineNumber);
+    }
+
+    @Override
+    public final boolean equals(final Object object)
+    {
+        if (!(object instanceof PhoneNumber))
+        {
+            return false;
+        }
+
+        PhoneNumber phoneNumber = (PhoneNumber) object;
+
+        return this.countryCode == phoneNumber.getCountryCode()
+                && this.areaCode == phoneNumber.getAreaCode()
+                && this.exchangeCode == phoneNumber.getExchangeCode()
+                && this.lineNumber == phoneNumber.getLineNumber();
     }
 }
