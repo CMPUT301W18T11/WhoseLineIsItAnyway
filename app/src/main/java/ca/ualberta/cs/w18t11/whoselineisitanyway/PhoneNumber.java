@@ -8,6 +8,8 @@ final class PhoneNumber
 
     private final int exchangeCode;
 
+    private final int lineNumber;
+
     PhoneNumber(final int countryCode,
                 final int areaCode,
                 final int exchangeCode,
@@ -16,6 +18,7 @@ final class PhoneNumber
         this.countryCode = countryCode;
         this.areaCode = areaCode;
         this.exchangeCode = exchangeCode;
+        this.lineNumber = lineNumber;
     }
 
     final int getCountryCode()
@@ -31,5 +34,10 @@ final class PhoneNumber
     final int getExchangeCode()
     {
         return this.exchangeCode;
+    }
+
+    final int getLineNumber()
+    {
+        return this.lineNumber;
     }
 }
