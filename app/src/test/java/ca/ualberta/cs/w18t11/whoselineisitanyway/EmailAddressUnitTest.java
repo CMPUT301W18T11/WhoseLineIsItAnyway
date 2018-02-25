@@ -30,4 +30,11 @@ public final class EmailAddressUnitTest
     {
         new EmailAddress("franklin", "");
     }
+
+    @Test
+    public final void testToString()
+    {
+        Assert.assertEquals("franklin@domain.com",
+                new EmailAddress("franklin", "domain.com").toString());
+    }
 }
