@@ -35,4 +35,10 @@ public final class PhoneNumberUnitTest
         Assert.assertEquals(lineNumber,
                 new PhoneNumber(1, 555, 123, lineNumber).getLineNumber());
     }
+
+    @Test
+    public final void testToString()
+    {
+        Assert.assertEquals("+1 (555) 123-6789", new PhoneNumber(1, 555, 123, 6789).toString());
+    }
 }
