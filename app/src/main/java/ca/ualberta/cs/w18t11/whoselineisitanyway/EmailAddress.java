@@ -8,6 +8,11 @@ final class EmailAddress
 
     EmailAddress(final String localPart, final String domain)
     {
+        if (localPart.length() == 0)
+        {
+            throw new IllegalArgumentException("Email address local part cannot be empty");
+        }
+
         this.localPart = localPart;
         this.domain = domain;
     }
