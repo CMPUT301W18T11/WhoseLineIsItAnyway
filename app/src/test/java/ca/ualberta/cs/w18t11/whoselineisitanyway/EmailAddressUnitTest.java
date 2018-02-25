@@ -24,4 +24,10 @@ public final class EmailAddressUnitTest
     {
         new EmailAddress("", "domain.com");
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public final void testEmptyDomain()
+    {
+        new EmailAddress("franklin", "");
+    }
 }
