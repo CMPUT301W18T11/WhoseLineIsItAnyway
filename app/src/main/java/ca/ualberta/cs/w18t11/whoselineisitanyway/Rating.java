@@ -26,18 +26,18 @@ public class Rating {
      * @param qualityRating [0-5] A rating of the quality of service performed
      * @param ttcRating [0-5] A rating of the speed of performance of that service
      * @param profRating [0-5] A rating of the professionalism of conduct in performance thereof
-     * @throws RuntimeException
+     * @throws IllegalArgumentException
      */
-    public void Rating(int qualityRating, int ttcRating, int profRating) throws RuntimeException {
+    public Rating(int qualityRating, int ttcRating, int profRating) throws IllegalArgumentException {
         // Check ranges of all values, throw error if these are outside expectations
         if (!(ttcRating <= 5 && 0 <= ttcRating)) {
-            throw new RuntimeException("Invalid range for rating: ttcRating");
+            throw new IllegalArgumentException("Invalid range for rating: ttcRating");
         }
         if (!(qualityRating <= 5 && 0 <= qualityRating)) {
-            throw new RuntimeException("Invalid range for rating: qualityRating");
+            throw new IllegalArgumentException("Invalid range for rating: qualityRating");
         }
         if (!(profRating <= 5 && 0 <= profRating)) {
-            throw new RuntimeException("Invalid range for rating: profRating");
+            throw new IllegalArgumentException("Invalid range for rating: profRating");
         }
 
         // Set all values and update aggregate rating
