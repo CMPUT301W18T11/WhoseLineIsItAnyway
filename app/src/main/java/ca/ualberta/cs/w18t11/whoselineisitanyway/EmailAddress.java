@@ -13,6 +13,11 @@ final class EmailAddress
             throw new IllegalArgumentException("Email address local part cannot be empty");
         }
 
+        if (domain.length() == 0)
+        {
+            throw new IllegalArgumentException("Email address domain cannot be empty");
+        }
+
         this.localPart = localPart;
         this.domain = domain;
     }
