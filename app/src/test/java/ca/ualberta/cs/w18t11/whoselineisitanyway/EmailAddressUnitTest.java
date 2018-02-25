@@ -37,4 +37,28 @@ public final class EmailAddressUnitTest
         Assert.assertEquals("franklin@domain.com",
                 new EmailAddress("franklin", "domain.com").toString());
     }
+
+    @Test
+    public final void testEquals()
+    {
+        final String localPart = "franklin";
+        final String domain = "domain.com";
+        final EmailAddress firstEmail = new EmailAddress(localPart, domain);
+        final EmailAddress secondEmail = new EmailAddress(localPart, domain);
+        final EmailAddress thirdEmail = new EmailAddress("bob", domain);
+        final EmailAddress fourthEmail = new EmailAddress(localPart, "other.gov");
+
+        Assert.assertEquals(firstEmail.getLocalPart(), secondEmail.getLocalPart());
+        Assert.assertEquals(firstEmail.getDomain(), secondEmail.getDomain());
+        Assert.assertEquals(firstEmail, secondEmail);
+        Assert.assertNotEquals(firstEmail.getLocalPart(), thirdEmail.getLocalPart());
+        Assert.assertEquals(firstEmail.getDomain(), thirdEmail.getDomain());
+        Assert.assertNotEquals(firstEmail, thirdEmail);
+        Assert.assertEquals(firstEmail.getLocalPart(), fourthEmail.getLocalPart());
+        Assert.assertNotEquals(firstEmail.getDomain(), fourthEmail.getDomain());
+        Assert.assertNotEquals(firstEmail, fourthEmail);
+        Assert.assertNotEquals(thirdEmail.getLocalPart(), fourthEmail.getLocalPart());
+        Assert.assertNotEquals(thirdEmail.getDomain(), fourthEmail.getDomain());
+        Assert.assertNotEquals(thirdEmail, fourthEmail);
+    }
 }
