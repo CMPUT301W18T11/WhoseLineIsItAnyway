@@ -11,4 +11,11 @@ public final class EmailAddressUnitTest
         final String localPart = "franklin";
         Assert.assertEquals(localPart, new EmailAddress(localPart, "domain.com").getLocalPart());
     }
+
+    @Test
+    public final void testGetDomain()
+    {
+        final String domain = "domain.com";
+        Assert.assertEquals(domain, new EmailAddress("franklin", domain).getDomain());
+    }
 }
