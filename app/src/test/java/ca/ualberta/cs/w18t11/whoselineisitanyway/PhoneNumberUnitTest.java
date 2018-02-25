@@ -19,4 +19,12 @@ public final class PhoneNumberUnitTest
         final int areaCode = 555;
         Assert.assertEquals(areaCode, new PhoneNumber(1, areaCode, 123, 6789).getAreaCode());
     }
+
+    @Test
+    public final void testGetExchangeCode()
+    {
+        final int exchangeCode = 123;
+        Assert.assertEquals(exchangeCode,
+                new PhoneNumber(1, 555, exchangeCode, 6789).getExchangeCode());
+    }
 }
