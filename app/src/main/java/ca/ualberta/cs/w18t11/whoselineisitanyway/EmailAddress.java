@@ -1,5 +1,7 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
+import java.util.Objects;
+
 final class EmailAddress
 {
     private final String localPart;
@@ -36,5 +38,25 @@ final class EmailAddress
     public final String toString()
     {
         return this.localPart + "@" + this.getDomain();
+    }
+
+    @Override
+    public final int hashCode()
+    {
+        return Objects.hash(this.localPart, this.domain);
+    }
+
+    @Override
+    public final boolean equals(final Object object)
+    {
+        if (!(object instanceof EmailAddress))
+        {
+            return false;
+        }
+
+        final EmailAddress emailAddress = (EmailAddress) object;
+
+        return this.localPart.equals(emailAddress.getLocalPart())
+                && this.domain.equals(emailAddress.getDomain());
     }
 }
