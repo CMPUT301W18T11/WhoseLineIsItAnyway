@@ -18,4 +18,10 @@ public final class EmailAddressUnitTest
         final String domain = "domain.com";
         Assert.assertEquals(domain, new EmailAddress("franklin", domain).getDomain());
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public final void testEmptyLocalPart()
+    {
+        new EmailAddress("", "domain.com");
+    }
 }
