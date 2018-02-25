@@ -40,4 +40,11 @@ final class PhoneNumber
     {
         return this.lineNumber;
     }
+
+    @Override
+    public final String toString()
+    {
+        return "+" + this.countryCode + " (" + this.areaCode + ") "
+                + this.exchangeCode + "-" + this.lineNumber;
+    }
 }
