@@ -27,4 +27,12 @@ public final class PhoneNumberUnitTest
         Assert.assertEquals(exchangeCode,
                 new PhoneNumber(1, 555, exchangeCode, 6789).getExchangeCode());
     }
+
+    @Test
+    public final void testGetLineNumber()
+    {
+        final int lineNumber = 6789;
+        Assert.assertEquals(lineNumber,
+                new PhoneNumber(1, 555, 123, lineNumber).getLineNumber());
+    }
 }
