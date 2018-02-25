@@ -31,4 +31,10 @@ final class EmailAddress
     {
         return this.domain;
     }
+
+    @Override
+    public final String toString()
+    {
+        return this.localPart + "@" + this.getDomain();
+    }
 }
