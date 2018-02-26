@@ -2,17 +2,27 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
 import java.util.ArrayList;
 
-public class Manager<T>
+final class Manager<T>
 {
-    private ArrayList<T> items;
+    private final ArrayList<T> items = new ArrayList<>();
 
-    Manager() { items = new ArrayList<T>(); }
+    T get(final int index)
+    {
+        return this.items.get(index);
+    }
 
-    public T get(int index) { return this.items.get(index); }
+    void add(final T item)
+    {
+        this.items.add(item);
+    }
 
-    public void add(T item) { this.items.add(item); }
+    void set(final int index, final T value)
+    {
+        this.items.set(index, value);
+    }
 
-    public void set(int index, T value) { this.items.set(index, value); }
-
-    public void delete(int index) { this.items.remove(index); }
+    void delete(final int index)
+    {
+        this.items.remove(index);
+    }
 }

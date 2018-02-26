@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 public class ManagerUnitTest
 {
     @Test(expected = IndexOutOfBoundsException.class)
-    final public void testDeleteTask()
+    public final void testDeleteTask()
     {
         Manager<Task> manager = new Manager<Task>();
         Task task = new Task("add", "add");
@@ -18,7 +18,7 @@ public class ManagerUnitTest
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
-    final public void testDeleteBid()
+    public final void testDeleteBid()
     {
         Manager<Bid> manager = new Manager<Bid>();
         Bid bid = new Bid("add", "add", new BigDecimal(1));
@@ -29,14 +29,14 @@ public class ManagerUnitTest
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
-    final public void testDeleteOutOfRange()
+    public final void testDeleteOutOfRange()
     {
         Manager<Integer> manager = new Manager<Integer>();
         manager.delete(0);
     }
 
     @Test
-    final public void testGetTask() {
+    public final void testGetTask() {
         Manager<Task> taskManager = new Manager<Task>();
         Task addedTask = new Task("name", "description");
         Task wrongTask = new Task("name", "description");
@@ -46,7 +46,7 @@ public class ManagerUnitTest
     }
 
     @Test
-    final public void testGetBid() {
+    public final void testGetBid() {
         Manager<Bid> bidManager = new Manager<Bid>();
         Bid addedBid = new Bid("provider", "task", new BigDecimal(1));
         Bid wrongBid = new Bid("provider", "task", new BigDecimal(1));
@@ -56,13 +56,13 @@ public class ManagerUnitTest
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
-    final public void testGetOutOfRange() {
+    public final void testGetOutOfRange() {
         Manager<Integer> manager = new Manager<Integer>();
         manager.get(1);
     }
 
     @Test
-    final public void testSetTask()
+    public final void testSetTask()
     {
         Manager<Task> manager = new Manager<Task>();
         Task addedTask = new Task("add", "add");
@@ -74,7 +74,7 @@ public class ManagerUnitTest
     }
 
     @Test
-    final public void testSetBid()
+    public final void testSetBid()
     {
         Manager<Bid> manager = new Manager<Bid>();
         Bid addedBid = new Bid("add", "add", new BigDecimal(1));
@@ -86,7 +86,7 @@ public class ManagerUnitTest
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
-    final public void testSetOutOfRange() {
+    public final void testSetOutOfRange() {
         Manager<Integer> manager = new Manager<Integer>();
         manager.set(1, new Integer(1));
     }

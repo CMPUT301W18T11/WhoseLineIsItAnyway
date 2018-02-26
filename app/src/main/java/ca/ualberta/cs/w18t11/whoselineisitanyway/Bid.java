@@ -2,15 +2,16 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
 import java.math.BigDecimal;
 
-public class Bid
+final class Bid
 {
-    final private String providerId;
+    private final String providerId;
 
-    final private String taskId;
+    private final String taskId;
 
-    final private BigDecimal value;
+    private final BigDecimal value;
 
-    Bid(final String providerId, final String taskId, final BigDecimal value) throws IllegalArgumentException
+    Bid(final String providerId, final String taskId, final BigDecimal value)
+            throws IllegalArgumentException
     {
         if (providerId.isEmpty())
         {
@@ -32,9 +33,18 @@ public class Bid
         this.value = value;
     }
 
-    final String getProviderId() { return this.providerId; }
+    final String getProviderId()
+    {
+        return this.providerId;
+    }
 
-    final String getTaskId() { return this.taskId; }
+    final String getTaskId()
+    {
+        return this.taskId;
+    }
 
-    final BigDecimal getValue() { return this.value; }
+    final BigDecimal getValue()
+    {
+        return this.value;
+    }
 }

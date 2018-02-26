@@ -2,11 +2,11 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
 final class Task
 {
-    final private String title;
+    private final String title;
 
-    final private String description;
+    private final String description;
 
-    final private TaskStatus status;
+    private final TaskStatus status;
 
     Task(final String title, final String description) throws IllegalArgumentException
     {
