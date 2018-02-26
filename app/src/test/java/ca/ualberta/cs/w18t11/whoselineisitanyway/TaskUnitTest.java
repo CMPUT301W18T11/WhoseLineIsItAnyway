@@ -3,24 +3,24 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 import org.junit.Assert;
 import org.junit.Test;
 
-final public class TaskUnitTest
+public final class TaskUnitTest
 {
     @Test
-    final public void testGetTitle()
+    public final void testGetTitle()
     {
         final String title = "title";
         Assert.assertEquals(title, new Task(title, "").getTitle());
     }
 
     @Test
-    final public void testGetLongerTitle()
+    public final void testGetLongerTitle()
     {
         final String longerTitle = "longer title";
         Assert.assertEquals(longerTitle, new Task(longerTitle, "").getTitle());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    final public void testTitleTooLong()
+    public final void testTitleTooLong()
     {
         final String tooLongTitle = "terrible title that is too long";
         Assert.assertTrue(tooLongTitle.length() > 30);
@@ -28,14 +28,14 @@ final public class TaskUnitTest
     }
 
     @Test
-    final public void testGetDescription()
+    public final void testGetDescription()
     {
         final String description = "description";
         Assert.assertEquals(description, new Task("", description).getDescription());
     }
 
     @Test
-    final public void testGetLongerDescription()
+    public final void testGetLongerDescription()
     {
         final String longerDescription = "longer description";
         Assert.assertEquals(longerDescription,
@@ -43,7 +43,7 @@ final public class TaskUnitTest
     }
 
     @Test(expected = IllegalArgumentException.class)
-    final public void testDescriptionTooLong()
+    public final void testDescriptionTooLong()
     {
         final String tooLongDescription = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
                 + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -57,7 +57,7 @@ final public class TaskUnitTest
     }
 
     @Test
-    final public void testGetStatus()
+    public final void testGetStatus()
     {
         Assert.assertEquals(TaskStatus.REQUESTED, new Task("", "").getStatus());
     }
