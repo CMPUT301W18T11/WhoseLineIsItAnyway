@@ -6,6 +6,10 @@ final class User
 
     private final PhoneNumber phoneNumber;
 
+    private final Manager<Task> requestedTasks = new Manager<>();
+
+    private final Manager<Task> assignedTasks = new Manager<>();
+
     User(final EmailAddress emailAddress, final PhoneNumber phoneNumber)
     {
         this.emailAddress = emailAddress;
@@ -20,5 +24,15 @@ final class User
     final PhoneNumber getPhoneNumber()
     {
         return this.phoneNumber;
+    }
+
+    final Manager<Task> getRequestedTasks()
+    {
+        return this.requestedTasks;
+    }
+
+    final Manager<Task> getAssignedTasks()
+    {
+        return this.assignedTasks;
     }
 }
