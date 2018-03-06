@@ -24,6 +24,10 @@ final class User implements Serializable
     {
         return this.emailAddress;
     }
+    final String getDocId()
+    {
+        return this.DocId;
+    }
 
     final PhoneNumber getPhoneNumber()
     {
