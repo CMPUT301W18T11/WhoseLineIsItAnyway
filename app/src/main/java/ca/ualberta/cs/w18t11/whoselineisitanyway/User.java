@@ -1,7 +1,10 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
-final class User
+final class User implements Serializable
 {
+    @JestId
+    private final String DocID;
+    
     private final EmailAddress emailAddress;
 
     private final PhoneNumber phoneNumber;
@@ -14,6 +17,7 @@ final class User
     {
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
+        this.DocID = emailAddress.getLocalPart() + emailAddress.getDomain();
     }
 
     final EmailAddress getEmailAddress()
@@ -35,4 +39,6 @@ final class User
     {
         return this.assignedTasks;
     }
+
+    
 }
