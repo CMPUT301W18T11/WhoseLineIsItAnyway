@@ -1,4 +1,4 @@
-package com.example.nafeekhan.wliaskel2;
+package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
 import android.os.AsyncTask;
 import android.util.Log;
