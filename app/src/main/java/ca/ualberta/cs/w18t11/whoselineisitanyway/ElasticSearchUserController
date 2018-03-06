@@ -174,3 +174,4 @@ public class ElasticSearchUserController {
             client = (JestDroidClient) factory.getObject();
         }
     }
+}
