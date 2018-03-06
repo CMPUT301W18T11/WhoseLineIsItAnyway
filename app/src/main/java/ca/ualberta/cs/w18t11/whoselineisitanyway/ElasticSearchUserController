@@ -51,7 +51,7 @@ public class ElasticSearchUserController {
         User temp = new User();
 
         try {
-            temp = getUserTask.execute(user.getUsername()).get();
+            temp = getUserTask.execute(user.getDocId()).get();
         }
         catch (InterruptedException e) {
             e.printStackTrace();
