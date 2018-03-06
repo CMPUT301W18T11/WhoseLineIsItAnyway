@@ -19,6 +19,8 @@ import io.searchbox.core.Index;
 
 public class ElasticSearchUserController {
 
+
+
     private static ElasticSearchUserController instance = new ElasticSearchUserController();
 
     protected ElasticSearchUserController() {
@@ -139,12 +141,9 @@ public class ElasticSearchUserController {
                     //Date: 3/21/2017
                     GsonBuilder gsonBuilder = new GsonBuilder();
                     Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
-
 //                    //GsonBuilder gsonBuilder = new GsonBuilder();
 //                    //Gson gson = gsonBuilder.create();
-
                     user = gson.fromJson(userJson, User.class);
-
                 }
 
                 else{
