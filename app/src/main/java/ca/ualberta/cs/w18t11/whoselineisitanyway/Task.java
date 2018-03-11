@@ -1,5 +1,20 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
+/**
+ * Task is a class for storing and managing the information assciated with a task created by
+ * a user of the app.
+ * Each task has a title, description, and status
+ * The status of a Task may be one of the following
+ * <ul>
+ *     <li>REQUESTED</li>
+ *     <li>BIDDED</li>
+ *     <li>ASSIGNED</li>
+ *     <li>DONE</li>
+ * </ul>
+ * @author Samuel Dolha
+ * @version 1.0
+ * @see TaskStatus
+ */
 final class Task
 {
     private final String title;
@@ -7,7 +22,7 @@ final class Task
     private final String description;
 
     private final TaskStatus status;
-
+    
     Task(final String title, final String description) throws IllegalArgumentException
     {
         if (title.length() > 30)
@@ -39,4 +54,6 @@ final class Task
     {
         return this.status;
     }
+
+    final void setStatus(TaskStatus newStatus) { this.status = newStatus; }
 }
