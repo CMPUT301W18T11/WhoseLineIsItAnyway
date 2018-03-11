@@ -2,14 +2,27 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
 import java.math.BigDecimal;
 
+/**
+ * Bid is a class for storing and managing information associated with a bid made by a user on
+ * any task.
+ * @author Mark Griffith
+ * @version 1.0
+ */
 final class Bid
 {
-    private final String providerId;
+    private final String providerId; // The id of the User who made the bid
 
-    private final String taskId;
+    private final String taskId; // The title of the task bid on
 
-    private final BigDecimal value;
+    private final BigDecimal value; // The amount bidded
 
+    /**
+     * Constructor for creating a Bid object.
+     * @param providerId The id of the User who provides the task bid on
+     * @param taskId The title of the task bid on
+     * @param value The amount bidded
+     * @throws IllegalArgumentException if either providerId or taskId are empty or Bid is <= 0
+     */
     Bid(final String providerId, final String taskId, final BigDecimal value)
             throws IllegalArgumentException
     {
@@ -33,16 +46,28 @@ final class Bid
         this.value = value;
     }
 
+    /**
+     * Get the id of the User that made the Bid
+     * @return String representation of the User's id
+     */
     final String getProviderId()
     {
         return this.providerId;
     }
 
+    /**
+     * Get the title of the Task being bid on
+     * @return String representation of the Task's title
+     */
     final String getTaskId()
     {
         return this.taskId;
     }
 
+    /**
+     * Get the amount that the User bid
+     * @return BigDecimal value of the Bid amount
+     */
     final BigDecimal getValue()
     {
         return this.value;
