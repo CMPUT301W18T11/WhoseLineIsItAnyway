@@ -19,6 +19,13 @@ final class User
 
     private final Manager<Task> assignedTasks = new Manager<>();
 
+    /**
+     * Constructor for creating a User object.
+     * Error checking for validity of private member variables is handled externally
+     * @param emailAddress
+     * @param phoneNumber
+     * @param username
+     */
     User(final EmailAddress emailAddress, final PhoneNumber phoneNumber, final String username)
     {
         this.emailAddress = emailAddress;
@@ -31,22 +38,42 @@ final class User
      * @return String representation of the User's id
      */
     final String getID() { return this.id; }
-    
+
+    /**
+     * Get the email address of the User
+     * @see EmailAddress
+     * @return EmailAddress object representation of User's email address
+     */
     final EmailAddress getEmailAddress()
     {
         return this.emailAddress;
     }
 
+    /**
+     * Get the phone number of the User
+     * @see PhoneNumber
+     * @return PhoneNumber object representation of the User's phone number
+     */
     final PhoneNumber getPhoneNumber()
     {
         return this.phoneNumber;
     }
 
+    /**
+     * Get the list of the User's requested tasks
+     * @see Manager
+     * @return Manager containing a list of Task objects
+     */
     final Manager<Task> getRequestedTasks()
     {
         return this.requestedTasks;
     }
 
+    /**
+     * Get the list of the User's assigned tasks
+     * @see Manager
+     * @return Manager containing a list of Task objects
+     */
     final Manager<Task> getAssignedTasks()
     {
         return this.assignedTasks;
