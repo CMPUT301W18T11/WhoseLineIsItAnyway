@@ -22,7 +22,14 @@ final class Task
     private final String description;
 
     private final TaskStatus status;
-    
+
+    /**
+     * Constructor for creating Task object.
+     * Ensures title length and description length are within bounds.
+     * @param title Title representing the Task
+     * @param description Description of Task details
+     * @throws IllegalArgumentException Either title or description are outside specified bounds
+     */
     Task(final String title, final String description) throws IllegalArgumentException
     {
         if (title.length() > 30)
@@ -40,20 +47,36 @@ final class Task
         this.status = TaskStatus.REQUESTED;
     }
 
+    /**
+     * Get the title of the Task
+     * @return String representation of the Task's title
+     */
     final String getTitle()
     {
         return this.title;
     }
 
+    /**
+     * Get the descri[tion of the Task
+     * @return String representation of the Task's description
+     */
     final String getDescription()
     {
         return this.description;
     }
 
+    /**
+     * Get the current status of the Task
+     * @return TaskStatus representation of the Task's status
+     */
     final TaskStatus getStatus()
     {
         return this.status;
     }
 
+    /**
+     * Sets the current status of the Task
+     * @param newStatus the new status of the Task
+     */
     final void setStatus(TaskStatus newStatus) { this.status = newStatus; }
 }
