@@ -66,15 +66,6 @@ final class Task
     }
 
     /**
-     * Get the current status of the Task
-     * @return TaskStatus representation of the Task's status
-     */
-    final TaskStatus getStatus()
-    {
-        return this.status;
-    }
-
-    /**
      * Sets the current status of the Task
      * @param newStatus the new status of the Task
      */
