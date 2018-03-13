@@ -16,9 +16,9 @@ public final class TextValidatorTest {
         String phone2 = "";
         String phone3 = "+1 ";
         
-        assertEquals(phone1, 1, validator.validatePhoneNumber(phone1, true));
-        assertEquals(phone2, 1, validator.validatePhoneNumber(phone2, true));
-        assertEquals(phone3, 1, validator.validatePhoneNumber(phone3, true));
+        assertEquals(phone1, 1, validator.validatePhoneNumber(phone1, true).getErrorCode());
+        assertEquals(phone2, 1, validator.validatePhoneNumber(phone2, true).getErrorCode());
+        assertEquals(phone3, 1, validator.validatePhoneNumber(phone3, true).getErrorCode());
         
     }
     @Test
@@ -26,8 +26,8 @@ public final class TextValidatorTest {
         String phone1 = ".1 (780) 111-1111";
         String phone2 = "+1 (909) 111-111.";
 
-        assertEquals(phone1, -1, validator.validatePhoneNumber(phone1, true));
-        assertEquals(phone2, -1, validator.validatePhoneNumber(phone2, true));
+        assertEquals(phone1, -1, validator.validatePhoneNumber(phone1, true).getErrorCode());
+        assertEquals(phone2, -1, validator.validatePhoneNumber(phone2, true).getErrorCode());
     }
     @Test
     public void phoneNum_PartialIncompleteWrongFormat() {
@@ -35,17 +35,17 @@ public final class TextValidatorTest {
         String phone2 = "780 111-111";
         String phone3 = "+1 (780)111-111";
 
-        assertEquals(phone1, -1, validator.validatePhoneNumber(phone1, true));
-        assertEquals(phone2, -1, validator.validatePhoneNumber(phone2, true));
-        assertEquals(phone3, -1, validator.validatePhoneNumber(phone3, true));
+        assertEquals(phone1, -1, validator.validatePhoneNumber(phone1, true).getErrorCode());
+        assertEquals(phone2, -1, validator.validatePhoneNumber(phone2, true).getErrorCode());
+        assertEquals(phone3, -1, validator.validatePhoneNumber(phone3, true).getErrorCode());
     }
     @Test
     public void phoneNum_PartialCorrectFormat() {
         String phone1 = "+22 (627) 111-2222";
         String phone2 = "+1 (780) 432-3399";
 
-        assertEquals(phone1, 1, validator.validatePhoneNumber(phone1, true));
-        assertEquals(phone2, 1, validator.validatePhoneNumber(phone2, true));
+        assertEquals(phone1, 1, validator.validatePhoneNumber(phone1, true).getErrorCode());
+        assertEquals(phone2, 1, validator.validatePhoneNumber(phone2, true).getErrorCode());
     }
     @Test
     public void phoneNum_NoPartialIncompleteCorrectFormat() {
@@ -53,9 +53,9 @@ public final class TextValidatorTest {
         String phone2 = "";
         String phone3 = "+1 ";
 
-        assertEquals(phone1, -1, validator.validatePhoneNumber(phone1, false));
-        assertEquals(phone2, -1, validator.validatePhoneNumber(phone2, false));
-        assertEquals(phone3, -1, validator.validatePhoneNumber(phone1, false));
+        assertEquals(phone1, -1, validator.validatePhoneNumber(phone1, false).getErrorCode());
+        assertEquals(phone2, -1, validator.validatePhoneNumber(phone2, false).getErrorCode());
+        assertEquals(phone3, -1, validator.validatePhoneNumber(phone1, false).getErrorCode());
     }
     @Test
     public void phoneNum_NoPartialIncompleteWrongFormat() {
@@ -63,9 +63,9 @@ public final class TextValidatorTest {
         String phone2 = "+l";
         String phone3 = "+1 )780) 111-1.11";
 
-        assertEquals(phone1, -1, validator.validatePhoneNumber(phone1, false));
-        assertEquals(phone2, -1, validator.validatePhoneNumber(phone2, false));
-        assertEquals(phone3, -1, validator.validatePhoneNumber(phone1, false));
+        assertEquals(phone1, -1, validator.validatePhoneNumber(phone1, false).getErrorCode());
+        assertEquals(phone2, -1, validator.validatePhoneNumber(phone2, false).getErrorCode());
+        assertEquals(phone3, -1, validator.validatePhoneNumber(phone1, false).getErrorCode());
         
     }
     @Test
@@ -73,8 +73,8 @@ public final class TextValidatorTest {
         String phone1 = "+1 (780) 432-9999";
         String phone2 = "+22 (909) 861-2245";
 
-        assertEquals(phone1, 1, validator.validatePhoneNumber(phone1, false));
-        assertEquals(phone2, 1, validator.validatePhoneNumber(phone2, false));
+        assertEquals(phone1, 1, validator.validatePhoneNumber(phone1, false).getErrorCode());
+        assertEquals(phone2, 1, validator.validatePhoneNumber(phone2, false).getErrorCode());
     }
 
     @Test
@@ -82,8 +82,8 @@ public final class TextValidatorTest {
         String email1 = "mt@hurn@live.c";
         String email2 = "att.ne@@t";
 
-        assertEquals(email1, -1 , validator.validateEmail(email1, true));
-        assertEquals(email2, -1 , validator.validateEmail(email2, true));
+        assertEquals(email1, -2 , validator.validateEmail(email1, true).getErrorCode());
+        assertEquals(email2, -2 , validator.validateEmail(email2, true).getErrorCode());
     }
     @Test
     public void email_PartialCompleteCorrectFormat() {
@@ -121,7 +121,7 @@ public final class TextValidatorTest {
         emailList.add("bjoern@msn.com");
 
         for (int i = 0; i < emailList.size(); i ++) {
-            assertEquals(emailList.get(i), 1, validator.validateEmail(emailList.get(i), true));
+            assertEquals(emailList.get(i), 1, validator.validateEmail(emailList.get(i), true).getErrorCode());
         }
     }
     @Test
@@ -135,7 +135,7 @@ public final class TextValidatorTest {
 
 
         for (int i = 0; i < emailList.size(); i ++) {
-            assertEquals(emailList.get(i), 1, validator.validateEmail(emailList.get(i), true));
+            assertEquals(emailList.get(i), 1, validator.validateEmail(emailList.get(i), true).getErrorCode());
         }
     }
 
