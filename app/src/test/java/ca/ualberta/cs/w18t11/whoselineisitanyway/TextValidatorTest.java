@@ -138,4 +138,19 @@ public final class TextValidatorTest {
             assertEquals(emailList.get(i), 1, validator.validateEmail(emailList.get(i), true));
         }
     }
+
+    @Test
+    public void currency_PartialCompleteCorrectFormat() {
+        String curr1 = "$0.99";
+        String curr2 = "0.9";
+        String curr3 = "$236";
+        String curr4 = "3012.66";
+    }
+    @Test
+    public void currency_PartialIncompleteCorrectFormat() {
+        String curr1 = "$0.";
+        String curr2 = "0.9";
+        String curr3 = "$";
+        String curr4 = "";
+    }
 }
