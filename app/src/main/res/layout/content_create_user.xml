@@ -39,7 +39,7 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="1dp"
             android:ems="10"
-            android:maxLength="16"
+            android:maxLength="8"
             android:hint="(Username)"
             android:inputType="textPersonName"
             android:singleLine="true" />
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/vtxtContactInfo"
             android:layout_below="@+id/vtxtContactInfo"
-            android:maxLength="17"
+            android:maxLength="19"
             android:ems="10"
             android:hint="Ph: +1 (111) 111-1111"
             android:inputType="phone"
