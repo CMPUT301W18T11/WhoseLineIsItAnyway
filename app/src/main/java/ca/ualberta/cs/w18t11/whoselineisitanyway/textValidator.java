@@ -39,4 +39,19 @@ public class TextValidator {
             }
         }
     }
+
+    public int validateCurrency(final String input, final boolean allowPartialMatching) {
+        Pattern currency = Pattern.compile("^\\$?\\d+(?:\\.\\d{2})?$");
+        Matcher matches = currency.matcher(input);
+        boolean res = matches.matches();
+
+        if (res) { return 1; }
+        else {
+            if (matches.hitEnd() && allowPartialMatching) {
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+    }
 }
