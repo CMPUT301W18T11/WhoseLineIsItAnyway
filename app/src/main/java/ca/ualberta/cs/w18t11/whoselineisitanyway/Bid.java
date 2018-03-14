@@ -14,7 +14,7 @@ final class Bid
 
     private final String taskId; // The title of the task bid on
 
-    private final BigDecimal value; // The amount bidded
+    private BigDecimal value; // The amount bidded
 
     /**
      * Constructor for creating a Bid object.
@@ -36,7 +36,7 @@ final class Bid
             throw new IllegalArgumentException("Task ID cannot be an empty string");
         }
 
-        if (value.compareTo(BigDecimal.ONE) < 0)
+        if (value.compareTo(BigDecimal.ONE) <= 0)
         {
             throw new IllegalArgumentException("Bid value must be greater than 0");
         }

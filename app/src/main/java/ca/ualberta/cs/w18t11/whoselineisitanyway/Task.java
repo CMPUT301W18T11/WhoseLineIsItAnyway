@@ -17,11 +17,11 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
  */
 final class Task
 {
-    private final String title;
+    private String title;
 
-    private final String description;
+    private String description;
 
-    private final TaskStatus status;
+    private TaskStatus status;
 
     /**
      * Constructor for creating Task object.
@@ -57,7 +57,7 @@ final class Task
     }
 
     /**
-     * Get the descri[tion of the Task
+     * Get the description of the Task
      * @return String representation of the Task's description
      */
     final String getDescription()
@@ -65,6 +65,13 @@ final class Task
         return this.description;
     }
 
+    /**
+     * Get the status of the Task
+     * @return TaskStatus object representing one of the 4 statuses
+     */
+    final TaskStatus getStatus() {
+        return this.status;
+    }
     /**
      * Sets the current status of the Task
      * @param newStatus the new status of the Task

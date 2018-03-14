@@ -11,9 +11,9 @@ final class User
 {
     private final String id;
 
-    private final EmailAddress emailAddress;
+    private EmailAddress emailAddress;
 
-    private final PhoneNumber phoneNumber;
+    private PhoneNumber phoneNumber;
 
     private final Manager<Task> requestedTasks = new Manager<>();
 
@@ -22,9 +22,11 @@ final class User
     /**
      * Constructor for creating a User object.
      * Error checking for validity of private member variables is handled externally
-     * @param emailAddress
-     * @param phoneNumber
-     * @param username
+     * @param emailAddress user's email address, as an EmailAddress object
+     * @param phoneNumber user's phone number, as a PhoneNumber object
+     * @param username user's username, a.k.a. their id
+     * @see EmailAddress
+     * @see PhoneNumber
      */
     User(final EmailAddress emailAddress, final PhoneNumber phoneNumber, final String username)
     {
