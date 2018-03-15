@@ -9,6 +9,23 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.regex.*;
 
+
+/**
+ * <h1>TextValidator</h1>
+ * @author Lucas Thalen
+ * This class contains functions for verifying key types of text input on text fields
+ * it outputs error codes, messages, and any found components for the format in question
+ * Quick Summary:
+ * Phonenumber: +# (###) ###-####
+ * ERR: -1 Indicates incorrect formatting
+ * Email: example@example.tld
+ * ERR -1 Indicates formatting is incorrect
+ * ERR -2 Indicates too many @ symbols in email
+ * Currency: ($)#(.##) (with or without $, only needs .## if . used)
+ * ERR -1 Incorrect format
+ * ERR -2 Decimal without decimal values
+ * @see TextValidatorResult
+ */
 public final class TextValidator {
 
     /**
@@ -64,7 +81,7 @@ public final class TextValidator {
             if (matches.hitEnd() && allowPartialMatching) {
                 return new TextValidatorResult(1, results, "");
             } else {
-                int arrobaCount = 0;
+                int arrobaCount = 0; // Check that there's only one @ in the email
                 for (int i = 0; i < input.length(); i++) {
                     if (input.charAt(i) == '@') {
                         arrobaCount++;
@@ -94,7 +111,7 @@ public final class TextValidator {
         ArrayList<String> results = new ArrayList<String>();
 
         if (res) {
-           if (input.contains(".")) {
+           if (input.contains(".")) { // check case where a decimal exists and enforce entry of post-decimal values
                currency = Pattern.compile("^\\$?(\\d+(?:\\.\\d{2}))$");
                matches = currency.matcher(input);
                res = matches.matches();
@@ -116,7 +133,7 @@ public final class TextValidator {
         else {
             if (matches.hitEnd() && allowPartialMatching) {
                 return new TextValidatorResult(1, results, "");
-            } else {
+            } else { // Check case where a decimal exists and force entry of post-decimal values
                 if (input.contains(".")) { return new TextValidatorResult(-2, results, "invalid format. Example, either: 4 OR 4.10\n(Include all" +
                         " values after decimal, if a point is used."); } else {
                     return new TextValidatorResult(-1, results, "invalid format. Example, either: 4 OR 4.10\n(Include all values after decimal, if a point is used.");

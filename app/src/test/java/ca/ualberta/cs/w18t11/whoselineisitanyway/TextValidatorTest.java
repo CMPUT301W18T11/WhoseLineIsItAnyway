@@ -3,14 +3,17 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.ArrayList;
+
 /**
- * Created by lucas on 2018-03-09.
+ * @author Lucas Thalen
+ * Tests for the TextValidator model class
  */
 
 public final class TextValidatorTest {
     final TextValidator validator = new TextValidator();
 
     @Test
+    // This checks that a complete phone number can be deconstructed
     public void phoneNum_CompleteReturnsMatches() {
 
         String phone1 = "+1 (780) 432-9926";
@@ -22,6 +25,7 @@ public final class TextValidatorTest {
         assertEquals(res.get(4), "9926");
     }
     @Test
+    // This checks that partial phone numbers allowed partialmatching will not fail
     public void phoneNum_PartialIncompleteCorrectFormat() {
         String phone1 = "+1 (780) 4";
         String phone2 = "";
@@ -33,6 +37,7 @@ public final class TextValidatorTest {
         
     }
     @Test
+    // This tests front and back of a string phone number
     public void phoneNum_PartialWrongEnds() {
         String phone1 = ".1 (780) 111-1111";
         String phone2 = "+1 (909) 111-111.";
@@ -41,6 +46,7 @@ public final class TextValidatorTest {
         assertEquals(phone2, -1, validator.validatePhoneNumber(phone2, true).getErrorCode());
     }
     @Test
+    // This checks that partial matching still fails incorrect results
     public void phoneNum_PartialIncompleteWrongFormat() {
         String phone1 = "+1 (780. 111-111";
         String phone2 = "780 111-111";
@@ -51,6 +57,7 @@ public final class TextValidatorTest {
         assertEquals(phone3, -1, validator.validatePhoneNumber(phone3, true).getErrorCode());
     }
     @Test
+    // This checks that partial matching returns on correct format for complete strings
     public void phoneNum_PartialCorrectFormat() {
         String phone1 = "+22 (627) 111-2222";
         String phone2 = "+1 (780) 432-3399";
@@ -59,6 +66,7 @@ public final class TextValidatorTest {
         assertEquals(phone2, 1, validator.validatePhoneNumber(phone2, true).getErrorCode());
     }
     @Test
+    // This means partial is off, tests for incomplete strings but correct format. Should throw an error.
     public void phoneNum_NoPartialIncompleteCorrectFormat() {
         String phone1 = "+1 (780) 4";
         String phone2 = "";
@@ -69,6 +77,7 @@ public final class TextValidatorTest {
         assertEquals(phone3, -1, validator.validatePhoneNumber(phone1, false).getErrorCode());
     }
     @Test
+    // Turn off partial and supply it with an incorrect, incomplete format; should throw error
     public void phoneNum_NoPartialIncompleteWrongFormat() {
         String phone1 = "+1 .780";
         String phone2 = "+l";
@@ -80,6 +89,7 @@ public final class TextValidatorTest {
         
     }
     @Test
+    // No partial matching, test complete and correct formats
     public void phoneNum_NoPartialCompleteCorrectFormat() {
         String phone1 = "+1 (780) 432-9999";
         String phone2 = "+22 (909) 861-2245";
@@ -97,6 +107,7 @@ public final class TextValidatorTest {
         assertEquals(email2, -2 , validator.validateEmail(email2, true).getErrorCode());
     }
     @Test
+    // Test a variety of email types to see that it works
     public void email_PartialCompleteCorrectFormat() {
         ArrayList<String> emailList = new ArrayList<String>();
         // Note: Randomly Generated, with a few stoppers thrown in
@@ -183,6 +194,7 @@ public final class TextValidatorTest {
         assertEquals(curr4, 1, validator.validateCurrency(curr4, true).getErrorCode());
     }
     @Test
+    // Ensure currency returns a deconstructed string which can then be cast to a double by receiver
     public void currency_CompleteReturnsMatches() {
         String curr1 = "$0.99";
         ArrayList<String> res = validator.validateCurrency(curr1, false).getComponents();
@@ -191,6 +203,7 @@ public final class TextValidatorTest {
 
     }
     @Test
+    // make sure that an error distinct from wrong-format throws when a decimal is used without supplied decimalized values
     public void currency_CompleteDecimalFail() {
         String curr1 = "996.";
         assertEquals(curr1, -2, validator.validateCurrency(curr1, false).getErrorCode());
