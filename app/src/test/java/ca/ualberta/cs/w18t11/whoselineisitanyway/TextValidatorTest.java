@@ -11,6 +11,17 @@ public final class TextValidatorTest {
     final TextValidator validator = new TextValidator();
 
     @Test
+    public void phoneNum_CompleteReturnsMatches() {
+
+        String phone1 = "+1 (780) 432-9926";
+        ArrayList<String> res = validator.validatePhoneNumber(phone1, false).getComponents();
+        assertTrue(res.size() == 5);
+        assertEquals(res.get(1),"1");
+        assertEquals(res.get(2), "780");
+        assertEquals(res.get(3), "432");
+        assertEquals(res.get(4), "9926");
+    }
+    @Test
     public void phoneNum_PartialIncompleteCorrectFormat() {
         String phone1 = "+1 (780) 4";
         String phone2 = "";
@@ -138,13 +149,26 @@ public final class TextValidatorTest {
             assertEquals(emailList.get(i), 1, validator.validateEmail(emailList.get(i), true).getErrorCode());
         }
     }
+    @Test
+    public void email_CompleteReturnsMatches() {
 
+        String email1 = "testing@supreme.net";
+        ArrayList<String> res = validator.validateEmail(email1, false).getComponents();
+        assertTrue(res.size() == 3);
+        assertEquals(res.get(1), "testing");
+        assertEquals(res.get(2), "supreme.net");
+    }
     @Test
     public void currency_PartialCompleteCorrectFormat() {
         String curr1 = "$0.99";
         String curr2 = "0.9";
         String curr3 = "$236";
         String curr4 = "3012.66";
+
+        assertEquals(curr1, 1, validator.validateCurrency(curr1, true).getErrorCode());
+        assertEquals(curr2, 1, validator.validateCurrency(curr2, true).getErrorCode());
+        assertEquals(curr3, 1, validator.validateCurrency(curr3, true).getErrorCode());
+        assertEquals(curr4, 1, validator.validateCurrency(curr4, true).getErrorCode());
     }
     @Test
     public void currency_PartialIncompleteCorrectFormat() {
@@ -152,5 +176,24 @@ public final class TextValidatorTest {
         String curr2 = "0.9";
         String curr3 = "$";
         String curr4 = "";
+
+        assertEquals(curr1, 1, validator.validateCurrency(curr1, true).getErrorCode());
+        assertEquals(curr2, 1, validator.validateCurrency(curr2, true).getErrorCode());
+        assertEquals(curr3, 1, validator.validateCurrency(curr3, true).getErrorCode());
+        assertEquals(curr4, 1, validator.validateCurrency(curr4, true).getErrorCode());
+    }
+    @Test
+    public void currency_CompleteReturnsMatches() {
+        String curr1 = "$0.99";
+        ArrayList<String> res = validator.validateCurrency(curr1, false).getComponents();
+        assertTrue(res.size() == 2);
+        assertEquals(res.get(1), "0.99");
+
+    }
+    @Test
+    public void currency_CompleteDecimalFail() {
+        String curr1 = "996.";
+        assertEquals(curr1, -2, validator.validateCurrency(curr1, false).getErrorCode());
+
     }
 }

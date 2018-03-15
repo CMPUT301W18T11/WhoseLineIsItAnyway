@@ -4,6 +4,8 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
  * Created by lucas on 2018-03-08.
  */
 
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.regex.*;
 
@@ -19,13 +21,13 @@ public final class TextValidator {
      */
     public TextValidatorResult validatePhoneNumber(final String input, final boolean allowPartialMatching) {
 
-        Pattern phoneNum = Pattern.compile("^\\+(\\d)+ \\((\\d{3})\\) (\\d{3})\\-(\\d{4})");
+        Pattern phoneNum = Pattern.compile("\\+(\\d)+ \\((\\d{3})\\) (\\d{3})\\-(\\d{4})");
         Matcher matches = phoneNum.matcher(input);
         boolean res = matches.matches();
         ArrayList<String> results = new ArrayList<String>();
 
         if (res) {
-            for (int i = 0; i < matches.groupCount(); i ++) { results.add(matches.group(i)); }
+            for (int i = 0; i < matches.groupCount() + 1; i ++) { results.add(matches.group(i)); }
             return new TextValidatorResult(1, results, "");
         } // if res is true, then it's a whole number and it works
         else {
@@ -54,7 +56,7 @@ public final class TextValidator {
         ArrayList<String> results = new ArrayList<String>();
 
         if (res) {
-            for (int i = 0; i < matches.groupCount(); i++) {
+            for (int i = 0; i < matches.groupCount() + 1; i++) {
                 results.add(matches.group(i));
             }
             return new TextValidatorResult(1, results, "");
@@ -86,23 +88,28 @@ public final class TextValidator {
      * -2 = Decimal error (a decimal exists, but no input after; prompt for decimal
      */
     public TextValidatorResult validateCurrency(final String input, final boolean allowPartialMatching) {
-        Pattern currency = Pattern.compile("^\\$?\\d+(?:\\.\\d{2})?$");
+        Pattern currency = Pattern.compile("^\\$?(\\d+(?:\\.\\d{2})?)$");
         Matcher matches = currency.matcher(input);
         boolean res = matches.matches();
         ArrayList<String> results = new ArrayList<String>();
 
         if (res) {
-
            if (input.contains(".")) {
-               currency = Pattern.compile("^\\$?\\d+(?:\\.\\d{2})$");
+               currency = Pattern.compile("^\\$?(\\d+(?:\\.\\d{2}))$");
                matches = currency.matcher(input);
                res = matches.matches();
                if (res) {
+                   for (int i = 0; i < matches.groupCount() + 1; i++) {
+                       results.add(matches.group(i));
+                   }
                    return new TextValidatorResult(1, results, "");
                } else {
                    return new TextValidatorResult(-2, results, "Invalid format. If using decimal, enter all values afterwards.\nExample: 4 or 4.10");
                }
            }  else {
+               for (int i = 0; i < matches.groupCount() + 1; i++) {
+                   results.add(matches.group(i));
+               }
                return new TextValidatorResult(1, results, "");
            }
         }
@@ -110,7 +117,11 @@ public final class TextValidator {
             if (matches.hitEnd() && allowPartialMatching) {
                 return new TextValidatorResult(1, results, "");
             } else {
-                return new TextValidatorResult(-1, results, "invalid format. Example, either: 4 OR 4.10\n(Include all values after decimal, if a point is used.");
+                if (input.contains(".")) { return new TextValidatorResult(-2, results, "invalid format. Example, either: 4 OR 4.10\n(Include all" +
+                        " values after decimal, if a point is used."); } else {
+                    return new TextValidatorResult(-1, results, "invalid format. Example, either: 4 OR 4.10\n(Include all values after decimal, if a point is used.");
+                }
+
             }
         }
     }
