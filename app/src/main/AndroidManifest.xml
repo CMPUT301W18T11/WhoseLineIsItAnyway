@@ -22,10 +22,7 @@
             </intent-filter>
             android:label="@string/title_activity_user_login">
         </activity>
-        <activity
-            android:name=".CreateUserActivity"
-            android:label="@string/title_activity_create_user"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".testActivity"></activity>
     </application>
 
 </manifest>
