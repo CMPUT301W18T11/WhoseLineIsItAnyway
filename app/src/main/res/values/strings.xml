@@ -6,6 +6,9 @@
     <string name="registration_usernameHint">(Username)</string>
     <string name="registration_phoneHint">(Phone Number)</string>
     <string name="registration_emailHint">(Email)</string>
+    <string name="registration_btnOKText">Register</string>
+    <string name="registration_btnCancelText">Cancel</string>
+
     <!-- Strings related to login -->
     <string name="prompt_username">Username</string>
     <string name="action_sign_in">Sign in or register</string>
