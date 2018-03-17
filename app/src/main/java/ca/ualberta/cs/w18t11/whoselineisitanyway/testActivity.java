@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * This is just a generic activity for implementing parts of code; it is not intended to run as part of the app
@@ -68,7 +69,7 @@ public class testActivity extends AppCompatActivity {
         final AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.setTitle("Register New User");
 
-        final EditText etxtUsername = (EditText) dialogView.findViewById(R.id.etxtUsername);
+        final TextView txtUsername = (TextView) dialogView.findViewById(R.id.txtUsername);
         final EditText etxtPhone = (EditText) dialogView.findViewById(R.id.etxtPhoneNum);
         final EditText etxtEmail = (EditText) dialogView.findViewById(R.id.etxtEmail);
 
@@ -76,24 +77,7 @@ public class testActivity extends AppCompatActivity {
         final Button btnCancel = (Button) dialogView.findViewById(R.id.btn_cancel);
 
         // Input expected username
-        etxtUsername.setText(usr);
-
-        etxtUsername.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (etxtUsername.getText().length() == 8) {
-                    etxtUsername.setError("Username can be 9 characters max.");
-                }
-            }
-        });
+        txtUsername.setText(usr);
 
         etxtPhone.addTextChangedListener(new TextWatcher() {
             @Override
@@ -162,7 +146,7 @@ public class testActivity extends AppCompatActivity {
                 }
                 if (!(phoneRes.isError() || emailRes.isError())) { // No errors to report
 
-                    usrID[0] = etxtUsername.getText().toString();
+                    usrID[0] = txtUsername.getText().toString();
 
                     // Create a Working Phone Number
                     // Hold integer conversions of split up phone number

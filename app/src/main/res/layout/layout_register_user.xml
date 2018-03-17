@@ -5,13 +5,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/etxtUsername"
+    <TextView
+        android:id="@+id/txtUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/registration_usernameHint"
-        android:inputType="textPersonName"
         android:maxLength="8" />
 
     <EditText
