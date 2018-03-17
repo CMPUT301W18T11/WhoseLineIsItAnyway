@@ -21,7 +21,6 @@ public interface Detailable {
      * View the details of the Detailable
      * Go to a new DetailActivity representing the object
      * @param detailActivity the type of activity to display the object's details
-     * @return boolean representing if the object is represented by an image
      */
-    boolean showDetail(DetailActivity detailActivity);
+    <T extends DetailActivity> void showDetail(Class<T> detailActivity);
 }
