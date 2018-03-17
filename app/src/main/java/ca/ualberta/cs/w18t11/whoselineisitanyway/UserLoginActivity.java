@@ -13,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
+
 /**
  * A login screen that offers login via email/password.
  */
@@ -163,6 +164,7 @@ public class UserLoginActivity extends AppCompatActivity {
             }
 
             // TODO: register the new account here.
+
             return true;
         }
 
@@ -184,6 +186,7 @@ public class UserLoginActivity extends AppCompatActivity {
             authTask = null;
             showProgress(false);
         }
+
     }
 }
 
