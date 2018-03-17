@@ -10,10 +10,11 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/registration_usernameHint"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:maxLength="8"/>
 
     <EditText
-        android:id="@+id/etxt_Email"
+        android:id="@+id/etxtEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -21,10 +22,11 @@
         android:inputType="textEmailAddress" />
 
     <EditText
-        android:id="@+id/etxt_PhoneNum"
+        android:id="@+id/etxtPhoneNum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/registration_phoneHint"
-        android:inputType="phone" />
+        android:inputType="phone"
+        android:maxLength="19"/>
 </LinearLayout>
