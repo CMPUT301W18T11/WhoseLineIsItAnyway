@@ -50,6 +50,7 @@ public class DetailActivity extends AppCompatActivity {
     {
         title = findViewById(R.id.textview_activity_detail_title);
         title.setText("Detail");
+        details = new ArrayList<>();
         detailList = findViewById(R.id.listview_activity_detail_list);
         detailList.setAdapter(new DetailRowAdapter(this, details));
     }
@@ -60,7 +61,16 @@ public class DetailActivity extends AppCompatActivity {
     private void setupFromIntent()
     {
         Intent intent = getIntent();
-        details = (ArrayList<Detail>) intent.getSerializableExtra(Detailable.DATA_DETAIL_LIST);
-        title.setText(intent.getStringExtra(Detailable.DATA_DETAIL_TITLE));
+        if(intent != null)
+        {
+            if(intent.getSerializableExtra(Detailable.DATA_DETAIL_LIST) != null)
+            {
+                details = (ArrayList<Detail>) intent.getSerializableExtra(Detailable.DATA_DETAIL_LIST);
+            }
+            if(intent.getStringExtra(Detailable.DATA_DETAIL_TITLE) != null)
+            {
+                title.setText(intent.getStringExtra(Detailable.DATA_DETAIL_TITLE));
+            }
+        }
     }
 }
