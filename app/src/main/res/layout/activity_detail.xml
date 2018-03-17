@@ -22,7 +22,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/DetailTitle"
+                android:id="@+id/textview_activity_detail_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autoSizeTextType="uniform"
@@ -31,11 +31,11 @@
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
-            <LinearLayout
-                android:id="@+id/DetailRowsLayout"
+            <ListView
+                android:id="@+id/listview_activity_detail_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"></LinearLayout>
+                android:layout_height="match_parent" />
+
         </LinearLayout>
 
     </ScrollView>
