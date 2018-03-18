@@ -14,7 +14,16 @@
     <string name="error_field_required">This field is required</string>
     <string name="title_activity_list">ListActivity</string>
 
+    <!-- Strings related to Task Creation Activity -->
+    <string name="create_task_titleHint">(Title)</string>
+    <string name="create_task_DescriptionHint">(Enter Description of Task)</string>
+    <string name="btn_submit">Submit</string>
+    <string name="btn_Cancel">Cancel</string>
+    <string name="create_task_Title">Create a New Task</string>
+    <string name="create_task_btnUploadImage">Select photos (Optional)</string>
+
     <!-- Strings related to navigation drawer -->
     <string name="navigation_drawer_open">Open</string>
     <string name="navigation_drawer_close">Close</string>
+
 </resources>
