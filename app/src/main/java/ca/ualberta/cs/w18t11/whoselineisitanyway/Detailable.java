@@ -11,13 +11,6 @@ public interface Detailable {
     String DATA_DETAIL_IMAGE = "com.whoselineisitanyway.DATA_DETAIL_IMAGE";
 
     /**
-     * Get the a list containing the details about the object
-     * @return ArrayList<Pair<String, String>> representation of the object's details
-     * where the Pair contains (Detail title, Detail data)
-     */
-    ArrayList<Detail> getDetails();
-
-    /**
      * View the details of the Detailable
      * Go to a new DetailActivity representing the object
      * @param detailActivity the type of activity to display the object's details
