@@ -12,6 +12,8 @@ import java.util.ArrayList;
 
 public class DetailableListActivity extends NavigatorActivity {
     static final String DATA_DETAILABLE_LIST = "com.whoselineisitanyway.DATA_DETAILABLE_LIST";
+    static final String DATA_TITLE = "com.whoselineisitanyway.DATA_DETAILABLE_LIST";
+    private String title;
     private ListView detailsLV;
     private ArrayList<Detailable> detailList;
     private ArrayAdapter<Detailable> adapter;
@@ -23,18 +25,16 @@ public class DetailableListActivity extends NavigatorActivity {
 
         loadState();
 
-        // TODO is this necessary?
-        if (savedInstanceState != null) {
-            Log.i("DetailableListActivity", "Restoring saved instance state");
-            detailList = (ArrayList<Detailable>) savedInstanceState.getSerializable("detailList");
-        }
-
         Intent intent = getIntent();
         if (intent != null) {
             detailList = (ArrayList<Detailable>) intent.getSerializableExtra(DATA_DETAILABLE_LIST);
+            title = intent.getStringExtra(DATA_TITLE);
         } else {
             detailList = new ArrayList<Detailable>();
+            title = "WhoseLineIsItAnyway";
         }
+
+        getSupportActionBar().setTitle(title);
 
         adapter = new ArrayAdapter<Detailable>(this,
                 R.layout.activity_list, detailList);
