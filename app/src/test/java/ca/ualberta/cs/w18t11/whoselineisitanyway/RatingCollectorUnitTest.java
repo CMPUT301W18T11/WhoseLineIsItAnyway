@@ -15,4 +15,6 @@ public final class RatingCollectorUnitTest
         Assert.assertEquals(coll.getRating(0), rate);
     }
 
+    //TODO Add test for text output for this function in its ToString()
+
 }
