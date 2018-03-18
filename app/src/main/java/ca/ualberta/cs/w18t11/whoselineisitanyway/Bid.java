@@ -72,4 +72,14 @@ final class Bid
     {
         return this.value;
     }
+
+    /**
+     * Provide a string to describe a bid
+     * @return String representing the bid
+     */
+    @Override
+    public String toString()
+    {
+        return this.getProviderId() + ": " + this.getValue().toString();
+    }
 }
