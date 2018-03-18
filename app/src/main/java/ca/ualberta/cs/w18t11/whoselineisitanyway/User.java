@@ -78,4 +78,14 @@ final class User
     {
         return this.assignedTasks;
     }
+
+    /**
+     * Provide a string to describe a user
+     * @return String representing the user
+     */
+    @Override
+    public String toString()
+    {
+        return this.getID();
+    }
 }
