@@ -17,8 +17,8 @@ public class ListActivity<T> extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
-    private ArrayList<T> objList;
-    private ArrayAdapter<T> adapter;
+    protected ArrayList<T> objList;
+    protected ArrayAdapter<T> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
