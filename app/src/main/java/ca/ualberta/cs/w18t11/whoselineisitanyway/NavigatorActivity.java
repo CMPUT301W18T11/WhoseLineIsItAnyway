@@ -9,25 +9,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 
-import java.util.ArrayList;
-
-public class ListActivity<T> extends AppCompatActivity
+public class NavigatorActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
-    protected ArrayList<T> objList;
-    protected ArrayAdapter<T> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-
-        objList = new ArrayList<T>();
-        adapter = new ArrayAdapter<T>(this,
-                R.layout.list_object, objList);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(this, drawerLayout,
