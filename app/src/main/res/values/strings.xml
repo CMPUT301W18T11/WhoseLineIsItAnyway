@@ -2,7 +2,7 @@
     <string name="app_name">WhoseLineIsItAnyway</string>
     <string name="title_activity_user_login">Log In</string>
     <string name="title_activity_navigator">NavigatorActivity</string>
-    <string name="title_activity_list">ListActivity</string>
+    <string name="title_activity_list">DetailableListActivity</string>
 
     <!-- Strings related to the user -->
     <string name="user_email">DefaultEmail@example.com</string>
