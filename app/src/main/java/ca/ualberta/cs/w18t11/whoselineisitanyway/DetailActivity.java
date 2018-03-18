@@ -72,5 +72,11 @@ public class DetailActivity extends AppCompatActivity {
                 title.setText(intent.getStringExtra(Detailable.DATA_DETAIL_TITLE));
             }
         }
+        else
+        {
+            // Mock up a task to view
+            Task task = new Task("Test Task", "A task to test");
+            task.showDetail(DetailActivity, );
+        }
     }
 }
