@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ public class DetailActivity extends AppCompatActivity {
 
     TextView title;
     ListView detailList;
+    DetailRowAdapter rowAdapter;
     ArrayList<Detail> details;
 
     /**
@@ -51,8 +53,9 @@ public class DetailActivity extends AppCompatActivity {
         title = findViewById(R.id.textview_activity_detail_title);
         title.setText("Detail");
         details = new ArrayList<>();
+        rowAdapter = new DetailRowAdapter(this, details);
         detailList = findViewById(R.id.listview_activity_detail_list);
-        detailList.setAdapter(new DetailRowAdapter(this, details));
+        detailList.setAdapter(rowAdapter);
     }
 
     /**
@@ -61,11 +64,15 @@ public class DetailActivity extends AppCompatActivity {
     private void setupFromIntent()
     {
         Intent intent = getIntent();
-        if(intent != null)
+        if(intent.getStringExtra(Detailable.DATA_DETAIL_TITLE) != null)
         {
             if(intent.getSerializableExtra(Detailable.DATA_DETAIL_LIST) != null)
             {
-                details = (ArrayList<Detail>) intent.getSerializableExtra(Detailable.DATA_DETAIL_LIST);
+                for(Detail detail: (ArrayList<Detail>) intent.getSerializableExtra(Detailable.DATA_DETAIL_LIST))
+                {
+                    details.add(detail);
+                }
+                rowAdapter.notifyDataSetChanged();
             }
             if(intent.getStringExtra(Detailable.DATA_DETAIL_TITLE) != null)
             {
@@ -76,7 +83,7 @@ public class DetailActivity extends AppCompatActivity {
         {
             // Mock up a task to view
             Task task = new Task("Test Task", "A task to test");
-            task.showDetail(DetailActivity, );
+            task.showDetail(DetailActivity.class, this);
         }
     }
 }

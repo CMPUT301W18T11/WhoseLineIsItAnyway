@@ -2,8 +2,9 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
 
 import android.content.Intent;
+import java.io.Serializable;
 
-public class Detail {
+public class Detail implements Serializable {
     private final String title;
     private final String info;
     private final Intent linkIntent;
