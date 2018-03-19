@@ -10,7 +10,7 @@ public class ManagerUnitTest
     public final void testDeleteTask()
     {
         Manager<Task> manager = new Manager<Task>();
-        Task task = new Task("add", "add");
+        Task task = new Task("add", "add", "");
         manager.add(task);
         Assert.assertEquals(task, manager.get(0));
         manager.delete(0);
@@ -38,8 +38,8 @@ public class ManagerUnitTest
     @Test
     public final void testGetTask() {
         Manager<Task> taskManager = new Manager<Task>();
-        Task addedTask = new Task("name", "description");
-        Task wrongTask = new Task("name", "description");
+        Task addedTask = new Task("name", "description", "");
+        Task wrongTask = new Task("name", "description", "");
         taskManager.add(addedTask);
         Assert.assertEquals(addedTask, taskManager.get(0));
         Assert.assertNotSame(wrongTask, taskManager.get(0));
@@ -65,8 +65,8 @@ public class ManagerUnitTest
     public final void testSetTask()
     {
         Manager<Task> manager = new Manager<Task>();
-        Task addedTask = new Task("add", "add");
-        Task setTask = new Task("set", "set");
+        Task addedTask = new Task("add", "add", "");
+        Task setTask = new Task("set", "set", "");
         manager.add(addedTask);
         Assert.assertEquals(addedTask, manager.get(0));
         manager.set(0, setTask);
