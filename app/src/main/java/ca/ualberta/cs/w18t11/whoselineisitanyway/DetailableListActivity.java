@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class DetailableListActivity extends NavigatorActivity {
     static final String DATA_DETAILABLE_LIST = "com.whoselineisitanyway.DATA_DETAILABLE_LIST";
-    static final String DATA_TITLE = "com.whoselineisitanyway.DATA_DETAILABLE_LIST";
+    static final String DATA_TITLE = "com.whoselineisitanyway.DATA_DETAILABLE_TITLE";
     private String title;
     private ListView detailsLV;
     private ArrayList<Detailable> detailList;
@@ -26,11 +26,17 @@ public class DetailableListActivity extends NavigatorActivity {
         loadState();
 
         Intent intent = getIntent();
-        if (intent != null) {
+        if (intent.getSerializableExtra(DATA_DETAILABLE_LIST) != null) {
             detailList = (ArrayList<Detailable>) intent.getSerializableExtra(DATA_DETAILABLE_LIST);
+        }
+        else
+        {
+            detailList = new ArrayList<Detailable>();
+        }
+        if (intent.getSerializableExtra(DATA_TITLE) != null)
+        {
             title = intent.getStringExtra(DATA_TITLE);
         } else {
-            detailList = new ArrayList<Detailable>();
             title = "WhoseLineIsItAnyway";
         }
 
