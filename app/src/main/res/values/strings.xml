@@ -8,6 +8,12 @@
     <string name="user_email">DefaultEmail@example.com</string>
     <string name="username">Default User</string>
 
+    <!-- Strings related to User Registration Dialog -->
+    <string name="registration_emailHint">(Email)</string>
+    <string name="registration_phoneHint">(Phone)</string>
+    <string name="registration_btnOKText">Register New User</string>
+    <string name="registration_btnCancelText">Cancel</string>
+
     <!-- Strings related to login -->
     <string name="prompt_username">Username</string>
     <string name="action_sign_in">Sign in or register</string>

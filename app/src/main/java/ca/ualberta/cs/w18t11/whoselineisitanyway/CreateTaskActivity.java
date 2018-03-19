@@ -88,8 +88,9 @@ public class CreateTaskActivity extends AppCompatActivity{
     }
 
     // TODO Later release: Add image functionality (with preview?)
+    // TODO replace placeholders with User ID object information; adjust parameters
     private Task createTask(String title, String description, Object image) {
-        Task newTask = new Task(title, description);
+        Task newTask = new Task(title, description, "PLACEHOLDER_REQUESTER_ID", "PLACEHOLDER_PROVIDER_ID");
         return newTask;
     }
 
