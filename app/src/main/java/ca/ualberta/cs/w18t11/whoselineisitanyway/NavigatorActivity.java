@@ -8,9 +8,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -19,11 +23,13 @@ public class NavigatorActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
+    /*Taken From: https://gist.github.com/anandbose/7d6efb35c900eaba3b26*/
+    private FrameLayout viewStub; //This is the framelayout to keep your content view
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
+        super.setContentView(R.layout.activity_list);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(this, drawerLayout,
@@ -168,7 +174,42 @@ public class NavigatorActivity extends AppCompatActivity
 
         outgoingIntent.putExtra(DetailableListActivity.DATA_TITLE, outgoingTitle);
         outgoingIntent.putExtra(DetailableListActivity.DATA_DETAILABLE_LIST, detailables);
+
         startActivity(outgoingIntent);
+        finish();
         return true;
+    }
+
+    /* Override all setContentView methods to put the content view to the FrameLayout view_stub
+     * so that, we can make other activity implementations looks like normal activity subclasses.
+     * Taken From: https://gist.github.com/anandbose/7d6efb35c900eaba3b26
+     */
+    @Override
+    public void setContentView(int layoutResID) {
+        if (viewStub != null) {
+            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            View stubView = inflater.inflate(layoutResID, viewStub, false);
+            viewStub.addView(stubView, lp);
+        }
+    }
+
+    @Override
+    public void setContentView(View view) {
+        if (viewStub != null) {
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            viewStub.addView(view, lp);
+        }
+    }
+
+    @Override
+    public void setContentView(View view, ViewGroup.LayoutParams params) {
+        if (viewStub != null) {
+            viewStub.addView(view, params);
+        }
     }
 }
