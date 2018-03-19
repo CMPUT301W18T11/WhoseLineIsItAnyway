@@ -1,5 +1,6 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -9,6 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public class NavigatorActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -85,29 +90,85 @@ public class NavigatorActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        Intent outgoingIntent = new Intent(this, DetailableListActivity);
+        String outgoingTitle = "List";
+        ArrayList<Detailable> detailables = new ArrayList<>();
+
+
+        // Hardcoded values for demo: ** Remove later **
+        // Get the current user:
+        User currentUser = new User(new EmailAddress("bob", "gmail.com"), new PhoneNumber(0, 123, 456, 7890), "bob");
+        User providerUserA = new User(new EmailAddress("alice", "gmail.com"), new PhoneNumber(0, 123, 456, 7890), "alice");
+        User providerUserB = new User(new EmailAddress("eve", "gmail.com"), new PhoneNumber(0, 123, 456, 7890), "eve");
+        // Pull all info for tasks and bids
+        //List of tasks:
+        Task task1 = new Task("Demo Task 1", "A really good task");
+        Task task2 = new Task("Demo Task 2", "A really great task");
+        Task task3 = new Task("Demo Task 3", "A alright task");
+        ArrayList<Task> allTasks = new ArrayList<>();
+        allTasks.add(task1);
+        allTasks.add(task2);
+        allTasks.add(task3);
+        // List of the Bids:
+        Bid bid1a = new Bid(providerUserA.getID(), "task1ID", new BigDecimal(5));
+        Bid bid1b = new Bid(providerUserB.getID(), "task1ID", new BigDecimal(6));
+        Bid bid1c = new Bid(currentUser.getID(), "task1ID", new BigDecimal(7));
+        Bid bid2a = new Bid(providerUserA.getID(), "task2ID", new BigDecimal(700));
+        Bid bid2b = new Bid(providerUserB.getID(), "task2ID", new BigDecimal(500));
+        Bid bid2c = new Bid(currentUser.getID(), "task2ID", new BigDecimal(750));
+        Bid bid3a = new Bid(providerUserA.getID(), "task3ID", new BigDecimal(5));
+        Bid bid3b = new Bid(providerUserB.getID(), "task3ID", new BigDecimal(5));
+        Bid bid3c = new Bid(currentUser.getID(), "task3ID", new BigDecimal(7));
+        ArrayList<Bid> allBids = new ArrayList<>();
+        allBids.add(bid1a);
+        allBids.add(bid1b);
+        allBids.add(bid1c);
+        allBids.add(bid2a);
+        allBids.add(bid2b);
+        allBids.add(bid2c);
+        allBids.add(bid3a);
+        allBids.add(bid3b);
+        allBids.add(bid3c);
 
         if (id == R.id.all_tasks) {
             Log.i("NAVBAR: ", "All Tasks Selected");
-            // TODO Handle
+            outgoingTitle = "All Tasks";
+            detailables.addAll(allTasks);
+
         } else if (id == R.id.my_tasks) {
             Log.i("NAVBAR: ", "My Tasks Selected");
-            // TODO Handle
+            outgoingTitle = "My Tasks";
+            // TODO filter tasks based on requester ID == current user's ID
         } else if (id == R.id.assigned_tasks) {
             Log.i("NAVBAR: ", "Assigned Tasks Selected");
-            // TODO Handle
+            outgoingTitle = "Assigned Tasks";
+            // TODO filter tasks based on provider ID == current user's ID
         } else if (id == R.id.nearby_tasks) {
             Log.i("NAVBAR: ", "Nearby Tasks Selected");
-            // TODO Handle
+            outgoingTitle = "Nearby Tasks";
+            // TODO filter tasks based on location
         } else if (id == R.id.my_bids) {
             Log.i("NAVBAR: ", "My Bids Selected");
-            // TODO Handle
+            outgoingTitle = "My Bids";
+            // TODO filter bids based on provider ID == current user's ID
+            for(Bid bid: allBids)
+            {
+                if(bid.getProviderId() == currentUser.getID())
+                {
+                    detailables.add(bid);
+                }
+            }
         } else if (id == R.id.create_task) {
             Log.i("NAVBAR: ", "Create Task Selected");
             // TODO Handle
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+        outgoingIntent.putExtra(DetailableListActivity.DATA_TITLE, outgoingTitle);
+        outgoingIntent.putExtra(DetailableListActivity.DATA_DETAILABLE_LIST, detailables);
+        startActivity(outgoingIntent);
         return true;
     }
 }
