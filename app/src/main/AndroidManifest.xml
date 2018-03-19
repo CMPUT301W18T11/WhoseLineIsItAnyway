@@ -41,5 +41,6 @@
             android:exported="true" />
 
         <activity android:name=".view.testActivity" />
+        <activity android:name=".view.AllTasksActivity" />
     </application>
 </manifest>
