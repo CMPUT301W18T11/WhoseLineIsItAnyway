@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="ca.ualberta.cs.w18t11.whoselineisitanyway"
           xmlns:android="http://schemas.android.com/apk/res/android">
+
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.READ_PROFILE"/>
@@ -21,6 +22,27 @@
             </intent-filter>
             android:label="@string/title_activity_user_login">
         </activity>
+        <activity android:name=".NavigatorActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            android:label="@string/title_navigator_list">
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".DetailableListActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            android:label="@string/title_navigator_list">
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".DetailActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>
