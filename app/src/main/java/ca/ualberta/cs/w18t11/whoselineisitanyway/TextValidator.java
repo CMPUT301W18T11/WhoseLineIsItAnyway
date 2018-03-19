@@ -38,7 +38,7 @@ public final class TextValidator {
      */
     public TextValidatorResult validatePhoneNumber(final String input, final boolean allowPartialMatching) {
 
-        Pattern phoneNum = Pattern.compile("\\+(\\d)+ \\((\\d{3})\\) (\\d{3})\\-(\\d{4})");
+        Pattern phoneNum = Pattern.compile("\\+(\\d){1,3} \\((\\d{3})\\) (\\d{3})\\-(\\d{4})");
         Matcher matches = phoneNum.matcher(input);
         boolean res = matches.matches();
         ArrayList<String> results = new ArrayList<String>();
@@ -67,7 +67,7 @@ public final class TextValidator {
      */
     // Note: real email is horribly complicated, but this will validate that basic components exist.
     public TextValidatorResult validateEmail(final String input, final boolean allowPartialMatching) {
-        Pattern eMail = Pattern.compile("^([^@]+)@([^@]+\\.[^@]+)");
+        Pattern eMail = Pattern.compile("^([^@]+)@([^@\\.]+(?:\\.[^@\\.]+)*)$");
         Matcher matches = eMail.matcher(input);
         boolean res = matches.matches();
         ArrayList<String> results = new ArrayList<String>();
