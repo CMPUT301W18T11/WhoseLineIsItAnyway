@@ -24,11 +24,11 @@ import java.util.UUID;
  */
 final class Task implements Detailable, Serializable
 {
-    private final String title;
+    private String title;
 
-    private final String description;
+    private String description;
 
-    private final TaskStatus status;
+    private TaskStatus status;
 
     private final UUID id;
 
@@ -91,7 +91,7 @@ final class Task implements Detailable, Serializable
     }
 
     /**
-     * Get the descri[tion of the Task
+     * Get the description of the Task
      * @return String representation of the Task's description
      */
     final String getDescription()
