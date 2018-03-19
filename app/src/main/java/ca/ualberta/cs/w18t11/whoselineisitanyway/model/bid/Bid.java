@@ -103,7 +103,8 @@ public final class Bid implements Detailable, Serializable
     }
 
     @Override
-    public <T extends DetailActivity> void showDetail(Class<T> detailActivityClass, Context context)
+    public final <T extends DetailActivity> void showDetail(
+            @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
     {
         ArrayList<Detail> detailList = new ArrayList<>();
         detailList.add(new Detail("Provider ID", getProviderId()));
@@ -122,8 +123,9 @@ public final class Bid implements Detailable, Serializable
      *
      * @return String representing the bid
      */
+    @NonNull
     @Override
-    public String toString()
+    public final String toString()
     {
         return this.getProviderId() + ": " + this.getValue().toString();
     }
