@@ -172,10 +172,9 @@ public class NavigatorActivity extends AppCompatActivity
         } else if (id == R.id.my_bids) {
             Log.i("NAVBAR: ", "My Bids Selected");
             outgoingTitle = "My Bids";
-            // TODO filter bids based on provider ID == current user's ID
             for(Bid bid: allBids)
             {
-                if(bid.getProviderId() == currentUser.getID())
+                if(bid.getProviderId().equals(currentUser.getID()))
                 {
                     detailables.add(bid);
                 }
