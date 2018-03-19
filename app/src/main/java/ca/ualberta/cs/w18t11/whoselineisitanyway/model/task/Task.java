@@ -386,7 +386,16 @@ public final class Task implements Detailable, Serializable
         ArrayList<Detail> detailList = new ArrayList<>();
         detailList.add(new Detail("Title", getTitle()));
         detailList.add(new Detail("Description", getDescription()));
+        detailList.add(new Detail("Requester", getRequesterId()));
         detailList.add(new Detail("Status", getStatus().name()));
+        if(getProviderId() != null)
+        {
+            detailList.add(new Detail("Provider", getProviderId()));
+        }
+        else
+        {
+            detailList.add(new Detail("Provider", "N/A"));
+        }
 
         Intent intent = new Intent(context, detailActivityClass);
         intent.putExtra(Detailable.DATA_DETAIL_LIST, detailList);
