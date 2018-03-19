@@ -23,6 +23,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detailable;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.DataSource;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.MockDataSource;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
@@ -126,20 +127,19 @@ public class NavigatorActivity extends AppCompatActivity
         Intent outgoingIntent = new Intent(this, DetailableListActivity.class);
         String outgoingTitle = "List";
         ArrayList<Detailable> detailables = new ArrayList<>();
-        DataSource dataSource = new MockDataSource();
+        DataSource dataSource = DataSourceManager.getInstance().getLocalDataSource();
         Task[] allTasks = dataSource.getAllTasks();
         Bid[] allBids = dataSource.getAllBids();
 
         // TODO: need to account for current user based on whoever is logged in
-        User currentUser = new User(new EmailAddress("bob", "gmail.com"),
-                new PhoneNumber(0, 123, 456, 7890), "bob");
+        DataSourceManager.getInstance().setCurrentUser("bob");
+        User currentUser = DataSourceManager.getInstance().getCurrentUser();
 
         if (id == R.id.all_tasks)
         {
             Log.i("NAVBAR: ", "All Tasks Selected");
             outgoingTitle = "All Tasks";
             detailables.addAll(Arrays.asList(allTasks));
-
         }
         else if (id == R.id.my_tasks)
         {
