@@ -9,3 +9,8 @@
 *.iml
 
 updateRepo.bat
+
+.project
+.classpath
+.settings/
+.vscode/
