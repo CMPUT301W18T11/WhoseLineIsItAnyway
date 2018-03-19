@@ -42,8 +42,7 @@ public class DetailableListActivity extends NavigatorActivity {
 
         getSupportActionBar().setTitle(title);
 
-        adapter = new ArrayAdapter<Detailable>(this,
-                R.layout.activity_list, detailList);
+        adapter = new ArrayAdapter<Detailable>(this, R.layout.list_object, detailList);
         detailsLV = (ListView) findViewById(R.id.detail_LV);
         detailsLV.setAdapter(adapter);
 
