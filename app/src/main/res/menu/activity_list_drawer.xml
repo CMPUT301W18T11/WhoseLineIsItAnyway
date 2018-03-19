@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/all_tasks"
+            android:title="All Tasks" />
+        <item
+            android:id="@+id/my_tasks"
+            android:title="My Tasks" />
+        <item
+            android:id="@+id/assigned_tasks"
+            android:title="Assigned Tasks" />
+        <item
+            android:id="@+id/nearby_tasks"
+            android:title="Nearby Tasks" />
+        <item
+            android:id="@+id/my_bids"
+            android:title="My bids" />
+        <item
+            android:id="@+id/create_task"
+            android:title="Create Task" />
+    </group>
+
+</menu>

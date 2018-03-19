@@ -1,8 +1,11 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
+
 import java.math.BigDecimal;
+
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 
 public final class BidUnitTest
 {
@@ -10,20 +13,20 @@ public final class BidUnitTest
     public final void testGetProviderId()
     {
         final String id = "provider";
-        Assert.assertEquals(id, new Bid(id, "task", new BigDecimal(1)).getProviderId());
+        Assert.assertEquals(id, new Bid(id, "task", BigDecimal.ONE).getProviderId());
     }
 
     @Test
     public final void testGetTaskId()
     {
         final String id = "task";
-        Assert.assertEquals(id, new Bid("provider", id, new BigDecimal(1)).getTaskId());
+        Assert.assertEquals(id, new Bid("provider", id, BigDecimal.ONE).getTaskId());
     }
 
     @Test
     public final void testGetValue()
     {
-        final BigDecimal value = new BigDecimal(1);
+        final BigDecimal value = BigDecimal.ONE;
         Assert.assertEquals(value, new Bid("provider", "task", value).getValue());
     }
 
@@ -32,7 +35,7 @@ public final class BidUnitTest
     {
         String emptyId = "";
         Assert.assertTrue(emptyId.isEmpty());
-        new Bid(emptyId, "task", new BigDecimal(1));
+        new Bid(emptyId, "task", BigDecimal.ONE);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -40,7 +43,7 @@ public final class BidUnitTest
     {
         String emptyId = "";
         Assert.assertTrue(emptyId.isEmpty());
-        new Bid("provider", emptyId, new BigDecimal(1));
+        new Bid("provider", emptyId, BigDecimal.ONE);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -54,7 +57,7 @@ public final class BidUnitTest
     @Test(expected = IllegalArgumentException.class)
     public final void testZeroValue()
     {
-        final BigDecimal zeroValue = new BigDecimal(0);
+        final BigDecimal zeroValue = BigDecimal.ZERO;
         Assert.assertTrue(zeroValue.compareTo(BigDecimal.ZERO) == 0);
         new Bid("provider", "task", zeroValue);
     }

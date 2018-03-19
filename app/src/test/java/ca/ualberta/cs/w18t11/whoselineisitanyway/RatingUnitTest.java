@@ -1,11 +1,17 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
+
 import java.util.Random;
+
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.rating.Rating;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * RatingUnitTest is the Junit Testing class for <b>Rating</b>
+ *
  * @author Lucas Thalen and Samuel Dolha
  * @version 0.1
  * @see Rating
@@ -54,10 +60,12 @@ public final class RatingUnitTest
 
     // TTC Stuff
     @Test
-    public final void testSetTtc() {
+    public final void testSetTtc()
+    {
         final Rating rating = new Rating(0, 0, 0);
         assertEquals(rating.getTtcRating(), 0);
-        for (int ttc = 0; ttc < 6; ttc++) {
+        for (int ttc = 0; ttc < 6; ttc++)
+        {
             rating.setTtcRating(ttc);
             assertTrue("Try setTTC " + ttc, rating.getTtcRating() == ttc);
 
@@ -71,7 +79,8 @@ public final class RatingUnitTest
         final Rating rating = new Rating(0, 0, 0);
         assertEquals(rating.getQualityRating(), 0);
 
-        for (int quality = 0; quality < 6; quality++) {
+        for (int quality = 0; quality < 6; quality++)
+        {
             rating.setTtcRating(quality);
             assertTrue("Try setQuality " + quality, rating.getTtcRating() == quality);
 
@@ -84,8 +93,9 @@ public final class RatingUnitTest
     {
         final Rating rating = new Rating(0, 0, 0);
         assertEquals(rating.getProfRating(), 0);
-        
-        for (int prof = 0; prof < 6; prof++) {
+
+        for (int prof = 0; prof < 6; prof++)
+        {
             rating.setProfRating(prof);
             assertTrue("Try setProf " + prof, rating.getProfRating() == prof);
 
@@ -95,15 +105,22 @@ public final class RatingUnitTest
     @Test
     public final void testGetAggregateRating()
     {
-        for (int p1 = 0; p1 < 6; p1 ++) {
-            for (int p2 = 0; p2 < 6; p2 ++) {
-                for (int p3 = 0; p3 < 6; p3 ++) {
+        for (int p1 = 0; p1 < 6; p1++)
+        {
+            for (int p2 = 0; p2 < 6; p2++)
+            {
+                for (int p3 = 0; p3 < 6; p3++)
+                {
                     Rating rate = new Rating(p1, p2, p3);
                     int aggTrueValue = (int) ((p1 + p2 + p3) / 3);
-                    assertTrue("test GetAggregateRating Q: " + p1 + " T:" + p2 + " P:" + p3, rate.getAggRating() == aggTrueValue);
+                    assertTrue("test GetAggregateRating Q: " + p1 + " T:" + p2 + " P:" + p3,
+                            rate.getAggRating() == aggTrueValue);
                 }
             }
         }
     }
+
+    //TODO add functions to test full and partial tostring methods, test length of review header (should be ~ 30, try with period)
+
 
 }
