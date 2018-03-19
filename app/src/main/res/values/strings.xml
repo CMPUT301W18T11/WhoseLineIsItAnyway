@@ -22,6 +22,11 @@
     <string name="btn_Cancel">Cancel</string>
     <string name="create_task_Title">Create a New Task</string>
     <string name="create_task_btnUploadImage">Select photos (Optional)</string>
+    <string-array name="DEBUG_create_task_DefaultImagesList">
+        <item>Test1.img</item>
+        <item>Test2.img</item>
+        <item>Test3.img</item>
+    </string-array>
 
     <!-- Strings related to navigation drawer -->
     <string name="navigation_drawer_open">Open</string>
