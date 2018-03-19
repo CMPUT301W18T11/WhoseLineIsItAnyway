@@ -90,7 +90,7 @@ public class NavigatorActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        Intent outgoingIntent = new Intent(this, DetailableListActivity);
+        Intent outgoingIntent = new Intent(this, DetailableListActivity.class);
         String outgoingTitle = "List";
         ArrayList<Detailable> detailables = new ArrayList<>();
 
