@@ -4,6 +4,11 @@ import android.content.Context;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 
+/**
+ * Allow implementor to be exhibited as a list of details
+ *
+ * @see Detail
+ */
 public interface Detailable
 {
     String DATA_DETAIL_TITLE = "com.whoselineisitanyway.DATA_DETAIL_TITLE";
