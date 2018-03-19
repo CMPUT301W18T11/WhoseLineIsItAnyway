@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detailable;
 
+/**
+ * An activity for displaying a list of Detailable abjects.
+ * Defines the action taken when clicking on each object in the list.
+ */
 public class DetailableListActivity extends NavigatorActivity
 {
     static final String DATA_DETAILABLE_LIST = "com.whoselineisitanyway.DATA_DETAILABLE_LIST";
