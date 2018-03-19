@@ -108,9 +108,9 @@ public class NavigatorActivity extends AppCompatActivity
         User providerUserB = new User(new EmailAddress("eve", "gmail.com"), new PhoneNumber(0, 123, 456, 7890), "eve");
         // Pull all info for tasks and bids
         //List of tasks:
-        Task task1 = new Task("Demo Task 1", "A really good task");
-        Task task2 = new Task("Demo Task 2", "A really great task");
-        Task task3 = new Task("Demo Task 3", "A alright task");
+        Task task1 = new Task("Demo Task 1", "A really good task", currentUser.getID());
+        Task task2 = new Task("Demo Task 2", "A really great task", "", currentUser.getID());
+        Task task3 = new Task("Demo Task 3", "A alright task", "");
         ArrayList<Task> allTasks = new ArrayList<>();
         allTasks.add(task1);
         allTasks.add(task2);
@@ -118,7 +118,6 @@ public class NavigatorActivity extends AppCompatActivity
         // List of the Bids:
         Bid bid1a = new Bid(providerUserA.getID(), "task1ID", new BigDecimal(5));
         Bid bid1b = new Bid(providerUserB.getID(), "task1ID", new BigDecimal(6));
-        Bid bid1c = new Bid(currentUser.getID(), "task1ID", new BigDecimal(7));
         Bid bid2a = new Bid(providerUserA.getID(), "task2ID", new BigDecimal(700));
         Bid bid2b = new Bid(providerUserB.getID(), "task2ID", new BigDecimal(500));
         Bid bid2c = new Bid(currentUser.getID(), "task2ID", new BigDecimal(750));
@@ -128,7 +127,6 @@ public class NavigatorActivity extends AppCompatActivity
         ArrayList<Bid> allBids = new ArrayList<>();
         allBids.add(bid1a);
         allBids.add(bid1b);
-        allBids.add(bid1c);
         allBids.add(bid2a);
         allBids.add(bid2b);
         allBids.add(bid2c);
