@@ -21,6 +21,12 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
+/**
+ * DataSource used for storing data in files
+ *
+ * @author Samuel Dolha
+ * @version 1.0
+ */
 public final class FileDataSource implements DataSource
 {
     private static final String EXTENSION = ".data";
@@ -65,24 +71,39 @@ public final class FileDataSource implements DataSource
         this.users = readFile(this.getUsersFilename());
     }
 
+    /**
+     * @return String name of file containing the Tasks
+     */
     @NonNull
     private String getTasksFilename()
     {
         return this.prefix + "Tasks" + FileDataSource.EXTENSION;
     }
 
+    /**
+     * @return String name of file containing the Bids
+     */
     @NonNull
     private String getBidsFilename()
     {
         return this.prefix + "Bids" + FileDataSource.EXTENSION;
     }
 
+    /**
+     * @return String name of file containing the Users
+     */
     @NonNull
     private String getUsersFilename()
     {
         return this.prefix + "Users" + FileDataSource.EXTENSION;
     }
 
+    /**
+     * Read from the specified file
+     *
+     * @param filename name of the file to read
+     * @return type read or null if IOException
+     */
     @Nullable
     private <T> T readFile(@NonNull final String filename)
     {
@@ -107,6 +128,13 @@ public final class FileDataSource implements DataSource
         }
     }
 
+    /**
+     * Write to the specified file
+     *
+     * @param filename name of file to write to
+     * @param collection collection of objects to write
+     * @param <T> type of objects to write
+     */
     private <T> boolean writeFile(@NonNull final String filename, @NonNull final T collection)
     {
         try (FileOutputStream fileOutputStream = this.context
@@ -129,24 +157,37 @@ public final class FileDataSource implements DataSource
         return true;
     }
 
+    /**
+     * @return ArrayList containing all of the tasks
+     */
     @Override
     public final Task[] getAllTasks()
     {
         return this.tasks;
     }
 
+    /**
+     * @return ArrayList containing all of the bids
+     */
     @Override
     public final Bid[] getAllBids()
     {
         return this.bids;
     }
 
+    /**
+     * @return ArrayList containing all of the users
+     */
     @Override
     public final User[] getAllUsers()
     {
         return this.users;
     }
 
+    /**
+     * Add a new task to the data source
+     * Return Boolean representing if the addition was succesful
+     */
     @Override
     public final Boolean addTask(final Task task)
     {
@@ -159,6 +200,10 @@ public final class FileDataSource implements DataSource
         return this.writeFile(this.getTasksFilename(), this.tasks);
     }
 
+    /**
+     * Add a new bid to the data source
+     * Return Boolean representing if the addition was succesful
+     */
     @Override
     public final Boolean addBid(final Bid bid)
     {
@@ -171,6 +216,10 @@ public final class FileDataSource implements DataSource
         return this.writeFile(this.getBidsFilename(), this.bids);
     }
 
+    /**
+     * Add a new user to the data source
+     * Return Boolean representing if the addition was succesful
+     */
     @Override
     public final Boolean addUser(final User user)
     {
@@ -183,6 +232,10 @@ public final class FileDataSource implements DataSource
         return this.writeFile(this.getUsersFilename(), this.users);
     }
 
+    /**
+     * Remove a  task from the data source
+     * Return Boolean representing if the remove was succesful
+     */
     @Override
     public final Boolean removeTask(final Task task)
     {
@@ -195,6 +248,10 @@ public final class FileDataSource implements DataSource
         return this.writeFile(this.getTasksFilename(), this.tasks);
     }
 
+    /**
+     * Remove a bid from the data source
+     * Return Boolean representing if the addition was succesful
+     */
     @Override
     public final Boolean removeBid(final Bid bid)
     {
@@ -207,6 +264,10 @@ public final class FileDataSource implements DataSource
         return this.writeFile(this.getBidsFilename(), this.bids);
     }
 
+    /**
+     * Remove user from the data source
+     * Return Boolean representing if the addition was succesful
+     */
     @Override
     public final Boolean removeUser(final User user)
     {
