@@ -133,4 +133,51 @@ final class RatingCollector
     {
         return this.ratings.size();
     }
+
+    /**
+     * Output the grand summary of reviews in collector
+     * @return String in the format of
+     *
+     * Summary | (#) Reviews
+     * =====================
+     * Rating1 ***** (# of stars)
+     * etc.
+     *
+     */
+    final public String toString() {
+        StringBuilder strCreate = new StringBuilder();
+        strCreate.append(
+                "SUMMARY | (" + String.valueOf(getRatingCount()) + ") Reviews" + "\n" +
+                        "===========================\n"
+        );
+        strCreate.append(
+                String.format("%-18s", "Overall:") +
+                String.format("%-6s", new String(new char[avgRating]).replace("\0", "*")) +
+                "(" + String.valueOf(avgRating) + ")" +
+                "\n"
+        );
+        strCreate.append(
+                String.format("%-18s", "Quality:") +
+                        String.format("%-6s", new String(new char[avgQuality]).replace("\0", "*")) +
+                        "(" + String.valueOf(avgQuality) + ")" +
+                        "\n"
+        );
+        strCreate.append(
+                String.format("%-18s", "Speed:") +
+                        String.format("%-6s", new String(new char[avgTTC]).replace("\0", "*")) +
+                        "(" + String.valueOf(avgTTC) + ")" +
+                        "\n"
+        );
+        strCreate.append(
+                String.format("%-18s", "Professionalism:") +
+                        String.format("%-6s", new String(new char[avgProf]).replace("\0", "*")) +
+                        "(" + String.valueOf(avgProf) + ")" +
+                        "\n"
+        );
+
+        return strCreate.toString();
+
+    }
+
+    //TODO Implement some sort of access to the arraylist for ListViews
 }

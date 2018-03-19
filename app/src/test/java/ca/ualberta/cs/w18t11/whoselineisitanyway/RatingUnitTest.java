@@ -106,4 +106,7 @@ public final class RatingUnitTest
         }
     }
 
+    //TODO add functions to test full and partial tostring methods, test length of review header (should be ~ 30, try with period)
+
+
 }
