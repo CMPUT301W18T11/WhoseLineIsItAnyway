@@ -3,6 +3,7 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 import android.content.Context;
 import android.content.Intent;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -12,7 +13,7 @@ import java.util.ArrayList;
  * @author Mark Griffith
  * @version 1.0
  */
-final class Bid  implements Detailable
+final class Bid  implements Detailable, Serializable
 {
     private final String providerId; // The id of the User who made the bid
 

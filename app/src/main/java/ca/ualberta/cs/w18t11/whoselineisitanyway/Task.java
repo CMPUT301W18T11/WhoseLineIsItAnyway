@@ -3,6 +3,7 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 import android.content.Context;
 import android.content.Intent;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -20,7 +21,7 @@ import java.util.ArrayList;
  * @version 1.0
  * @see TaskStatus
  */
-final class Task implements Detailable
+final class Task implements Detailable, Serializable
 {
     private final String title;
 

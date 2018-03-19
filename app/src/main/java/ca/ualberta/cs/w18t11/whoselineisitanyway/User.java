@@ -3,6 +3,7 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 import android.content.Context;
 import android.content.Intent;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -12,7 +13,7 @@ import java.util.ArrayList;
  * @author Samuel Dolha
  * @version 1.0
  */
-final class User implements Detailable
+final class User implements Detailable, Serializable
 {
     private final String id;
 
