@@ -1,6 +1,10 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
+import android.content.Context;
+import android.content.Intent;
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 /**
  * Bid is a class for storing and managing information associated with a bid made by a user on
@@ -8,7 +12,7 @@ import java.math.BigDecimal;
  * @author Mark Griffith
  * @version 1.0
  */
-final class Bid
+final class Bid  implements Detailable
 {
     private final String providerId; // The id of the User who made the bid
 
@@ -71,5 +75,30 @@ final class Bid
     final BigDecimal getValue()
     {
         return this.value;
+    }
+
+    @Override
+    public <T extends DetailActivity> void showDetail(Class<T> detailActivityClass, Context context)
+    {
+        ArrayList<Detail> detailList = new ArrayList<>();
+        detailList.add(new Detail("Provider ID", getProviderId()));
+        detailList.add(new Detail("Task ID", getTaskId()));
+        detailList.add(new Detail("Value", getValue().toString()));
+
+        Intent intent = new Intent(context, detailActivityClass);
+        intent.putExtra(Detailable.DATA_DETAIL_LIST, detailList);
+        intent.putExtra(Detailable.DATA_DETAIL_TITLE, "Bid");
+
+        context.startActivity(intent);
+    }
+
+    /**
+     * Provide a string to describe a bid
+     * @return String representing the bid
+     */
+    @Override
+    public String toString()
+    {
+        return this.getProviderId() + ": " + this.getValue().toString();
     }
 }

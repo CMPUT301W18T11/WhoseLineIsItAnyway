@@ -93,4 +93,14 @@ final class Task implements Detailable
 
         context.startActivity(intent);
     }
+
+    /**
+     * Provide a string to describe a bid
+     * @return String representing the bid
+     */
+    @Override
+    public String toString()
+    {
+        return this.getTitle();
+    }
 }

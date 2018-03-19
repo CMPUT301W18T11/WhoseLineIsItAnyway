@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class DetailActivity extends AppCompatActivity {
@@ -83,7 +84,10 @@ public class DetailActivity extends AppCompatActivity {
         {
             // Mock up a task to view
             Task task = new Task("Test Task", "A task to test");
-            task.showDetail(DetailActivity.class, this);
+            Bid bid = new Bid("1234", "5432", new BigDecimal(1234));
+            final User user = new User(
+                    new EmailAddress("user", "gmail.com"), new PhoneNumber(3, 333, 333, 3333), "username");
+            user.showDetail(DetailActivity.class, this);
         }
     }
 }
