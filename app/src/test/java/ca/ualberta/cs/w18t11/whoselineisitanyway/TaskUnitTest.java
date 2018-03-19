@@ -95,4 +95,17 @@ public final class TaskUnitTest
                 new Bid[]{new Bid(providerId, taskId, BigDecimal.ONE)}, "title", "description",
                 false).getProviderId());
     }
+
+    @Test
+    public final void testTaskLifecycle()
+    {
+        Task task = new Task("taskId", "requesterId", "title", "description");
+        Assert.assertEquals(TaskStatus.REQUESTED, task.getStatus());
+        task = task.submitBid(new Bid("providerId", "taskId", BigDecimal.ONE));
+        Assert.assertEquals(TaskStatus.BIDDED, task.getStatus());
+        task = task.assignProvider("providerId");
+        Assert.assertEquals(TaskStatus.ASSIGNED, task.getStatus());
+        task = task.markDone();
+        Assert.assertEquals(TaskStatus.DONE, task.getStatus());
+    }
 }
