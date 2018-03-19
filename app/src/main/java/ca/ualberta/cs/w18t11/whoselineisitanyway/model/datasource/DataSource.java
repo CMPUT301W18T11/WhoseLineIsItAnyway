@@ -5,7 +5,10 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 /**
- * A simple interface to consilidate how data is supplied within the application
+ * A simple interface to consolidate how data is supplied within the application
+ *
+ * @author Brad Ofrim
+ * @version 1.0
  */
 public interface DataSource {
 
