@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">WhoseLineIsItAnyway</string>
     <string name="title_activity_user_login">Log In</string>
+    <string name="title_activity_navigator">NavigatorActivity</string>
+    <string name="title_activity_list">DetailableListActivity</string>
 
     <!-- Strings related to the user -->
     <string name="user_email">DefaultEmail@example.com</string>
@@ -12,7 +14,6 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_username">This username is invalid</string>
     <string name="error_field_required">This field is required</string>
-    <string name="title_activity_list">ListActivity</string>
 
     <!-- Strings related to Task Creation Activity -->
     <string name="create_task_titleHint">(Title)</string>

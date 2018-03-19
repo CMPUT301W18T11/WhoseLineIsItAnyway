@@ -1,5 +1,11 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
+import android.content.Context;
+import android.content.Intent;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+
 /**
  * Task is a class for storing and managing the information assciated with a task created by
  * a user of the app.
@@ -15,7 +21,7 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
  * @version 1.0
  * @see TaskStatus
  */
-final class Task
+final class Task implements Detailable, Serializable
 {
     private final String title;
 
@@ -72,5 +78,30 @@ final class Task
     final TaskStatus getStatus()
     {
         return this.status;
+    }
+
+    @Override
+    public <T extends DetailActivity> void showDetail(Class<T> detailActivityClass, Context context)
+    {
+        ArrayList<Detail> detailList = new ArrayList<>();
+        detailList.add(new Detail("Title", getTitle()));
+        detailList.add(new Detail("Description", getDescription()));
+        detailList.add(new Detail("Status", getStatus().name()));
+
+        Intent intent = new Intent(context, detailActivityClass);
+        intent.putExtra(Detailable.DATA_DETAIL_LIST, detailList);
+        intent.putExtra(Detailable.DATA_DETAIL_TITLE, "Task");
+
+        context.startActivity(intent);
+    }
+
+    /**
+     * Provide a string to describe a bid
+     * @return String representing the bid
+     */
+    @Override
+    public String toString()
+    {
+        return this.getTitle();
     }
 }
