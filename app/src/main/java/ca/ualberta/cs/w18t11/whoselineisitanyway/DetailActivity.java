@@ -83,7 +83,7 @@ public class DetailActivity extends AppCompatActivity {
         else
         {
             // Mock up a task to view
-            Task task = new Task("Test Task", "A task to test");
+            Task task = new Task("Test Task", "A task to test", "");
             Bid bid = new Bid("1234", "5432", new BigDecimal(1234));
             final User user = new User(
                     new EmailAddress("user", "gmail.com"), new PhoneNumber(3, 333, 333, 3333), "username");

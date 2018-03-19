@@ -99,36 +99,39 @@ public class NavigatorActivity extends AppCompatActivity
         Intent outgoingIntent = new Intent(this, DetailableListActivity.class);
         String outgoingTitle = "List";
         ArrayList<Detailable> detailables = new ArrayList<>();
+        // TODO: need to load allTasks and allBids with data from data source
+        ArrayList<Task> allTasks = new ArrayList<>();
+        ArrayList<Bid> allBids = new ArrayList<>();
+        // TODO: need to account for current user based on whoever is logged in
+        User currentUser = new User(new EmailAddress("bob", "gmail.com"), new PhoneNumber(0, 123, 456, 7890), "bob");
+
 
 
         // Hardcoded values for demo: ** Remove later **
         // Get the current user:
-        User currentUser = new User(new EmailAddress("bob", "gmail.com"), new PhoneNumber(0, 123, 456, 7890), "bob");
         User providerUserA = new User(new EmailAddress("alice", "gmail.com"), new PhoneNumber(0, 123, 456, 7890), "alice");
         User providerUserB = new User(new EmailAddress("eve", "gmail.com"), new PhoneNumber(0, 123, 456, 7890), "eve");
         // Pull all info for tasks and bids
         //List of tasks:
-        Task task1 = new Task("Demo Task 1", "A really good task");
-        Task task2 = new Task("Demo Task 2", "A really great task");
-        Task task3 = new Task("Demo Task 3", "A alright task");
-        ArrayList<Task> allTasks = new ArrayList<>();
+        Task task1 = new Task("Demo Task 1", "A really good task", currentUser.getID());
+        Task task2 = new Task("Demo Task 2", "A really great task", "", currentUser.getID());
+        Task task3 = new Task("Demo Task 3", "A alright task", "");
+
         allTasks.add(task1);
         allTasks.add(task2);
         allTasks.add(task3);
         // List of the Bids:
         Bid bid1a = new Bid(providerUserA.getID(), "task1ID", new BigDecimal(5));
         Bid bid1b = new Bid(providerUserB.getID(), "task1ID", new BigDecimal(6));
-        Bid bid1c = new Bid(currentUser.getID(), "task1ID", new BigDecimal(7));
         Bid bid2a = new Bid(providerUserA.getID(), "task2ID", new BigDecimal(700));
         Bid bid2b = new Bid(providerUserB.getID(), "task2ID", new BigDecimal(500));
         Bid bid2c = new Bid(currentUser.getID(), "task2ID", new BigDecimal(750));
         Bid bid3a = new Bid(providerUserA.getID(), "task3ID", new BigDecimal(5));
         Bid bid3b = new Bid(providerUserB.getID(), "task3ID", new BigDecimal(5));
         Bid bid3c = new Bid(currentUser.getID(), "task3ID", new BigDecimal(7));
-        ArrayList<Bid> allBids = new ArrayList<>();
+
         allBids.add(bid1a);
         allBids.add(bid1b);
-        allBids.add(bid1c);
         allBids.add(bid2a);
         allBids.add(bid2b);
         allBids.add(bid2c);
@@ -144,11 +147,24 @@ public class NavigatorActivity extends AppCompatActivity
         } else if (id == R.id.my_tasks) {
             Log.i("NAVBAR: ", "My Tasks Selected");
             outgoingTitle = "My Tasks";
-            // TODO filter tasks based on requester ID == current user's ID
+            for(Task task: allTasks)
+            {
+                if(task.getRequesterId().equals(currentUser.getID()))
+                {
+                    detailables.add(task);
+                }
+            }
+
         } else if (id == R.id.assigned_tasks) {
             Log.i("NAVBAR: ", "Assigned Tasks Selected");
             outgoingTitle = "Assigned Tasks";
-            // TODO filter tasks based on provider ID == current user's ID
+            for(Task task: allTasks)
+            {
+                if(task.getProviderId() != null && task.getProviderId().equals(currentUser.getID()))
+                {
+                    detailables.add(task);
+                }
+            }
         } else if (id == R.id.nearby_tasks) {
             Log.i("NAVBAR: ", "Nearby Tasks Selected");
             outgoingTitle = "Nearby Tasks";
@@ -156,10 +172,9 @@ public class NavigatorActivity extends AppCompatActivity
         } else if (id == R.id.my_bids) {
             Log.i("NAVBAR: ", "My Bids Selected");
             outgoingTitle = "My Bids";
-            // TODO filter bids based on provider ID == current user's ID
             for(Bid bid: allBids)
             {
-                if(bid.getProviderId() == currentUser.getID())
+                if(bid.getProviderId().equals(currentUser.getID()))
                 {
                     detailables.add(bid);
                 }
