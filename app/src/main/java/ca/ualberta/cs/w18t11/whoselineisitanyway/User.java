@@ -15,6 +15,7 @@ import java.util.ArrayList;
  */
 final class User implements Detailable, Serializable
 {
+    @JestId
     private final String id;
 
     private final EmailAddress emailAddress;
@@ -53,6 +54,10 @@ final class User implements Detailable, Serializable
     final EmailAddress getEmailAddress()
     {
         return this.emailAddress;
+    }
+    final String getDocId()
+    {
+        return this.DocId;
     }
 
     /**
