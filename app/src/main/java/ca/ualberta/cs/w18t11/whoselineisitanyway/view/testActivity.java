@@ -13,11 +13,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.EmailAddress;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.PhoneNumber;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.TextValidator;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.TextValidatorResult;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.User;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.Validator;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.ValidatorResult;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 /**
  * This is just a generic activity for implementing parts of code; it is not intended to run as part of the app
@@ -72,7 +73,7 @@ public class testActivity extends AppCompatActivity
         final int[] phoneComponents = new int[4];
         final boolean[] res = new boolean[1];
 
-        final TextValidator txtvalidate = new TextValidator();
+        final Validator txtvalidate = new Validator();
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 testActivity.this);
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -108,7 +109,7 @@ public class testActivity extends AppCompatActivity
             public void afterTextChanged(Editable editable)
             {
                 String fieldContents = etxtPhone.getText().toString();
-                TextValidatorResult phoneRes = txtvalidate.validatePhoneNumber(fieldContents, true);
+                ValidatorResult phoneRes = txtvalidate.validatePhoneNumber(fieldContents, true);
                 if (fieldContents.isEmpty())
                 {
                     return;
@@ -143,7 +144,7 @@ public class testActivity extends AppCompatActivity
             public void afterTextChanged(Editable editable)
             {
                 String fieldContents = etxtEmail.getText().toString();
-                TextValidatorResult emailRes = txtvalidate.validateEmail(fieldContents, true);
+                ValidatorResult emailRes = txtvalidate.validateEmail(fieldContents, true);
                 if (fieldContents.isEmpty())
                 {
                     return;
@@ -167,9 +168,9 @@ public class testActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 // Get final say on if input is good
-                TextValidatorResult phoneRes = txtvalidate
+                ValidatorResult phoneRes = txtvalidate
                         .validatePhoneNumber(etxtPhone.getText().toString(), false);
-                TextValidatorResult emailRes = txtvalidate
+                ValidatorResult emailRes = txtvalidate
                         .validateEmail(etxtEmail.getText().toString(), false);
                 if (phoneRes.isError())
                 {

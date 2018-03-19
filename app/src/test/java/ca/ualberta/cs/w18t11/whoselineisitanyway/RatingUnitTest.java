@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import java.util.Random;
 
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Rating;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.rating.Rating;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

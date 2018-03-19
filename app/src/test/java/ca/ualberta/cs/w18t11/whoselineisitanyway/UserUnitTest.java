@@ -3,10 +3,10 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 import org.junit.Assert;
 import org.junit.Test;
 
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.EmailAddress;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Manager;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.PhoneNumber;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.User;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 public final class UserUnitTest
 {
@@ -31,11 +31,10 @@ public final class UserUnitTest
     @Test
     public final void testGetTasks()
     {
-        final User user = new User(
-                new EmailAddress("user", "gmail.com"), new PhoneNumber(3, 333, 333, 3333),
-                "username");
-        final Manager requestedTasks = user.getRequestedTasks();
-        final Manager assignedTasks = user.getAssignedTasks();
+        final User user = new User(new EmailAddress("user", "gmail.com"),
+                new PhoneNumber(3, 333, 333, 3333), "username");
+        final Task[] requestedTasks = user.getRequestedTasks();
+        final Task[] assignedTasks = user.getAssignedTasks();
         Assert.assertNotNull(requestedTasks);
         Assert.assertNotNull(assignedTasks);
         Assert.assertNotEquals(requestedTasks, assignedTasks);

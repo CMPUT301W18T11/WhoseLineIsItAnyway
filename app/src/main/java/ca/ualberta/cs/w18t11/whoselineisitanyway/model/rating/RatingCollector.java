@@ -1,12 +1,12 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway.model;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.model.rating;
 
 import java.util.ArrayList;
 
 /**
  * RatingCollector is designed to hold and manage overall ratings for any particular user
  *
- * @author Lucas Thalen and Samuel Dolha
- * @version 0.1
+ * @author Lucas Thalen, Samuel Dolha
+ * @version 1.0
  * @see Rating
  */
 public final class RatingCollector

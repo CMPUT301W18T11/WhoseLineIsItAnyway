@@ -10,13 +10,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Bid;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detailable;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.EmailAddress;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.PhoneNumber;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Task;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.User;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 public class DetailActivity extends AppCompatActivity
 {
@@ -86,7 +86,7 @@ public class DetailActivity extends AppCompatActivity
         else
         {
             // Mock up a task to view
-            Task task = new Task("Test Task", "A task to test", "");
+            Task task = new Task("id", "requesterId", "Test Task", "A task to test");
             Bid bid = new Bid("1234", "5432", new BigDecimal(1234));
             final User user = new User(
                     new EmailAddress("user", "gmail.com"), new PhoneNumber(3, 333, 333, 3333),

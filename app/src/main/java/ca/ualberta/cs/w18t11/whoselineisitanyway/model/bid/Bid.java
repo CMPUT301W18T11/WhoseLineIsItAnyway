@@ -1,53 +1,73 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway.model;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detail;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detailable;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 
 /**
- * Bid is a class for storing and managing information associated with a bid made by a user on
- * any task.
+ * Represents a bid made by a provider on a task.
  *
- * @author Mark Griffith
- * @version 1.0
+ * @author Mark Griffith, Samuel Dolha
+ * @version 2.0
  */
 public final class Bid implements Detailable, Serializable
 {
-    private final String providerId; // The id of the User who made the bid
-
-    private final String taskId; // The title of the task bid on
-
-    private BigDecimal value; // The amount bidded
+    /**
+     * An auto-generated, unique ID to support class versioning for Serializable.
+     *
+     * @see Serializable
+     */
+    private static final long serialVersionUID = 330240939337547492L;
 
     /**
-     * Constructor for creating a Bid object.
-     *
-     * @param providerId The id of the User who provides the task bid on
-     * @param taskId     The title of the task bid on
-     * @param value      The amount bidded
-     * @throws IllegalArgumentException if either providerId or taskId are empty or Bid is <= 0
+     * The associated provider's ID.
      */
-    public Bid(final String providerId, final String taskId, final BigDecimal value)
+    @NonNull
+    private final String providerId;
+
+    /**
+     * The associated task's ID.
+     */
+    @NonNull
+    private final String taskId;
+
+    /**
+     * The bid's monetary value.
+     */
+    @NonNull
+    private final BigDecimal value;
+
+    /**
+     * @param providerId The associated provider's ID.
+     * @param taskId     The associated task's ID.
+     * @param value      The bid's monetary value.
+     * @throws IllegalArgumentException For an empty providerId or taskId, or a non-positive value.
+     */
+    public Bid(@NonNull final String providerId, @NonNull final String taskId,
+               @NonNull final BigDecimal value)
             throws IllegalArgumentException
     {
         if (providerId.isEmpty())
         {
-            throw new IllegalArgumentException("Provider ID cannot be an empty string");
+            throw new IllegalArgumentException("providerId cannot be empty");
         }
 
         if (taskId.isEmpty())
         {
-            throw new IllegalArgumentException("Task ID cannot be an empty string");
+            throw new IllegalArgumentException("taskId cannot be empty");
         }
 
         if (value.compareTo(BigDecimal.ZERO) <= 0)
         {
-            throw new IllegalArgumentException("Bid value must be greater than 0");
+            throw new IllegalArgumentException("value must be positive");
         }
 
         this.providerId = providerId;
@@ -56,30 +76,27 @@ public final class Bid implements Detailable, Serializable
     }
 
     /**
-     * Get the id of the User that made the Bid
-     *
-     * @return String representation of the User's id
+     * @return The associated provider's ID.
      */
+    @NonNull
     public final String getProviderId()
     {
         return this.providerId;
     }
 
     /**
-     * Get the title of the Task being bid on
-     *
-     * @return String representation of the Task's title
+     * @return The associated task's ID.
      */
+    @NonNull
     public final String getTaskId()
     {
         return this.taskId;
     }
 
     /**
-     * Get the amount that the User bid
-     *
-     * @return BigDecimal value of the Bid amount
+     * @return The bid's monetary value.
      */
+    @NonNull
     public final BigDecimal getValue()
     {
         return this.value;

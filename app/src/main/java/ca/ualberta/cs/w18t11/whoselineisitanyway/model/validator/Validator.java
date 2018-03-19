@@ -1,16 +1,11 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway.model;
-
-/**
- * Created by lucas on 2018-03-08.
- */
+package ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 /**
- * <h1>TextValidator</h1>
+ * <h1>Validator</h1>
  *
  * @author Lucas Thalen
  *         This class contains functions for verifying key types of text input on text fields
@@ -24,9 +19,9 @@ import java.util.regex.Pattern;
  *         Currency: ($)#(.##) (with or without $, only needs .## if . used)
  *         ERR -1 Incorrect format
  *         ERR -2 Decimal without decimal values
- * @see TextValidatorResult
+ * @see ValidatorResult
  */
-public final class TextValidator
+public final class Validator
 {
 
     /**
@@ -38,8 +33,8 @@ public final class TextValidator
      * 1 = All clear; proceed
      * -1 = Format error (Prompt user to enter correct format with example)
      */
-    public TextValidatorResult validatePhoneNumber(final String input,
-                                                   final boolean allowPartialMatching)
+    public ValidatorResult validatePhoneNumber(final String input,
+                                               final boolean allowPartialMatching)
     {
 
         Pattern phoneNum = Pattern.compile("\\+(\\d){1,3} \\((\\d{3})\\) (\\d{3})\\-(\\d{4})");
@@ -53,17 +48,17 @@ public final class TextValidator
             {
                 results.add(matches.group(i));
             }
-            return new TextValidatorResult(1, results, "");
+            return new ValidatorResult(1, results, "");
         } // if res is true, then it's a whole number and it works
         else
         {
             if (matches.hitEnd() && allowPartialMatching)
             { // failure was due to partial match ending
-                return new TextValidatorResult(1, results, "");
+                return new ValidatorResult(1, results, "");
             }
             else
             {
-                return new TextValidatorResult(-1, results,
+                return new ValidatorResult(-1, results,
                         "Invalid format. Example: +1 (123) 123-1234"); // failure was due to no valid match or partial match hitting invalid text
             }
         }
@@ -80,7 +75,7 @@ public final class TextValidator
      * -2 = @ Error, for multiple @ in an email
      */
     // Note: real email is horribly complicated, but this will validate that basic components exist.
-    public TextValidatorResult validateEmail(final String input, final boolean allowPartialMatching)
+    public ValidatorResult validateEmail(final String input, final boolean allowPartialMatching)
     {
         Pattern eMail = Pattern.compile("^([^@]+)@([^@\\.]+(?:\\.[^@\\.]+)*)$");
         Matcher matches = eMail.matcher(input);
@@ -93,13 +88,13 @@ public final class TextValidator
             {
                 results.add(matches.group(i));
             }
-            return new TextValidatorResult(1, results, "");
+            return new ValidatorResult(1, results, "");
         }
         else
         {
             if (matches.hitEnd() && allowPartialMatching)
             {
-                return new TextValidatorResult(1, results, "");
+                return new ValidatorResult(1, results, "");
             }
             else
             {
@@ -113,12 +108,12 @@ public final class TextValidator
                 }
                 if (arrobaCount >= 2)
                 {
-                    return new TextValidatorResult(-2, results,
+                    return new ValidatorResult(-2, results,
                             "invalid format. Use \'@\' only once.\nExample: exemplaremail@example.com");
                 }
                 else
                 {
-                    return new TextValidatorResult(-1, results,
+                    return new ValidatorResult(-1, results,
                             "invalid format. Example: exemplaremail@example.com");
                 }
             }
@@ -135,8 +130,8 @@ public final class TextValidator
      * -1 = Format issue (invalid chars)
      * -2 = Decimal error (a decimal exists, but no input after; prompt for decimal
      */
-    public TextValidatorResult validateCurrency(final String input,
-                                                final boolean allowPartialMatching)
+    public ValidatorResult validateCurrency(final String input,
+                                            final boolean allowPartialMatching)
     {
         Pattern currency = Pattern.compile("^\\$?(\\d+(?:\\.\\d{2})?)$");
         Matcher matches = currency.matcher(input);
@@ -156,11 +151,11 @@ public final class TextValidator
                     {
                         results.add(matches.group(i));
                     }
-                    return new TextValidatorResult(1, results, "");
+                    return new ValidatorResult(1, results, "");
                 }
                 else
                 {
-                    return new TextValidatorResult(-2, results,
+                    return new ValidatorResult(-2, results,
                             "Invalid format. If using decimal, enter all values afterwards.\nExample: 4 or 4.10");
                 }
             }
@@ -170,26 +165,26 @@ public final class TextValidator
                 {
                     results.add(matches.group(i));
                 }
-                return new TextValidatorResult(1, results, "");
+                return new ValidatorResult(1, results, "");
             }
         }
         else
         {
             if (matches.hitEnd() && allowPartialMatching)
             {
-                return new TextValidatorResult(1, results, "");
+                return new ValidatorResult(1, results, "");
             }
             else
             { // Check case where a decimal exists and force entry of post-decimal values
                 if (input.contains("."))
                 {
-                    return new TextValidatorResult(-2, results,
+                    return new ValidatorResult(-2, results,
                             "invalid format. Example, either: 4 OR 4.10\n(Include all" +
                                     " values after decimal, if a point is used.");
                 }
                 else
                 {
-                    return new TextValidatorResult(-1, results,
+                    return new ValidatorResult(-1, results,
                             "invalid format. Example, either: 4 OR 4.10\n(Include all values after decimal, if a point is used.");
                 }
 

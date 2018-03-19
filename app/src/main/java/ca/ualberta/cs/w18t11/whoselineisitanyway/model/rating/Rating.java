@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway.model;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.model.rating;
 
 /**
  * Rating is a generalized class to hold ratings data about a user's performance in fulfilling
@@ -10,8 +10,8 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.model;
  * <li>A quality, or quality rating based on the workmanship of a task</li>
  * </ul>
  *
- * @author Lucas Thalen and Samuel Dolha
- * @version 0.1
+ * @author Lucas Thalen, Samuel Dolha
+ * @version 1.0
  * @see RatingCollector
  */
 public final class Rating

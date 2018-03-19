@@ -3,25 +3,34 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.UUID;
+import java.math.BigDecimal;
 
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Task;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.TaskStatus;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.TaskStatus;
 
 public final class TaskUnitTest
 {
     @Test
+    public final void testGetId()
+    {
+        final String id = "id";
+        Assert.assertEquals(id, new Task(id, "requesterId", "title", "description").getId());
+    }
+
+    @Test
     public final void testGetTitle()
     {
         final String title = "title";
-        Assert.assertEquals(title, new Task(title, "", "").getTitle());
+        Assert.assertEquals(title, new Task("id", "requesterId", title, "description").getTitle());
     }
 
     @Test
     public final void testGetLongerTitle()
     {
         final String longerTitle = "longer title";
-        Assert.assertEquals(longerTitle, new Task(longerTitle, "", "").getTitle());
+        Assert.assertEquals(longerTitle,
+                new Task("id", "requesterId", longerTitle, "description").getTitle());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -29,14 +38,15 @@ public final class TaskUnitTest
     {
         final String tooLongTitle = "terrible title that is too long";
         Assert.assertTrue(tooLongTitle.length() > 30);
-        new Task(tooLongTitle, "", "");
+        new Task("0", "requesterId", tooLongTitle, "description");
     }
 
     @Test
     public final void testGetDescription()
     {
         final String description = "description";
-        Assert.assertEquals(description, new Task("", description, "").getDescription());
+        Assert.assertEquals(description,
+                new Task("0", "requesterId", "title", description).getDescription());
     }
 
     @Test
@@ -44,7 +54,7 @@ public final class TaskUnitTest
     {
         final String longerDescription = "longer description";
         Assert.assertEquals(longerDescription,
-                new Task("", longerDescription, "").getDescription());
+                new Task("0", "requesterId", "title", longerDescription).getDescription());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -58,36 +68,31 @@ public final class TaskUnitTest
                 + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
                 + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         Assert.assertTrue(tooLongDescription.length() > 300);
-        new Task("", tooLongDescription, "");
+        new Task("id", "requesterId", "title", tooLongDescription);
     }
 
     @Test
     public final void testGetStatus()
     {
-        Assert.assertEquals(TaskStatus.REQUESTED, new Task("", "", "").getStatus());
-    }
-
-    @Test
-    public final void testGetId()
-    {
-        Assert.assertEquals(UUID.class, new Task("", "", "").getId().getClass());
+        Assert.assertEquals(TaskStatus.REQUESTED,
+                new Task("id", "requesterId", "title", "description").getStatus());
     }
 
     @Test
     public final void testGetRequesterId()
     {
-        Assert.assertEquals("Test", new Task("", "", "Test").getRequesterId());
+        final String requesterId = "requesterId";
+        Assert.assertEquals(requesterId,
+                new Task("id", requesterId, "title", "description").getRequesterId());
     }
 
     @Test
     public final void testGetProviderId()
     {
-        Assert.assertEquals("Test", new Task("", "", "", "Test").getProviderId());
-    }
-
-    @Test
-    public final void testNullProviderId()
-    {
-        Assert.assertNull(new Task("", "", "").getProviderId());
+        final String taskId = "taskId";
+        final String providerId = "providerId";
+        Assert.assertEquals(providerId, new Task(taskId, "requesterId", providerId,
+                new Bid[]{new Bid(providerId, taskId, BigDecimal.ONE)}, "title", "description",
+                false).getProviderId());
     }
 }

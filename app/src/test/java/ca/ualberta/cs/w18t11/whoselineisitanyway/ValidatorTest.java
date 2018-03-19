@@ -4,19 +4,19 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.TextValidator;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.Validator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author Lucas Thalen
- *         Tests for the TextValidator model class
+ *         Tests for the Validator model class
  */
 
-public final class TextValidatorTest
+public final class ValidatorTest
 {
-    final TextValidator validator = new TextValidator();
+    final Validator validator = new Validator();
 
     @Test
     // This checks that a complete phone number can be deconstructed
