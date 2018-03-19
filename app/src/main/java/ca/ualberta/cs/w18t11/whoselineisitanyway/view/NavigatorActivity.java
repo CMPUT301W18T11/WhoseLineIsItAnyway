@@ -22,6 +22,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detailable;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.TaskStatus;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
@@ -134,32 +135,32 @@ public class NavigatorActivity extends AppCompatActivity
         User providerUserB = new User(new EmailAddress("eve", "gmail.com"),
                 new PhoneNumber(0, 123, 456, 7890), "eve");
         // Pull all info for tasks and bids
-        //List of tasks:
-        Task task1 = new Task("id1", currentUser.getUsername(), "Demo Task 1", "A really good task");
-        Task task2 = new Task("id2", currentUser.getUsername(), "Demo Task 2", "A really great task");
-        Task task3 = new Task("id3", currentUser.getUsername(), "Demo Task 3", "A alright task");
-
-        allTasks.add(task1);
-        allTasks.add(task2);
-        allTasks.add(task3);
         // List of the Bids:
         Bid bid1a = new Bid(providerUserA.getUsername(), "task1ID", new BigDecimal(5));
         Bid bid1b = new Bid(providerUserB.getUsername(), "task1ID", new BigDecimal(6));
-        Bid bid2a = new Bid(providerUserA.getUsername(), "task2ID", new BigDecimal(700));
         Bid bid2b = new Bid(providerUserB.getUsername(), "task2ID", new BigDecimal(500));
         Bid bid2c = new Bid(currentUser.getUsername(), "task2ID", new BigDecimal(750));
-        Bid bid3a = new Bid(providerUserA.getUsername(), "task3ID", new BigDecimal(5));
         Bid bid3b = new Bid(providerUserB.getUsername(), "task3ID", new BigDecimal(5));
         Bid bid3c = new Bid(currentUser.getUsername(), "task3ID", new BigDecimal(7));
 
         allBids.add(bid1a);
         allBids.add(bid1b);
-        allBids.add(bid2a);
         allBids.add(bid2b);
         allBids.add(bid2c);
-        allBids.add(bid3a);
         allBids.add(bid3b);
         allBids.add(bid3c);
+
+        Bid[] mockBidList = {bid3b, bid3c};
+
+        //List of tasks:
+        Task task1 = new Task("id1", currentUser.getUsername(), "Demo Task 1", "A really good task");
+        Task task2 = new Task("id2", providerUserA.getUsername(), "Demo Task 2", "A really great task");
+        Task task3 = new Task("id3", providerUserA.getUsername(), currentUser.getUsername(), mockBidList, "Demo Task 3", "A alright task", Boolean.FALSE);
+
+        allTasks.add(task1);
+        allTasks.add(task2);
+        allTasks.add(task3);
+
 
         if (id == R.id.all_tasks)
         {
