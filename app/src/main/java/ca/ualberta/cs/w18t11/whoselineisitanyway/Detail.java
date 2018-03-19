@@ -2,12 +2,15 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
 
 import android.content.Intent;
+
 import java.io.Serializable;
 
-public class Detail implements Serializable {
+public class Detail implements Serializable
+{
     private final String title;
     private final String info;
     private final Intent linkIntent;
+
     Detail(String title, String info, Intent linkIntent)
     {
         this.title = title;
@@ -20,9 +23,18 @@ public class Detail implements Serializable {
         this(title, info, null);
     }
 
-    String getTitle() {return this.title;}
+    String getTitle()
+    {
+        return this.title;
+    }
 
-    String getInfo() {return this.info;}
+    String getInfo()
+    {
+        return this.info;
+    }
 
-    boolean isLinkeable(){return this.linkIntent != null;}
+    boolean isLinkeable()
+    {
+        return this.linkIntent != null;
+    }
 }

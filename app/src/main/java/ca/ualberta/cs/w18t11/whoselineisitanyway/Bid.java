@@ -10,10 +10,11 @@ import java.util.ArrayList;
 /**
  * Bid is a class for storing and managing information associated with a bid made by a user on
  * any task.
+ *
  * @author Mark Griffith
  * @version 1.0
  */
-final class Bid  implements Detailable, Serializable
+final class Bid implements Detailable, Serializable
 {
     private final String providerId; // The id of the User who made the bid
 
@@ -23,9 +24,10 @@ final class Bid  implements Detailable, Serializable
 
     /**
      * Constructor for creating a Bid object.
+     *
      * @param providerId The id of the User who provides the task bid on
-     * @param taskId The title of the task bid on
-     * @param value The amount bidded
+     * @param taskId     The title of the task bid on
+     * @param value      The amount bidded
      * @throws IllegalArgumentException if either providerId or taskId are empty or Bid is <= 0
      */
     Bid(final String providerId, final String taskId, final BigDecimal value)
@@ -53,6 +55,7 @@ final class Bid  implements Detailable, Serializable
 
     /**
      * Get the id of the User that made the Bid
+     *
      * @return String representation of the User's id
      */
     final String getProviderId()
@@ -62,6 +65,7 @@ final class Bid  implements Detailable, Serializable
 
     /**
      * Get the title of the Task being bid on
+     *
      * @return String representation of the Task's title
      */
     final String getTaskId()
@@ -71,6 +75,7 @@ final class Bid  implements Detailable, Serializable
 
     /**
      * Get the amount that the User bid
+     *
      * @return BigDecimal value of the Bid amount
      */
     final BigDecimal getValue()
@@ -95,6 +100,7 @@ final class Bid  implements Detailable, Serializable
 
     /**
      * Provide a string to describe a bid
+     *
      * @return String representing the bid
      */
     @Override

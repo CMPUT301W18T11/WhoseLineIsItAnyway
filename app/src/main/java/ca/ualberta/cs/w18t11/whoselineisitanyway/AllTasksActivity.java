@@ -1,17 +1,20 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
+import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-public class AllTasksActivity extends ListActivity {
+public class AllTasksActivity extends ListActivity
+{
     private static final String SAVEFILE = "AllTasksActivity.sav";
     private ListView allTasksLV;
     private int updatedSubPos;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_tasks);
 
@@ -23,9 +26,11 @@ public class AllTasksActivity extends ListActivity {
         adapter.notifyDataSetChanged();
 
         // Define action taken when clicking on each listview element
-        allTasksLV.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        allTasksLV.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
-            public void onItemClick(AdapterView<?> adapter, View v, int position, long id){
+            public void onItemClick(AdapterView<?> adapter, View v, int position, long id)
+            {
                 // TODO implement activity change
                 // Get the selected item
                 Task task = (Task) adapter.getItemAtPosition(position);
@@ -41,13 +46,15 @@ public class AllTasksActivity extends ListActivity {
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart()
+    {
         super.onStart();
 
         loadState();
     }
 
-    private void loadState() {
+    private void loadState()
+    {
         // TODO actually implement this
 
         // This is placeholder code.
@@ -56,7 +63,8 @@ public class AllTasksActivity extends ListActivity {
         objList.add(new Task("Task 3", "Description 3"));
     }
 
-    private void saveState() {
+    private void saveState()
+    {
         // TODO implement
     }
 }

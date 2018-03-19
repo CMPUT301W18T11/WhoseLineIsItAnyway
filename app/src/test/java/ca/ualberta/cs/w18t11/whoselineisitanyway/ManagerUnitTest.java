@@ -1,7 +1,9 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
 import junit.framework.Assert;
+
 import org.junit.Test;
+
 import java.math.BigDecimal;
 
 public class ManagerUnitTest
@@ -36,7 +38,8 @@ public class ManagerUnitTest
     }
 
     @Test
-    public final void testGetTask() {
+    public final void testGetTask()
+    {
         Manager<Task> taskManager = new Manager<Task>();
         Task addedTask = new Task("name", "description", "");
         Task wrongTask = new Task("name", "description", "");
@@ -46,7 +49,8 @@ public class ManagerUnitTest
     }
 
     @Test
-    public final void testGetBid() {
+    public final void testGetBid()
+    {
         Manager<Bid> bidManager = new Manager<Bid>();
         Bid addedBid = new Bid("provider", "task", new BigDecimal(1));
         Bid wrongBid = new Bid("provider", "task", new BigDecimal(1));
@@ -56,7 +60,8 @@ public class ManagerUnitTest
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
-    public final void testGetOutOfRange() {
+    public final void testGetOutOfRange()
+    {
         Manager<Integer> manager = new Manager<Integer>();
         manager.get(1);
     }
@@ -86,7 +91,8 @@ public class ManagerUnitTest
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
-    public final void testSetOutOfRange() {
+    public final void testSetOutOfRange()
+    {
         Manager<Integer> manager = new Manager<Integer>();
         manager.set(1, new Integer(1));
     }

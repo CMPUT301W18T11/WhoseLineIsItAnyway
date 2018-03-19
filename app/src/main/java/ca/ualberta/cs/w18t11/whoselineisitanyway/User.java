@@ -10,6 +10,7 @@ import java.util.ArrayList;
  * User is a class for storing and managing the information related to any user of the app.
  * A User is identified by a unique id and an email address and phone number.
  * A User may have requested or assigned tasks.
+ *
  * @author Samuel Dolha
  * @version 1.0
  */
@@ -17,21 +18,18 @@ final class User implements Detailable, Serializable
 {
     @JestId
     private final String id;
-
-    private EmailAddress emailAddress;
-
-    private PhoneNumber phoneNumber;
-
     private final Manager<Task> requestedTasks = new Manager<>();
-
     private final Manager<Task> assignedTasks = new Manager<>();
+    private EmailAddress emailAddress;
+    private PhoneNumber phoneNumber;
 
     /**
      * Constructor for creating a User object.
      * Error checking for validity of private member variables is handled externally
+     *
      * @param emailAddress user's email address, as an EmailAddress object
-     * @param phoneNumber user's phone number, as a PhoneNumber object
-     * @param username user's username, a.k.a. their id
+     * @param phoneNumber  user's phone number, as a PhoneNumber object
+     * @param username     user's username, a.k.a. their id
      * @see EmailAddress
      * @see PhoneNumber
      */
@@ -44,19 +42,25 @@ final class User implements Detailable, Serializable
 
     /**
      * Get the id associated with the User
+     *
      * @return String representation of the User's id
      */
-    final String getID() { return this.id; }
+    final String getID()
+    {
+        return this.id;
+    }
 
     /**
      * Get the email address of the User
-     * @see EmailAddress
+     *
      * @return EmailAddress object representation of User's email address
+     * @see EmailAddress
      */
     final EmailAddress getEmailAddress()
     {
         return this.emailAddress;
     }
+
     final String getDocId()
     {
         return this.DocId;
@@ -64,8 +68,9 @@ final class User implements Detailable, Serializable
 
     /**
      * Get the phone number of the User
-     * @see PhoneNumber
+     *
      * @return PhoneNumber object representation of the User's phone number
+     * @see PhoneNumber
      */
     final PhoneNumber getPhoneNumber()
     {
@@ -74,8 +79,9 @@ final class User implements Detailable, Serializable
 
     /**
      * Get the list of the User's requested tasks
-     * @see Manager
+     *
      * @return Manager containing a list of Task objects
+     * @see Manager
      */
     final Manager<Task> getRequestedTasks()
     {
@@ -84,8 +90,9 @@ final class User implements Detailable, Serializable
 
     /**
      * Get the list of the User's assigned tasks
-     * @see Manager
+     *
      * @return Manager containing a list of Task objects
+     * @see Manager
      */
     final Manager<Task> getAssignedTasks()
     {
@@ -109,6 +116,7 @@ final class User implements Detailable, Serializable
 
     /**
      * Provide a string to describe a user
+     *
      * @return String representing the user
      */
     @Override

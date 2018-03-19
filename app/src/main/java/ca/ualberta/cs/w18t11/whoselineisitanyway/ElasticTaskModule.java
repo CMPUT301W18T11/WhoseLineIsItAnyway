@@ -11,23 +11,25 @@ import com.searchly.jestdroid.JestDroidClient;
  * Created by nafeekhan on 2018-03-03.
  */
 
-public class ElasticTaskModule {
+public class ElasticTaskModule
+{
     private static JestDroidClient client;
     Context context;
     Looper looper;
-    public ElasticTaskModule(Context context, Looper looper){
+
+    public ElasticTaskModule(Context context, Looper looper)
+    {
         this.context = context;
         this.looper = looper;
 
     }
-    public interface ElasticTaskCallback{
 
-    }
-
-
-    public static void verifySettings() {
-        if (client == null) {
-            DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
+    public static void verifySettings()
+    {
+        if (client == null)
+        {
+            DroidClientConfig.Builder builder = new DroidClientConfig.Builder(
+                    "http://cmput301.softwareprocess.es:8080");
             DroidClientConfig config = builder.build();
 
             JestClientFactory factory = new JestClientFactory();
@@ -35,13 +37,25 @@ public class ElasticTaskModule {
             client = (JestDroidClient) factory.getObject();
         }
     }
-    public static class PushTaskHandler{
+
+
+    public interface ElasticTaskCallback
+    {
 
     }
-    public static class PullTaskHandler{
+
+    public static class PushTaskHandler
+    {
 
     }
-    public static class PlaceBid{
+
+    public static class PullTaskHandler
+    {
+
+    }
+
+    public static class PlaceBid
+    {
 
     }
 }

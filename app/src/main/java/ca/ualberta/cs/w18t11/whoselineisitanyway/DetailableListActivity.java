@@ -10,7 +10,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class DetailableListActivity extends NavigatorActivity {
+public class DetailableListActivity extends NavigatorActivity
+{
     static final String DATA_DETAILABLE_LIST = "com.whoselineisitanyway.DATA_DETAILABLE_LIST";
     static final String DATA_TITLE = "com.whoselineisitanyway.DATA_DETAILABLE_TITLE";
     private String title;
@@ -19,14 +20,16 @@ public class DetailableListActivity extends NavigatorActivity {
     private ArrayAdapter<Detailable> adapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
         loadState();
 
         Intent intent = getIntent();
-        if (intent.getSerializableExtra(DATA_DETAILABLE_LIST) != null) {
+        if (intent.getSerializableExtra(DATA_DETAILABLE_LIST) != null)
+        {
             detailList = (ArrayList<Detailable>) intent.getSerializableExtra(DATA_DETAILABLE_LIST);
         }
         else
@@ -36,7 +39,9 @@ public class DetailableListActivity extends NavigatorActivity {
         if (intent.getSerializableExtra(DATA_TITLE) != null)
         {
             title = intent.getStringExtra(DATA_TITLE);
-        } else {
+        }
+        else
+        {
             title = "WhoseLineIsItAnyway";
         }
 
@@ -49,9 +54,11 @@ public class DetailableListActivity extends NavigatorActivity {
         adapter.notifyDataSetChanged();
 
         // Define action taken when clicking on each listview element
-        detailsLV.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        detailsLV.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
-            public void onItemClick(AdapterView<?> adapter, View v, int position, long id){
+            public void onItemClick(AdapterView<?> adapter, View v, int position, long id)
+            {
                 // Show the detail view of the selected item
                 Detailable detail = (Detailable) adapter.getItemAtPosition(position);
                 detail.showDetail(DetailActivity.class, v.getContext());
@@ -60,23 +67,27 @@ public class DetailableListActivity extends NavigatorActivity {
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart()
+    {
         super.onStart();
         loadState();
         adapter.notifyDataSetChanged();
     }
 
-    private void loadState() {
+    private void loadState()
+    {
         Log.i("DetailableListActivity", "Restoring saved instance state");
         // TODO implement
     }
 
     /**
      * Saves the state of the activity. Called after onStop
+     *
      * @param savedInstanceState
      */
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
+    public void onSaveInstanceState(Bundle savedInstanceState)
+    {
         Log.i("DetailableListActivity", "onSaveInstanceState is called");
         loadState();
         savedInstanceState.putSerializable("detailList", detailList);

@@ -13,21 +13,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class NavigatorActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener
+{
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
     /*Taken From: https://gist.github.com/anandbose/7d6efb35c900eaba3b26*/
     private FrameLayout viewStub; //This is the framelayout to keep your content view
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_list);
 
@@ -45,44 +46,54 @@ public class NavigatorActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed()
+    {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+        if (drawer.isDrawerOpen(GravityCompat.START))
+        {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        else
+        {
             super.onBackPressed();
         }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         // Adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.list, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        if (toggle.onOptionsItemSelected(item)) {
+        if (toggle.onOptionsItemSelected(item))
+        {
             Log.i("OPTIONS: ", "Nav Bar Option Selected");
             return true;
         }
 
         int id = item.getItemId();
-        if (id == R.id.profile) {
+        if (id == R.id.profile)
+        {
             Log.i("OPTIONS: ", "Profile Option Selected");
             // TODO Handle
             return true;
         }
-        if (id == R.id.search) {
+        if (id == R.id.search)
+        {
             Log.i("OPTIONS: ", "Search Option Selected");
             // TODO Handle
             return true;
         }
-        if (id == R.id.logout) {
+        if (id == R.id.logout)
+        {
             Log.i("OPTIONS: ", "Logout Option Selected");
             // TODO Handle
             return true;
@@ -93,7 +104,8 @@ public class NavigatorActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(MenuItem item)
+    {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Intent outgoingIntent = new Intent(this, DetailableListActivity.class);
@@ -103,14 +115,16 @@ public class NavigatorActivity extends AppCompatActivity
         ArrayList<Task> allTasks = new ArrayList<>();
         ArrayList<Bid> allBids = new ArrayList<>();
         // TODO: need to account for current user based on whoever is logged in
-        User currentUser = new User(new EmailAddress("bob", "gmail.com"), new PhoneNumber(0, 123, 456, 7890), "bob");
-
+        User currentUser = new User(new EmailAddress("bob", "gmail.com"),
+                new PhoneNumber(0, 123, 456, 7890), "bob");
 
 
         // Hardcoded values for demo: ** Remove later **
         // Get the current user:
-        User providerUserA = new User(new EmailAddress("alice", "gmail.com"), new PhoneNumber(0, 123, 456, 7890), "alice");
-        User providerUserB = new User(new EmailAddress("eve", "gmail.com"), new PhoneNumber(0, 123, 456, 7890), "eve");
+        User providerUserA = new User(new EmailAddress("alice", "gmail.com"),
+                new PhoneNumber(0, 123, 456, 7890), "alice");
+        User providerUserB = new User(new EmailAddress("eve", "gmail.com"),
+                new PhoneNumber(0, 123, 456, 7890), "eve");
         // Pull all info for tasks and bids
         //List of tasks:
         Task task1 = new Task("Demo Task 1", "A really good task", currentUser.getID());
@@ -139,47 +153,59 @@ public class NavigatorActivity extends AppCompatActivity
         allBids.add(bid3b);
         allBids.add(bid3c);
 
-        if (id == R.id.all_tasks) {
+        if (id == R.id.all_tasks)
+        {
             Log.i("NAVBAR: ", "All Tasks Selected");
             outgoingTitle = "All Tasks";
             detailables.addAll(allTasks);
 
-        } else if (id == R.id.my_tasks) {
+        }
+        else if (id == R.id.my_tasks)
+        {
             Log.i("NAVBAR: ", "My Tasks Selected");
             outgoingTitle = "My Tasks";
-            for(Task task: allTasks)
+            for (Task task : allTasks)
             {
-                if(task.getRequesterId().equals(currentUser.getID()))
+                if (task.getRequesterId().equals(currentUser.getID()))
                 {
                     detailables.add(task);
                 }
             }
 
-        } else if (id == R.id.assigned_tasks) {
+        }
+        else if (id == R.id.assigned_tasks)
+        {
             Log.i("NAVBAR: ", "Assigned Tasks Selected");
             outgoingTitle = "Assigned Tasks";
-            for(Task task: allTasks)
+            for (Task task : allTasks)
             {
-                if(task.getProviderId() != null && task.getProviderId().equals(currentUser.getID()))
+                if (task.getProviderId() != null && task.getProviderId()
+                        .equals(currentUser.getID()))
                 {
                     detailables.add(task);
                 }
             }
-        } else if (id == R.id.nearby_tasks) {
+        }
+        else if (id == R.id.nearby_tasks)
+        {
             Log.i("NAVBAR: ", "Nearby Tasks Selected");
             outgoingTitle = "Nearby Tasks";
             // TODO filter tasks based on location
-        } else if (id == R.id.my_bids) {
+        }
+        else if (id == R.id.my_bids)
+        {
             Log.i("NAVBAR: ", "My Bids Selected");
             outgoingTitle = "My Bids";
-            for(Bid bid: allBids)
+            for (Bid bid : allBids)
             {
-                if(bid.getProviderId().equals(currentUser.getID()))
+                if (bid.getProviderId().equals(currentUser.getID()))
                 {
                     detailables.add(bid);
                 }
             }
-        } else if (id == R.id.create_task) {
+        }
+        else if (id == R.id.create_task)
+        {
             Log.i("NAVBAR: ", "Create Task Selected");
             // TODO Handle
         }
@@ -200,8 +226,10 @@ public class NavigatorActivity extends AppCompatActivity
      * Taken From: https://gist.github.com/anandbose/7d6efb35c900eaba3b26
      */
     @Override
-    public void setContentView(int layoutResID) {
-        if (viewStub != null) {
+    public void setContentView(int layoutResID)
+    {
+        if (viewStub != null)
+        {
             LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
             ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -212,8 +240,10 @@ public class NavigatorActivity extends AppCompatActivity
     }
 
     @Override
-    public void setContentView(View view) {
-        if (viewStub != null) {
+    public void setContentView(View view)
+    {
+        if (viewStub != null)
+        {
             ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
@@ -222,8 +252,10 @@ public class NavigatorActivity extends AppCompatActivity
     }
 
     @Override
-    public void setContentView(View view, ViewGroup.LayoutParams params) {
-        if (viewStub != null) {
+    public void setContentView(View view, ViewGroup.LayoutParams params)
+    {
+        if (viewStub != null)
+        {
             viewStub.addView(view, params);
         }
     }

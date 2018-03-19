@@ -13,39 +13,37 @@ import java.util.UUID;
  * Each task has a title, description, and status
  * The status of a Task may be one of the following
  * <ul>
- *     <li>REQUESTED</li>
- *     <li>BIDDED</li>
- *     <li>ASSIGNED</li>
- *     <li>DONE</li>
+ * <li>REQUESTED</li>
+ * <li>BIDDED</li>
+ * <li>ASSIGNED</li>
+ * <li>DONE</li>
  * </ul>
+ *
  * @author Samuel Dolha
  * @version 1.0
  * @see TaskStatus
  */
 final class Task implements Detailable, Serializable
 {
-    private String title;
-
-    private String description;
-
-    private TaskStatus status;
-
     private final UUID id;
-
     private final String requesterId;
-
     private final String providerId;
+    private String title;
+    private String description;
+    private TaskStatus status;
 
     /**
      * Constructor for creating Task object.
      * Ensures title length and description length are within bounds.
-     * @param title Title representing the Task
+     *
+     * @param title       Title representing the Task
      * @param description Description of Task details
      * @param requesterId unique identifier of the requester
-     * @param providerId unique identifier of the provider
+     * @param providerId  unique identifier of the provider
      * @throws IllegalArgumentException Either title or description are outside specified bounds
      */
-    Task(final String title, final String description, String requesterId, String providerId) throws IllegalArgumentException
+    Task(final String title, final String description, String requesterId, String providerId)
+            throws IllegalArgumentException
     {
         if (title.length() > 30)
         {
@@ -69,20 +67,22 @@ final class Task implements Detailable, Serializable
      * Constructor for creating Task object.
      * Ensures title length and description length are within bounds.
      * Uses a null providerId to signify that there is no provider associated to the task
-     * @param title Title representing the Task
+     *
+     * @param title       Title representing the Task
      * @param description Description of Task details
      * @param requesterId unique identifier of the requester
      * @throws IllegalArgumentException Either title or description are outside specified bounds
      */
-    Task(final String title, final String description, String requesterId) throws IllegalArgumentException
+    Task(final String title, final String description, String requesterId)
+            throws IllegalArgumentException
     {
         this(title, description, requesterId, null);
     }
 
 
-
     /**
      * Get the title of the Task
+     *
      * @return String representation of the Task's title
      */
     final String getTitle()
@@ -92,6 +92,7 @@ final class Task implements Detailable, Serializable
 
     /**
      * Get the description of the Task
+     *
      * @return String representation of the Task's description
      */
     final String getDescription()
@@ -101,6 +102,7 @@ final class Task implements Detailable, Serializable
 
     /**
      * Get the current status of the Task
+     *
      * @return TaskStatus representation of the Task's status
      */
     final TaskStatus getStatus()
@@ -110,6 +112,7 @@ final class Task implements Detailable, Serializable
 
     /**
      * Get the id of the Task
+     *
      * @return String representation of the Task's id
      */
     final UUID getId()
@@ -119,6 +122,7 @@ final class Task implements Detailable, Serializable
 
     /**
      * Get the current status of the Task
+     *
      * @return TaskStatus representation of the Task's status
      */
     final String getRequesterId()
@@ -128,6 +132,7 @@ final class Task implements Detailable, Serializable
 
     /**
      * Get the current status of the Task
+     *
      * @return TaskStatus representation of the Task's status
      */
     final String getProviderId()
@@ -152,6 +157,7 @@ final class Task implements Detailable, Serializable
 
     /**
      * Provide a string to describe a bid
+     *
      * @return String representing the bid
      */
     @Override

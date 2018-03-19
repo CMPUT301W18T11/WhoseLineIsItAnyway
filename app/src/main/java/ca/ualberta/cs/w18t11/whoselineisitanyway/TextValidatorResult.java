@@ -12,7 +12,8 @@ import java.util.ArrayList;
  * @see TextValidator
  */
 
-public final class TextValidatorResult {
+public final class TextValidatorResult
+{
     private int ERRORCODE;
     private ArrayList<String> MATCHGROUPS = new ArrayList<String>();
     private String ERRMSG;
@@ -20,26 +21,35 @@ public final class TextValidatorResult {
     /**
      * Constructor; takes injected values from TextValidator and allows user access to data that is useful
      * but was created during the validation process
-     * @param err The errorcode, should one want to parse it differently than default options
+     *
+     * @param err     The errorcode, should one want to parse it differently than default options
      * @param matches These are the components found in regex groups, such as user and domain in an email
-     * @param errMSG This is an error message that can be used and tacked onto things like edtxtviews
+     * @param errMSG  This is an error message that can be used and tacked onto things like edtxtviews
      */
-    TextValidatorResult(final int err, final ArrayList<String> matches, final String errMSG) {
+    TextValidatorResult(final int err, final ArrayList<String> matches, final String errMSG)
+    {
         ERRORCODE = err;
         MATCHGROUPS = matches;
         ERRMSG = errMSG;
     }
-    public boolean isError() {
+
+    public boolean isError()
+    {
         return !(ERRORCODE == 1);
     }
-    public int getErrorCode() {
+
+    public int getErrorCode()
+    {
         return ERRORCODE;
     }
-    public String getErrorMSG() {
+
+    public String getErrorMSG()
+    {
         return ERRMSG;
     }
 
-    public ArrayList<String> getComponents() {
+    public ArrayList<String> getComponents()
+    {
         return MATCHGROUPS;
     }
 }

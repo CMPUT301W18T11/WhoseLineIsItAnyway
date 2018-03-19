@@ -1,9 +1,8 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -11,25 +10,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
  * This is just a generic activity for implementing parts of code; it is not intended to run as part of the app
  * and should be deleted before commiting to the final master release.
+ *
  * @author Lucas Thalen
  */
-public class testActivity extends AppCompatActivity {
+public class testActivity extends AppCompatActivity
+{
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
         Button btnTest = (Button) findViewById(R.id.btnTest);
-        btnTest.setOnClickListener(new View.OnClickListener() {
+        btnTest.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 generateRegistrationDialog("TEST");
             }
         });
@@ -39,13 +42,15 @@ public class testActivity extends AppCompatActivity {
      * GENERATE REGISTRATION DIALOG
      * This function generates a registration dialog to enroll a new user in the application
      * database.
+     *
      * @param usr This can be edited once input is known/needed/unneeded
-     * @see UserLoginActivity
-     * @see User
      * @return Either a boolean or a complete user object; assign to object type and check class to
      * determine if the code ran successfully or not.
+     * @see UserLoginActivity
+     * @see User
      */
-    private Object generateRegistrationDialog(String usr) {
+    private Object generateRegistrationDialog(String usr)
+    {
         // Parts of this, mostly the generation of the actual dialog, are based on web results.
         // while the post in question addresses email and phone, I only referenced the creation logic
         // not the actual text management code or interface
@@ -64,7 +69,8 @@ public class testActivity extends AppCompatActivity {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 testActivity.this);
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View dialogView = inflater.inflate(R.layout.layout_register_user, (ViewGroup) findViewById(R.id.layout_root));
+        View dialogView = inflater
+                .inflate(R.layout.layout_register_user, (ViewGroup) findViewById(R.id.layout_root));
         alertDialogBuilder.setView(dialogView);
         final AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.setTitle("Register New User");
@@ -79,23 +85,31 @@ public class testActivity extends AppCompatActivity {
         // Input expected username
         txtUsername.setText(usr);
 
-        etxtPhone.addTextChangedListener(new TextWatcher() {
+        etxtPhone.addTextChangedListener(new TextWatcher()
+        {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
+            {
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2)
+            {
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(Editable editable)
+            {
                 String fieldContents = etxtPhone.getText().toString();
                 TextValidatorResult phoneRes = txtvalidate.validatePhoneNumber(fieldContents, true);
-                if (fieldContents.isEmpty()) {
+                if (fieldContents.isEmpty())
+                {
                     return;
-                } else {
-                    if (phoneRes.isError()) {
+                }
+                else
+                {
+                    if (phoneRes.isError())
+                    {
                         etxtPhone.setError(phoneRes.getErrorMSG());
                         int fieldLen = etxtPhone.getText().length();
                         etxtPhone.setText(fieldContents.substring(0, fieldLen - 1));
@@ -106,23 +120,31 @@ public class testActivity extends AppCompatActivity {
             }
         });
 
-        etxtEmail.addTextChangedListener(new TextWatcher() {
+        etxtEmail.addTextChangedListener(new TextWatcher()
+        {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
+            {
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2)
+            {
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(Editable editable)
+            {
                 String fieldContents = etxtEmail.getText().toString();
                 TextValidatorResult emailRes = txtvalidate.validateEmail(fieldContents, true);
-                if (fieldContents.isEmpty()) {
+                if (fieldContents.isEmpty())
+                {
                     return;
-                } else {
-                    if (emailRes.isError()) {
+                }
+                else
+                {
+                    if (emailRes.isError())
+                    {
                         etxtEmail.setError(emailRes.getErrorMSG());
                         int fieldLen = etxtEmail.getText().length();
                         etxtEmail.setText(fieldContents.subSequence(0, fieldLen - 1));
@@ -132,19 +154,26 @@ public class testActivity extends AppCompatActivity {
             }
         });
 
-        btnOK.setOnClickListener(new View.OnClickListener() {
+        btnOK.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 // Get final say on if input is good
-                TextValidatorResult phoneRes = txtvalidate.validatePhoneNumber(etxtPhone.getText().toString(), false);
-                TextValidatorResult emailRes = txtvalidate.validateEmail(etxtEmail.getText().toString(), false);
-                if (phoneRes.isError()) {
+                TextValidatorResult phoneRes = txtvalidate
+                        .validatePhoneNumber(etxtPhone.getText().toString(), false);
+                TextValidatorResult emailRes = txtvalidate
+                        .validateEmail(etxtEmail.getText().toString(), false);
+                if (phoneRes.isError())
+                {
                     etxtPhone.setError(phoneRes.getErrorMSG());
                 } // Get format errors and set msg on edittext
-                if (emailRes.isError()) {
+                if (emailRes.isError())
+                {
                     etxtEmail.setError(emailRes.getErrorMSG());
                 }
-                if (!(phoneRes.isError() || emailRes.isError())) { // No errors to report
+                if (!(phoneRes.isError() || emailRes.isError()))
+                { // No errors to report
 
                     usrID[0] = txtUsername.getText().toString();
 
@@ -161,7 +190,6 @@ public class testActivity extends AppCompatActivity {
                     emailComponents[1] = emailRes.getComponents().get(2);
 
 
-
                     res[0] = true;
                     alertDialog.dismiss(); // Close dialog, create new user
 
@@ -170,9 +198,11 @@ public class testActivity extends AppCompatActivity {
 
 
         });
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+        btnCancel.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 res[0] = false;
                 alertDialog.dismiss();
                 // PUT RETURN CONDITIONS ON NEGATIVE HERE
@@ -183,7 +213,8 @@ public class testActivity extends AppCompatActivity {
         // Try to create new user
 
         // Check that necessary parameters for a new user are present
-        if (res[0] != false) {
+        if (res[0] != false)
+        {
             PhoneNumber phone = new PhoneNumber(
                     phoneComponents[0],
                     phoneComponents[1],
@@ -196,9 +227,12 @@ public class testActivity extends AppCompatActivity {
                     emailComponents[1]
             );
 
-            return(new User(email, phone, usrID[0]));
+            return (new User(email, phone, usrID[0]));
         }
-        else { return false; }
+        else
+        {
+            return false;
+        }
 
     }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Manager is a generic class for managing an array of objects
+ *
  * @param <T> The object type in the array
  */
 final class Manager<T>
@@ -12,6 +13,7 @@ final class Manager<T>
 
     /**
      * Get an item in the array
+     *
      * @param index position of object in the array
      * @return object at the specified index
      */
@@ -22,6 +24,7 @@ final class Manager<T>
 
     /**
      * Add an object to the array
+     *
      * @param item to be added
      */
     public void add(final T item)
@@ -31,6 +34,7 @@ final class Manager<T>
 
     /**
      * Set the value of an object in the array
+     *
      * @param index position of object in the array
      * @param value object to be set at index
      */
@@ -41,6 +45,7 @@ final class Manager<T>
 
     /**
      * Remove an object from the array
+     *
      * @param index position of object in the array
      */
     public void delete(final int index)
