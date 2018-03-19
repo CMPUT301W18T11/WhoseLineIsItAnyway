@@ -25,11 +25,14 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.DataSource;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.MockDataSource;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.TaskStatus;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
+/**
+ * A base class which includes a navigation drawer and options menu.
+ * Simply extend this activity from any activity you want to have a navigation drawer.
+ */
 public class NavigatorActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
 {
