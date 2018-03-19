@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.model;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,7 @@ import java.util.ArrayList;
  *
  * @param <T> The object type in the array
  */
-final class Manager<T>
+public final class Manager<T>
 {
     private final ArrayList<T> items = new ArrayList<>();
 

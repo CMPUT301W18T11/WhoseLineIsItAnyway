@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.model;
 
 /**
  * Created by lucas on 2018-03-08.

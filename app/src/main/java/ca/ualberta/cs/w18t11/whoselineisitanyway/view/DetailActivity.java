@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,15 @@ import android.widget.TextView;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+
+import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Bid;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detail;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detailable;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.EmailAddress;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.PhoneNumber;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Task;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.User;
 
 public class DetailActivity extends AppCompatActivity
 {
@@ -65,11 +74,8 @@ public class DetailActivity extends AppCompatActivity
         {
             if (intent.getSerializableExtra(Detailable.DATA_DETAIL_LIST) != null)
             {
-                for (Detail detail : (ArrayList<Detail>) intent
-                        .getSerializableExtra(Detailable.DATA_DETAIL_LIST))
-                {
-                    details.add(detail);
-                }
+                details.addAll((ArrayList<Detail>) intent
+                        .getSerializableExtra(Detailable.DATA_DETAIL_LIST));
                 rowAdapter.notifyDataSetChanged();
             }
             if (intent.getStringExtra(Detailable.DATA_DETAIL_TITLE) != null)

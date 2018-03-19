@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,9 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Task;
 
 // TODO Ask about detailable and how it is supposed to be implemented.
 

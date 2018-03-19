@@ -6,6 +6,10 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Bid;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Manager;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Task;
+
 public class ManagerUnitTest
 {
     @Test(expected = IndexOutOfBoundsException.class)

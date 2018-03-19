@@ -4,6 +4,8 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.TextValidator;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

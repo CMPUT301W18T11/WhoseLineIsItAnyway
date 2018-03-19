@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -11,6 +11,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.EmailAddress;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.PhoneNumber;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.TextValidator;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.TextValidatorResult;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.User;
 
 /**
  * This is just a generic activity for implementing parts of code; it is not intended to run as part of the app

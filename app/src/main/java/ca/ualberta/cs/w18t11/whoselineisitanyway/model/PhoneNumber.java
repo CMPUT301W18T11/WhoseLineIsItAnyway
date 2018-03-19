@@ -1,8 +1,8 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.model;
 
 import java.util.Objects;
 
-final class PhoneNumber
+public final class PhoneNumber
 {
     private final int countryCode;
 
@@ -12,10 +12,10 @@ final class PhoneNumber
 
     private final int lineNumber;
 
-    PhoneNumber(final int countryCode,
-                final int areaCode,
-                final int exchangeCode,
-                final int lineNumber)
+    public PhoneNumber(final int countryCode,
+                       final int areaCode,
+                       final int exchangeCode,
+                       final int lineNumber)
     {
         this.countryCode = countryCode;
         this.areaCode = areaCode;
@@ -23,22 +23,22 @@ final class PhoneNumber
         this.lineNumber = lineNumber;
     }
 
-    final int getCountryCode()
+    public final int getCountryCode()
     {
         return this.countryCode;
     }
 
-    final int getAreaCode()
+    public final int getAreaCode()
     {
         return this.areaCode;
     }
 
-    final int getExchangeCode()
+    public final int getExchangeCode()
     {
         return this.exchangeCode;
     }
 
-    final int getLineNumber()
+    public final int getLineNumber()
     {
         return this.lineNumber;
     }

@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+
+import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detailable;
 
 public class DetailableListActivity extends NavigatorActivity
 {

@@ -1,14 +1,14 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.model;
 
 import java.util.Objects;
 
-final class EmailAddress
+public final class EmailAddress
 {
     private final String localPart;
 
     private final String domain;
 
-    EmailAddress(final String localPart, final String domain)
+    public EmailAddress(final String localPart, final String domain)
     {
         if (localPart.length() == 0)
         {
@@ -24,12 +24,12 @@ final class EmailAddress
         this.domain = domain;
     }
 
-    final String getLocalPart()
+    public final String getLocalPart()
     {
         return this.localPart;
     }
 
-    final String getDomain()
+    public final String getDomain()
     {
         return this.domain;
     }

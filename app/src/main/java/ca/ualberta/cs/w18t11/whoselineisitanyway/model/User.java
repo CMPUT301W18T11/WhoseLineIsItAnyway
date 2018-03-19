@@ -1,10 +1,13 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.model;
 
 import android.content.Context;
 import android.content.Intent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
+import io.searchbox.annotations.JestId;
 
 /**
  * User is a class for storing and managing the information related to any user of the app.
@@ -14,7 +17,7 @@ import java.util.ArrayList;
  * @author Samuel Dolha
  * @version 1.0
  */
-final class User implements Detailable, Serializable
+public final class User implements Detailable, Serializable
 {
     @JestId
     private final String id;
@@ -33,7 +36,8 @@ final class User implements Detailable, Serializable
      * @see EmailAddress
      * @see PhoneNumber
      */
-    User(final EmailAddress emailAddress, final PhoneNumber phoneNumber, final String username)
+    public User(final EmailAddress emailAddress, final PhoneNumber phoneNumber,
+                final String username)
     {
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
@@ -45,7 +49,7 @@ final class User implements Detailable, Serializable
      *
      * @return String representation of the User's id
      */
-    final String getID()
+    public final String getID()
     {
         return this.id;
     }
@@ -56,14 +60,9 @@ final class User implements Detailable, Serializable
      * @return EmailAddress object representation of User's email address
      * @see EmailAddress
      */
-    final EmailAddress getEmailAddress()
+    public final EmailAddress getEmailAddress()
     {
         return this.emailAddress;
-    }
-
-    final String getDocId()
-    {
-        return this.DocId;
     }
 
     /**
@@ -72,7 +71,7 @@ final class User implements Detailable, Serializable
      * @return PhoneNumber object representation of the User's phone number
      * @see PhoneNumber
      */
-    final PhoneNumber getPhoneNumber()
+    public final PhoneNumber getPhoneNumber()
     {
         return this.phoneNumber;
     }
@@ -83,7 +82,7 @@ final class User implements Detailable, Serializable
      * @return Manager containing a list of Task objects
      * @see Manager
      */
-    final Manager<Task> getRequestedTasks()
+    public final Manager<Task> getRequestedTasks()
     {
         return this.requestedTasks;
     }
@@ -94,7 +93,7 @@ final class User implements Detailable, Serializable
      * @return Manager containing a list of Task objects
      * @see Manager
      */
-    final Manager<Task> getAssignedTasks()
+    public final Manager<Task> getAssignedTasks()
     {
         return this.assignedTasks;
     }

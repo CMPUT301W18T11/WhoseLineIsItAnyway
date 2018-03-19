@@ -3,6 +3,8 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 import org.junit.Assert;
 import org.junit.Test;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.PhoneNumber;
+
 public final class PhoneNumberUnitTest
 {
     @Test

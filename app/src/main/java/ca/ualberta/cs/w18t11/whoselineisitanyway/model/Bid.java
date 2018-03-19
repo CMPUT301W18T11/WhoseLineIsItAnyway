@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.model;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
+
 /**
  * Bid is a class for storing and managing information associated with a bid made by a user on
  * any task.
@@ -14,7 +16,7 @@ import java.util.ArrayList;
  * @author Mark Griffith
  * @version 1.0
  */
-final class Bid implements Detailable, Serializable
+public final class Bid implements Detailable, Serializable
 {
     private final String providerId; // The id of the User who made the bid
 
@@ -30,7 +32,7 @@ final class Bid implements Detailable, Serializable
      * @param value      The amount bidded
      * @throws IllegalArgumentException if either providerId or taskId are empty or Bid is <= 0
      */
-    Bid(final String providerId, final String taskId, final BigDecimal value)
+    public Bid(final String providerId, final String taskId, final BigDecimal value)
             throws IllegalArgumentException
     {
         if (providerId.isEmpty())
@@ -43,7 +45,7 @@ final class Bid implements Detailable, Serializable
             throw new IllegalArgumentException("Task ID cannot be an empty string");
         }
 
-        if (value.compareTo(BigDecimal.ONE) <= 0)
+        if (value.compareTo(BigDecimal.ZERO) <= 0)
         {
             throw new IllegalArgumentException("Bid value must be greater than 0");
         }
@@ -58,7 +60,7 @@ final class Bid implements Detailable, Serializable
      *
      * @return String representation of the User's id
      */
-    final String getProviderId()
+    public final String getProviderId()
     {
         return this.providerId;
     }
@@ -68,7 +70,7 @@ final class Bid implements Detailable, Serializable
      *
      * @return String representation of the Task's title
      */
-    final String getTaskId()
+    public final String getTaskId()
     {
         return this.taskId;
     }
@@ -78,7 +80,7 @@ final class Bid implements Detailable, Serializable
      *
      * @return BigDecimal value of the Bid amount
      */
-    final BigDecimal getValue()
+    public final BigDecimal getValue()
     {
         return this.value;
     }

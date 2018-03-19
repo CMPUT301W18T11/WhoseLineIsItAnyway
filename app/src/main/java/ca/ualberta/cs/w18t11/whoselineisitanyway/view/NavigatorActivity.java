@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +17,14 @@ import android.widget.FrameLayout;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+
+import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Bid;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detailable;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.EmailAddress;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.PhoneNumber;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Task;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.User;
 
 public class NavigatorActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener

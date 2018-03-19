@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.model;
 
 import java.util.ArrayList;
 
@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * @version 0.1
  * @see Rating
  */
-final class RatingCollector
+public final class RatingCollector
 {
     private final ArrayList<Rating> ratings = new ArrayList<>();
     private int avgRating = 0;                              // Holds the overall average agg. rating
@@ -47,7 +47,7 @@ final class RatingCollector
      *
      * @param rate A rating object to be added to the collection
      */
-    final void addRating(final Rating rate)
+    public final void addRating(final Rating rate)
     {
         this.ratings.add(rate);
         this.update();
@@ -59,7 +59,7 @@ final class RatingCollector
      * @param index index of the rating; this should correspond with the listview likely to display
      * @return Rating at specific index
      */
-    final Rating getRating(final int index)
+    public final Rating getRating(final int index)
     {
         return this.ratings.get(index);
     }

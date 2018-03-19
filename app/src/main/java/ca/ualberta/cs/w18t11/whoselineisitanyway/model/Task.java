@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.model;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,6 +6,8 @@ import android.content.Intent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.UUID;
+
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 
 /**
  * Task is a class for storing and managing the information assciated with a task created by
@@ -23,7 +25,7 @@ import java.util.UUID;
  * @version 1.0
  * @see TaskStatus
  */
-final class Task implements Detailable, Serializable
+public final class Task implements Detailable, Serializable
 {
     private final UUID id;
     private final String requesterId;
@@ -42,7 +44,7 @@ final class Task implements Detailable, Serializable
      * @param providerId  unique identifier of the provider
      * @throws IllegalArgumentException Either title or description are outside specified bounds
      */
-    Task(final String title, final String description, String requesterId, String providerId)
+    public Task(final String title, final String description, String requesterId, String providerId)
             throws IllegalArgumentException
     {
         if (title.length() > 30)
@@ -73,7 +75,7 @@ final class Task implements Detailable, Serializable
      * @param requesterId unique identifier of the requester
      * @throws IllegalArgumentException Either title or description are outside specified bounds
      */
-    Task(final String title, final String description, String requesterId)
+    public Task(final String title, final String description, String requesterId)
             throws IllegalArgumentException
     {
         this(title, description, requesterId, null);
@@ -85,7 +87,7 @@ final class Task implements Detailable, Serializable
      *
      * @return String representation of the Task's title
      */
-    final String getTitle()
+    public final String getTitle()
     {
         return this.title;
     }
@@ -95,7 +97,7 @@ final class Task implements Detailable, Serializable
      *
      * @return String representation of the Task's description
      */
-    final String getDescription()
+    public final String getDescription()
     {
         return this.description;
     }
@@ -105,7 +107,7 @@ final class Task implements Detailable, Serializable
      *
      * @return TaskStatus representation of the Task's status
      */
-    final TaskStatus getStatus()
+    public final TaskStatus getStatus()
     {
         return this.status;
     }
@@ -115,7 +117,7 @@ final class Task implements Detailable, Serializable
      *
      * @return String representation of the Task's id
      */
-    final UUID getId()
+    public final UUID getId()
     {
         return this.id;
     }
@@ -125,7 +127,7 @@ final class Task implements Detailable, Serializable
      *
      * @return TaskStatus representation of the Task's status
      */
-    final String getRequesterId()
+    public final String getRequesterId()
     {
         return this.requesterId;
     }
@@ -135,7 +137,7 @@ final class Task implements Detailable, Serializable
      *
      * @return TaskStatus representation of the Task's status
      */
-    final String getProviderId()
+    public final String getProviderId()
     {
         return this.providerId;
     }

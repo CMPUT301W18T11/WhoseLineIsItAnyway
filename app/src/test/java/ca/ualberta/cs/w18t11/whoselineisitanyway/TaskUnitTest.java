@@ -5,6 +5,9 @@ import org.junit.Test;
 
 import java.util.UUID;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Task;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.TaskStatus;
+
 public final class TaskUnitTest
 {
     @Test

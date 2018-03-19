@@ -5,20 +5,22 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Bid;
+
 public final class BidUnitTest
 {
     @Test
     public final void testGetProviderId()
     {
         final String id = "provider";
-        Assert.assertEquals(id, new Bid(id, "task", new BigDecimal(1)).getProviderId());
+        Assert.assertEquals(id, new Bid(id, "task", BigDecimal.ONE).getProviderId());
     }
 
     @Test
     public final void testGetTaskId()
     {
         final String id = "task";
-        Assert.assertEquals(id, new Bid("provider", id, new BigDecimal(1)).getTaskId());
+        Assert.assertEquals(id, new Bid("provider", id, BigDecimal.ONE).getTaskId());
     }
 
     @Test

@@ -1,6 +1,8 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.model;
 
 import android.content.Context;
+
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 
 public interface Detailable
 {

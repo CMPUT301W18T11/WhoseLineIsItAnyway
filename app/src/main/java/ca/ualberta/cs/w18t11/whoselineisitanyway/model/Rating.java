@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.model;
 
 /**
  * Rating is a generalized class to hold ratings data about a user's performance in fulfilling
@@ -14,7 +14,7 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
  * @version 0.1
  * @see RatingCollector
  */
-final class Rating
+public final class Rating
 {
     private int ttcRating = 0;                        // Time to completion
 
@@ -34,7 +34,7 @@ final class Rating
      * @param profRating    [0-5] A rating of the professionalism of conduct in performance thereof
      * @throws IllegalArgumentException Any of the ratings are outside of their designated bounds
      */
-    Rating(final int qualityRating, final int ttcRating, final int profRating)
+    public Rating(final int qualityRating, final int ttcRating, final int profRating)
             throws IllegalArgumentException
     {
         // Check ranges of all values, throw error if these are outside expectations
@@ -65,7 +65,7 @@ final class Rating
      *
      * @return the integer value of a quality rating stored in this review
      */
-    final int getQualityRating()
+    public final int getQualityRating()
     {
         return this.qualityRating;
     }
@@ -92,7 +92,7 @@ final class Rating
      *
      * @return the time-to-completion rating for this particular review
      */
-    final int getTtcRating()
+    public final int getTtcRating()
     {
         return this.ttcRating;
     }
@@ -103,7 +103,7 @@ final class Rating
      * @param rating [0-5] the speed of completion of the service performed
      * @throws IllegalArgumentException The provided rating is outside of the designated bounds
      */
-    final void setTtcRating(final int rating) throws IllegalArgumentException
+    public final void setTtcRating(final int rating) throws IllegalArgumentException
     {
         if (!(0 <= rating && rating <= 5))
         {
@@ -119,7 +119,7 @@ final class Rating
      *
      * @return the integer value of the professionalism rating for this review
      */
-    final int getProfRating()
+    public final int getProfRating()
     {
         return this.profRating;
     }
@@ -129,7 +129,7 @@ final class Rating
      *
      * @param rating [0-5] the professionalism of the person performing the service
      */
-    final void setProfRating(final int rating) throws IllegalArgumentException
+    public final void setProfRating(final int rating) throws IllegalArgumentException
     {
         if (!(0 <= rating && rating <= 5))
         {
@@ -145,7 +145,7 @@ final class Rating
      *
      * @return average of all metrics in a review
      */
-    final int getAggRating()
+    public final int getAggRating()
     {
         return this.aggRating;
     }
