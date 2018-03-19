@@ -23,4 +23,40 @@ public interface DataSource {
      * @return ArrayList containing all of the users
      */
     User[] getAllUsers();
+
+    /**
+     * Add a new task to the data source
+     * Return Boolean representing if the addition was succesful
+     */
+    Boolean addTask(Task task);
+
+    /**
+     * Add a new bid to the data source
+     * Return Boolean representing if the addition was succesful
+     */
+    Boolean addBid(Bid bid);
+
+    /**
+     * Add a new user to the data source
+     * Return Boolean representing if the addition was succesful
+     */
+    Boolean addUser(User user);
+
+    /**
+     * Remove a  task from the data source
+     * Return Boolean representing if the remove was succesful
+     */
+    Boolean removeTask(Task task);
+
+    /**
+     * Remove a bid from the data source
+     * Return Boolean representing if the addition was succesful
+     */
+    Boolean removeBid(Bid bid);
+
+    /**
+     * Remove user from the data source
+     * Return Boolean representing if the addition was succesful
+     */
+    Boolean removeUser(User user);
 }

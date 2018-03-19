@@ -19,7 +19,8 @@ public class MockDataSource implements DataSource {
     private ArrayList<Bid> allBids = new ArrayList<>();
     private ArrayList<User> allUsers = new ArrayList<>();
 
-    public MockDataSource() {
+    public MockDataSource()
+    {
 
         // Build a list of users
         User currentUser = new User(new EmailAddress("bob", "gmail.com"),
@@ -63,24 +64,69 @@ public class MockDataSource implements DataSource {
     /**
      * @return ArrayList containing all of the tasks
      */
-    public Task[] getAllTasks()
-    {
+    public Task[] getAllTasks() {
         return allTasks.toArray(new Task[0]);
     }
 
     /**
      * @return ArrayList containing all of the bids
      */
-    public Bid[] getAllBids()
-    {
+    public Bid[] getAllBids() {
         return allBids.toArray(new Bid[0]);
     }
 
     /**
      * @return ArrayList containing all of the users
      */
-    public User[] getAllUsers()
-    {
+    public User[] getAllUsers() {
         return allUsers.toArray(new User[0]);
+    }
+
+    /**
+     * Add a new task to the data source
+     * Return Boolean representing if the addition was succesful
+     */
+    public Boolean addTask(Task task) {
+        return true;
+    }
+
+    /**
+     * Add a new bid to the data source
+     * Return Boolean representing if the addition was succesful
+     */
+    public Boolean addBid(Bid bid) {
+        return true;
+    }
+
+    /**
+     * Add a new user to the data source
+     * Return Boolean representing if the addition was succesful
+     */
+    public Boolean addUser(User user) {
+        return true;
+    }
+
+    /**
+     * Remove a  task from the data source
+     * Return Boolean representing if the remove was succesful
+     */
+    public Boolean removeTask(Task task) {
+        return true;
+    }
+
+    /**
+     * Remove a bid from the data source
+     * Return Boolean representing if the addition was succesful
+     */
+    public Boolean removeBid(Bid bid) {
+        return true;
+    }
+
+    /**
+     * Remove user from the data source
+     * Return Boolean representing if the addition was succesful
+     */
+    public Boolean removeUser(User user) {
+        return true;
     }
 }
