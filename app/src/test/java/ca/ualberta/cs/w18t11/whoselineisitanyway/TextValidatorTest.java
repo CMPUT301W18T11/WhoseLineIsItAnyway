@@ -4,19 +4,19 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.Validator;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author Lucas Thalen
- *         Tests for the Validator model class
+ *         Tests for the TextValidator model class
  */
 
-public final class ValidatorTest
+public final class TextValidatorTest
 {
-    final Validator validator = new Validator();
+    final TextValidator textValidator = new TextValidator();
 
     @Test
     // This checks that a complete phone number can be deconstructed
@@ -24,7 +24,7 @@ public final class ValidatorTest
     {
 
         String phone1 = "+1 (780) 432-9926";
-        ArrayList<String> res = validator.validatePhoneNumber(phone1, false).getComponents();
+        ArrayList<String> res = textValidator.validatePhoneNumber(phone1, false).getComponents();
         assertTrue(res.size() == 5);
         assertEquals(res.get(1), "1");
         assertEquals(res.get(2), "780");
@@ -40,9 +40,9 @@ public final class ValidatorTest
         String phone2 = "";
         String phone3 = "+1 ";
 
-        assertEquals(phone1, 1, validator.validatePhoneNumber(phone1, true).getErrorCode());
-        assertEquals(phone2, 1, validator.validatePhoneNumber(phone2, true).getErrorCode());
-        assertEquals(phone3, 1, validator.validatePhoneNumber(phone3, true).getErrorCode());
+        assertEquals(phone1, 1, textValidator.validatePhoneNumber(phone1, true).getErrorCode());
+        assertEquals(phone2, 1, textValidator.validatePhoneNumber(phone2, true).getErrorCode());
+        assertEquals(phone3, 1, textValidator.validatePhoneNumber(phone3, true).getErrorCode());
 
     }
 
@@ -53,8 +53,8 @@ public final class ValidatorTest
         String phone1 = ".1 (780) 111-1111";
         String phone2 = "+1 (909) 111-111.";
 
-        assertEquals(phone1, -1, validator.validatePhoneNumber(phone1, true).getErrorCode());
-        assertEquals(phone2, -1, validator.validatePhoneNumber(phone2, true).getErrorCode());
+        assertEquals(phone1, -1, textValidator.validatePhoneNumber(phone1, true).getErrorCode());
+        assertEquals(phone2, -1, textValidator.validatePhoneNumber(phone2, true).getErrorCode());
     }
 
     @Test
@@ -65,9 +65,9 @@ public final class ValidatorTest
         String phone2 = "780 111-111";
         String phone3 = "+1 (780)111-111";
 
-        assertEquals(phone1, -1, validator.validatePhoneNumber(phone1, true).getErrorCode());
-        assertEquals(phone2, -1, validator.validatePhoneNumber(phone2, true).getErrorCode());
-        assertEquals(phone3, -1, validator.validatePhoneNumber(phone3, true).getErrorCode());
+        assertEquals(phone1, -1, textValidator.validatePhoneNumber(phone1, true).getErrorCode());
+        assertEquals(phone2, -1, textValidator.validatePhoneNumber(phone2, true).getErrorCode());
+        assertEquals(phone3, -1, textValidator.validatePhoneNumber(phone3, true).getErrorCode());
     }
 
     @Test
@@ -77,8 +77,8 @@ public final class ValidatorTest
         String phone1 = "+22 (627) 111-2222";
         String phone2 = "+1 (780) 432-3399";
 
-        assertEquals(phone1, 1, validator.validatePhoneNumber(phone1, true).getErrorCode());
-        assertEquals(phone2, 1, validator.validatePhoneNumber(phone2, true).getErrorCode());
+        assertEquals(phone1, 1, textValidator.validatePhoneNumber(phone1, true).getErrorCode());
+        assertEquals(phone2, 1, textValidator.validatePhoneNumber(phone2, true).getErrorCode());
     }
 
     @Test
@@ -89,9 +89,9 @@ public final class ValidatorTest
         String phone2 = "";
         String phone3 = "+1 ";
 
-        assertEquals(phone1, -1, validator.validatePhoneNumber(phone1, false).getErrorCode());
-        assertEquals(phone2, -1, validator.validatePhoneNumber(phone2, false).getErrorCode());
-        assertEquals(phone3, -1, validator.validatePhoneNumber(phone1, false).getErrorCode());
+        assertEquals(phone1, -1, textValidator.validatePhoneNumber(phone1, false).getErrorCode());
+        assertEquals(phone2, -1, textValidator.validatePhoneNumber(phone2, false).getErrorCode());
+        assertEquals(phone3, -1, textValidator.validatePhoneNumber(phone1, false).getErrorCode());
     }
 
     @Test
@@ -102,9 +102,9 @@ public final class ValidatorTest
         String phone2 = "+l";
         String phone3 = "+1 )780) 111-1.11";
 
-        assertEquals(phone1, -1, validator.validatePhoneNumber(phone1, false).getErrorCode());
-        assertEquals(phone2, -1, validator.validatePhoneNumber(phone2, false).getErrorCode());
-        assertEquals(phone3, -1, validator.validatePhoneNumber(phone1, false).getErrorCode());
+        assertEquals(phone1, -1, textValidator.validatePhoneNumber(phone1, false).getErrorCode());
+        assertEquals(phone2, -1, textValidator.validatePhoneNumber(phone2, false).getErrorCode());
+        assertEquals(phone3, -1, textValidator.validatePhoneNumber(phone1, false).getErrorCode());
 
     }
 
@@ -115,8 +115,8 @@ public final class ValidatorTest
         String phone1 = "+1 (780) 432-9999";
         String phone2 = "+22 (909) 861-2245";
 
-        assertEquals(phone1, 1, validator.validatePhoneNumber(phone1, false).getErrorCode());
-        assertEquals(phone2, 1, validator.validatePhoneNumber(phone2, false).getErrorCode());
+        assertEquals(phone1, 1, textValidator.validatePhoneNumber(phone1, false).getErrorCode());
+        assertEquals(phone2, 1, textValidator.validatePhoneNumber(phone2, false).getErrorCode());
     }
 
     @Test
@@ -125,8 +125,8 @@ public final class ValidatorTest
         String email1 = "mt@hurn@live.c";
         String email2 = "att.ne@@t";
 
-        assertEquals(email1, -2, validator.validateEmail(email1, true).getErrorCode());
-        assertEquals(email2, -2, validator.validateEmail(email2, true).getErrorCode());
+        assertEquals(email1, -2, textValidator.validateEmail(email1, true).getErrorCode());
+        assertEquals(email2, -2, textValidator.validateEmail(email2, true).getErrorCode());
     }
 
     @Test
@@ -169,7 +169,7 @@ public final class ValidatorTest
         for (int i = 0; i < emailList.size(); i++)
         {
             assertEquals(emailList.get(i), 1,
-                    validator.validateEmail(emailList.get(i), true).getErrorCode());
+                    textValidator.validateEmail(emailList.get(i), true).getErrorCode());
         }
     }
 
@@ -187,7 +187,7 @@ public final class ValidatorTest
         for (int i = 0; i < emailList.size(); i++)
         {
             assertEquals(emailList.get(i), 1,
-                    validator.validateEmail(emailList.get(i), true).getErrorCode());
+                    textValidator.validateEmail(emailList.get(i), true).getErrorCode());
         }
     }
 
@@ -196,7 +196,7 @@ public final class ValidatorTest
     {
 
         String email1 = "testing@supreme.net";
-        ArrayList<String> res = validator.validateEmail(email1, false).getComponents();
+        ArrayList<String> res = textValidator.validateEmail(email1, false).getComponents();
         assertTrue(res.size() == 3);
         assertEquals(res.get(1), "testing");
         assertEquals(res.get(2), "supreme.net");
@@ -210,10 +210,10 @@ public final class ValidatorTest
         String curr3 = "$236";
         String curr4 = "3012.66";
 
-        assertEquals(curr1, 1, validator.validateCurrency(curr1, true).getErrorCode());
-        assertEquals(curr2, 1, validator.validateCurrency(curr2, true).getErrorCode());
-        assertEquals(curr3, 1, validator.validateCurrency(curr3, true).getErrorCode());
-        assertEquals(curr4, 1, validator.validateCurrency(curr4, true).getErrorCode());
+        assertEquals(curr1, 1, textValidator.validateCurrency(curr1, true).getErrorCode());
+        assertEquals(curr2, 1, textValidator.validateCurrency(curr2, true).getErrorCode());
+        assertEquals(curr3, 1, textValidator.validateCurrency(curr3, true).getErrorCode());
+        assertEquals(curr4, 1, textValidator.validateCurrency(curr4, true).getErrorCode());
     }
 
     @Test
@@ -224,10 +224,10 @@ public final class ValidatorTest
         String curr3 = "$";
         String curr4 = "";
 
-        assertEquals(curr1, 1, validator.validateCurrency(curr1, true).getErrorCode());
-        assertEquals(curr2, 1, validator.validateCurrency(curr2, true).getErrorCode());
-        assertEquals(curr3, 1, validator.validateCurrency(curr3, true).getErrorCode());
-        assertEquals(curr4, 1, validator.validateCurrency(curr4, true).getErrorCode());
+        assertEquals(curr1, 1, textValidator.validateCurrency(curr1, true).getErrorCode());
+        assertEquals(curr2, 1, textValidator.validateCurrency(curr2, true).getErrorCode());
+        assertEquals(curr3, 1, textValidator.validateCurrency(curr3, true).getErrorCode());
+        assertEquals(curr4, 1, textValidator.validateCurrency(curr4, true).getErrorCode());
     }
 
     @Test
@@ -235,7 +235,7 @@ public final class ValidatorTest
     public void currency_CompleteReturnsMatches()
     {
         String curr1 = "$0.99";
-        ArrayList<String> res = validator.validateCurrency(curr1, false).getComponents();
+        ArrayList<String> res = textValidator.validateCurrency(curr1, false).getComponents();
         assertTrue(res.size() == 2);
         assertEquals(res.get(1), "0.99");
 
@@ -246,7 +246,7 @@ public final class ValidatorTest
     public void currency_CompleteDecimalFail()
     {
         String curr1 = "996.";
-        assertEquals(curr1, -2, validator.validateCurrency(curr1, false).getErrorCode());
+        assertEquals(curr1, -2, textValidator.validateCurrency(curr1, false).getErrorCode());
 
     }
 }

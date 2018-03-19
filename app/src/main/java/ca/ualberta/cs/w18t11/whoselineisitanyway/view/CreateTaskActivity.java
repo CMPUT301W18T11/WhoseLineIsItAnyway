@@ -1,5 +1,6 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 
 // TODO Ask about detailable and how it is supposed to be implemented.
@@ -25,6 +27,8 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 public class CreateTaskActivity extends AppCompatActivity
 {
 
+    final private DataSourceManager DSM = DataSourceManager.getInstance();
+    private Task newTask;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -51,7 +55,6 @@ public class CreateTaskActivity extends AppCompatActivity
                 finish();
             }
         });
-        // finish();
     }
 
     /**
@@ -61,7 +64,22 @@ public class CreateTaskActivity extends AppCompatActivity
      */
     private void btn_Submit_onClick()
     {
+        // MOCK OFFLINE DATA STUFF
+        Button submit = (Button) findViewById(R.id.btn_Submit);
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String title = ((EditText) findViewById(R.id.etxt_Title)).getText().toString();
+                String descr = ((EditText) findViewById(R.id.etxt_Description)).getText().toString();
 
+                createTask(title, descr, "IMAGE_PLACEHOLDER");
+                if (! (newTask == null)) {
+                    DSM.getLocalDataSource().addTask(newTask);
+                }
+                finish();
+
+            }
+        });
 
         // TODO implement task creation backend
 
@@ -111,11 +129,11 @@ public class CreateTaskActivity extends AppCompatActivity
 
     // TODO Later release: Add image functionality (with preview?)
     // TODO replace placeholders with User ID object information; adjust parameters
-    private Task createTask(String title, String description, Object image)
+    private void createTask(String title, String description, Object image)
     {
         Task newTask = new Task(title, description, "PLACEHOLDER_REQUESTER_ID",
                 "PLACEHOLDER_PROVIDER_ID");
-        return newTask;
+        this.newTask = newTask;
     }
 
 }
