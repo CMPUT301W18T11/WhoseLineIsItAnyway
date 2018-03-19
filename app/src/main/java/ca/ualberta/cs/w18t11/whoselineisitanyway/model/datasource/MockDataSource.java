@@ -10,15 +10,20 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 /**
- * Created by bradofrim on 2018-03-19.
+ * Mock data used for testing and demo purposes
+ *
+ * @author Brad Ofrim
+ * @version 1.0
  */
-
 public class MockDataSource implements DataSource {
 
     private ArrayList<Task> allTasks = new ArrayList<>();
     private ArrayList<Bid> allBids = new ArrayList<>();
     private ArrayList<User> allUsers = new ArrayList<>();
 
+    /**
+     * Build a bunch of test data.
+     */
     public MockDataSource()
     {
 
