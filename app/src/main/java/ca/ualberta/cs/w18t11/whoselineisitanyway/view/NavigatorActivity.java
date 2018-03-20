@@ -131,8 +131,6 @@ public class NavigatorActivity extends AppCompatActivity
         Task[] allTasks = dataSource.getAllTasks();
         Bid[] allBids = dataSource.getAllBids();
 
-        // TODO: need to account for current user based on whoever is logged in
-        DataSourceManager.getInstance().setCurrentUser("bob");
         User currentUser = DataSourceManager.getInstance().getCurrentUser();
 
         if (id == R.id.all_tasks)
