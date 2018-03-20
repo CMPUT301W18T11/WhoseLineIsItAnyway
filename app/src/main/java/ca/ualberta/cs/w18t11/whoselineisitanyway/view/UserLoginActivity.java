@@ -26,7 +26,7 @@ public class UserLoginActivity extends AppCompatActivity
 {
     // A dummy authentication store containing known user names
     private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo", "bar", "bob"
+            "bob", "alice", "eve"
     };
 
     // Keep track of the login task to ensure we can cancel it if requested
