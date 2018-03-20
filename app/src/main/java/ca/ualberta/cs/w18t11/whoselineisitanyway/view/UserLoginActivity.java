@@ -3,6 +3,8 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.DataSourceManager;
 
 
 /**
@@ -23,7 +26,7 @@ public class UserLoginActivity extends AppCompatActivity
 {
     // A dummy authentication store containing known user names
     private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo", "bar"
+            "bob", "alice", "eve"
     };
 
     // Keep track of the login task to ensure we can cancel it if requested
@@ -100,7 +103,7 @@ public class UserLoginActivity extends AppCompatActivity
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            authTask = new UserLoginTask(username);
+            authTask = new UserLoginTask(this, username);
             authTask.execute((Void) null);
         }
     }
@@ -163,9 +166,11 @@ public class UserLoginActivity extends AppCompatActivity
     {
 
         private final String username;
+        private final Context context;
 
-        UserLoginTask(String username)
+        UserLoginTask(Context context, String username)
         {
+            this.context = context;
             this.username = username;
         }
 
@@ -190,13 +195,16 @@ public class UserLoginActivity extends AppCompatActivity
                 if (pieces[0].equals(username))
                 {
                     // Account exists, return true if the password matches.
+                    DataSourceManager.getInstance().setCurrentUser(username);
+                    Intent intent = new Intent(context, NavigatorActivity.class);
+                    context.startActivity(intent);
                     return true;
                 }
             }
 
             // TODO: register the new account here.
 
-            return true;
+            return false;
         }
 
         @Override
