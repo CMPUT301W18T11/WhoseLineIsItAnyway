@@ -9,8 +9,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detail;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detailable;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailable;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 

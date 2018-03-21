@@ -11,7 +11,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detailable;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailable;
 
 /**
  * An activity for displaying a list of Detailable abjects.

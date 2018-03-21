@@ -15,19 +15,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detailable;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailable;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.DataSource;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.DataSourceManager;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.MockDataSource;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 /**

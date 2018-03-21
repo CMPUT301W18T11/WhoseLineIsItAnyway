@@ -7,8 +7,8 @@ import android.support.annotation.NonNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detail;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detailable;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailable;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 

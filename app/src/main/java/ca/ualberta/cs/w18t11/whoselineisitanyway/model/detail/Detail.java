@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway.model;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail;
 
 
 import android.content.Intent;

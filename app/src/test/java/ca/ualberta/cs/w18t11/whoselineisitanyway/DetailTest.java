@@ -5,7 +5,7 @@ import android.content.Intent;
 import org.junit.Assert;
 import org.junit.Test;
 
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detail;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 
 public class DetailTest
 {

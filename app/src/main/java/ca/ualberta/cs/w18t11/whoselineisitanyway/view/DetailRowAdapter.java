@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detail;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 
 public class DetailRowAdapter extends ArrayAdapter<Detail>
 {
