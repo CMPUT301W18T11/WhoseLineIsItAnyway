@@ -38,7 +38,8 @@ public class CreateTaskActivity extends AppCompatActivity
         // ADD EVENT HANDLERS FOR CONTROLS
         btn_Cancel_onClick();
         btn_Submit_onClick();
-        etxt_Title_afterTextChanged();
+        textFields_afterTextChanged(R.id.etxt_Title, 30); // Set Length warning for Title
+        textFields_afterTextChanged(R.id.etxt_Description, 300); // Set Length warning for Description
     }
 
     /**
@@ -95,9 +96,9 @@ public class CreateTaskActivity extends AppCompatActivity
      * EVENTHANDLER: This handles changes in the Title field to warn the user when they have
      * approached the character limit of the field.
      */
-    private void etxt_Title_afterTextChanged()
+    private void textFields_afterTextChanged(final int ID, final int maxLen)
     {
-        final EditText textbox = (EditText) findViewById(R.id.etxt_Title);
+        final EditText textbox = (EditText) findViewById(ID);
         textbox.addTextChangedListener(new TextWatcher()
         {
             @Override
@@ -109,14 +110,14 @@ public class CreateTaskActivity extends AppCompatActivity
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2)
             {
-            }
+            } // Useless mandatory empty methods of the TextChangedEvent Handlers
 
             @Override
             public void afterTextChanged(Editable editable)
             {
-                if (textbox.getText().length() == 30)
+                if (textbox.getText().length() == maxLen)
                 {
-                    textbox.setError("Task titles have a limit of 30 characters.");
+                    textbox.setError("This field has a limit of " + String.valueOf(maxLen) + " characters.");
                 }
                 else
                 {
