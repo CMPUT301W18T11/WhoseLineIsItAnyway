@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailable;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 
 /**
@@ -18,7 +18,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
  * @author Mark Griffith, Samuel Dolha
  * @version 2.0
  */
-public final class Bid implements Detailable, Serializable
+public final class Bid implements Detailed, Serializable
 {
     /**
      * An auto-generated, unique ID to support class versioning for Serializable.
@@ -112,8 +112,8 @@ public final class Bid implements Detailable, Serializable
         detailList.add(new Detail("Value", getValue().toString(), null));
 
         Intent intent = new Intent(context, detailActivityClass);
-        intent.putExtra(Detailable.DATA_DETAIL_LIST, detailList);
-        intent.putExtra(Detailable.DATA_DETAIL_TITLE, "Bid");
+        intent.putExtra(Detailed.DATA_DETAIL_LIST, detailList);
+        intent.putExtra(Detailed.DATA_DETAIL_TITLE, "Bid");
 
         context.startActivity(intent);
     }

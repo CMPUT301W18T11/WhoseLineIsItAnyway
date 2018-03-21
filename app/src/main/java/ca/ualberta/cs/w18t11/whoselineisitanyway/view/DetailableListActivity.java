@@ -11,10 +11,10 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailable;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 
 /**
- * An activity for displaying a list of Detailable abjects.
+ * An activity for displaying a list of Detailed abjects.
  * Defines the action taken when clicking on each object in the list.
  */
 public class DetailableListActivity extends NavigatorActivity
@@ -23,8 +23,8 @@ public class DetailableListActivity extends NavigatorActivity
     static final String DATA_TITLE = "com.whoselineisitanyway.DATA_DETAILABLE_TITLE";
     private String title;
     private ListView detailsLV;
-    private ArrayList<Detailable> detailList;
-    private ArrayAdapter<Detailable> adapter;
+    private ArrayList<Detailed> detailList;
+    private ArrayAdapter<Detailed> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -37,11 +37,11 @@ public class DetailableListActivity extends NavigatorActivity
         Intent intent = getIntent();
         if (intent.getSerializableExtra(DATA_DETAILABLE_LIST) != null)
         {
-            detailList = (ArrayList<Detailable>) intent.getSerializableExtra(DATA_DETAILABLE_LIST);
+            detailList = (ArrayList<Detailed>) intent.getSerializableExtra(DATA_DETAILABLE_LIST);
         }
         else
         {
-            detailList = new ArrayList<Detailable>();
+            detailList = new ArrayList<Detailed>();
         }
         if (intent.getSerializableExtra(DATA_TITLE) != null)
         {
@@ -54,7 +54,7 @@ public class DetailableListActivity extends NavigatorActivity
 
         getSupportActionBar().setTitle(title);
 
-        adapter = new ArrayAdapter<Detailable>(this, R.layout.list_object, detailList);
+        adapter = new ArrayAdapter<Detailed>(this, R.layout.list_object, detailList);
         detailsLV = (ListView) findViewById(R.id.detail_LV);
         detailsLV.setAdapter(adapter);
 
@@ -67,7 +67,7 @@ public class DetailableListActivity extends NavigatorActivity
             public void onItemClick(AdapterView<?> adapter, View v, int position, long id)
             {
                 // Show the detail view of the selected item
-                Detailable detail = (Detailable) adapter.getItemAtPosition(position);
+                Detailed detail = (Detailed) adapter.getItemAtPosition(position);
                 detail.showDetail(DetailActivity.class, v.getContext());
             }
         });

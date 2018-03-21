@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailable;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
@@ -70,17 +70,17 @@ public class DetailActivity extends AppCompatActivity
     private void setupFromIntent()
     {
         Intent intent = getIntent();
-        if (intent.getStringExtra(Detailable.DATA_DETAIL_TITLE) != null)
+        if (intent.getStringExtra(Detailed.DATA_DETAIL_TITLE) != null)
         {
-            if (intent.getSerializableExtra(Detailable.DATA_DETAIL_LIST) != null)
+            if (intent.getSerializableExtra(Detailed.DATA_DETAIL_LIST) != null)
             {
                 details.addAll((ArrayList<Detail>) intent
-                        .getSerializableExtra(Detailable.DATA_DETAIL_LIST));
+                        .getSerializableExtra(Detailed.DATA_DETAIL_LIST));
                 rowAdapter.notifyDataSetChanged();
             }
-            if (intent.getStringExtra(Detailable.DATA_DETAIL_TITLE) != null)
+            if (intent.getStringExtra(Detailed.DATA_DETAIL_TITLE) != null)
             {
-                title.setText(intent.getStringExtra(Detailable.DATA_DETAIL_TITLE));
+                title.setText(intent.getStringExtra(Detailed.DATA_DETAIL_TITLE));
             }
         }
         else

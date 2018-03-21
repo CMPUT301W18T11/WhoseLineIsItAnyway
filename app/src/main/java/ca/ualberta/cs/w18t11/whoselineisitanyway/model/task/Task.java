@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailable;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 
@@ -20,7 +20,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
  * @author Samuel Dolha
  * @version 2.0
  */
-public final class Task implements Detailable, Serializable
+public final class Task implements Detailed, Serializable
 {
     /**
      * An auto-generated, unique ID to support class versioning for Serializable.
@@ -399,8 +399,8 @@ public final class Task implements Detailable, Serializable
         }
 
         Intent intent = new Intent(context, detailActivityClass);
-        intent.putExtra(Detailable.DATA_DETAIL_LIST, detailList);
-        intent.putExtra(Detailable.DATA_DETAIL_TITLE, "Task");
+        intent.putExtra(Detailed.DATA_DETAIL_LIST, detailList);
+        intent.putExtra(Detailed.DATA_DETAIL_TITLE, "Task");
 
         context.startActivity(intent);
     }

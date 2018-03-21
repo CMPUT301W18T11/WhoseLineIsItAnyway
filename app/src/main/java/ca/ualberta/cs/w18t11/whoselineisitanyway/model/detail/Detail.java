@@ -42,7 +42,7 @@ public final class Detail implements Serializable
      * @param title         String representing the detail title
      * @param information   String representing the detail's information
      * @param linkingIntent Intent to be used to show to another activity
-     * @see Detailable
+     * @see Detailed
      */
     public Detail(@NonNull final String title, @NonNull final String information,
                   @Nullable final Intent linkingIntent)

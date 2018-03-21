@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailable;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 
@@ -18,7 +18,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
  * @author Samuel Dolha
  * @version 2.0
  */
-public final class User implements Detailable, Serializable
+public final class User implements Detailed, Serializable
 {
     /**
      * An auto-generated, unique ID to support class versioning for Serializable.
@@ -146,8 +146,8 @@ public final class User implements Detailable, Serializable
         detailList.add(new Detail("Phone Number", getPhoneNumber().toString(), null));
 
         Intent intent = new Intent(context, detailActivityClass);
-        intent.putExtra(Detailable.DATA_DETAIL_LIST, detailList);
-        intent.putExtra(Detailable.DATA_DETAIL_TITLE, "User");
+        intent.putExtra(Detailed.DATA_DETAIL_LIST, detailList);
+        intent.putExtra(Detailed.DATA_DETAIL_TITLE, "User");
 
         context.startActivity(intent);
     }

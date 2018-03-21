@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailable;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.DataSource;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.DataSourceManager;
@@ -122,7 +122,7 @@ public class NavigatorActivity extends AppCompatActivity
         int id = item.getItemId();
         Intent outgoingIntent = new Intent(this, DetailableListActivity.class);
         String outgoingTitle = "List";
-        ArrayList<Detailable> detailables = new ArrayList<>();
+        ArrayList<Detailed> detaileds = new ArrayList<>();
         DataSource dataSource = DataSourceManager.getInstance().getLocalDataSource();
         Task[] allTasks = dataSource.getAllTasks();
         Bid[] allBids = dataSource.getAllBids();
@@ -133,7 +133,7 @@ public class NavigatorActivity extends AppCompatActivity
         {
             Log.i("NAVBAR: ", "All Tasks Selected");
             outgoingTitle = "All Tasks";
-            detailables.addAll(Arrays.asList(allTasks));
+            detaileds.addAll(Arrays.asList(allTasks));
         }
         else if (id == R.id.my_tasks)
         {
@@ -143,7 +143,7 @@ public class NavigatorActivity extends AppCompatActivity
             {
                 if (task.getRequesterId().equals(currentUser.getUsername()))
                 {
-                    detailables.add(task);
+                    detaileds.add(task);
                 }
             }
 
@@ -157,7 +157,7 @@ public class NavigatorActivity extends AppCompatActivity
                 if (task.getProviderId() != null && task.getProviderId()
                         .equals(currentUser.getUsername()))
                 {
-                    detailables.add(task);
+                    detaileds.add(task);
                 }
             }
         }
@@ -175,7 +175,7 @@ public class NavigatorActivity extends AppCompatActivity
             {
                 if (bid.getProviderId().equals(currentUser.getUsername()))
                 {
-                    detailables.add(bid);
+                    detaileds.add(bid);
                 }
             }
         }
@@ -189,7 +189,7 @@ public class NavigatorActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
 
         outgoingIntent.putExtra(DetailableListActivity.DATA_TITLE, outgoingTitle);
-        outgoingIntent.putExtra(DetailableListActivity.DATA_DETAILABLE_LIST, detailables);
+        outgoingIntent.putExtra(DetailableListActivity.DATA_DETAILABLE_LIST, detaileds);
 
         startActivity(outgoingIntent);
         finish();
