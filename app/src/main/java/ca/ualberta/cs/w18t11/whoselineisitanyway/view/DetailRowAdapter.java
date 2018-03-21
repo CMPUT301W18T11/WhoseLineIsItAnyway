@@ -54,7 +54,7 @@ public class DetailRowAdapter extends ArrayAdapter<Detail>
 
         // Set the values of the TextViews
         rowTitle.setText(details.get(position).getTitle());
-        rowInfo.setText(details.get(position).getInfo());
+        rowInfo.setText(details.get(position).getInformation());
 
         return detailRow;
     }

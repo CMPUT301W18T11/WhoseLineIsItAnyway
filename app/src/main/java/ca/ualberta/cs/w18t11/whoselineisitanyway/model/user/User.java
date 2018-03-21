@@ -141,9 +141,9 @@ public final class User implements Detailable, Serializable
             @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
     {
         ArrayList<Detail> detailList = new ArrayList<>();
-        detailList.add(new Detail("ID", this.getUsername()));
-        detailList.add(new Detail("Email", getEmailAddress().toString()));
-        detailList.add(new Detail("Phone Number", getPhoneNumber().toString()));
+        detailList.add(new Detail("ID", this.getUsername(), null));
+        detailList.add(new Detail("Email", getEmailAddress().toString(), null));
+        detailList.add(new Detail("Phone Number", getPhoneNumber().toString(), null));
 
         Intent intent = new Intent(context, detailActivityClass);
         intent.putExtra(Detailable.DATA_DETAIL_LIST, detailList);

@@ -107,9 +107,9 @@ public final class Bid implements Detailable, Serializable
             @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
     {
         ArrayList<Detail> detailList = new ArrayList<>();
-        detailList.add(new Detail("Provider ID", getProviderId()));
-        detailList.add(new Detail("Task ID", getTaskId()));
-        detailList.add(new Detail("Value", getValue().toString()));
+        detailList.add(new Detail("Provider ID", getProviderId(), null));
+        detailList.add(new Detail("Task ID", getTaskId(), null));
+        detailList.add(new Detail("Value", getValue().toString(), null));
 
         Intent intent = new Intent(context, detailActivityClass);
         intent.putExtra(Detailable.DATA_DETAIL_LIST, detailList);

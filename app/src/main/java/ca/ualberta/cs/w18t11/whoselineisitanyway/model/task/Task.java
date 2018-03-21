@@ -385,17 +385,17 @@ public final class Task implements Detailable, Serializable
             @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
     {
         ArrayList<Detail> detailList = new ArrayList<>();
-        detailList.add(new Detail("Title", getTitle()));
-        detailList.add(new Detail("Description", getDescription()));
-        detailList.add(new Detail("Requester", getRequesterId()));
-        detailList.add(new Detail("Status", getStatus().name()));
+        detailList.add(new Detail("Title", getTitle(), null));
+        detailList.add(new Detail("Description", getDescription(), null));
+        detailList.add(new Detail("Requester", getRequesterId(), null));
+        detailList.add(new Detail("Status", getStatus().name(), null));
         if (getProviderId() != null)
         {
-            detailList.add(new Detail("Provider", getProviderId()));
+            detailList.add(new Detail("Provider", getProviderId(), null));
         }
         else
         {
-            detailList.add(new Detail("Provider", "N/A"));
+            detailList.add(new Detail("Provider", "N/A", null));
         }
 
         Intent intent = new Intent(context, detailActivityClass);

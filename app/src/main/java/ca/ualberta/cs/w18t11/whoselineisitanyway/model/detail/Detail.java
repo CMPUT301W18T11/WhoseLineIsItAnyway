@@ -8,15 +8,20 @@ import android.support.annotation.Nullable;
 import java.io.Serializable;
 
 /**
- * Represents a detail for something that is detialable.
+ * Represents a key-value pair of title and information.
  *
- * @author Brad Ofrim
- * @version 1.0
+ * @author Brad Ofrim, Samuel Dolha
+ * @version 2.0
  */
-public class Detail implements Serializable
+public final class Detail implements Serializable
 {
     /**
-     * Title to to describe the detail
+     * An auto-generated, unique ID to support class versioning for Serializable.
+     */
+    private static final long serialVersionUID = -5725853446964245736L;
+
+    /**
+     * The title of the detail.
      */
     @NonNull
     private final String title;
@@ -25,63 +30,51 @@ public class Detail implements Serializable
      * Information associated with the detail.
      */
     @NonNull
-    private final String info;
+    private final String information;
 
     /**
-     * Intent to use if the detail links to other activities
+     * The intent associating the detail with certain activities.
      */
     @Nullable
-    private final Intent linkIntent;
+    private final Intent linkingIntent;
 
     /**
-     * Creates a detail.
-     *
-     * @param title String representing the detail title
-     * @param info String representing the detail's information
-     * @param linkIntent Intent to be used to show to another activity
-     *
+     * @param title         String representing the detail title
+     * @param information   String representing the detail's information
+     * @param linkingIntent Intent to be used to show to another activity
      * @see Detailable
      */
-    public Detail(String title, String info, Intent linkIntent)
+    public Detail(@NonNull final String title, @NonNull final String information,
+                  @Nullable final Intent linkingIntent)
     {
         this.title = title;
-        this.info = info;
-        this.linkIntent = linkIntent;
+        this.information = information;
+        this.linkingIntent = linkingIntent;
     }
 
     /**
-     * Create a detial without linked intent
-     * @param title String representing the detail title
-     * @param info String representing the detail's information
-     *
-     * @see Detailable
+     * @return The title of the detail.
      */
-    public Detail(String title, String info)
-    {
-        this(title, info, null);
-    }
-
-    /**
-     * @return String representing the title of the detail
-     */
-    public String getTitle()
+    @NonNull
+    public final String getTitle()
     {
         return this.title;
     }
 
     /**
-     * @return String representing the detail's information
+     * @return The information associated with the detail.
      */
-    public String getInfo()
+    @NonNull
+    public final String getInformation()
     {
-        return this.info;
+        return this.information;
     }
 
     /**
-     * @return Boolean representing if the detail has a link or not
+     * @return Whether the detail is linked to an intent.
      */
-    public boolean isLinkeable()
+    public final boolean isLinked()
     {
-        return this.linkIntent != null;
+        return this.linkingIntent != null;
     }
 }
