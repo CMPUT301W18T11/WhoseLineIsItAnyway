@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 
-public final class DetailTest
+public final class DetailUnitTest
 {
     @Test
     public final void testGetTitle()

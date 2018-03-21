@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
  *         Tests for the Validator model class
  */
 
-public final class ValidatorTest
+public final class ValidatorUnitTest
 {
     final Validator validator = new Validator();
 
