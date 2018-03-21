@@ -40,6 +40,12 @@
             android:name=".view.CreateTaskActivity"
             android:exported="true" />
 
-        <activity android:name=".view.testActivity" />
+        <activity android:name=".view.testActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
