@@ -282,7 +282,7 @@ public final class Task implements Detailed, Serializable
     }
 
     /**
-     * @return The task's status
+     * @return The task's status.
      * @see TaskStatus
      */
     @NonNull
