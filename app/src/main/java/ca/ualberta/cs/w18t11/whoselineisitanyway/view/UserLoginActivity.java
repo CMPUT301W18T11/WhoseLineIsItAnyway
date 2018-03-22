@@ -24,7 +24,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login via username.
  */
 public class UserLoginActivity extends AppCompatActivity
 {
@@ -32,9 +32,6 @@ public class UserLoginActivity extends AppCompatActivity
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "bob", "alice", "eve"
     };
-
-    // Keep track of the login task to ensure we can cancel it if requested
-//    private UserLoginTask authTask = null;
 
     private EditText txtUsername;
     private View progressView;
