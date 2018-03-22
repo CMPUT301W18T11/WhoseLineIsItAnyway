@@ -9,9 +9,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 
 /**
@@ -139,6 +139,12 @@ public final class Task implements Detailed, Serializable
 
             for (Bid bid : bids)
             {
+                if (!bid.getTaskId().equals(id))
+                {
+                    throw new IllegalArgumentException(
+                            "bids' taskIds must be identical to the task's ID");
+                }
+
                 if (bid.getProviderId().equals(providerId))
                 {
                     providerIdValid = true;
