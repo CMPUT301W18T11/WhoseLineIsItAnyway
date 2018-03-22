@@ -88,20 +88,14 @@ public final class User implements Detailed, Elastic, Serializable
      * @see Task
      */
     public User(@NonNull final EmailAddress emailAddress, @NonNull final PhoneNumber phoneNumber,
-                @NonNull final String username, @NonNull String id)
+                @NonNull final String username)
     {
         if (username.isEmpty())
         {
             throw new IllegalArgumentException("username cannot be empty");
         }
 
-        if (id.isEmpty())
-        {
-            throw new IllegalArgumentException("id cannot be empty");
-        }
-
         this.username = username;
-        this.id = id;
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
     }
