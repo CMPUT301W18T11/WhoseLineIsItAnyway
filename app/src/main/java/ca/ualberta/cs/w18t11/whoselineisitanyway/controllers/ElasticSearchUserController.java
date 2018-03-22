@@ -44,6 +44,8 @@ public class ElasticSearchUserController {
                     DocumentResult result = client.execute(idx);
                     if (result.isSucceeded()) {
                         // Elasticsearch was successful
+                        Log.i("Elasticsearch Success", "Setting user id");
+                        user.setId(result.getId());
                         return result.getId();
                     } else {
                         Log.i("Elasticsearch Error",
@@ -114,8 +116,7 @@ public class ElasticSearchUserController {
                 if(result.isSucceeded()) {
                     List<User> foundUsers = result.getSourceAsObjectList(User.class);
                     users.addAll(foundUsers);
-                }
-                else{
+                } else {
                     Log.i("Elasticsearch Error",
                             "index does not exist or could not connect:" +
                                     Integer.toString(result.getResponseCode()));
@@ -131,13 +132,30 @@ public class ElasticSearchUserController {
         }
     }
 
-    public static class UpdateUsersTask extends AsyncTask<User, Void, Integer> {
+    public static class UpdateUsersTask extends AsyncTask<User, Void, Boolean> {
 
         @Override
-        protected Integer doInBackground(User... users) {
+        protected Boolean doInBackground(User... users) {
             verifyConfig();
 
-            return null;
+            Index index = new Index.Builder(users[0]).index(idxStr).type(typeStr).id(users[0].getId()).build();
+
+            try {
+                DocumentResult result = client.execute(index);
+                if (result.isSucceeded()) {
+                    Log.i("Elasticsearch", "updated user: " + users[0].getUsername());
+                    return Boolean.TRUE;
+                } else {
+                    Log.i("Elasticsearch Error",
+                            "index does not exist or could not connect:" +
+                                    Integer.toString(result.getResponseCode()));
+                    return Boolean.FALSE;
+                }
+            }
+            catch (Exception e) {
+                Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
+            }
+            return Boolean.FALSE;
         }
     }
 
