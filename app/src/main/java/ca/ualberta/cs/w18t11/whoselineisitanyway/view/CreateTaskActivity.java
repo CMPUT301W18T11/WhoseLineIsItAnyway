@@ -1,6 +1,5 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -20,8 +19,8 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
  *
  * @author Lucas Thalen
  *         NO INPUT REQUIRED
- *         NO OUTPUT
- *         SETS NEW TASK
+ *         NO OUTPUT TO RECEIVE
+ *         CREATES/SETS NEW TASK
  *         (INCOMPLETE, WILL REFACTOR FOR BACKEND
  */
 public class CreateTaskActivity extends AppCompatActivity
@@ -38,8 +37,8 @@ public class CreateTaskActivity extends AppCompatActivity
         // ADD EVENT HANDLERS FOR CONTROLS
         btn_Cancel_onClick();
         btn_Submit_onClick();
-        textFields_afterTextChanged(R.id.etxt_Title, 30); // Set Length warning for Title
-        textFields_afterTextChanged(R.id.etxt_Description, 300); // Set Length warning for Description
+        textFields_onCharLimitReached(R.id.etxt_Title, 30); // Set Length warning for Title
+        textFields_onCharLimitReached(R.id.etxt_Description, 300); // Set Length warning for Description
     }
 
     /**
@@ -93,10 +92,12 @@ public class CreateTaskActivity extends AppCompatActivity
     }
 
     /**
-     * EVENTHANDLER: This handles changes in the Title field to warn the user when they have
-     * approached the character limit of the field.
+     * EVENTHANDLER: This is a generic method signature for the TextOnChanged handler, specifically to
+     * address for character limited fields when they heat their charlimits so a warning can be shown.
+     * @param ID R.id.x where the ID is for an EditText control.
+     * @param maxLen The maximum character limit for this field that triggers a warning when hit
      */
-    private void textFields_afterTextChanged(final int ID, final int maxLen)
+    private void textFields_onCharLimitReached(final int ID, final int maxLen)
     {
         final EditText textbox = (EditText) findViewById(ID);
         textbox.addTextChangedListener(new TextWatcher()
