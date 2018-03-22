@@ -42,6 +42,12 @@ public final class User implements Detailed, Elastic, Serializable
     private final String username;
 
     /**
+     * The user's id.
+     */
+    @NonNull
+    private final String id;
+
+    /**
      * The user's requested tasks.
      *
      * @see Task
@@ -83,14 +89,20 @@ public final class User implements Detailed, Elastic, Serializable
      * @see Task
      */
     public User(@NonNull final EmailAddress emailAddress, @NonNull final PhoneNumber phoneNumber,
-                @NonNull final String username)
+                @NonNull final String username, @NonNull String id)
     {
         if (username.isEmpty())
         {
             throw new IllegalArgumentException("username cannot be empty");
         }
 
+        if (id.isEmpty())
+        {
+            throw new IllegalArgumentException("id cannot be empty");
+        }
+
         this.username = username;
+        this.id = id;
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
     }
@@ -102,6 +114,23 @@ public final class User implements Detailed, Elastic, Serializable
     public final String getUsername()
     {
         return this.username;
+    }
+
+    /**
+     * @return The user's id.
+     */
+    @NonNull
+    public final String getId()
+    {
+        return this.id;
+    }
+
+    /**
+     * Set the user's id
+     * @param id user id String
+     */
+    public void setId(String id){
+        this.id = id;
     }
 
     /**
