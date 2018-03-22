@@ -14,6 +14,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import io.searchbox.client.JestResult;
+import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
@@ -53,8 +54,7 @@ public class ElasticSearchUserController {
                                 Integer.toString(result.getResponseCode()));
                         return null;
                     }
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     // Probably disconnected
                     Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
                 }
@@ -86,8 +86,7 @@ public class ElasticSearchUserController {
                                     Integer.toString(result.getResponseCode()));
                     return null;
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 // Probably disconnected
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
             }
@@ -122,8 +121,7 @@ public class ElasticSearchUserController {
                                     Integer.toString(result.getResponseCode()));
                     return null;
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 // Probably disconnected
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
                 return null;
@@ -143,7 +141,7 @@ public class ElasticSearchUserController {
             try {
                 DocumentResult result = client.execute(index);
                 if (result.isSucceeded()) {
-                    Log.i("Elasticsearch", "updated user: " + users[0].getUsername());
+                    Log.i("Elasticsearch Success", "updated user: " + users[0].getUsername());
                     return Boolean.TRUE;
                 } else {
                     Log.i("Elasticsearch Error",
@@ -151,8 +149,7 @@ public class ElasticSearchUserController {
                                     Integer.toString(result.getResponseCode()));
                     return Boolean.FALSE;
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
             }
             return Boolean.FALSE;
@@ -165,7 +162,22 @@ public class ElasticSearchUserController {
         protected Void doInBackground(User... users) {
             verifyConfig();
 
-           return null;
+            Delete delete = new Delete.Builder(users[0].getId()).index(idxStr).type(typeStr).build();
+
+            try {
+                // where is the client?
+                DocumentResult result = client.execute(delete);
+                if (result.isSucceeded()) {
+                    Log.i("Elasticsearch Success", "deleted user: " + users[0].getUsername());
+                } else {
+                    Log.i("Elasticsearch Error",
+                            "index does not exist or could not connect:" +
+                                    Integer.toString(result.getResponseCode()));
+                }
+            } catch (Exception e) {
+                Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
+            }
+            return null;
         }
     }
 
