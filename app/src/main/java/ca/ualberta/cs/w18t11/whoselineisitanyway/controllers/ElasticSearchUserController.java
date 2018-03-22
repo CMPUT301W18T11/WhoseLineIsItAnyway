@@ -50,7 +50,7 @@ public class ElasticSearchUserController {
                         return result.getId();
                     } else {
                         Log.i("Elasticsearch Error",
-                                "index does not exist or could not connect:" +
+                                "index msising or could not connect:" +
                                 Integer.toString(result.getResponseCode()));
                         return null;
                     }
@@ -69,9 +69,6 @@ public class ElasticSearchUserController {
         protected User doInBackground(String... username) {
             verifyConfig();
 
-//            System.out.print("search_parameters[0]: ");
-//            System.out.println(username[0]);
-
             Get get = new Get.Builder(idxStr, username[0]).type(typeStr).build();
 
             try {
@@ -82,7 +79,7 @@ public class ElasticSearchUserController {
                     return user;
                 } else {
                     Log.i("Elasticsearch Error",
-                            "index does not exist or could not connect:" +
+                            "index missing or could not connect:" +
                                     Integer.toString(result.getResponseCode()));
                     return null;
                 }
@@ -107,9 +104,17 @@ public class ElasticSearchUserController {
 
             // Build the query
             if (params.length < 1){
+                Log.i("Elasticsearch Error","GetMultipleUsersTask params.length < 1");
                 return null;
             }
-            Search search = new Search.Builder(params[0]).addIndex(idxStr).addType(typeStr).build();
+
+            Log.i("INDEX", idxStr);
+
+            Search search = new Search.Builder(params[0])
+                    .addIndex(idxStr)
+                    .addType(typeStr)
+                    .build();
+
             try {
                 SearchResult result = client.execute(search);
                 if(result.isSucceeded()) {
@@ -117,7 +122,7 @@ public class ElasticSearchUserController {
                     users.addAll(foundUsers);
                 } else {
                     Log.i("Elasticsearch Error",
-                            "index does not exist or could not connect:" +
+                            "index missing or could not connect:" +
                                     Integer.toString(result.getResponseCode()));
                     return null;
                 }
@@ -145,7 +150,7 @@ public class ElasticSearchUserController {
                     return Boolean.TRUE;
                 } else {
                     Log.i("Elasticsearch Error",
-                            "index does not exist or could not connect:" +
+                            "index missing or could not connect:" +
                                     Integer.toString(result.getResponseCode()));
                     return Boolean.FALSE;
                 }
@@ -165,13 +170,12 @@ public class ElasticSearchUserController {
             Delete delete = new Delete.Builder(users[0].getId()).index(idxStr).type(typeStr).build();
 
             try {
-                // where is the client?
                 DocumentResult result = client.execute(delete);
                 if (result.isSucceeded()) {
                     Log.i("Elasticsearch Success", "deleted user: " + users[0].getUsername());
                 } else {
                     Log.i("Elasticsearch Error",
-                            "index does not exist or could not connect:" +
+                            "index missing or could not connect:" +
                                     Integer.toString(result.getResponseCode()));
                 }
             } catch (Exception e) {
@@ -183,8 +187,10 @@ public class ElasticSearchUserController {
 
     public static void verifyConfig() {
         if (client == null) {
+            Log.i("ElasticSearch", "verifying config...");
             DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
             JestClientFactory factory = new JestClientFactory();
+            Log.i("ElasticSearch", "Jest = " + factory.toString());
 
             DroidClientConfig config = builder.build();
             factory.setDroidClientConfig(config);
