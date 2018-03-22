@@ -8,6 +8,7 @@ import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
@@ -16,6 +17,8 @@ import io.searchbox.client.JestResult;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
+import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
 
 /**
  * Elastic Search controller for handling User queries
@@ -50,6 +53,7 @@ public class ElasticSearchUserController {
                     }
                 }
                 catch (Exception e) {
+                    // Probably disconnected
                     Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
                 }
             }
@@ -82,6 +86,7 @@ public class ElasticSearchUserController {
                 }
             }
             catch (Exception e) {
+                // Probably disconnected
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
             }
             // User not found, return blank User object
@@ -97,7 +102,32 @@ public class ElasticSearchUserController {
         protected ArrayList<User> doInBackground(String... params) {
             verifyConfig();
 
-            return null;
+            ArrayList<User> users = new ArrayList<User>();
+
+            // Build the query
+            if (params.length < 1){
+                return null;
+            }
+            Search search = new Search.Builder(params[0]).addIndex(idxStr).addType(typeStr).build();
+            try {
+                SearchResult result = client.execute(search);
+                if(result.isSucceeded()) {
+                    List<User> foundUsers = result.getSourceAsObjectList(User.class);
+                    users.addAll(foundUsers);
+                }
+                else{
+                    Log.i("Elasticsearch Error",
+                            "index does not exist or could not connect:" +
+                                    Integer.toString(result.getResponseCode()));
+                    return null;
+                }
+            }
+            catch (Exception e) {
+                // Probably disconnected
+                Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
+                return null;
+            }
+            return users;
         }
     }
 
@@ -117,7 +147,7 @@ public class ElasticSearchUserController {
         protected Void doInBackground(User... users) {
             verifyConfig();
 
-            return null;
+           return null;
         }
     }
 
