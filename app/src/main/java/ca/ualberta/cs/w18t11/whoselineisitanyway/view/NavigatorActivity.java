@@ -124,8 +124,8 @@ public class NavigatorActivity extends AppCompatActivity
         String outgoingTitle = "List";
         ArrayList<Detailed> detaileds = new ArrayList<>();
         DataSource dataSource = DataSourceManager.getInstance().getLocalDataSource();
-        Task[] allTasks = dataSource.getAllTasks();
-        Bid[] allBids = dataSource.getAllBids();
+        final Task[] allTasks = dataSource.getTasks();
+        final Bid[] allBids = dataSource.getBids();
 
         User currentUser = DataSourceManager.getInstance().getCurrentUser();
 

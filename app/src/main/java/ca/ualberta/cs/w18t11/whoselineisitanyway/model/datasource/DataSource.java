@@ -1,65 +1,91 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource;
 
+import android.support.annotation.NonNull;
+
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 /**
- * A simple interface to consolidate how data is supplied within the application
+ * Represents a user-bid-task data source.
  *
- * @author Brad Ofrim
- * @version 1.0
+ * @author Brad Ofrim, Samuel Dolha
+ * @version 2.0
  */
-public interface DataSource {
+public interface DataSource
+{
+    /**
+     * @return All users present in the data source.
+     * @see User
+     */
+    @NonNull
+    User[] getUsers();
 
     /**
-     * @return ArrayList containing all of the tasks
+     * Adds a user to the data source.
+     *
+     * @param user The user to add.
+     * @return Whether the user is present in the data source.
+     * @see User
      */
-    Task[] getAllTasks();
+    boolean addUser(@NonNull final User user);
 
     /**
-     * @return ArrayList containing all of the bids
+     * Removes a user from the data source.
+     *
+     * @param user The user to remove.
+     * @return Whether the user is absent from the data source.
+     * @see User
      */
-    Bid[] getAllBids();
+    boolean removeUser(@NonNull final User user);
 
     /**
-     * @return ArrayList containing all of the users
+     * @return All tasks present in the data source.
+     * @see Task
      */
-    User[] getAllUsers();
+    @NonNull
+    Task[] getTasks();
 
     /**
-     * Add a new task to the data source
-     * Return Boolean representing if the addition was succesful
+     * Adds a task to the data source.
+     *
+     * @param task The task to add.
+     * @return Whether the task is present in the data source.
+     * @see Task
      */
-    Boolean addTask(Task task);
+    boolean addTask(@NonNull final Task task);
 
     /**
-     * Add a new bid to the data source
-     * Return Boolean representing if the addition was succesful
+     * Removes a task from the data source.
+     *
+     * @param task The task to remove.
+     * @return Whether the task is absent from the data source.
+     * @see Task
      */
-    Boolean addBid(Bid bid);
+    boolean removeTask(@NonNull final Task task);
 
     /**
-     * Add a new user to the data source
-     * Return Boolean representing if the addition was succesful
+     * @return All bids present in the data source.
+     * @see Bid
      */
-    Boolean addUser(User user);
+    @NonNull
+    Bid[] getBids();
 
     /**
-     * Remove a  task from the data source
-     * Return Boolean representing if the remove was succesful
+     * Adds a bid to the data source.
+     *
+     * @param bid The bid to add.
+     * @return Whether the bid is present in the data source.
+     * @see Bid
      */
-    Boolean removeTask(Task task);
+    boolean addBid(@NonNull final Bid bid);
 
     /**
-     * Remove a bid from the data source
-     * Return Boolean representing if the addition was succesful
+     * Removes a bid from the data source.
+     *
+     * @param bid The user to remove.
+     * @return Whether the bid is absent from the data source.
+     * @see Bid
      */
-    Boolean removeBid(Bid bid);
-
-    /**
-     * Remove user from the data source
-     * Return Boolean representing if the addition was succesful
-     */
-    Boolean removeUser(User user);
+    boolean removeBid(@NonNull final Bid bid);
 }
