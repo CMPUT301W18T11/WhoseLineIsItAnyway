@@ -12,8 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.DataSourceManager;
@@ -32,7 +32,7 @@ public class UserLoginActivity extends AppCompatActivity
     // Keep track of the login task to ensure we can cancel it if requested
     private UserLoginTask authTask = null;
 
-    private AutoCompleteTextView usernameView;
+    private EditText txtUsername;
     private View progressView;
     private View loginFormView;
 
@@ -42,7 +42,8 @@ public class UserLoginActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
 
-        Button UserLoginButton = (Button) findViewById(R.id.email_sign_in_button);
+        setTitle(R.string.title_UserLoginActivity);
+        Button UserLoginButton = (Button) findViewById(R.id.btn_Login);
         UserLoginButton.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -52,8 +53,8 @@ public class UserLoginActivity extends AppCompatActivity
             }
         });
 
-        usernameView = findViewById(R.id.username);
-        loginFormView = findViewById(R.id.login_form);
+        txtUsername = findViewById(R.id.etxt_Username);
+        loginFormView = findViewById(R.id.LoginView);
         progressView = findViewById(R.id.login_progress);
     }
 
@@ -70,10 +71,10 @@ public class UserLoginActivity extends AppCompatActivity
         }
 
         // Reset errors.
-        usernameView.setError(null);
+        txtUsername.setError(null);
 
         // Store values at the time of the login attempt.
-        String username = usernameView.getText().toString();
+        String username = txtUsername.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -81,14 +82,14 @@ public class UserLoginActivity extends AppCompatActivity
         // Check for a valid email address.
         if (TextUtils.isEmpty(username))
         {
-            usernameView.setError(getString(R.string.error_field_required));
-            focusView = usernameView;
+            txtUsername.setError(getString(R.string.error_field_required));
+            focusView = txtUsername;
             cancel = true;
         }
         else if (!isUsernameValid(username))
         {
-            usernameView.setError(getString(R.string.error_invalid_username));
-            focusView = usernameView;
+            txtUsername.setError(getString(R.string.error_invalid_username));
+            focusView = txtUsername;
             cancel = true;
         }
 
@@ -219,8 +220,8 @@ public class UserLoginActivity extends AppCompatActivity
             }
             else
             {
-                usernameView.setError(getString(R.string.error_invalid_username));
-                usernameView.requestFocus();
+                txtUsername.setError(getString(R.string.error_invalid_username));
+                txtUsername.requestFocus();
             }
         }
 

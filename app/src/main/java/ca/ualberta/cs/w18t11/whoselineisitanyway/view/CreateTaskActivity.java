@@ -33,7 +33,7 @@ public class CreateTaskActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_task);
-
+        setTitle(R.string.title_CreateTaskActivity);
         // ADD EVENT HANDLERS FOR CONTROLS
         btn_Cancel_onClick();
         btn_Submit_onClick();
