@@ -38,7 +38,7 @@
             android:exported="true" />
         <activity
             android:name=".view.CreateTaskActivity"
-            android:exported="true" />
+            android:exported="true" android:label="@string/title_CreateTaskActivity" />
 
         <activity android:name=".view.testActivity">
             <intent-filter>

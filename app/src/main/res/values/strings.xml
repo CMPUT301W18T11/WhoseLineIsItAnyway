@@ -1,4 +1,18 @@
 <resources>
+
+    <!-- Activity Title Strings -->
+    <string name="title_CreateTaskActivity">Create/Add New Task</string>
+    <string name="title_UserLoginActivity">Welcome! - Log In/Sign Up</string>
+
+    <!-- Generic Strings -->
+    <string name="GENERIC_OK">OK</string>
+    <string name="GENERIC_CANCEL">Cancel</string>
+    <string name="GENERIC_CLOSE">Close</string>
+    <string name="GENERIC_CLEAR">Clear</string>
+    <string name="GENERIC_SUBMIT">Submit</string>
+    <string name="GENERIC_SAVE">Save</string>
+    <string name="GENERIC_DELETE">Delete</string>
+
     <string name="app_name">WhoseLineIsItAnyway</string>
     <string name="title_activity_user_login">Log In</string>
     <string name="title_activity_navigator">NavigatorActivity</string>
@@ -15,18 +29,20 @@
     <string name="registration_btnCancelText">Cancel</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_username">Username</string>
-    <string name="action_sign_in">Sign in or register</string>
+    <string name="prompt_username">(Enter Username)</string>
+    <string name="action_sign_in">Sign in or Register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_username">This username is invalid</string>
     <string name="error_field_required">This field is required</string>
+    <string name="WelcomeMSG">Thanks for taking a look at WhoseLineIsItAnyway!\n\nIt\'s a fantastic
+        app to help you get the service you need at the price you want, quickly and efficiently. Need something done? Or do you want
+        to make some good money helping people out?\n\nYou've come to the right place!\n\nJust enter a username to login
+    or register and hit the button.\n\n\nIf you're a new user, we'll help you sign up, don't worry.\n\nTo our returning users, welcome back!</string>
+    <string name="slogan">Connecting People. Getting Things Done.\nWelcome to WhoseLineIsItAnyway</string>
 
     <!-- Strings related to Task Creation Activity -->
-    <string name="create_task_titleHint">(Title)</string>
+    <string name="create_task_titleHint">(Enter a Title)</string>
     <string name="create_task_DescriptionHint">(Enter Description of Task)</string>
-    <string name="btn_submit">Submit</string>
-    <string name="btn_Cancel">Cancel</string>
-    <string name="create_task_Title">Create a New Task</string>
     <string name="create_task_btnUploadImage">Select photos (Optional)</string>
     <string-array name="DEBUG_create_task_DefaultImagesList">
         <item>Test1.img</item>
