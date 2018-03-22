@@ -107,9 +107,7 @@ public class ElasticSearchUserController {
                 Log.i("Elasticsearch Error","GetMultipleUsersTask params.length < 1");
                 return null;
             }
-
-            Log.i("INDEX", idxStr);
-
+            
             Search search = new Search.Builder(params[0])
                     .addIndex(idxStr)
                     .addType(typeStr)
