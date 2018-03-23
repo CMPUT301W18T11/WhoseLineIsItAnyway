@@ -140,7 +140,6 @@ public class ElasticSearchTaskController {
             Log.i("ElasticSearch", "verifying config...");
             DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
             JestClientFactory factory = new JestClientFactory();
-            Log.i("ElasticSearch", "Jest = " + factory.toString());
 
             DroidClientConfig config = builder.build();
             factory.setDroidClientConfig(config);
