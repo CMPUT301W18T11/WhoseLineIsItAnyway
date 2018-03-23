@@ -7,12 +7,17 @@ import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
+import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
 
 /**
  * Elastic Search controller for handling Task queries
@@ -25,7 +30,7 @@ public class ElasticSearchTaskController {
     private static String idxStr = "cmput301w18t11_whoselineisitanyways";
     private static JestDroidClient client;
 
-    public static class GetTaskTask extends AsyncTask<String, Void, Task> {
+    public static class GetTaskByIdTask extends AsyncTask<String, Void, Task> {
 
         @Override
         protected Task doInBackground(String... taskId) {
@@ -51,6 +56,45 @@ public class ElasticSearchTaskController {
             }
             // Task not found
             return null;
+        }
+    }
+
+    public static class GetTaskssTask extends AsyncTask<String, Void, ArrayList<Task>> {
+
+        @Override
+        protected ArrayList<Task> doInBackground(String... query) {
+            verifyConfig();
+
+            ArrayList<Task> task = new ArrayList<Task>();
+
+            // Build the query
+            if (query.length < 1){
+                Log.i("Elasticsearch Error","GetMultipleUsersTask params.length < 1");
+                return null;
+            }
+
+            Search search = new Search.Builder(query[0])
+                    .addIndex(idxStr)
+                    .addType(typeStr)
+                    .build();
+
+            try {
+                SearchResult result = client.execute(search);
+                if(result.isSucceeded()) {
+                    List<Task> foundUsers = result.getSourceAsObjectList(Task.class);
+                    task.addAll(foundUsers);
+                } else {
+                    Log.i("Elasticsearch Error",
+                            "index missing or could not connect:" +
+                                    Integer.toString(result.getResponseCode()));
+                    return null;
+                }
+            } catch (Exception e) {
+                // Probably disconnected
+                Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
+                return null;
+            }
+            return task;
         }
     }
 

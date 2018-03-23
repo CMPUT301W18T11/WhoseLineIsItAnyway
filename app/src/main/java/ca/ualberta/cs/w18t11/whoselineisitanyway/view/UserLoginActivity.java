@@ -130,8 +130,8 @@ public class UserLoginActivity extends AppCompatActivity
                     "}";
 
             // Get the user with username from the database
-            ElasticSearchUserController.GetMultipleUsersTask getUsersTask
-                    = new ElasticSearchUserController.GetMultipleUsersTask();
+            ElasticSearchUserController.GetUsersTask getUsersTask
+                    = new ElasticSearchUserController.GetUsersTask();
             getUsersTask.execute(query);
 
             try {

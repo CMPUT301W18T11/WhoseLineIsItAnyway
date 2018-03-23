@@ -63,13 +63,13 @@ public class ElasticSearchUserController {
         }
     }
 
-    public static class GetUserTask extends AsyncTask<String, Void, User> {
+    public static class GetUserByIdTask extends AsyncTask<String, Void, User> {
 
         @Override
-        protected User doInBackground(String... username) {
+        protected User doInBackground(String... userId) {
             verifyConfig();
 
-            Get get = new Get.Builder(idxStr, username[0]).type(typeStr).build();
+            Get get = new Get.Builder(idxStr, userId[0]).type(typeStr).build();
 
             try {
                 JestResult result = client.execute(get);
@@ -94,21 +94,21 @@ public class ElasticSearchUserController {
         }
     }
 
-    public static class GetMultipleUsersTask extends AsyncTask<String, Void, ArrayList<User>> {
+    public static class GetUsersTask extends AsyncTask<String, Void, ArrayList<User>> {
 
         @Override
-        protected ArrayList<User> doInBackground(String... params) {
+        protected ArrayList<User> doInBackground(String... query) {
             verifyConfig();
 
             ArrayList<User> users = new ArrayList<User>();
 
             // Build the query
-            if (params.length < 1){
+            if (query.length < 1){
                 Log.i("Elasticsearch Error","GetMultipleUsersTask params.length < 1");
                 return null;
             }
 
-            Search search = new Search.Builder(params[0])
+            Search search = new Search.Builder(query[0])
                     .addIndex(idxStr)
                     .addType(typeStr)
                     .build();
