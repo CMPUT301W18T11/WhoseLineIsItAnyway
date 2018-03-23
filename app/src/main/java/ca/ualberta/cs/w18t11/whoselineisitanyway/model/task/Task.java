@@ -138,6 +138,11 @@ public final class Task implements Detailed, Elastic, Serializable
 
             for (Bid bid : bids)
             {
+                if (!bid.getTaskId().equals(this.getElasticId()))
+                {
+                    throw new IllegalArgumentException("bid's task's ID must match task's ID");
+                }
+
                 if (bid.getProviderId().equals(providerId))
                 {
                     providerIdValid = true;
