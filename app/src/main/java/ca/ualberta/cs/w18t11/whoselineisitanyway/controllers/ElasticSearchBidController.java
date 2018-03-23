@@ -13,6 +13,7 @@ import java.util.List;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import io.searchbox.client.JestResult;
+import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
@@ -27,7 +28,7 @@ import io.searchbox.core.SearchResult;
  */
 
 public class ElasticSearchBidController {
-    private static String typeStr = "tasks";
+    private static String typeStr = "bids";
     private static String idxStr = "cmput301w18t11_whoselineisitanyways";
     private static JestDroidClient client;
 
@@ -113,7 +114,7 @@ public class ElasticSearchBidController {
                     DocumentResult result = client.execute(idx);
                     if (result.isSucceeded()) {
                         // Elasticsearch was successful
-                        Log.i("Elasticsearch Success", "Setting user id");
+                        Log.i("Elasticsearch Success", "Setting bid id");
                         bid.setId(result.getId());
                         return result.getId();
                     } else {
@@ -142,7 +143,7 @@ public class ElasticSearchBidController {
             try {
                 DocumentResult result = client.execute(index);
                 if (result.isSucceeded()) {
-                    Log.i("Elasticsearch Success", "updated user: " + bid[0].getUsername());
+                    Log.i("Elasticsearch Success", "updated bid");
                     return Boolean.TRUE;
                 } else {
                     Log.i("Elasticsearch Error",
@@ -155,7 +156,6 @@ public class ElasticSearchBidController {
             }
             return Boolean.FALSE;
         }
-
     }
 
     public static class RemoveBidTask extends AsyncTask<Bid, Void, Void> {
@@ -163,6 +163,22 @@ public class ElasticSearchBidController {
         @Override
         protected Void doInBackground(Bid... bid) {
             verifyConfig();
+
+            Delete delete = new Delete.Builder(bid[0].getId()).index(idxStr).type(typeStr).build();
+
+            try {
+                DocumentResult result = client.execute(delete);
+                if (result.isSucceeded()) {
+                    Log.i("Elasticsearch Success", "deleted bid";
+                } else {
+                    Log.i("Elasticsearch Error",
+                            "index missing or could not connect:" +
+                                    Integer.toString(result.getResponseCode()));
+                }
+            } catch (Exception e) {
+                Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
+            }
+            return null;
         }
     }
 
