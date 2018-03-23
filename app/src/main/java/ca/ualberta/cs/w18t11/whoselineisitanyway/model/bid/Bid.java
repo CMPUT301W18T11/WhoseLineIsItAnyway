@@ -3,6 +3,7 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 
 /**
@@ -18,7 +20,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
  * @author Mark Griffith, Samuel Dolha
  * @version 2.0
  */
-public final class Bid implements Detailed, Serializable
+public final class Bid implements Detailed, Elastic, Serializable
 {
     /**
      * An auto-generated, unique ID to support class versioning for Serializable.
@@ -26,6 +28,12 @@ public final class Bid implements Detailed, Serializable
      * @see Serializable
      */
     private static final long serialVersionUID = 330240939337547492L;
+
+    /**
+     * The bid's unique ID in Elasticsearch.
+     */
+    @Nullable
+    private String elasticId;
 
     /**
      * The associated provider's ID.
@@ -116,6 +124,24 @@ public final class Bid implements Detailed, Serializable
         intent.putExtra(Detailed.TITLE_KEY, "Bid");
 
         context.startActivity(intent);
+    }
+
+    @Nullable
+    @Override
+    public final String getElasticId()
+    {
+        return this.elasticId;
+    }
+
+    @Override
+    public final void setElasticId(@NonNull final String id)
+    {
+        if (id.isEmpty())
+        {
+            throw new IllegalArgumentException("id cannot be empty");
+        }
+
+        this.elasticId = id;
     }
 
     /**
