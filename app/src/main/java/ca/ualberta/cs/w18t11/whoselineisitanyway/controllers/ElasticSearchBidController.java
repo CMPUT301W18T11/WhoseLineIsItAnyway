@@ -10,8 +10,12 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
+import io.searchbox.client.JestResult;
 import io.searchbox.core.DocumentResult;
+import io.searchbox.core.Get;
 import io.searchbox.core.Index;
 
 /**
@@ -31,6 +35,27 @@ public class ElasticSearchBidController {
         @Override
         protected Bid doInBackground(String... bidId) {
             verifyConfig();
+
+            Get get = new Get.Builder(idxStr, bidId[0]).type(typeStr).build();
+
+            try {
+                JestResult result = client.execute(get);
+                if(result.isSucceeded()) {
+                    // User found
+                    User user = result.getSourceAsObject(User.class);
+                    return user;
+                } else {
+                    Log.i("Elasticsearch Error",
+                            "index missing or could not connect:" +
+                                    Integer.toString(result.getResponseCode()));
+                    return null;
+                }
+            } catch (Exception e) {
+                // Probably disconnected
+                Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
+            }
+            // User not found
+            return null;
         }
 
     }
