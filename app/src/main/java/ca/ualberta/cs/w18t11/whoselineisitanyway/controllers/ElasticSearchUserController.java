@@ -107,7 +107,7 @@ public class ElasticSearchUserController {
                 Log.i("Elasticsearch Error","GetMultipleUsersTask params.length < 1");
                 return null;
             }
-            
+
             Search search = new Search.Builder(params[0])
                     .addIndex(idxStr)
                     .addType(typeStr)
@@ -133,18 +133,18 @@ public class ElasticSearchUserController {
         }
     }
 
-    public static class UpdateUsersTask extends AsyncTask<User, Void, Boolean> {
+    public static class UpdateUserTask extends AsyncTask<User, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(User... users) {
+        protected Boolean doInBackground(User... user) {
             verifyConfig();
 
-            Index index = new Index.Builder(users[0]).index(idxStr).type(typeStr).id(users[0].getId()).build();
+            Index index = new Index.Builder(user[0]).index(idxStr).type(typeStr).id(user[0].getId()).build();
 
             try {
                 DocumentResult result = client.execute(index);
                 if (result.isSucceeded()) {
-                    Log.i("Elasticsearch Success", "updated user: " + users[0].getUsername());
+                    Log.i("Elasticsearch Success", "updated user: " + user[0].getUsername());
                     return Boolean.TRUE;
                 } else {
                     Log.i("Elasticsearch Error",
@@ -162,15 +162,15 @@ public class ElasticSearchUserController {
     public static class RemoveUserTask extends AsyncTask<User, Void, Void> {
 
         @Override
-        protected Void doInBackground(User... users) {
+        protected Void doInBackground(User... user) {
             verifyConfig();
 
-            Delete delete = new Delete.Builder(users[0].getId()).index(idxStr).type(typeStr).build();
+            Delete delete = new Delete.Builder(user[0].getId()).index(idxStr).type(typeStr).build();
 
             try {
                 DocumentResult result = client.execute(delete);
                 if (result.isSucceeded()) {
-                    Log.i("Elasticsearch Success", "deleted user: " + users[0].getUsername());
+                    Log.i("Elasticsearch Success", "deleted user: " + user[0].getUsername());
                 } else {
                     Log.i("Elasticsearch Error",
                             "index missing or could not connect:" +
