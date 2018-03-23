@@ -104,7 +104,7 @@ public class ElasticSearchUserController {
 
             // Build the query
             if (query.length < 1){
-                Log.i("Elasticsearch Error","GetMultipleUsersTask params.length < 1");
+                Log.i("Elasticsearch Error","Invalid query");
                 return null;
             }
 
