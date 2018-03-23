@@ -8,15 +8,16 @@ import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
+import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
 
 /**
  * Elastic Search controller for handling Task queries
@@ -66,6 +67,36 @@ public class ElasticSearchBidController {
         protected ArrayList<Bid> doInBackground(String... query) {
             verifyConfig();
 
+            ArrayList<Bid> bids = new ArrayList<Bid>();
+
+            // Build the query
+            if (query.length < 1){
+                Log.i("Elasticsearch Error","GetMultipleUsersTask params.length < 1");
+                return null;
+            }
+
+            Search search = new Search.Builder(query[0])
+                    .addIndex(idxStr)
+                    .addType(typeStr)
+                    .build();
+
+            try {
+                SearchResult result = client.execute(search);
+                if(result.isSucceeded()) {
+                    List<User> foundUsers = result.getSourceAsObjectList(User.class);
+                    bids.addAll(foundUsers);
+                } else {
+                    Log.i("Elasticsearch Error",
+                            "index missing or could not connect:" +
+                                    Integer.toString(result.getResponseCode()));
+                    return null;
+                }
+            } catch (Exception e) {
+                // Probably disconnected
+                Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
+                return null;
+            }
+            return bids;
         }
     }
 
