@@ -9,7 +9,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -56,8 +58,36 @@ public class UserLoginActivity extends AppCompatActivity
         txtUsername = findViewById(R.id.etxt_Username);
         loginFormView = findViewById(R.id.LoginView);
         progressView = findViewById(R.id.login_progress);
+
+        // ADD EVENT HANDLERS
+        etxtUsername_onCharLimitReached(); // Set warning on field when length limit reached
     }
 
+    /**
+     * EVENTHANDLER: onCharLimitReached() for etxtUsername
+     * This will set a flag if the user enters 8 chars warning them no more will be allowed.
+     * AddressOf: etxtUsername (Username input EditText view)
+     */
+    private void etxtUsername_onCharLimitReached() {
+        final EditText username = (EditText) findViewById(R.id.etxt_Username);
+        username.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (username.getText().length() == 8) {
+                    username.setError("Usernames can only be 8 characters long.");
+                } else { username.setError(null); }
+            }
+        });
+    }
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid username, missing fields, etc.), the

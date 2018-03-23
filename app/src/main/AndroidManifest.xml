@@ -36,10 +36,20 @@
         <activity
             android:name=".view.DetailActivity"
             android:exported="true" />
-        <activity
-            android:name=".view.CreateTaskActivity"
-            android:exported="true" android:label="@string/title_CreateTaskActivity" />
+        <activity android:name=".view.EditTaskActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.CreateTaskActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".view.testActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

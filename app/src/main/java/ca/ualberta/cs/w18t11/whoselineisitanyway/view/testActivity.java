@@ -93,7 +93,6 @@ public class testActivity extends AppCompatActivity
 
         // Input expected username
         txtUsername.setText(usr);
-
         etxtPhone.addTextChangedListener(new TextWatcher()
         {
             @Override

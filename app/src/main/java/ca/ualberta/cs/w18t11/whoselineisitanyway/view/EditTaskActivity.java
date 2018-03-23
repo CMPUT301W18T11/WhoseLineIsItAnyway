@@ -8,14 +8,14 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
  * Created by lucas on 2018-03-21.
  */
 
-public class CreateTaskActivity extends EditCreateTaskTemplate{
+public class EditTaskActivity extends EditCreateTaskTemplate{
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_modify_template);
 
-        setTitle(R.string.title_CreateTaskActivity);
+        setTitle(R.string.title_EditTaskActivity);
 
         // ADD EVENT HANDLERS FOR CONTROLS
         btn_Cancel_onClick();
