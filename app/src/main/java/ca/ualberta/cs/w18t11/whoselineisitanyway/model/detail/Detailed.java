@@ -16,12 +16,12 @@ public interface Detailed
     /**
      * The unique key for the title.
      */
-    String TITLE_KEY = "DETAILED_TITLE_KEY";
+    String TITLE_KEY = "DETAILED_TITLE";
 
     /**
      * The unique key for the details.
      */
-    String DETAILS_KEY = "DETAILED_DETAILS_KEY";
+    String DETAILS_KEY = "DETAILED_DETAILS";
 
     /**
      * Shows the details in an activity.
