@@ -77,7 +77,7 @@ public final class TextValidator
     // Note: real email is horribly complicated, but this will validate that basic components exist.
     public TextValidatorResult validateEmail(final String input, final boolean allowPartialMatching)
     {
-        Pattern eMail = Pattern.compile("^([^@]+)@([^@\\.]+(?:\\.[^@\\.]+)*)$");
+        Pattern eMail = Pattern.compile("^([^@ ]+)@([^@ \\.]+(?:\\.[^@ \\.]+)*)$");
         Matcher matches = eMail.matcher(input);
         boolean res = matches.matches();
         ArrayList<String> results = new ArrayList<String>();
