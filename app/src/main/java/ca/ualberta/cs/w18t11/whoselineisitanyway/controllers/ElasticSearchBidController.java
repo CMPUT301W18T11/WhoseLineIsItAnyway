@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
@@ -44,8 +43,8 @@ public class ElasticSearchBidController {
                 JestResult result = client.execute(get);
                 if(result.isSucceeded()) {
                     // User found
-                    User user = result.getSourceAsObject(User.class);
-                    return user;
+                    Bid bid = result.getSourceAsObject(Bid.class);
+                    return bid;
                 } else {
                     Log.i("Elasticsearch Error",
                             "index missing or could not connect:" +
@@ -72,7 +71,7 @@ public class ElasticSearchBidController {
 
             // Build the query
             if (query.length < 1){
-                Log.i("Elasticsearch Error","GetMultipleUsersTask params.length < 1");
+                Log.i("Elasticsearch Error","invalid query");
                 return null;
             }
 
@@ -84,7 +83,7 @@ public class ElasticSearchBidController {
             try {
                 SearchResult result = client.execute(search);
                 if(result.isSucceeded()) {
-                    List<User> foundUsers = result.getSourceAsObjectList(User.class);
+                    List<Bid> foundUsers = result.getSourceAsObjectList(Bid.class);
                     bids.addAll(foundUsers);
                 } else {
                     Log.i("Elasticsearch Error",
@@ -138,7 +137,7 @@ public class ElasticSearchBidController {
         protected Boolean doInBackground(Bid... bid) {
             verifyConfig();
 
-            Index index = new Index.Builder(bid[0]).index(idxStr).type(typeStr).id(bid[0].getId()).build();
+            Index index = new Index.Builder(bid[0]).index(idxStr).type(typeStr).id(bid[0].getElasticId()).build();
 
             try {
                 DocumentResult result = client.execute(index);
@@ -169,7 +168,7 @@ public class ElasticSearchBidController {
             try {
                 DocumentResult result = client.execute(delete);
                 if (result.isSucceeded()) {
-                    Log.i("Elasticsearch Success", "deleted bid";
+                    Log.i("Elasticsearch Success", "deleted bid");
                 } else {
                     Log.i("Elasticsearch Error",
                             "index missing or could not connect:" +
