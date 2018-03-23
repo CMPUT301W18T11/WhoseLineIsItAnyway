@@ -54,35 +54,6 @@ public class ElasticSearchTaskController {
         }
     }
 
-//    public static class GetAllTasksTask extends AsyncTask<Void, Void, Task> {
-//
-//        @Override
-//        protected Task doInBackground() {
-//            verifyConfig();
-//
-//            Get get = new Get.Builder(idxStr, taskId[0]).type(typeStr).build();
-//
-//            try {
-//                JestResult result = client.execute(get);
-//                if(result.isSucceeded()) {
-//                    // User found
-//                    Task task = result.getSourceAsObject(Task.class);
-//                    return task;
-//                } else {
-//                    Log.i("Elasticsearch Error",
-//                            "index missing or could not connect:" +
-//                                    Integer.toString(result.getResponseCode()));
-//                    return null;
-//                }
-//            } catch (Exception e) {
-//                // Probably disconnected
-//                Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
-//            }
-//            // Task not found
-//            return null;
-//        }
-//    }
-
     public static class AddTasksTask extends AsyncTask<Task, Void, String> {
 
         @Override
