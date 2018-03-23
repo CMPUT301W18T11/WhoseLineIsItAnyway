@@ -387,7 +387,7 @@ public final class Task implements Detailed, Serializable
     }
 
     @Override
-    public final <T extends DetailActivity> void showDetail(
+    public final <T extends DetailActivity> void showDetails(
             @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
     {
         ArrayList<Detail> detailList = new ArrayList<>();
@@ -405,8 +405,8 @@ public final class Task implements Detailed, Serializable
         }
 
         Intent intent = new Intent(context, detailActivityClass);
-        intent.putExtra(Detailed.DATA_DETAIL_LIST, detailList);
-        intent.putExtra(Detailed.DATA_DETAIL_TITLE, "Task");
+        intent.putExtra(Detailed.DETAILS_KEY, detailList);
+        intent.putExtra(Detailed.TITLE_KEY, "Task");
 
         context.startActivity(intent);
     }

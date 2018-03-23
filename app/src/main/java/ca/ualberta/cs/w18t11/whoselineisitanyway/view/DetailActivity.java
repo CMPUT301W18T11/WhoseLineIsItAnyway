@@ -70,17 +70,17 @@ public class DetailActivity extends AppCompatActivity
     private void setupFromIntent()
     {
         Intent intent = getIntent();
-        if (intent.getStringExtra(Detailed.DATA_DETAIL_TITLE) != null)
+        if (intent.getStringExtra(Detailed.TITLE_KEY) != null)
         {
-            if (intent.getSerializableExtra(Detailed.DATA_DETAIL_LIST) != null)
+            if (intent.getSerializableExtra(Detailed.DETAILS_KEY) != null)
             {
                 details.addAll((ArrayList<Detail>) intent
-                        .getSerializableExtra(Detailed.DATA_DETAIL_LIST));
+                        .getSerializableExtra(Detailed.DETAILS_KEY));
                 rowAdapter.notifyDataSetChanged();
             }
-            if (intent.getStringExtra(Detailed.DATA_DETAIL_TITLE) != null)
+            if (intent.getStringExtra(Detailed.TITLE_KEY) != null)
             {
-                title.setText(intent.getStringExtra(Detailed.DATA_DETAIL_TITLE));
+                title.setText(intent.getStringExtra(Detailed.TITLE_KEY));
             }
         }
         else
@@ -91,7 +91,7 @@ public class DetailActivity extends AppCompatActivity
             final User user = new User(
                     new EmailAddress("user", "gmail.com"), new PhoneNumber(3, 333, 333, 3333),
                     "username");
-            user.showDetail(DetailActivity.class, this);
+            user.showDetails(DetailActivity.class, this);
         }
     }
 }

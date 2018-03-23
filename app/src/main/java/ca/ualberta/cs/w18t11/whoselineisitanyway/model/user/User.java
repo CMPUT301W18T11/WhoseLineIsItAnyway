@@ -137,7 +137,7 @@ public final class User implements Detailed, Serializable
     }
 
     @Override
-    public final <T extends DetailActivity> void showDetail(
+    public final <T extends DetailActivity> void showDetails(
             @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
     {
         ArrayList<Detail> detailList = new ArrayList<>();
@@ -146,8 +146,8 @@ public final class User implements Detailed, Serializable
         detailList.add(new Detail("Phone Number", getPhoneNumber().toString(), null));
 
         Intent intent = new Intent(context, detailActivityClass);
-        intent.putExtra(Detailed.DATA_DETAIL_LIST, detailList);
-        intent.putExtra(Detailed.DATA_DETAIL_TITLE, "User");
+        intent.putExtra(Detailed.DETAILS_KEY, detailList);
+        intent.putExtra(Detailed.TITLE_KEY, "User");
 
         context.startActivity(intent);
     }

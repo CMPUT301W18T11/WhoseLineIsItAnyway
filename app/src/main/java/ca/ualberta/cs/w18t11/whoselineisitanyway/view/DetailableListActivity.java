@@ -68,7 +68,7 @@ public class DetailableListActivity extends NavigatorActivity
             {
                 // Show the detail view of the selected item
                 Detailed detail = (Detailed) adapter.getItemAtPosition(position);
-                detail.showDetail(DetailActivity.class, v.getContext());
+                detail.showDetails(DetailActivity.class, v.getContext());
             }
         });
     }
