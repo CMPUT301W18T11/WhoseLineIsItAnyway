@@ -46,7 +46,7 @@ public class ElasticSearchUserController {
                     if (result.isSucceeded()) {
                         // Elasticsearch was successful
                         Log.i("Elasticsearch Success", "Setting user id");
-                        user.setId(result.getId());
+                        user.setElasticId(result.getId());
                         return result.getId();
                     } else {
                         Log.i("Elasticsearch Error",
@@ -139,7 +139,7 @@ public class ElasticSearchUserController {
         protected Boolean doInBackground(User... user) {
             verifyConfig();
 
-            Index index = new Index.Builder(user[0]).index(idxStr).type(typeStr).id(user[0].getId()).build();
+            Index index = new Index.Builder(user[0]).index(idxStr).type(typeStr).id(user[0].getElasticId()).build();
 
             try {
                 DocumentResult result = client.execute(index);
@@ -165,7 +165,7 @@ public class ElasticSearchUserController {
         protected Void doInBackground(User... user) {
             verifyConfig();
 
-            Delete delete = new Delete.Builder(user[0].getId()).index(idxStr).type(typeStr).build();
+            Delete delete = new Delete.Builder(user[0].getElasticId()).index(idxStr).type(typeStr).build();
 
             try {
                 DocumentResult result = client.execute(delete);

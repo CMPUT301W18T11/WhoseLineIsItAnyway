@@ -115,7 +115,7 @@ public class ElasticSearchBidController {
                     if (result.isSucceeded()) {
                         // Elasticsearch was successful
                         Log.i("Elasticsearch Success", "Setting bid id");
-                        bid.setId(result.getId());
+                        bid.setElasticId(result.getId());
                         return result.getId();
                     } else {
                         Log.i("Elasticsearch Error",
@@ -164,7 +164,7 @@ public class ElasticSearchBidController {
         protected Void doInBackground(Bid... bid) {
             verifyConfig();
 
-            Delete delete = new Delete.Builder(bid[0].getId()).index(idxStr).type(typeStr).build();
+            Delete delete = new Delete.Builder(bid[0].getElasticId()).index(idxStr).type(typeStr).build();
 
             try {
                 DocumentResult result = client.execute(delete);

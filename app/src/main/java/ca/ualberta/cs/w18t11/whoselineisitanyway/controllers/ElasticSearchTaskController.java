@@ -112,7 +112,7 @@ public class ElasticSearchTaskController {
                     if (result.isSucceeded()) {
                         // Elasticsearch was successful
                         Log.i("Elasticsearch Success", "Setting task id");
-                        task.setId(result.getId());
+                        task.setElasticId(result.getId());
                         return result.getId();
                     } else {
                         Log.i("Elasticsearch Error",
@@ -135,12 +135,12 @@ public class ElasticSearchTaskController {
         protected Boolean doInBackground(Task... task) {
             verifyConfig();
 
-            Index index = new Index.Builder(task[0]).index(idxStr).type(typeStr).id(task[0].getId()).build();
+            Index index = new Index.Builder(task[0]).index(idxStr).type(typeStr).id(task[0].getElasticId()).build();
 
             try {
                 DocumentResult result = client.execute(index);
                 if (result.isSucceeded()) {
-                    Log.i("Elasticsearch Success", "updated task: " + task[0].getId());
+                    Log.i("Elasticsearch Success", "updated task: " + task[0].getElasticId());
                     return Boolean.TRUE;
                 } else {
                     Log.i("Elasticsearch Error",
@@ -161,12 +161,12 @@ public class ElasticSearchTaskController {
         protected Void doInBackground(Task... task) {
             verifyConfig();
 
-            Delete delete = new Delete.Builder(task[0].getId()).index(idxStr).type(typeStr).build();
+            Delete delete = new Delete.Builder(task[0].getElasticId()).index(idxStr).type(typeStr).build();
 
             try {
                 DocumentResult result = client.execute(delete);
                 if (result.isSucceeded()) {
-                    Log.i("Elasticsearch Success", "deleted task: " + task[0].getId());
+                    Log.i("Elasticsearch Success", "deleted task: " + task[0].getElasticId());
                 } else {
                     Log.i("Elasticsearch Error",
                             "index missing or could not connect:" +
