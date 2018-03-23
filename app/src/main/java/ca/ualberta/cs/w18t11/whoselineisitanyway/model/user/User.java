@@ -3,12 +3,14 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.model.user;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 
@@ -18,7 +20,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
  * @author Samuel Dolha
  * @version 2.0
  */
-public final class User implements Detailed, Serializable
+public final class User implements Detailed, Elastic, Serializable
 {
     /**
      * An auto-generated, unique ID to support class versioning for Serializable.
@@ -26,6 +28,12 @@ public final class User implements Detailed, Serializable
      * @see Serializable
      */
     private static final long serialVersionUID = 5194623147675047167L;
+
+    /**
+     * The bid's unique ID in Elasticsearch.
+     */
+    @Nullable
+    private String elasticId;
 
     /**
      * The user's username.
@@ -134,6 +142,24 @@ public final class User implements Detailed, Serializable
     public final Task[] getAssignedTasks()
     {
         return this.assignedTasks.toArray(new Task[0]);
+    }
+
+    @Nullable
+    @Override
+    public final String getElasticId()
+    {
+        return this.elasticId;
+    }
+
+    @Override
+    public final void setElasticId(@NonNull final String id)
+    {
+        if (id.isEmpty())
+        {
+            throw new IllegalArgumentException("id cannot be empty");
+        }
+
+        this.elasticId = id;
     }
 
     @Override
