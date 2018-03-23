@@ -136,6 +136,24 @@ public class ElasticSearchBidController {
         @Override
         protected Boolean doInBackground(Bid... bid) {
             verifyConfig();
+
+            Index index = new Index.Builder(bid[0]).index(idxStr).type(typeStr).id(bid[0].getId()).build();
+
+            try {
+                DocumentResult result = client.execute(index);
+                if (result.isSucceeded()) {
+                    Log.i("Elasticsearch Success", "updated user: " + bid[0].getUsername());
+                    return Boolean.TRUE;
+                } else {
+                    Log.i("Elasticsearch Error",
+                            "index missing or could not connect:" +
+                                    Integer.toString(result.getResponseCode()));
+                    return Boolean.FALSE;
+                }
+            } catch (Exception e) {
+                Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
+            }
+            return Boolean.FALSE;
         }
 
     }
