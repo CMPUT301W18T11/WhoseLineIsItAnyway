@@ -8,12 +8,11 @@ import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
-import io.searchbox.core.Search;
-import io.searchbox.core.SearchResult;
+import io.searchbox.core.DocumentResult;
+import io.searchbox.core.Index;
 
 /**
  * Elastic Search controller for handling Task queries
@@ -41,6 +40,7 @@ public class ElasticSearchBidController {
         @Override
         protected ArrayList<Bid> doInBackground(String... query) {
             verifyConfig();
+
         }
     }
 
@@ -49,6 +49,29 @@ public class ElasticSearchBidController {
         @Override
         protected String doInBackground(Bid... bids) {
             verifyConfig();
+
+            for (Bid bid: bids) {
+                Index idx = new Index.Builder(bid).index(idxStr).type(typeStr).build();
+
+                try {
+                    DocumentResult result = client.execute(idx);
+                    if (result.isSucceeded()) {
+                        // Elasticsearch was successful
+                        Log.i("Elasticsearch Success", "Setting user id");
+                        bid.setId(result.getId());
+                        return result.getId();
+                    } else {
+                        Log.i("Elasticsearch Error",
+                                "index msising or could not connect:" +
+                                        Integer.toString(result.getResponseCode()));
+                        return null;
+                    }
+                } catch (Exception e) {
+                    // Probably disconnected
+                    Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
+                }
+            }
+            return null;
         }
     }
 
