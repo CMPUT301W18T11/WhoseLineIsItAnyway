@@ -3,9 +3,10 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.controllers.ElasticSearchTaskController;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controllers.ElasticSearchUserController;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
@@ -72,11 +73,11 @@ public class RemoteDataSource implements DataSource
         }
         catch (InterruptedException e)
         {
-            Log.i("RemoteDataSource.getAllUsers", "interrupted:" + e.toString());
+            Log.i("RemoteDataSource.getUsers", "interrupted:" + e.toString());
         }
         catch (ExecutionException e)
         {
-            Log.i("RemoteDataSource.getAllUsers", "execution exception:" + e.toString());
+            Log.i("RemoteDataSource.getUsers", "execution exception:" + e.toString());
         }
 
         // TODO signal dataSourceManager to get offline users
@@ -94,10 +95,42 @@ public class RemoteDataSource implements DataSource
         return false;
     }
 
+    /**
+     * Gets all the tasks from the database if connected
+     * @return ArrayList of Tasksh
+     */
     @NonNull
     @Override
-    public Task[] getTasks() {
-        return new Task[0];
+    public Task[] getTasks()
+    {
+        // TODO test this
+        String query = "{" +
+                "  \"from\" :0, \"size\" : 5000," +
+                "  \"query\": {" +
+                "    \"match_all\": {}" +
+                "    }" +
+                "}";
+
+        ElasticSearchTaskController.GetTaskssTask getAllTasksTask
+                = new ElasticSearchTaskController.GetTaskssTask();
+        getAllTasksTask.execute(query);
+
+        try
+        {
+            return (Task[]) getAllTasksTask.get().toArray();
+        }
+        catch (InterruptedException e)
+        {
+            Log.i("RemoteDataSource.getTasks", "interrupted:" + e.toString());
+        }
+        catch (ExecutionException e)
+        {
+            Log.i("RemoteDataSource.getTasks", "execution exception:" + e.toString());
+        }
+
+        // TODO signal dataSourceManager to get offline tasks
+        // If get() fails to return an array, that means we are not connected
+        // to the network. This needs to be somehow handled.
     }
 
     @Override
