@@ -1,7 +1,16 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,6 +20,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
@@ -18,17 +36,20 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidatorResult;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidator;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
-
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-
 /**
  * This is just a generic activity for implementing parts of code; it is not intended to run as part of the app
  * and should be deleted before commiting to the final master release.
  *
+ * Note to TA: Please basically ignore this file. It's a scrap area mostly for making dialogs. It will
+ * not be present in the final edition of the project and is not intended for assessment.
+ *
  * @author Lucas Thalen
  */
-public class testActivity extends AppCompatActivity
+public class testActivity extends AppCompatActivity implements SetMapLocationDialog.MapDialogReturnListener
 {
+    private LatLng location;
+    private boolean res = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -37,6 +58,8 @@ public class testActivity extends AppCompatActivity
         setContentView(R.layout.activity_test);
 
         Button btnTest = (Button) findViewById(R.id.btnTest);
+        Button btnMapSetDialog = (Button) findViewById(R.id.btn_mapdiag);
+
         btnTest.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -45,8 +68,35 @@ public class testActivity extends AppCompatActivity
                 generateRegistrationDialog("TEST");
             }
         });
+        btnMapSetDialog.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                SetMapLocationDialog smld = new SetMapLocationDialog();
+                smld.showDialog(testActivity.this);
+            }
+        });
+
     }
 
+    @Override
+    public void onMapSetDialogReturn(LatLng res) {
+        location = res;
+        if (res != null) {
+            double lat = res.latitude;
+            double lng = res.longitude;
+            Toast debug = Toast.makeText(testActivity.this, String.valueOf(lat) + " " + String.valueOf(lng), Toast.LENGTH_LONG);
+            debug.show();
+        } else {
+            Toast debug = Toast.makeText(testActivity.this, "DIDN'T WORK", Toast.LENGTH_LONG);
+            debug.show();
+        }
+    }
+    public void setVal(LatLng l) {
+        location = l;
+    }
+    // GENERATE USER REGISTRATION DIALOG
     /**
      * GENERATE REGISTRATION DIALOG
      * This function generates a registration dialog to enroll a new user in the application
@@ -244,4 +294,6 @@ public class testActivity extends AppCompatActivity
         }
 
     }
+
+
 }
