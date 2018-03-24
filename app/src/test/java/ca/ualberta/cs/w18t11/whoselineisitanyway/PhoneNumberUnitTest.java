@@ -68,5 +68,6 @@ public final class PhoneNumberUnitTest
         Assert.assertNotEquals(secondNumber, thirdNumber);
         Assert.assertNotEquals(thirdNumber, fourthNumber);
         Assert.assertNotEquals(fourthNumber, fifthNumber);
+        Assert.assertNotEquals(fifthNumber, sixthNumber);
     }
 }
