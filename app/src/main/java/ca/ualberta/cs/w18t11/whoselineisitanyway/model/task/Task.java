@@ -24,7 +24,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
  * Represents a task.
  *
  * @author Samuel Dolha
- * @version 3.2
+ * @version 3.3
  */
 public final class Task implements Detailed, Elastic, Serializable
 {
@@ -501,18 +501,10 @@ public final class Task implements Detailed, Elastic, Serializable
 
         final Task task = (Task) object;
 
-        final EqualsBuilder builder = new EqualsBuilder();
-
-        if (this.getElasticId() == null && task.getElasticId() == null)
-        {
-            builder.append(this.getTitle(), task.getTitle())
-                    .append(this.getDescription(), task.getDescription());
-        }
-        else
-        {
-            builder.append(this.getElasticId(), task.getElasticId());
-        }
-
-        return builder.append(this.getRequesterId(), task.getRequesterId()).isEquals();
+        return new EqualsBuilder().append(this.getRequesterId(), task.getRequesterId())
+                .append(this.getProviderId(), task.getProviderId())
+                .append(this.getTitle(), task.getTitle())
+                .append(this.getDescription(), task.getDescription())
+                .append(this.getStatus(), task.getStatus()).isEquals();
     }
 }
