@@ -3,6 +3,7 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controllers.ElasticSearchBidController;
@@ -21,11 +22,16 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 public class RemoteDataSource implements DataSource
 {
     /**
+     * Constructor
+     */
+    public RemoteDataSource() {}
+
+    /**
      * Gets a user from the database by their elastic id
      * @param elasticId User's elasticId
      * @return User if found. null if not found
      */
-    public static User getUserById(String elasticId)
+    public User getUserById(String elasticId)
     {
         ElasticSearchUserController.GetUserByIdTask getUserTask =
                 new ElasticSearchUserController.GetUserByIdTask();
@@ -51,7 +57,7 @@ public class RemoteDataSource implements DataSource
      * @param username User's username
      * @return User if found. null if not found
      */
-    public static User getUserByUsername(String username)
+    public User getUserByUsername(String username)
     {
         String query = "{" +
                 "  \"query\": {" +
@@ -67,7 +73,11 @@ public class RemoteDataSource implements DataSource
 
         try
         {
-            return getUsersTask.get().get(0);
+            ArrayList<User> users = getUsersTask.get();
+            if (users.size() == 1)
+            {
+                return users.get(0);
+            }
         }
         catch (InterruptedException e)
         {
