@@ -474,7 +474,7 @@ public final class Task implements Detailed, Elastic, Serializable
      * @see Object
      */
     @Override
-    public final boolean equals(final Object object)
+    public final boolean equals(@Nullable final Object object)
     {
         if (!(object instanceof Task))
         {
