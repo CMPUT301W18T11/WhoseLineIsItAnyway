@@ -6,6 +6,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.controllers.ElasticSearchBidController;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controllers.ElasticSearchTaskController;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controllers.ElasticSearchUserController;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
@@ -262,8 +263,32 @@ public class RemoteDataSource implements DataSource
         // to the network. This needs to be somehow handled.
     }
 
+    /**
+     * Adds a bid to the database
+     * @param bid The bid to add
+     * @return true if bid was successfully added to the database
+     */
     @Override
     public boolean addBid(@NonNull Bid bid) {
+        ElasticSearchBidController.AddBidsTask addBidTask =
+                new ElasticSearchBidController.AddBidsTask ();
+        addBidTask.execute(bid);
+
+        try
+        {
+            if (addBidTask.get() != null)
+            {
+                return true;
+            }
+        }
+        catch (InterruptedException e)
+        {
+            Log.i("RemoteDataSource.addUser", "interrupted:" + e.toString());
+        }
+        catch (ExecutionException e)
+        {
+            Log.i("UserLogin.addUser", "execution exception:" + e.toString());
+        }
         return false;
     }
 
