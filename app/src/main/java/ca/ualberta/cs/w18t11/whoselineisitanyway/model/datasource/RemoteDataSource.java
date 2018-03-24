@@ -118,6 +118,11 @@ public class RemoteDataSource implements DataSource
         // to the network. This needs to be somehow handled.
     }
 
+    /**
+     * Adds a user to the database
+     * @param user The user to add
+     * @return true if user was successfully added to the database
+     */
     @Override
     public boolean addUser(@NonNull User user) {
         ElasticSearchUserController.AddUsersTask addUserTask =
@@ -185,8 +190,32 @@ public class RemoteDataSource implements DataSource
         // to the network. This needs to be somehow handled.
     }
 
+    /**
+     * Adds a task to the database
+     * @param task The task to add
+     * @return true if task was successfully added to the database
+     */
     @Override
     public boolean addTask(@NonNull Task task) {
+        ElasticSearchTaskController.AddTasksTask addTaskTask =
+                new ElasticSearchTaskController.AddTasksTask();
+        addTaskTask.execute(task);
+
+        try
+        {
+            if (addTaskTask.get() != null)
+            {
+                return true;
+            }
+        }
+        catch (InterruptedException e)
+        {
+            Log.i("RemoteDataSource.addUser", "interrupted:" + e.toString());
+        }
+        catch (ExecutionException e)
+        {
+            Log.i("UserLogin.addUser", "execution exception:" + e.toString());
+        }
         return false;
     }
 
