@@ -3,7 +3,6 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controllers.ElasticSearchBidController;
@@ -117,6 +116,7 @@ public class RemoteDataSource implements DataSource
         // TODO signal dataSourceManager to get offline users
         // If get() fails to return an array, that means we are not connected
         // to the network. This needs to be somehow handled.
+        return null;
     }
 
     /**
@@ -148,8 +148,30 @@ public class RemoteDataSource implements DataSource
         return false;
     }
 
+    /**
+     * Removes a user from the database
+     * @param user The user to remove.
+     * @return
+     */
     @Override
     public boolean removeUser(@NonNull User user) {
+        ElasticSearchUserController.RemoveUserTask removeUserTask =
+                new ElasticSearchUserController.RemoveUserTask();
+        removeUserTask.execute(user);
+
+        try
+        {
+            removeUserTask.get();
+            return true;
+        }
+        catch (InterruptedException e)
+        {
+            Log.i("RemoteDataSource.addUser", "interrupted:" + e.toString());
+        }
+        catch (ExecutionException e)
+        {
+            Log.i("UserLogin.addUser", "execution exception:" + e.toString());
+        }
         return false;
     }
 
@@ -189,6 +211,7 @@ public class RemoteDataSource implements DataSource
         // TODO signal dataSourceManager to get offline tasks
         // If get() fails to return an array, that means we are not connected
         // to the network. This needs to be somehow handled.
+        return null;
     }
 
     /**
@@ -261,6 +284,7 @@ public class RemoteDataSource implements DataSource
         // TODO signal dataSourceManager to get offline bids
         // If get() fails to return an array, that means we are not connected
         // to the network. This needs to be somehow handled.
+        return null;
     }
 
     /**
