@@ -13,6 +13,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
+import io.searchbox.annotations.JestId;
 
 /**
  * Represents a user.
@@ -40,6 +41,7 @@ public final class User implements Detailed, Elastic, Serializable
      */
     @NonNull
     private final String username;
+
 
     /**
      * The user's requested tasks.
@@ -73,6 +75,9 @@ public final class User implements Detailed, Elastic, Serializable
     @NonNull
     private final PhoneNumber phoneNumber;
 
+    @JestId
+    private String id;
+
     /**
      * @param emailAddress The user's email address.
      * @param phoneNumber  The user's phone number.
@@ -102,6 +107,23 @@ public final class User implements Detailed, Elastic, Serializable
     public final String getUsername()
     {
         return this.username;
+    }
+
+    /**
+     * @return The user's id.
+     */
+    @NonNull
+    public final String getId()
+    {
+        return this.id;
+    }
+
+    /**
+     * Set the user's id
+     * @param id user id String
+     */
+    public void setId(String id){
+        this.id = id;
     }
 
     /**
