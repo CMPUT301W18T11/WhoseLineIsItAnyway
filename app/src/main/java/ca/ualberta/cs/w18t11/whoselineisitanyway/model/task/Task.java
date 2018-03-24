@@ -24,7 +24,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
  * Represents a task.
  *
  * @author Samuel Dolha
- * @version 3.0
+ * @version 3.1
  */
 public final class Task implements Detailed, Elastic, Serializable
 {
@@ -428,9 +428,12 @@ public final class Task implements Detailed, Elastic, Serializable
     }
 
     /**
+     * Shows the task's details.
+     *
      * @param detailActivityClass The activity in which to display the details.
      * @param context             The context in which to start the activity.
      * @param <T>                 The type of DetailActivity.
+     * @see Detailed
      */
     @Override
     public final <T extends DetailActivity> void showDetails(
