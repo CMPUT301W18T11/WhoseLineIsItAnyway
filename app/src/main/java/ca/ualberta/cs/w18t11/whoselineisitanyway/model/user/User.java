@@ -5,8 +5,12 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
@@ -18,7 +22,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
  * Represents a user.
  *
  * @author Samuel Dolha
- * @version 2.0
+ * @version 3.0
  */
 public final class User implements Detailed, Elastic, Serializable
 {
@@ -28,36 +32,11 @@ public final class User implements Detailed, Elastic, Serializable
      * @see Serializable
      */
     private static final long serialVersionUID = 5194623147675047167L;
-
-    /**
-     * The bid's unique ID in Elasticsearch.
-     */
-    @Nullable
-    private String elasticId;
-
     /**
      * The user's username.
      */
     @NonNull
     private final String username;
-
-
-    /**
-     * The user's requested tasks.
-     *
-     * @see Task
-     */
-    @NonNull
-    private final ArrayList<Task> requestedTasks = new ArrayList<>();
-
-    /**
-     * The tasks assigned to the user.
-     *
-     * @see Task
-     */
-    @NonNull
-    private final ArrayList<Task> assignedTasks = new ArrayList<>();
-
     /**
      * The user's email address.
      *
@@ -65,7 +44,6 @@ public final class User implements Detailed, Elastic, Serializable
      */
     @NonNull
     private final EmailAddress emailAddress;
-
     /**
      * The user's phone number.
      *
@@ -73,24 +51,62 @@ public final class User implements Detailed, Elastic, Serializable
      */
     @NonNull
     private final PhoneNumber phoneNumber;
+    /**
+     * The user's unique ID in Elasticsearch.
+     */
+    @Nullable
+    private String elasticId;
 
     /**
+     * Creates a user without an elastic ID.
+     *
+     * @param username     The user's username.
      * @param emailAddress The user's email address.
      * @param phoneNumber  The user's phone number.
-     * @param username     The user's username.
      * @throws IllegalArgumentException For an empty username.
      * @see EmailAddress
      * @see PhoneNumber
      * @see Task
      */
-    public User(@NonNull final EmailAddress emailAddress, @NonNull final PhoneNumber phoneNumber,
-                @NonNull final String username)
+    public User(@NonNull final String username, @NonNull final EmailAddress emailAddress,
+                @NonNull final PhoneNumber phoneNumber)
     {
         if (username.isEmpty())
         {
             throw new IllegalArgumentException("username cannot be empty");
         }
 
+        this.username = username;
+        this.emailAddress = emailAddress;
+        this.phoneNumber = phoneNumber;
+    }
+
+    /**
+     * Creates a user with an elastic ID.
+     *
+     * @param elasticId    The user's elastic ID.
+     * @param username     The user's username.
+     * @param emailAddress The user's email address.
+     * @param phoneNumber  The user's phone number.
+     * @throws IllegalArgumentException For an empty username.
+     * @see EmailAddress
+     * @see PhoneNumber
+     * @see Task
+     */
+    public User(@NonNull final String elasticId, @NonNull final String username,
+                @NonNull final EmailAddress emailAddress, @NonNull final PhoneNumber phoneNumber)
+    {
+        if (elasticId.isEmpty())
+        {
+            throw new IllegalArgumentException("elasticId cannot be empty");
+        }
+
+        if (username.isEmpty())
+        {
+            throw new IllegalArgumentException("username cannot be empty");
+        }
+
+        this.elasticId = elasticId;
         this.username = username;
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
@@ -126,25 +142,9 @@ public final class User implements Detailed, Elastic, Serializable
     }
 
     /**
-     * @return The user's requested tasks.
-     * @see Task
+     * @return The user's elastic ID.
+     * @see Elastic
      */
-    @NonNull
-    public final Task[] getRequestedTasks()
-    {
-        return this.requestedTasks.toArray(new Task[0]);
-    }
-
-    /**
-     * @return The tasks assigned to the user.
-     * @see Task
-     */
-    @NonNull
-    public final Task[] getAssignedTasks()
-    {
-        return this.assignedTasks.toArray(new Task[0]);
-    }
-
     @Nullable
     @Override
     public final String getElasticId()
@@ -152,6 +152,12 @@ public final class User implements Detailed, Elastic, Serializable
         return this.elasticId;
     }
 
+    /**
+     * Sets the user's elastic ID.
+     *
+     * @param id The user's new elastic ID.
+     * @see Elastic
+     */
     @Override
     public final void setElasticId(@NonNull final String id)
     {
@@ -163,28 +169,60 @@ public final class User implements Detailed, Elastic, Serializable
         this.elasticId = id;
     }
 
+    /**
+     * Shows the user's details.
+     *
+     * @param detailActivityClass The activity in which to display the details.
+     * @param context             The context in which to start the activity.
+     * @param <T>                 The type of DetailActivity.
+     * @see Detailed
+     */
     @Override
     public final <T extends DetailActivity> void showDetails(
             @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
     {
-        ArrayList<Detail> detailList = new ArrayList<>();
-        detailList.add(new Detail("ID", this.getUsername(), null));
-        detailList.add(new Detail("Email", getEmailAddress().toString(), null));
-        detailList.add(new Detail("Phone Number", getPhoneNumber().toString(), null));
-
-        Intent intent = new Intent(context, detailActivityClass);
-        intent.putExtra(Detailed.DETAILS_KEY, detailList);
+        final Intent intent = new Intent(context, detailActivityClass);
+        intent.putExtra(Detailed.DETAILS_KEY, (ArrayList<Detail>) Arrays
+                .asList(new Detail("username", this.getUsername(), null),
+                        new Detail("emailAddress", this.getEmailAddress().toString(), null),
+                        new Detail("phoneNUmber", this.getPhoneNumber().toString(), null)));
         intent.putExtra(Detailed.TITLE_KEY, "User");
 
         context.startActivity(intent);
     }
 
     /**
-     * @return A string representation of the user.
+     * @return A hashcode for the user.
+     * @see Object
      */
     @Override
-    public final String toString()
+    public final int hashCode()
     {
-        return this.getUsername();
+        return Objects.hash(this.getUsername(), this.getEmailAddress(), this.getPhoneNumber());
+    }
+
+    /**
+     * @param object The object with which to compare the user.
+     * @return Whether the object represents the same user.
+     * @see Object
+     */
+    @Override
+    public final boolean equals(@Nullable final Object object)
+    {
+        if (!(object instanceof User))
+        {
+            return false;
+        }
+
+        if (object == this)
+        {
+            return true;
+        }
+
+        final User user = (User) object;
+
+        return new EqualsBuilder().append(this.getUsername(), user.getUsername())
+                .append(this.getEmailAddress(), user.getEmailAddress())
+                .append(this.getPhoneNumber(), user.getPhoneNumber()).isEquals();
     }
 }
