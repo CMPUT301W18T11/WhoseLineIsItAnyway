@@ -1,5 +1,7 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.model.user;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -121,11 +123,16 @@ public final class PhoneNumber implements Serializable
             return false;
         }
 
+        if (object == this)
+        {
+            return true;
+        }
+
         PhoneNumber phoneNumber = (PhoneNumber) object;
 
-        return this.countryCode == phoneNumber.getCountryCode()
-                && this.areaCode == phoneNumber.getAreaCode()
-                && this.exchangeCode == phoneNumber.getExchangeCode()
-                && this.lineNumber == phoneNumber.getLineNumber();
+        return new EqualsBuilder().append(this.countryCode, phoneNumber.getCountryCode())
+                .append(this.areaCode, phoneNumber.getAreaCode())
+                .append(this.exchangeCode, phoneNumber.getExchangeCode())
+                .append(this.lineNumber, phoneNumber.getLineNumber()).isEquals();
     }
 }

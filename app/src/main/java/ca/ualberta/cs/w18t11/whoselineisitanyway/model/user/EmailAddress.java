@@ -2,6 +2,8 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.model.user;
 
 import android.support.annotation.NonNull;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -105,9 +107,14 @@ public final class EmailAddress implements Serializable
             return false;
         }
 
+        if (object == this)
+        {
+            return true;
+        }
+
         final EmailAddress emailAddress = (EmailAddress) object;
 
-        return this.localPart.equals(emailAddress.getLocalPart())
-                && this.domain.equals(emailAddress.getDomain());
+        return new EqualsBuilder().append(this.localPart, emailAddress.getLocalPart())
+                .append(this.domain, emailAddress.getDomain()).isEquals();
     }
 }
