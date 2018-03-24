@@ -47,6 +47,40 @@ public class RemoteDataSource implements DataSource
     }
 
     /**
+     * Gets a user from the database
+     * @param username User's username
+     * @return User if found. null if not found
+     */
+    public static User getUserByUsername(String username)
+    {
+        String query = "{" +
+                "  \"query\": {" +
+                "    \"match\": {" +
+                "      \"username\": \"" + username + "\"" +
+                "    }" +
+                "  }" +
+                "}";
+
+        ElasticSearchUserController.GetUsersTask getUsersTask =
+                new ElasticSearchUserController.GetUsersTask();
+        getUsersTask.execute(query);
+
+        try
+        {
+            return getUsersTask.get().get(0);
+        }
+        catch (InterruptedException e)
+        {
+            Log.i("RemoteDataSource.getUser", "interrupted:" + e.toString());
+        }
+        catch (ExecutionException e)
+        {
+            Log.i("RemoteDataSource.getUser", "execution exception:" + e.toString());
+        }
+        return null;
+    }
+
+    /**
      * Gets all the users from the database if connected
      * @return Array of Users
      */
