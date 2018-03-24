@@ -49,12 +49,12 @@ public class DataSourceManager
     private DataSourceManager()
     {
         final User[] users = new User[]{
-                new User(new EmailAddress("bob", "gmail.com"), new PhoneNumber(0, 123, 456, 7890),
-                        "bob"),
-                new User(new EmailAddress("alice", "gmail.com"), new PhoneNumber(0, 123, 456, 7890),
-                        "alice"),
-                new User(new EmailAddress("eve", "gmail.com"), new PhoneNumber(0, 123, 456, 7890),
-                        "eve")
+                new User("bob", new EmailAddress("bob", "gmail.com"),
+                        new PhoneNumber(0, 123, 456, 7890)),
+                new User("alice", new EmailAddress("alice", "gmail.com"),
+                        new PhoneNumber(0, 123, 456, 7890)),
+                new User("eve", new EmailAddress("eve", "gmail.com"),
+                        new PhoneNumber(0, 123, 456, 7890))
         };
         final Bid[] bids = new Bid[]{
                 new Bid(users[1].getUsername(), "id1", new BigDecimal(5)),

@@ -13,9 +13,9 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 public class DetailActivity extends AppCompatActivity
@@ -88,9 +88,8 @@ public class DetailActivity extends AppCompatActivity
             // Mock up a task to view
             Task task = new Task("id", "requesterId", "Test Task", "A task to test");
             Bid bid = new Bid("1234", "5432", new BigDecimal(1234));
-            final User user = new User(
-                    new EmailAddress("user", "gmail.com"), new PhoneNumber(3, 333, 333, 3333),
-                    "username");
+            final User user = new User("username", new EmailAddress("user", "gmail.com"),
+                    new PhoneNumber(3, 333, 333, 3333));
             user.showDetails(DetailActivity.class, this);
         }
     }

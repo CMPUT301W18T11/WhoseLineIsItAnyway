@@ -15,11 +15,9 @@ import android.widget.TextView;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidatorResult;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidator;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
-
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidator;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidatorResult;
 
 /**
  * This is just a generic activity for implementing parts of code; it is not intended to run as part of the app
@@ -235,7 +233,7 @@ public class testActivity extends AppCompatActivity
                     emailComponents[1]
             );
 
-            return (new User(email, phone, usrID[0]));
+            return (new User(usrID[0], email, phone));
         }
         else
         {

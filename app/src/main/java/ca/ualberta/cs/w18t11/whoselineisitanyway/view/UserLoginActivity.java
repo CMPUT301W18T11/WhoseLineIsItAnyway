@@ -67,26 +67,38 @@ public class UserLoginActivity extends AppCompatActivity
      * This will set a flag if the user enters 8 chars warning them no more will be allowed.
      * AddressOf: etxtUsername (Username input EditText view)
      */
-    private void etxtUsername_onCharLimitReached() {
+    private void etxtUsername_onCharLimitReached()
+    {
         final EditText username = (EditText) findViewById(R.id.etxt_Username);
-        username.addTextChangedListener(new TextWatcher() {
+        username.addTextChangedListener(new TextWatcher()
+        {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
 
             }
+
             @Override
-            public void afterTextChanged(Editable s) {
-                if (username.getText().length() == 8) {
+            public void afterTextChanged(Editable s)
+            {
+                if (username.getText().length() == 8)
+                {
                     username.setError("Usernames can only be 8 characters long.");
-                } else { username.setError(null); }
+                }
+                else
+                {
+                    username.setError(null);
+                }
             }
         });
     }
+
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid username, missing fields, etc.), the
@@ -104,11 +116,14 @@ public class UserLoginActivity extends AppCompatActivity
         View focusView = null;
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(username)) {
+        if (TextUtils.isEmpty(username))
+        {
             txtUsername.setError(getString(R.string.error_field_required));
             focusView = txtUsername;
             cancel = true;
-        } else if (!isUsernameValid(username)) {
+        }
+        else if (!isUsernameValid(username))
+        {
             txtUsername.setError(getString(R.string.error_invalid_username));
             focusView = txtUsername;
             cancel = true;
@@ -119,7 +134,9 @@ public class UserLoginActivity extends AppCompatActivity
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
-        } else {
+        }
+        else
+        {
             // attempt authentication against a network
             String query = "{" +
                     "  \"query\": {" +
@@ -134,28 +151,38 @@ public class UserLoginActivity extends AppCompatActivity
                     = new ElasticSearchUserController.GetUsersTask();
             getUsersTask.execute(query);
 
-            try {
+            try
+            {
                 ArrayList<User> users = getUsersTask.get();
-                if(users != null){
-                    if (users.size() == 1){
+                if (users != null)
+                {
+                    if (users.size() == 1)
+                    {
                         Log.i("UserLogin", "User exists. Attempting login...");
                         loginUser(users.get(0));
                     }
-                    else if (users.size() > 1){
+                    else if (users.size() > 1)
+                    {
                         Log.i("UserLogin Error", "Username appears more than once in the database");
-                    } else {
+                    }
+                    else
+                    {
                         Log.i("UserLogin", "Attempting user registration...");
                         registerUser(username);
                     }
-                } else {
+                }
+                else
+                {
                     // TODO offline logic
                     Log.i("UserLogin", "Initiating offline behaviour...");
                 }
             }
-            catch (InterruptedException e) {
+            catch (InterruptedException e)
+            {
                 Log.i("UserLogin", "Login interrupted:" + e.toString());
             }
-            catch (ExecutionException e) {
+            catch (ExecutionException e)
+            {
                 Log.i("UserLogin", "getUsersTask exception:" + e.toString());
             }
         }
@@ -167,36 +194,44 @@ public class UserLoginActivity extends AppCompatActivity
         return !username.contains("A Bad Word");
     }
 
-    private void loginUser(User user) {
+    private void loginUser(User user)
+    {
         // Set the current user and start the app
         DataSourceManager.getInstance().setCurrentUser(user.getUsername());
         Intent intent = new Intent(this, NavigatorActivity.class);
         this.startActivity(intent);
     }
 
-    private void registerUser(String username) {
+    private void registerUser(String username)
+    {
         // TODO refactor this to use the createUserActivity
-        User user = new User(new EmailAddress("DefaultLocalPart","Domain@Default.com"),
-                new PhoneNumber(0,0,0,0),
-                username);
+        User user = new User(username, new EmailAddress("DefaultLocalPart", "Domain@Default.com"),
+                new PhoneNumber(0, 0, 0, 0));
 
         // Add the user to database
-        ElasticSearchUserController.AddUsersTask addUserTask = new ElasticSearchUserController.AddUsersTask();
+        ElasticSearchUserController.AddUsersTask addUserTask
+                = new ElasticSearchUserController.AddUsersTask();
         addUserTask.execute(user);
 
-        try {
+        try
+        {
             String jId = addUserTask.get();
-            if (jId != null) {
+            if (jId != null)
+            {
                 // TODO add new user to dataManager
                 loginUser(user);
-            } else {
+            }
+            else
+            {
                 Log.i("UserLogin", "registed user JestId is null");
             }
         }
-        catch (InterruptedException e) {
+        catch (InterruptedException e)
+        {
             Log.i("UserLogin", "Login interrupted:" + e.toString());
         }
-        catch (ExecutionException e) {
+        catch (ExecutionException e)
+        {
             Log.i("UserLogin", "addUserTask exception:" + e.toString());
         }
     }

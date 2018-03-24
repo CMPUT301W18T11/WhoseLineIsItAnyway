@@ -27,34 +27,44 @@ import io.searchbox.core.SearchResult;
  * @author Mark Griffith
  * @version 1.0
  */
-public class ElasticSearchUserController {
+public class ElasticSearchUserController
+{
     private static String typeStr = "users";
     private static String idxStr = "cmput301w18t11_whoselineisitanyways";
     private static JestDroidClient client;
 
-    public static class AddUsersTask extends AsyncTask<User, Void, String> {
+    public static class AddUsersTask extends AsyncTask<User, Void, String>
+    {
 
         @Override
-        protected String doInBackground(User... users) {
+        protected String doInBackground(User... users)
+        {
             verifyConfig();
 
-            for (User user : users) {
+            for (User user : users)
+            {
                 Index idx = new Index.Builder(user).index(idxStr).type(typeStr).build();
 
-                try {
+                try
+                {
                     DocumentResult result = client.execute(idx);
-                    if (result.isSucceeded()) {
+                    if (result.isSucceeded())
+                    {
                         // Elasticsearch was successful
                         Log.i("Elasticsearch Success", "Setting user id");
                         user.setElasticId(result.getId());
                         return result.getId();
-                    } else {
+                    }
+                    else
+                    {
                         Log.i("Elasticsearch Error",
                                 "index msising or could not connect:" +
-                                Integer.toString(result.getResponseCode()));
+                                        Integer.toString(result.getResponseCode()));
                         return null;
                     }
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
                     // Probably disconnected
                     Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
                 }
@@ -63,48 +73,59 @@ public class ElasticSearchUserController {
         }
     }
 
-    public static class GetUserByIdTask extends AsyncTask<String, Void, User> {
+    public static class GetUserByIdTask extends AsyncTask<String, Void, User>
+    {
 
         @Override
-        protected User doInBackground(String... userId) {
+        protected User doInBackground(String... userId)
+        {
             verifyConfig();
 
             Get get = new Get.Builder(idxStr, userId[0]).type(typeStr).build();
 
-            try {
+            try
+            {
                 JestResult result = client.execute(get);
-                if(result.isSucceeded()) {
+                if (result.isSucceeded())
+                {
                     // User found
                     User user = result.getSourceAsObject(User.class);
                     return user;
-                } else {
+                }
+                else
+                {
                     Log.i("Elasticsearch Error",
                             "index missing or could not connect:" +
                                     Integer.toString(result.getResponseCode()));
                     return null;
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 // Probably disconnected
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
             }
             // User not found, return blank User object
-            return new User(new EmailAddress("DefaultLocalPart","Domain@Default.com"),
-                    new PhoneNumber(0,0,0,0),
-                    "Default Name");
+            return new User("Default Name",
+                    new EmailAddress("DefaultLocalPart", "Domain@Default.com"),
+                    new PhoneNumber(0, 0, 0, 0));
         }
     }
 
-    public static class GetUsersTask extends AsyncTask<String, Void, ArrayList<User>> {
+    public static class GetUsersTask extends AsyncTask<String, Void, ArrayList<User>>
+    {
 
         @Override
-        protected ArrayList<User> doInBackground(String... query) {
+        protected ArrayList<User> doInBackground(String... query)
+        {
             verifyConfig();
 
             ArrayList<User> users = new ArrayList<User>();
 
             // Build the query
-            if (query.length < 1){
-                Log.i("Elasticsearch Error","Invalid query");
+            if (query.length < 1)
+            {
+                Log.i("Elasticsearch Error", "Invalid query");
                 return null;
             }
 
@@ -113,18 +134,24 @@ public class ElasticSearchUserController {
                     .addType(typeStr)
                     .build();
 
-            try {
+            try
+            {
                 SearchResult result = client.execute(search);
-                if(result.isSucceeded()) {
+                if (result.isSucceeded())
+                {
                     List<User> foundUsers = result.getSourceAsObjectList(User.class);
                     users.addAll(foundUsers);
-                } else {
+                }
+                else
+                {
                     Log.i("Elasticsearch Error",
                             "index missing or could not connect:" +
                                     Integer.toString(result.getResponseCode()));
                     return null;
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 // Probably disconnected
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
                 return null;
@@ -133,60 +160,81 @@ public class ElasticSearchUserController {
         }
     }
 
-    public static class UpdateUserTask extends AsyncTask<User, Void, Boolean> {
+    public static class UpdateUserTask extends AsyncTask<User, Void, Boolean>
+    {
 
         @Override
-        protected Boolean doInBackground(User... user) {
+        protected Boolean doInBackground(User... user)
+        {
             verifyConfig();
 
-            Index index = new Index.Builder(user[0]).index(idxStr).type(typeStr).id(user[0].getElasticId()).build();
+            Index index = new Index.Builder(user[0]).index(idxStr).type(typeStr)
+                    .id(user[0].getElasticId()).build();
 
-            try {
+            try
+            {
                 DocumentResult result = client.execute(index);
-                if (result.isSucceeded()) {
+                if (result.isSucceeded())
+                {
                     Log.i("Elasticsearch Success", "updated user: " + user[0].getUsername());
                     return Boolean.TRUE;
-                } else {
+                }
+                else
+                {
                     Log.i("Elasticsearch Error",
                             "index missing or could not connect:" +
                                     Integer.toString(result.getResponseCode()));
                     return Boolean.FALSE;
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
             }
             return Boolean.FALSE;
         }
     }
 
-    public static class RemoveUserTask extends AsyncTask<User, Void, Void> {
+    public static class RemoveUserTask extends AsyncTask<User, Void, Void>
+    {
 
         @Override
-        protected Void doInBackground(User... user) {
+        protected Void doInBackground(User... user)
+        {
             verifyConfig();
 
-            Delete delete = new Delete.Builder(user[0].getElasticId()).index(idxStr).type(typeStr).build();
+            Delete delete = new Delete.Builder(user[0].getElasticId()).index(idxStr).type(typeStr)
+                    .build();
 
-            try {
+            try
+            {
                 DocumentResult result = client.execute(delete);
-                if (result.isSucceeded()) {
+                if (result.isSucceeded())
+                {
                     Log.i("Elasticsearch Success", "deleted user: " + user[0].getUsername());
-                } else {
+                }
+                else
+                {
                     Log.i("Elasticsearch Error",
                             "index missing or could not connect:" +
                                     Integer.toString(result.getResponseCode()));
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
             }
             return null;
         }
     }
 
-    public static void verifyConfig() {
-        if (client == null) {
+    public static void verifyConfig()
+    {
+        if (client == null)
+        {
             Log.i("ElasticSearch", "verifying config...");
-            DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
+            DroidClientConfig.Builder builder = new DroidClientConfig.Builder(
+                    "http://cmput301.softwareprocess.es:8080");
             JestClientFactory factory = new JestClientFactory();
 
             DroidClientConfig config = builder.build();
