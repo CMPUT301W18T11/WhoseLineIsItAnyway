@@ -20,7 +20,6 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
  */
 public class RemoteDataSource implements DataSource
 {
-
     /**
      * Gets a user from the database by their elastic id
      * @param elasticId User's elasticId
@@ -49,7 +48,7 @@ public class RemoteDataSource implements DataSource
 
     /**
      * Gets all the users from the database if connected
-     * @return List of Users
+     * @return Array of Users
      */
     @NonNull
     @Override
@@ -97,7 +96,7 @@ public class RemoteDataSource implements DataSource
 
     /**
      * Gets all the tasks from the database if connected
-     * @return ArrayList of Tasksh
+     * @return Array of Tasks
      */
     @NonNull
     @Override
@@ -143,10 +142,42 @@ public class RemoteDataSource implements DataSource
         return false;
     }
 
+    /**
+     * Gets all the bids from the database if connected
+     * @return Array of Bids
+     */
     @NonNull
     @Override
-    public Bid[] getBids() {
-        return new Bid[0];
+    public Bid[] getBids()
+    {
+        // TODO test this
+        String query = "{" +
+                "  \"from\" :0, \"size\" : 5000," +
+                "  \"query\": {" +
+                "    \"match_all\": {}" +
+                "    }" +
+                "}";
+
+        ElasticSearchTaskController.GetTaskssTask getAllBidsTask
+                = new ElasticSearchTaskController.GetTaskssTask();
+        getAllBidsTask.execute(query);
+
+        try
+        {
+            return (Bid[]) getAllBidsTask.get().toArray();
+        }
+        catch (InterruptedException e)
+        {
+            Log.i("RemoteDataSource.getBids", "interrupted:" + e.toString());
+        }
+        catch (ExecutionException e)
+        {
+            Log.i("RemoteDataSource.getBids", "execution exception:" + e.toString());
+        }
+
+        // TODO signal dataSourceManager to get offline bids
+        // If get() fails to return an array, that means we are not connected
+        // to the network. This needs to be somehow handled.
     }
 
     @Override
