@@ -160,7 +160,7 @@ public final class TaskUnitTest
     @Test
     public final void testElasticId()
     {
-        final Task task = new Task(null, "requesterId", "title", "description");
+        final Task task = new Task("requesterId", "title", "description");
         Assert.assertNull(task.getElasticId());
         final String taskId = "taskId";
         task.setElasticId(taskId);

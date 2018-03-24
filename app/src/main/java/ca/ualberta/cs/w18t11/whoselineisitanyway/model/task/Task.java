@@ -24,7 +24,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
  * Represents a task.
  *
  * @author Samuel Dolha
- * @version 3.1
+ * @version 3.2
  */
 public final class Task implements Detailed, Elastic, Serializable
 {
@@ -46,7 +46,7 @@ public final class Task implements Detailed, Elastic, Serializable
     private static final int MAXIMUM_DESCRIPTION_LENGTH = 300;
 
     /**
-     * The task's unique ID in Elasticsearch.
+     * The task's elastic ID.
      */
     @Nullable
     private String elasticId;
@@ -94,7 +94,7 @@ public final class Task implements Detailed, Elastic, Serializable
     /**
      * Creates a task.
      *
-     * @param elasticId   The task's unique ID in elasticsearch.
+     * @param elasticId   The task's elastic ID.
      * @param requesterId The associated requester's ID.
      * @param providerId  The associated provider's ID.
      * @param bids        The associated bids.
@@ -212,14 +212,27 @@ public final class Task implements Detailed, Elastic, Serializable
     }
 
     /**
-     * Creates a requested task.
+     * Creates a requested task without an elastic ID.
      *
-     * @param elasticId   The task's unique ID in elasticsearch.
      * @param requesterId The associated requester's ID.
      * @param title       The task's title.
      * @param description The task's description.
      */
-    public Task(@Nullable final String elasticId, @NonNull final String requesterId,
+    public Task(@NonNull final String requesterId, @NonNull final String title,
+                @NonNull final String description)
+    {
+        this(null, requesterId, null, null, title, description, TaskStatus.REQUESTED);
+    }
+
+    /**
+     * Creates a requested task with an elastic ID.
+     *
+     * @param elasticId   The task's elastic ID.
+     * @param requesterId The associated requester's ID.
+     * @param title       The task's title.
+     * @param description The task's description.
+     */
+    public Task(@NonNull final String elasticId, @NonNull final String requesterId,
                 @NonNull final String title, @NonNull final String description)
     {
         this(elasticId, requesterId, null, null, title, description, TaskStatus.REQUESTED);
@@ -228,7 +241,7 @@ public final class Task implements Detailed, Elastic, Serializable
     /**
      * Creates a bidded task.
      *
-     * @param elasticId   The task's unique ID in Elasticsearch.
+     * @param elasticId   The task's elastic ID.
      * @param requesterId The associated requester's ID.
      * @param bids        The associated bids.
      * @param title       The task's title.
@@ -245,7 +258,7 @@ public final class Task implements Detailed, Elastic, Serializable
     /**
      * Creates an assigned or done task.
      *
-     * @param elasticId   The task's unique ID in Elasticsearch.
+     * @param elasticId   The task's elastic ID.
      * @param requesterId The associated requester's ID.
      * @param providerId  The associated provider's ID.
      * @param bids        The associated bids.
