@@ -86,6 +86,25 @@ public class RemoteDataSource implements DataSource
 
     @Override
     public boolean addUser(@NonNull User user) {
+        ElasticSearchUserController.AddUsersTask addUserTask =
+                new ElasticSearchUserController.AddUsersTask();
+        addUserTask.execute(user);
+
+        try
+        {
+            if (addUserTask.get() != null)
+            {
+                return true;
+            }
+        }
+        catch (InterruptedException e)
+        {
+            Log.i("RemoteDataSource.addUser", "interrupted:" + e.toString());
+        }
+        catch (ExecutionException e)
+        {
+            Log.i("UserLogin.addUser", "execution exception:" + e.toString());
+        }
         return false;
     }
 
