@@ -20,12 +20,11 @@ import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 
 /**
- * Elastic Search controller for handling Task queries
+ * Elastic Search controller for handling Bid queries
  *
  * @author Mark Griffith
  * @version 1.0
  */
-
 public class ElasticSearchBidController {
     private static String typeStr = "bids";
     private static String idxStr = "cmput301w18t11_whoselineisitanyways";
@@ -55,7 +54,7 @@ public class ElasticSearchBidController {
                 // Probably disconnected
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
             }
-            // User not found
+            // Bid not found
             return null;
         }
 
