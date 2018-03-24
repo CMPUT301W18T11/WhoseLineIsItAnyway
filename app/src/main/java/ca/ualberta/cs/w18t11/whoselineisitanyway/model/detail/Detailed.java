@@ -9,7 +9,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
  * Represents that which can be displayed in detail.
  *
  * @author Brad Ofrim, Samuel Dolha
- * @version 2.0
+ * @version 2.1
  */
 public interface Detailed
 {
@@ -28,6 +28,7 @@ public interface Detailed
      *
      * @param detailActivityClass The activity in which to display the details.
      * @param context             The context in which to start the activity.
+     * @param <T>                 The type of DetailActivity.
      */
     <T extends DetailActivity> void showDetails(@NonNull final Class<T> detailActivityClass,
                                                 @NonNull final Context context);
