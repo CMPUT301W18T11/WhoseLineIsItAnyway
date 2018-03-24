@@ -28,10 +28,4 @@ public final class DetailUnitTest
     {
         Assert.assertFalse(new Detail("", "", null).isLinked());
     }
-
-    @Test
-    public final void testIsLinked()
-    {
-        Assert.assertTrue(new Detail("", "", new Intent()).isLinked());
-    }
 }
