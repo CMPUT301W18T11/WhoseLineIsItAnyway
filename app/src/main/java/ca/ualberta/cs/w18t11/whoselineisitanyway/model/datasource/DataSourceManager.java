@@ -71,7 +71,7 @@ public class DataSourceManager
                         new Bid[]{bids[4], bids[5]}, "Demo Task 3", "A alright task", false)
         };
 
-        this.remoteDataSource = new MockDataSource(users, tasks, bids);
+        this.remoteDataSource = new RemoteDataSource();
         this.localDataSource = new MockDataSource(users, tasks, bids);
     }
 

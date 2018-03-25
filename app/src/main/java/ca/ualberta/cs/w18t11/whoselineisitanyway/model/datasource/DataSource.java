@@ -88,4 +88,16 @@ public interface DataSource
      * @see Bid
      */
     boolean removeBid(@NonNull final Bid bid);
+
+    /**
+     * @param elasticId The user's elastic id
+     * @return The user whose elastic id matches the input parameter
+     */
+    public User getUserById(String elasticId);
+
+    /**
+     * @param username The user's username
+     * @return The user whose username matches the input parameter
+     */
+    User getUserByUsername(String username);
 }

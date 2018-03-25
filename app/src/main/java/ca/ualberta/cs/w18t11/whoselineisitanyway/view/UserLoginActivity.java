@@ -12,11 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.controllers.ElasticSearchUserController;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
@@ -138,52 +134,17 @@ public class UserLoginActivity extends AppCompatActivity
         else
         {
             // attempt authentication against a network
-            String query = "{" +
-                    "  \"query\": {" +
-                    "    \"match\": {" +
-                    "      \"username\": \"" + username + "\"" +
-                    "    }" +
-                    "  }" +
-                    "}";
+            User user = DataSourceManager.getInstance()
+                    .getRemoteDataSource()
+                    .getUserByUsername(username);
 
-            // Get the user with username from the database
-            ElasticSearchUserController.GetUsersTask getUsersTask
-                    = new ElasticSearchUserController.GetUsersTask();
-            getUsersTask.execute(query);
-
-            try
+            if (user != null)
             {
-                ArrayList<User> users = getUsersTask.get();
-                if (users != null)
-                {
-                    if (users.size() == 1)
-                    {
-                        Log.i("UserLogin", "User exists. Attempting login...");
-                        loginUser(users.get(0));
-                    }
-                    else if (users.size() > 1)
-                    {
-                        Log.i("UserLogin Error", "Username appears more than once in the database");
-                    }
-                    else
-                    {
-                        Log.i("UserLogin", "Attempting user registration...");
-                        registerUser(username);
-                    }
-                }
-                else
-                {
-                    // TODO offline logic
-                    Log.i("UserLogin", "Initiating offline behaviour...");
-                }
+                loginUser(user);
             }
-            catch (InterruptedException e)
+            else
             {
-                Log.i("UserLogin", "Login interrupted:" + e.toString());
-            }
-            catch (ExecutionException e)
-            {
-                Log.i("UserLogin", "getUsersTask exception:" + e.toString());
+                registerUser(username);
             }
         }
     }
@@ -196,6 +157,8 @@ public class UserLoginActivity extends AppCompatActivity
 
     private void loginUser(User user)
     {
+        Log.i("UserLogin", "Registered user. Logging in...");
+
         // Set the current user and start the app
         DataSourceManager.getInstance().setCurrentUser(user.getUsername());
         Intent intent = new Intent(this, NavigatorActivity.class);
@@ -204,36 +167,21 @@ public class UserLoginActivity extends AppCompatActivity
 
     private void registerUser(String username)
     {
+        Log.i("UserLogin", "Registering new user...");
+
         // TODO refactor this to use the createUserActivity
         User user = new User(username, new EmailAddress("DefaultLocalPart", "Domain@Default.com"),
                 new PhoneNumber(0, 0, 0, 0));
 
-        // Add the user to database
-        ElasticSearchUserController.AddUsersTask addUserTask
-                = new ElasticSearchUserController.AddUsersTask();
-        addUserTask.execute(user);
+        if (DataSourceManager.getInstance().getRemoteDataSource().addUser(user))
+        {
+            loginUser(user);
+        }
+        else
+        {
+            // TODO Do nothing here?
+        }
 
-        try
-        {
-            String jId = addUserTask.get();
-            if (jId != null)
-            {
-                // TODO add new user to dataManager
-                loginUser(user);
-            }
-            else
-            {
-                Log.i("UserLogin", "registed user JestId is null");
-            }
-        }
-        catch (InterruptedException e)
-        {
-            Log.i("UserLogin", "Login interrupted:" + e.toString());
-        }
-        catch (ExecutionException e)
-        {
-            Log.i("UserLogin", "addUserTask exception:" + e.toString());
-        }
     }
 }
 
