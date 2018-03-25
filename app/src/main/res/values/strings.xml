@@ -55,5 +55,6 @@
     <string name="navigation_drawer_open">Open</string>
     <string name="navigation_drawer_close">Close</string>
     <string name="title_activity_maps">Map</string>
+    <string name="dialog_place_bid_Hint">($0.00)</string>
 
 </resources>

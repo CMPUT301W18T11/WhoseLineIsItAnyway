@@ -38,6 +38,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidator;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidatorResult;
 
+/*
  * This is just a generic activity for implementing parts of code; it is not intended to run as part of the app
  * and should be deleted before commiting to the final master release.
  *
