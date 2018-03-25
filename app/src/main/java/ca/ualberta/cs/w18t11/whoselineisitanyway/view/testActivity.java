@@ -1,16 +1,7 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,15 +13,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.rating.Rating;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
@@ -61,7 +47,7 @@ public class testActivity extends AppCompatActivity implements SetMapLocationDia
 
         Button btnTest = (Button) findViewById(R.id.btnTest);
         Button btnMapSetDialog = (Button) findViewById(R.id.btn_mapdiag);
-
+        Button button = (Button) findViewById(R.id.debug_Button);
         btnTest.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -79,6 +65,17 @@ public class testActivity extends AppCompatActivity implements SetMapLocationDia
                 smld.showDialog(testActivity.this);
             }
         });
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FullReviewDialog revDiag = new FullReviewDialog();
+                Rating r = new Rating(5, 3, 2);
+                r.setReviewMSG("Old man caught a strong weedle. However, I disagree with how slowly he did it," +
+                        " and I wish that the weedle was stronger. Not a very good task provider.");
+                revDiag.showDialog(testActivity.this, r);
+            }
+        });
+
 
     }
 
@@ -131,10 +128,9 @@ public class testActivity extends AppCompatActivity implements SetMapLocationDia
                 testActivity.this);
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View dialogView = inflater
-                .inflate(R.layout.layout_register_user, (ViewGroup) findViewById(R.id.layout_root));
+                .inflate(R.layout.dialog_register_user, (ViewGroup) findViewById(R.id.layout_root));
         alertDialogBuilder.setView(dialogView);
         final AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.setTitle("Register New User");
 
         final TextView txtUsername = (TextView) dialogView.findViewById(R.id.txtUsername);
         final EditText etxtPhone = (EditText) dialogView.findViewById(R.id.etxtPhoneNum);
