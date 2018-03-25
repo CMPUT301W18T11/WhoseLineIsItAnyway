@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bid Amount:"
+        android:textAlignment="center" />
+
+    <EditText
+        android:id="@+id/etxt_BidAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/dialog_place_bid_Hint"
+        android:inputType="textPersonName|numberDecimal" />
+
+    <Button
+        android:id="@+id/btn_diag_PlaceBid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/GENERIC_SAVE" />
+
+    <Button
+        android:id="@+id/btn_diag_CancelBid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/GENERIC_CANCEL" />
+</LinearLayout>
