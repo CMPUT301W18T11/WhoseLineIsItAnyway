@@ -263,4 +263,16 @@ public final class FileDataSource implements DataSource
 
         return true;
     }
+
+    @Override
+    public User getUserById(String elasticId) {
+        // TODO implement
+        return null;
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        // TODO implement
+        return null;
+    }
 }
