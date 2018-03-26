@@ -45,7 +45,9 @@ public final class TextValidatorResult
 
     public String getErrorMSG()
     {
-        return ERRMSG;
+        if (ERRMSG == null || ERRMSG.equals("")) {
+            return null;
+        } else { return ERRMSG; }
     }
 
     public ArrayList<String> getComponents()

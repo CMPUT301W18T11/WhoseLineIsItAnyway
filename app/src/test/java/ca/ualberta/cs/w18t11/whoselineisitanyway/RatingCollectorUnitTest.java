@@ -18,5 +18,5 @@ public final class RatingCollectorUnitTest
     }
 
     //TODO Add test for text output for this function in its ToString()
-
+    //TODO add test for string when empty
 }

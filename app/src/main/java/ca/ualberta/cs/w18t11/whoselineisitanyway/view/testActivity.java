@@ -33,11 +33,11 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidatorRe
  *
  * @author Lucas Thalen
  */
-public class testActivity extends AppCompatActivity implements SetMapLocationDialog.MapDialogReturnListener
+public class testActivity extends AppCompatActivity
 {
     private LatLng location;
     private boolean res = false;
-
+    private User resultUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -53,7 +53,6 @@ public class testActivity extends AppCompatActivity implements SetMapLocationDia
             @Override
             public void onClick(View view)
             {
-                generateRegistrationDialog("TEST");
             }
         });
         btnMapSetDialog.setOnClickListener(new View.OnClickListener()
@@ -61,234 +60,15 @@ public class testActivity extends AppCompatActivity implements SetMapLocationDia
             @Override
             public void onClick(View view)
             {
-                SetMapLocationDialog smld = new SetMapLocationDialog();
-                smld.showDialog(testActivity.this);
+
             }
         });
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FullReviewDialog revDiag = new FullReviewDialog();
-                Rating r = new Rating(5, 3, 2);
-                r.setReviewMSG("Old man caught a strong weedle. However, I disagree with how slowly he did it," +
-                        " and I wish that the weedle was stronger. Not a very good task provider.");
-                revDiag.showDialog(testActivity.this, r);
             }
         });
 
-
-    }
-
-    @Override
-    public void onMapSetDialogReturn(LatLng res) {
-        location = res;
-        if (res != null) {
-            double lat = res.latitude;
-            double lng = res.longitude;
-            Toast debug = Toast.makeText(testActivity.this, String.valueOf(lat) + " " + String.valueOf(lng), Toast.LENGTH_LONG);
-            debug.show();
-        } else {
-            Toast debug = Toast.makeText(testActivity.this, "DIDN'T WORK", Toast.LENGTH_LONG);
-            debug.show();
-        }
-    }
-    public void setVal(LatLng l) {
-        location = l;
-    }
-    // GENERATE USER REGISTRATION DIALOG
-    /**
-     * GENERATE REGISTRATION DIALOG
-     * This function generates a registration dialog to enroll a new user in the application
-     * database.
-     *
-     * @param usr This can be edited once input is known/needed/unneeded
-     * @return Either a boolean or a complete user object; assign to object type and check class to
-     * determine if the code ran successfully or not.
-     * @see UserLoginActivity
-     * @see User
-     */
-    private Object generateRegistrationDialog(String usr)
-    {
-        // Parts of this, mostly the generation of the actual dialog, are based on web results.
-        // while the post in question addresses email and phone, I only referenced the creation logic
-        // not the actual text management code or interface
-
-        // https://stackoverflow.com/a/5235348/4914842
-        // Cephron | Creative Commons 3.0 Attrib SA
-        // Posted 03/08/2011 | Accessed 03/18/2018
-        // Creating a dialog from a custom layout
-
-        final String[] usrID = new String[1];
-        final String[] emailComponents = new String[2];
-        final int[] phoneComponents = new int[4];
-        final boolean[] res = new boolean[1];
-
-        final TextValidator txtvalidate = new TextValidator();
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                testActivity.this);
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View dialogView = inflater
-                .inflate(R.layout.dialog_register_user, (ViewGroup) findViewById(R.id.layout_root));
-        alertDialogBuilder.setView(dialogView);
-        final AlertDialog alertDialog = alertDialogBuilder.create();
-
-        final TextView txtUsername = (TextView) dialogView.findViewById(R.id.txtUsername);
-        final EditText etxtPhone = (EditText) dialogView.findViewById(R.id.etxtPhoneNum);
-        final EditText etxtEmail = (EditText) dialogView.findViewById(R.id.etxtEmail);
-
-        final Button btnOK = (Button) dialogView.findViewById(R.id.btn_OK);
-        final Button btnCancel = (Button) dialogView.findViewById(R.id.btn_cancel);
-
-        // Input expected username
-        txtUsername.setText(usr);
-        etxtPhone.addTextChangedListener(new TextWatcher()
-        {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
-            {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2)
-            {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable)
-            {
-                String fieldContents = etxtPhone.getText().toString();
-                TextValidatorResult phoneRes = txtvalidate.validatePhoneNumber(fieldContents, true);
-                if (fieldContents.isEmpty())
-                {
-                    return;
-                }
-                else
-                {
-                    if (phoneRes.isError())
-                    {
-                        etxtPhone.setError(phoneRes.getErrorMSG());
-                        int fieldLen = etxtPhone.getText().length();
-                        etxtPhone.setText(fieldContents.substring(0, fieldLen - 1));
-                        etxtPhone.setSelection(fieldLen - 1);
-
-                    }
-                }
-            }
-        });
-
-        etxtEmail.addTextChangedListener(new TextWatcher()
-        {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
-            {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2)
-            {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable)
-            {
-                String fieldContents = etxtEmail.getText().toString();
-                TextValidatorResult emailRes = txtvalidate.validateEmail(fieldContents, true);
-                if (fieldContents.isEmpty())
-                {
-                    return;
-                }
-                else
-                {
-                    if (emailRes.isError())
-                    {
-                        etxtEmail.setError(emailRes.getErrorMSG());
-                        int fieldLen = etxtEmail.getText().length();
-                        etxtEmail.setText(fieldContents.subSequence(0, fieldLen - 1));
-                        etxtEmail.setSelection(fieldLen - 1);
-                    }
-                }
-            }
-        });
-
-        btnOK.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                // Get final say on if input is good
-                TextValidatorResult phoneRes = txtvalidate
-                        .validatePhoneNumber(etxtPhone.getText().toString(), false);
-                TextValidatorResult emailRes = txtvalidate
-                        .validateEmail(etxtEmail.getText().toString(), false);
-                if (phoneRes.isError())
-                {
-                    etxtPhone.setError(phoneRes.getErrorMSG());
-                } // Get format errors and set msg on edittext
-                if (emailRes.isError())
-                {
-                    etxtEmail.setError(emailRes.getErrorMSG());
-                }
-                if (!(phoneRes.isError() || emailRes.isError()))
-                { // No errors to report
-
-                    usrID[0] = txtUsername.getText().toString();
-
-                    // Create a Working Phone Number
-                    // Hold integer conversions of split up phone number
-                    phoneComponents[0] = Integer.valueOf(phoneRes.getComponents().get(1));
-                    phoneComponents[1] = Integer.valueOf(phoneRes.getComponents().get(2));
-                    phoneComponents[2] = Integer.valueOf(phoneRes.getComponents().get(3));
-                    phoneComponents[3] = Integer.valueOf(phoneRes.getComponents().get(4));
-
-
-                    // Create a working Email Object for the user
-                    emailComponents[0] = emailRes.getComponents().get(1);
-                    emailComponents[1] = emailRes.getComponents().get(2);
-
-
-                    res[0] = true;
-                    alertDialog.dismiss(); // Close dialog, create new user
-
-                }
-            }
-
-
-        });
-        btnCancel.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                res[0] = false;
-                alertDialog.dismiss();
-                // PUT RETURN CONDITIONS ON NEGATIVE HERE
-            }
-        });
-        alertDialog.show();
-
-        // Try to create new user
-
-        // Check that necessary parameters for a new user are present
-        if (res[0] != false)
-        {
-            PhoneNumber phone = new PhoneNumber(
-                    phoneComponents[0],
-                    phoneComponents[1],
-                    phoneComponents[2],
-                    phoneComponents[3]
-            );
-
-            EmailAddress email = new EmailAddress(
-                    emailComponents[0],
-                    emailComponents[1]
-            );
-
-            return (new User(usrID[0], email, phone));
-        }
-        else
-        {
-            return false;
-        }
 
     }
 

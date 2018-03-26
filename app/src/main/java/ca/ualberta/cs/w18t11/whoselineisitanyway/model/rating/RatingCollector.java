@@ -183,7 +183,13 @@ public final class RatingCollector
         return strCreate.toString();
             
     }
+    final public ArrayList<Rating> getRatingsList() {
+        return ratings;
+    }
 
+    final public boolean empty() {
+        return ratings.isEmpty();
+    }
 
     //TODO Implement some sort of access to the arraylist for ListViews
 }
