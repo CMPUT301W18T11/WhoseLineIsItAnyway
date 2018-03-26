@@ -112,7 +112,8 @@ public class RemoteDataSource implements DataSource
 
         try
         {
-            return (User[]) getAllUsersTask.get().toArray();
+            ArrayList<User> users = getAllUsersTask.get();
+            return users.toArray(new User[users.size()]);
         }
         catch (InterruptedException e)
         {
@@ -207,7 +208,8 @@ public class RemoteDataSource implements DataSource
 
         try
         {
-            return (Task[]) getAllTasksTask.get().toArray();
+            ArrayList<Task> tasks = getAllTasksTask.get();
+            return tasks.toArray(new Task[tasks.size()]);
         }
         catch (InterruptedException e)
         {
@@ -274,13 +276,14 @@ public class RemoteDataSource implements DataSource
                 "    }" +
                 "}";
 
-        ElasticSearchTaskController.GetTaskssTask getAllBidsTask
-                = new ElasticSearchTaskController.GetTaskssTask();
+        ElasticSearchBidController.GetBidsTask getAllBidsTask
+                = new ElasticSearchBidController.GetBidsTask();
         getAllBidsTask.execute(query);
 
         try
         {
-            return (Bid[]) getAllBidsTask.get().toArray();
+            ArrayList<Bid> bids = getAllBidsTask.get();
+            return bids.toArray(new Bid[bids.size()]);
         }
         catch (InterruptedException e)
         {
