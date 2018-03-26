@@ -31,10 +31,23 @@ import java.util.logging.Logger;
 // TODO Write Javadoc UML
 // TODO Allow finding loc by an address? See: GeoLoc
 
+/**
+ * <h1>SetMapLocationDialog</h1>
+ * This class is designed to create a dialog with a map (and potentially address location entry) for
+ * a user to select a location to mark a task with.
+ */
+/*
+ * Very important: IMPLEMENT THE CALLBACK METHODS IN THE CALLING CLASS
+ * Due to how Android handles threads (almost entirely Async) these are the only way to effect
+ * a code "pause" while awaiting a result. You must design your code such that this method is the
+ * last executed in a block; use its callback methods to continue your code by calling an additional
+ * method. Anything else will result in a race condition where code progresses without the returned
+ * result being properly assigned.
+ */
 public class SetMapLocationDialog implements OnMapReadyCallback {
 	// Allow passing data back to the calling activity using an event trigger to avoid async issues
 	public interface MapDialogReturnListener {
-		void onMapSetDialogReturn(LatLng result);
+		void MapSetDialog_PosResult(LatLng result);
 	}
 
 	private AlertDialog mapDiag;
@@ -47,11 +60,6 @@ public class SetMapLocationDialog implements OnMapReadyCallback {
 	private Logger logi;
 
 	private MapDialogReturnListener returnListener;
-	/*
-	* Implement like so: The calling activity should have a method called onMapSetDialogReturn(LatLng result)
-	* Within the override code, make sure it sets a LatLng variable within the activity; this can probably be done with newListener
-	*
-	* */
 
 	/**
 	 * ShowDialog
@@ -95,7 +103,7 @@ public class SetMapLocationDialog implements OnMapReadyCallback {
 			int PERMISSION_LOCATION_REQUEST_CODE = 0;
 			ActivityCompat.requestPermissions(caller, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION_REQUEST_CODE);
 			if (PERMISSION_LOCATION_REQUEST_CODE == PackageManager.PERMISSION_DENIED) {
-				returnListener.onMapSetDialogReturn(null);
+				returnListener.MapSetDialog_PosResult(null);
 				mapDiag.dismiss();
 			} else if (PERMISSION_LOCATION_REQUEST_CODE == PackageManager.PERMISSION_GRANTED) {
 				initMap(context);
@@ -160,7 +168,7 @@ public class SetMapLocationDialog implements OnMapReadyCallback {
 			@Override
 			public void onClick(View v) {
 				mapDiag.dismiss();
-				returnListener.onMapSetDialogReturn(locResult);
+				returnListener.MapSetDialog_PosResult(locResult);
 
 			}
 		});
