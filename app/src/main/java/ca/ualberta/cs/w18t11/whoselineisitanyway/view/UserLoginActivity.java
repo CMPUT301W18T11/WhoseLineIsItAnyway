@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.DataSourceManager;
@@ -19,10 +20,17 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 
+
+// FOR DEBUGGING PRACTICES:
+// all entered usernames should start with db_ so they can be easily purged
+// used: debug
+// used: db_Paul
+
+
 /**
  * A login screen that offers login via username.
  */
-public class UserLoginActivity extends AppCompatActivity
+public class UserLoginActivity extends AppCompatActivity implements UserRegisterDialog.diagUserRegistrationListener
 {
     // A dummy authentication store containing known user names
     private static final String[] DUMMY_CREDENTIALS = new String[]{
@@ -33,6 +41,7 @@ public class UserLoginActivity extends AppCompatActivity
     private View progressView;
     private View loginFormView;
 
+    private User user; // The user to register if so required
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -168,20 +177,25 @@ public class UserLoginActivity extends AppCompatActivity
     private void registerUser(String username)
     {
         Log.i("UserLogin", "Registering new user...");
+        UserRegisterDialog registerDiag = new UserRegisterDialog();
+        registerDiag.showDialog(this, username);
 
-        // TODO refactor this to use the createUserActivity
-        User user = new User(username, new EmailAddress("DefaultLocalPart", "Domain@Default.com"),
-                new PhoneNumber(0, 0, 0, 0));
+    }
 
-        if (DataSourceManager.getInstance().getRemoteDataSource().addUser(user))
+    @Override
+    public void RegisterDiag_PosResultListener(final User result) {
+        this.user = result;
+        if (DataSourceManager.getInstance().getRemoteDataSource().addUser(this.user))
         {
-            loginUser(user);
+            loginUser(this.user);
         }
         else
         {
             // TODO Do nothing here?
         }
-
     }
+
+    @Override
+    public void RegisterDiag_NegResultListener() {}
 }
 

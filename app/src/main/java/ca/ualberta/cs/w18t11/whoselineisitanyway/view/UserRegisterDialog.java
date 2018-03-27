@@ -34,9 +34,10 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidatorRe
  * method. Anything else will result in a race condition where code progresses without the returned
  * result being properly assigned.
  */
+
 public class UserRegisterDialog {
     public interface diagUserRegistrationListener {
-        void RegisterDiag_PosResultListener(User result);
+        void RegisterDiag_PosResultListener(final User result);
         void RegisterDiag_NegResultListener();
     }
 
@@ -196,8 +197,8 @@ public class UserRegisterDialog {
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               final EditText phone = (EditText) caller.findViewById(R.id.etxtPhoneNum);
-               final EditText email = (EditText) caller.findViewById(R.id.etxtEmail);
+               final EditText phone = (EditText) diagView.findViewById(R.id.etxtPhoneNum);
+               final EditText email = (EditText) diagView.findViewById(R.id.etxtEmail);
                final TextValidatorResult phoneRes = validator.validatePhoneNumber(phone.getText().toString(), false);
                final TextValidatorResult emailRes = validator.validateEmail(email.getText().toString(), false);
 
