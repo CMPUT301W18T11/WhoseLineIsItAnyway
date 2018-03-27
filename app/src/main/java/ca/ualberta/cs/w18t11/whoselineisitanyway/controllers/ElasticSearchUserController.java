@@ -33,9 +33,19 @@ public class ElasticSearchUserController
     private static String idxStr = "cmput301w18t11_whoselineisitanyways";
     private static JestDroidClient client;
 
+
+    /**
+     * Async task for adding users to the database
+     */
     public static class AddUsersTask extends AsyncTask<User, Void, String>
     {
 
+        /**
+         * Adds the given list of Users to the database and sets their elastic id's
+         *
+         * @param users List of users to add to the database
+         * @return assigned elastic id on success else null
+         */
         @Override
         protected String doInBackground(User... users)
         {
@@ -73,9 +83,18 @@ public class ElasticSearchUserController
         }
     }
 
+    /**
+     * Async task for getting a user from the database using its elastic id
+     */
     public static class GetUserByIdTask extends AsyncTask<String, Void, User>
     {
 
+        /**
+         * Gets a user from the database based on its elastic id
+         *
+         * @param userId elastic id of the user to get
+         * @return added user on success else null
+         */
         @Override
         protected User doInBackground(String... userId)
         {
@@ -112,9 +131,18 @@ public class ElasticSearchUserController
         }
     }
 
+    /**
+     * Async task for getting users from the database
+     */
     public static class GetUsersTask extends AsyncTask<String, Void, ArrayList<User>>
     {
 
+        /**
+         * Gets a list of users in the database matching a search query
+         *
+         * @param query search query detailing which users to get from the database
+         * @return list of users on success else null
+         */
         @Override
         protected ArrayList<User> doInBackground(String... query)
         {
@@ -160,9 +188,18 @@ public class ElasticSearchUserController
         }
     }
 
+    /**
+     * Async task for updating a user in the databse
+     */
     public static class UpdateUserTask extends AsyncTask<User, Void, Boolean>
     {
 
+        /**
+         * Replaces the given user in the database with the new user
+         *
+         * @param user User to update
+         * @return Boolean.TRUE on success else Boolean.FALSE
+         */
         @Override
         protected Boolean doInBackground(User... user)
         {
@@ -195,9 +232,18 @@ public class ElasticSearchUserController
         }
     }
 
+    /**
+     * Async task for removing a user in the database
+     */
     public static class RemoveUserTask extends AsyncTask<User, Void, Void>
     {
 
+        /**
+         * Removes the given user from the databse
+         *
+         * @param user User to remove
+         * @return null
+         */
         @Override
         protected Void doInBackground(User... user)
         {
@@ -228,6 +274,9 @@ public class ElasticSearchUserController
         }
     }
 
+    /**
+     * Sets up the configuration of the server if not yet established
+     */
     public static void verifyConfig()
     {
         if (client == null)
