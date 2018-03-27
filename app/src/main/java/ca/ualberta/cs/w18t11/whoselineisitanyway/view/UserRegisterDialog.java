@@ -36,7 +36,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidatorRe
  */
 public class UserRegisterDialog {
     public interface diagUserRegistrationListener {
-        void RegisterDiag_PosResultListener(User result);
+        void RegisterDiag_PosResultListener(final User result);
         void RegisterDiag_NegResultListener();
     }
 
