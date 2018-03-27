@@ -20,6 +20,13 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 
+
+// FOR DEBUGGING PRACTICES:
+// all entered usernames should start with db_ so they can be easily purged
+// used: debug
+// used: db_Paul
+
+
 /**
  * A login screen that offers login via username.
  */
@@ -172,18 +179,6 @@ public class UserLoginActivity extends AppCompatActivity implements UserRegister
         Log.i("UserLogin", "Registering new user...");
         UserRegisterDialog registerDiag = new UserRegisterDialog();
         registerDiag.showDialog(this, username);
-        // TODO refactor this to use the createUserActivity
-/*        User user = new User(username, new EmailAddress("DefaultLocalPart", "Domain@Default.com"),
-                new PhoneNumber(0, 0, 0, 0));
-
-        if (DataSourceManager.getInstance().getRemoteDataSource().addUser(user))
-        {
-            loginUser(user);
-        }
-        else
-        {
-            // TODO Do nothing here?
-        }*/
 
     }
 
@@ -201,8 +196,6 @@ public class UserLoginActivity extends AppCompatActivity implements UserRegister
     }
 
     @Override
-    public void RegisterDiag_NegResultListener() {
-
-    }
+    public void RegisterDiag_NegResultListener() {}
 }
 
