@@ -30,27 +30,92 @@ public class ElasticSearchTaskController {
     private static String idxStr = "cmput301w18t11_whoselineisitanyways";
     private static JestDroidClient client;
 
-    public static class GetTaskByIdTask extends AsyncTask<String, Void, Task> {
-
+    /**
+     * Async task for adding tasks to the database
+     */
+    public static class AddTasksTask extends AsyncTask<Task, Void, String>
+    {
+        /**
+         * Adds the given list of tasks to the database and sets their elastic id's
+         *
+         * @param tasks Tasks to add to the database
+         * @return assigned elastic id on success else null
+         */
         @Override
-        protected Task doInBackground(String... taskId) {
+        protected String doInBackground(Task... tasks)
+        {
+            verifyConfig();
+
+            for (Task task : tasks)
+            {
+                Index idx = new Index.Builder(task).index(idxStr).type(typeStr).build();
+
+                try
+                {
+                    DocumentResult result = client.execute(idx);
+                    if (result.isSucceeded())
+                    {
+                        // Elasticsearch was successful
+                        Log.i("Elasticsearch Success", "Setting task id");
+                        task.setElasticId(result.getId());
+                        return result.getId();
+                    }
+                    else
+                    {
+                        Log.i("Elasticsearch Error",
+                                "index msising or could not connect:" +
+                                        Integer.toString(result.getResponseCode()));
+                        return null;
+                    }
+                }
+                catch (Exception e)
+                {
+                    // Probably disconnected
+                    Log.i("Elasticsearch Error", "Unexpected exception: " +
+                            e.toString());
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Async task for getting a task from the database using its elastic id
+     */
+    public static class GetTaskByIdTask extends AsyncTask<String, Void, Task>
+    {
+        /**
+         * Gets a task from the database based on its elastic id
+         *
+         * @param taskId elastic id of the task to get
+         * @return the found task on success else null
+         */
+        @Override
+        protected Task doInBackground(String... taskId)
+        {
             verifyConfig();
 
             Get get = new Get.Builder(idxStr, taskId[0]).type(typeStr).build();
 
-            try {
+            try
+            {
                 JestResult result = client.execute(get);
-                if(result.isSucceeded()) {
-                    // User found
+                if(result.isSucceeded())
+                {
+                    // Task found
                     Task task = result.getSourceAsObject(Task.class);
                     return task;
-                } else {
+                }
+                else
+                {
                     Log.i("Elasticsearch Error",
                             "index missing or could not connect:" +
                                     Integer.toString(result.getResponseCode()));
                     return null;
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 // Probably disconnected
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
             }
@@ -59,16 +124,27 @@ public class ElasticSearchTaskController {
         }
     }
 
-    public static class GetTaskssTask extends AsyncTask<String, Void, ArrayList<Task>> {
-
+    /**
+     * Async task for getting tasks from the database
+     */
+    public static class GetTaskssTask extends AsyncTask<String, Void, ArrayList<Task>>
+    {
+        /**
+         * Gets a list of tasks in the database matching a search query
+         *
+         * @param query search query detailing which tasks to get from the database
+         * @return found tasks on success else null
+         */
         @Override
-        protected ArrayList<Task> doInBackground(String... query) {
+        protected ArrayList<Task> doInBackground(String... query)
+        {
             verifyConfig();
 
             ArrayList<Task> task = new ArrayList<Task>();
 
             // Build the query
-            if (query.length < 1){
+            if (query.length < 1)
+            {
                 Log.i("Elasticsearch Error","Invalid query");
                 return null;
             }
@@ -78,18 +154,24 @@ public class ElasticSearchTaskController {
                     .addType(typeStr)
                     .build();
 
-            try {
+            try
+            {
                 SearchResult result = client.execute(search);
-                if(result.isSucceeded()) {
-                    List<Task> foundUsers = result.getSourceAsObjectList(Task.class);
-                    task.addAll(foundUsers);
-                } else {
+                if(result.isSucceeded())
+                {
+                    List<Task> foundTasks = result.getSourceAsObjectList(Task.class);
+                    task.addAll(foundTasks);
+                }
+                else
+                {
                     Log.i("Elasticsearch Error",
                             "index missing or could not connect:" +
                                     Integer.toString(result.getResponseCode()));
                     return null;
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 // Probably disconnected
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
                 return null;
@@ -98,91 +180,106 @@ public class ElasticSearchTaskController {
         }
     }
 
-    public static class AddTasksTask extends AsyncTask<Task, Void, String> {
-
+    /**
+     * Async task for updating a task in the database
+     */
+    public static class UpdateTaskTask extends AsyncTask<Task, Void, Boolean>
+    {
+        /**
+         * Finds and replaces the task in the database having the same elastic id
+         * as the given task
+         *
+         * @param task Task to update
+         * @return Boolean.TRUE on success else Boolean.FALSE
+         */
         @Override
-        protected String doInBackground(Task... tasks) {
+        protected Boolean doInBackground(Task... task)
+        {
             verifyConfig();
 
-            for (Task task : tasks) {
-                Index idx = new Index.Builder(task).index(idxStr).type(typeStr).build();
+            Index index = new Index.Builder(task[0])
+                    .index(idxStr)
+                    .type(typeStr)
+                    .id(task[0].getElasticId())
+                    .build();
 
-                try {
-                    DocumentResult result = client.execute(idx);
-                    if (result.isSucceeded()) {
-                        // Elasticsearch was successful
-                        Log.i("Elasticsearch Success", "Setting task id");
-                        task.setElasticId(result.getId());
-                        return result.getId();
-                    } else {
-                        Log.i("Elasticsearch Error",
-                                "index msising or could not connect:" +
-                                        Integer.toString(result.getResponseCode()));
-                        return null;
-                    }
-                } catch (Exception e) {
-                    // Probably disconnected
-                    Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
-                }
-            }
-            return null;
-        }
-    }
-
-    public static class UpdateTaskTask extends AsyncTask<Task, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Task... task) {
-            verifyConfig();
-
-            Index index = new Index.Builder(task[0]).index(idxStr).type(typeStr).id(task[0].getElasticId()).build();
-
-            try {
+            try
+            {
                 DocumentResult result = client.execute(index);
-                if (result.isSucceeded()) {
-                    Log.i("Elasticsearch Success", "updated task: " + task[0].getElasticId());
+                if (result.isSucceeded())
+                {
+                    Log.i("Elasticsearch Success", "updated task: " +
+                            task[0].getElasticId());
                     return Boolean.TRUE;
-                } else {
+                }
+                else
+                {
                     Log.i("Elasticsearch Error",
                             "index missing or could not connect:" +
                                     Integer.toString(result.getResponseCode()));
                     return Boolean.FALSE;
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
             }
             return Boolean.FALSE;
         }
     }
 
-    public static class RemoveTaskTask extends AsyncTask<Task, Void, Void> {
-
+    /**
+     * Async task for removing a task in the database
+     */
+    public static class RemoveTaskTask extends AsyncTask<Task, Void, Void>
+    {
+        /**
+         * Removes the given task from the database
+         *
+         * @param task Task to remove
+         * @return null
+         */
         @Override
-        protected Void doInBackground(Task... task) {
+        protected Void doInBackground(Task... task)
+        {
             verifyConfig();
 
-            Delete delete = new Delete.Builder(task[0].getElasticId()).index(idxStr).type(typeStr).build();
+            Delete delete =
+                    new Delete.Builder(task[0].getElasticId()).index(idxStr).type(typeStr).build();
 
-            try {
+            try
+            {
                 DocumentResult result = client.execute(delete);
-                if (result.isSucceeded()) {
-                    Log.i("Elasticsearch Success", "deleted task: " + task[0].getElasticId());
-                } else {
+                if (result.isSucceeded())
+                {
+                    Log.i("Elasticsearch Success", "deleted task: " +
+                            task[0].getElasticId());
+                }
+                else
+                {
                     Log.i("Elasticsearch Error",
                             "index missing or could not connect:" +
                                     Integer.toString(result.getResponseCode()));
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
             }
             return null;
         }
     }
 
-    public static void verifyConfig() {
-        if (client == null) {
+    /**
+     * Sets up the configuration of the server if not yet established
+     */
+    public static void verifyConfig()
+    {
+        if (client == null)
+        {
             Log.i("ElasticSearch", "verifying config...");
-            DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
+            DroidClientConfig.Builder builder =
+                    new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
             JestClientFactory factory = new JestClientFactory();
 
             DroidClientConfig config = builder.build();

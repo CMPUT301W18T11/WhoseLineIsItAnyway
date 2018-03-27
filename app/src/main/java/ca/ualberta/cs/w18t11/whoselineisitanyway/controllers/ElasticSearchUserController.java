@@ -33,13 +33,11 @@ public class ElasticSearchUserController
     private static String idxStr = "cmput301w18t11_whoselineisitanyways";
     private static JestDroidClient client;
 
-
     /**
      * Async task for adding users to the database
      */
     public static class AddUsersTask extends AsyncTask<User, Void, String>
     {
-
         /**
          * Adds the given list of Users to the database and sets their elastic id's
          *
@@ -88,12 +86,11 @@ public class ElasticSearchUserController
      */
     public static class GetUserByIdTask extends AsyncTask<String, Void, User>
     {
-
         /**
          * Gets a user from the database based on its elastic id
          *
          * @param userId elastic id of the user to get
-         * @return added user on success else null
+         * @return the found user on success else null
          */
         @Override
         protected User doInBackground(String... userId)
@@ -136,7 +133,6 @@ public class ElasticSearchUserController
      */
     public static class GetUsersTask extends AsyncTask<String, Void, ArrayList<User>>
     {
-
         /**
          * Gets a list of users in the database matching a search query
          *
@@ -193,7 +189,6 @@ public class ElasticSearchUserController
      */
     public static class UpdateUserTask extends AsyncTask<User, Void, Boolean>
     {
-
         /**
          * Finds and replaces the user in the database having the same elastic id
          * as the given user
@@ -239,7 +234,6 @@ public class ElasticSearchUserController
      */
     public static class RemoveUserTask extends AsyncTask<User, Void, Void>
     {
-
         /**
          * Removes the given user from the database
          *
