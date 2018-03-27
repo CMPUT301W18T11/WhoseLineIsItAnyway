@@ -43,7 +43,7 @@ public class ElasticSearchUserController
         /**
          * Adds the given list of Users to the database and sets their elastic id's
          *
-         * @param users List of users to add to the database
+         * @param users Users to add to the database
          * @return assigned elastic id on success else null
          */
         @Override
@@ -189,13 +189,14 @@ public class ElasticSearchUserController
     }
 
     /**
-     * Async task for updating a user in the databse
+     * Async task for updating a user in the database
      */
     public static class UpdateUserTask extends AsyncTask<User, Void, Boolean>
     {
 
         /**
-         * Replaces the given user in the database with the new user
+         * Finds and replaces the user in the database having the same elastic id
+         * as the given user
          *
          * @param user User to update
          * @return Boolean.TRUE on success else Boolean.FALSE
@@ -213,7 +214,8 @@ public class ElasticSearchUserController
                 DocumentResult result = client.execute(index);
                 if (result.isSucceeded())
                 {
-                    Log.i("Elasticsearch Success", "updated user: " + user[0].getUsername());
+                    Log.i("Elasticsearch Success", "updated user: " +
+                            user[0].getUsername());
                     return Boolean.TRUE;
                 }
                 else
@@ -239,7 +241,7 @@ public class ElasticSearchUserController
     {
 
         /**
-         * Removes the given user from the databse
+         * Removes the given user from the database
          *
          * @param user User to remove
          * @return null
@@ -249,15 +251,16 @@ public class ElasticSearchUserController
         {
             verifyConfig();
 
-            Delete delete = new Delete.Builder(user[0].getElasticId()).index(idxStr).type(typeStr)
-                    .build();
+            Delete delete =
+                    new Delete.Builder(user[0].getElasticId()).index(idxStr).type(typeStr).build();
 
             try
             {
                 DocumentResult result = client.execute(delete);
                 if (result.isSucceeded())
                 {
-                    Log.i("Elasticsearch Success", "deleted user: " + user[0].getUsername());
+                    Log.i("Elasticsearch Success", "deleted user: " +
+                            user[0].getUsername());
                 }
                 else
                 {
@@ -282,8 +285,8 @@ public class ElasticSearchUserController
         if (client == null)
         {
             Log.i("ElasticSearch", "verifying config...");
-            DroidClientConfig.Builder builder = new DroidClientConfig.Builder(
-                    "http://cmput301.softwareprocess.es:8080");
+            DroidClientConfig.Builder builder =
+                    new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
             JestClientFactory factory = new JestClientFactory();
 
             DroidClientConfig config = builder.build();

@@ -30,8 +30,58 @@ public class ElasticSearchBidController {
     private static String idxStr = "cmput301w18t11_whoselineisitanyways";
     private static JestDroidClient client;
 
+    /**
+     * Async task for adding bids to the database
+     */
+    public static class AddBidsTask extends AsyncTask<Bid, Void, String> {
+
+        /**
+         * Adds the given list of bids to the database and sets their elastic id's
+         *
+         * @param bids Bids to add to the database
+         * @return assigned elastic id on success else null
+         */
+        @Override
+        protected String doInBackground(Bid... bids) {
+            verifyConfig();
+
+            for (Bid bid: bids) {
+                Index idx = new Index.Builder(bid).index(idxStr).type(typeStr).build();
+
+                try {
+                    DocumentResult result = client.execute(idx);
+                    if (result.isSucceeded()) {
+                        // Elasticsearch was successful
+                        Log.i("Elasticsearch Success", "Setting bid id");
+                        bid.setElasticId(result.getId());
+                        return result.getId();
+                    } else {
+                        Log.i("Elasticsearch Error",
+                                "index msising or could not connect:" +
+                                        Integer.toString(result.getResponseCode()));
+                        return null;
+                    }
+                } catch (Exception e) {
+                    // Probably disconnected
+                    Log.i("Elasticsearch Error", "Unexpected exception: " +
+                            e.toString());
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Async task for getting a bid from the database using its elastic id
+     */
     public static class GetBidByIdTask extends AsyncTask<String, Void, Bid> {
 
+        /**
+         * Gets a bid from the database based on its elastic id
+         *
+         * @param bidId elastic id of the bid to get
+         * @return added bid on success else null
+         */
         @Override
         protected Bid doInBackground(String... bidId) {
             verifyConfig();
@@ -60,8 +110,17 @@ public class ElasticSearchBidController {
 
     }
 
+    /**
+     * Async task for getting bids from the database
+     */
     public static class GetBidsTask extends AsyncTask<String, Void, ArrayList<Bid>> {
 
+        /**
+         * Gets a list of bids in the database matching a search query
+         *
+         * @param query search query detailing which bids to get from the database
+         * @return list of bids on success else null
+         */
         @Override
         protected ArrayList<Bid> doInBackground(String... query) {
             verifyConfig();
@@ -99,44 +158,27 @@ public class ElasticSearchBidController {
         }
     }
 
-    public static class AddBidsTask extends AsyncTask<Bid, Void, String> {
-
-        @Override
-        protected String doInBackground(Bid... bids) {
-            verifyConfig();
-
-            for (Bid bid: bids) {
-                Index idx = new Index.Builder(bid).index(idxStr).type(typeStr).build();
-
-                try {
-                    DocumentResult result = client.execute(idx);
-                    if (result.isSucceeded()) {
-                        // Elasticsearch was successful
-                        Log.i("Elasticsearch Success", "Setting bid id");
-                        bid.setElasticId(result.getId());
-                        return result.getId();
-                    } else {
-                        Log.i("Elasticsearch Error",
-                                "index msising or could not connect:" +
-                                        Integer.toString(result.getResponseCode()));
-                        return null;
-                    }
-                } catch (Exception e) {
-                    // Probably disconnected
-                    Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
-                }
-            }
-            return null;
-        }
-    }
-
+    /**
+     * Async task for updating a user in the database
+     */
     public static class UpdateBidTask extends AsyncTask<Bid, Void, Boolean> {
 
+        /**
+         * Finds and replaces a bid in the database having the same elastic id
+         * as the given bid
+         *
+         * @param bid Bid to update
+         * @return Boolean.TRUE on success else Boolean.FALSE
+         */
         @Override
         protected Boolean doInBackground(Bid... bid) {
             verifyConfig();
 
-            Index index = new Index.Builder(bid[0]).index(idxStr).type(typeStr).id(bid[0].getElasticId()).build();
+            Index index = new Index.Builder(bid[0])
+                    .index(idxStr)
+                    .type(typeStr)
+                    .id(bid[0].getElasticId())
+                    .build();
 
             try {
                 DocumentResult result = client.execute(index);
@@ -156,13 +198,23 @@ public class ElasticSearchBidController {
         }
     }
 
+    /**
+     * Async task for removing a bid in the database
+     */
     public static class RemoveBidTask extends AsyncTask<Bid, Void, Void> {
 
+        /**
+         * Removes the given bid from the database
+         *
+         * @param bid Bid to remove
+         * @return null
+         */
         @Override
         protected Void doInBackground(Bid... bid) {
             verifyConfig();
 
-            Delete delete = new Delete.Builder(bid[0].getElasticId()).index(idxStr).type(typeStr).build();
+            Delete delete =
+                    new Delete.Builder(bid[0].getElasticId()).index(idxStr).type(typeStr).build();
 
             try {
                 DocumentResult result = client.execute(delete);
@@ -180,10 +232,14 @@ public class ElasticSearchBidController {
         }
     }
 
+    /**
+     * Sets up the configuration of the server if not yet established
+     */
     public static void verifyConfig() {
         if (client == null) {
             Log.i("ElasticSearch", "verifying config...");
-            DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
+            DroidClientConfig.Builder builder =
+                    new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
             JestClientFactory factory = new JestClientFactory();
 
             DroidClientConfig config = builder.build();
