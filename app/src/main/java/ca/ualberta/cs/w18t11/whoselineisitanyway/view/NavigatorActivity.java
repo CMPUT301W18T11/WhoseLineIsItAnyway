@@ -141,7 +141,7 @@ public class NavigatorActivity extends AppCompatActivity
             outgoingTitle = "My Tasks";
             for (Task task : allTasks)
             {
-                if (task.getRequesterId().equals(currentUser.getUsername()))
+                if (task.getRequesterUsername().equals(currentUser.getUsername()))
                 {
                     detaileds.add(task);
                 }
@@ -154,7 +154,7 @@ public class NavigatorActivity extends AppCompatActivity
             outgoingTitle = "Assigned Tasks";
             for (Task task : allTasks)
             {
-                if (task.getProviderId() != null && task.getProviderId()
+                if (task.getProviderUsername() != null && task.getProviderUsername()
                         .equals(currentUser.getUsername()))
                 {
                     detaileds.add(task);
@@ -173,7 +173,7 @@ public class NavigatorActivity extends AppCompatActivity
             outgoingTitle = "My Bids";
             for (Bid bid : allBids)
             {
-                if (bid.getProviderId().equals(currentUser.getUsername()))
+                if (bid.getProviderUsername().equals(currentUser.getUsername()))
                 {
                     detaileds.add(bid);
                 }

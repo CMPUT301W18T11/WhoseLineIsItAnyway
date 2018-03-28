@@ -153,7 +153,7 @@ implements <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyw
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyway/model/bid/Bid.html#Bid-java.lang.String-java.lang.String-java.math.BigDecimal-">Bid</a></span>(java.lang.String&nbsp;providerId,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyway/model/bid/Bid.html#Bid-java.lang.String-java.lang.String-java.math.BigDecimal-">Bid</a></span>(java.lang.String&nbsp;providerUsername,
    java.lang.String&nbsp;taskId,
    java.math.BigDecimal&nbsp;value)</code>&nbsp;</td>
 </tr>
@@ -227,7 +227,7 @@ implements <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyw
 <li class="blockList">
 <h4>Bid</h4>
 <pre>public&nbsp;Bid(@NonNull
-           java.lang.String&nbsp;providerId,
+           java.lang.String&nbsp;providerUsername,
            @NonNull
            java.lang.String&nbsp;taskId,
            @NonNull
@@ -235,11 +235,11 @@ implements <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyw
     throws java.lang.IllegalArgumentException</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>providerId</code> - The associated provider's ID.</dd>
+<dd><code>providerUsername</code> - The associated provider's ID.</dd>
 <dd><code>taskId</code> - The associated task's ID.</dd>
 <dd><code>value</code> - The bid's monetary value.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.IllegalArgumentException</code> - For an empty providerId or taskId, or a non-positive value.</dd>
+<dd><code>java.lang.IllegalArgumentException</code> - For an empty providerUsername or taskId, or a non-positive value.</dd>
 </dl>
 </li>
 </ul>

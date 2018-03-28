@@ -40,10 +40,10 @@ public final class Bid implements Detailed, Elastic, Serializable
     private String elasticId;
 
     /**
-     * The associated provider's ID.
+     * The associated provider's username.
      */
     @NonNull
-    private final String providerId;
+    private final String providerUsername;
 
     /**
      * The associated task's ID.
@@ -60,17 +60,17 @@ public final class Bid implements Detailed, Elastic, Serializable
     /**
      * Creates a bid without an elastic ID.
      *
-     * @param providerId The associated provider's ID.
+     * @param providerUsername The associated provider's ID.
      * @param taskId     The associated task's ID.
      * @param value      The bid's monetary value.
-     * @throws IllegalArgumentException For an empty providerId or taskId, or a non-positive value.
+     * @throws IllegalArgumentException For an empty providerUsername or taskId, or a non-positive value.
      */
-    public Bid(@NonNull final String providerId, @NonNull final String taskId,
+    public Bid(@NonNull final String providerUsername, @NonNull final String taskId,
                @NonNull final BigDecimal value)
     {
-        if (providerId.isEmpty())
+        if (providerUsername.isEmpty())
         {
-            throw new IllegalArgumentException("providerId cannot be empty");
+            throw new IllegalArgumentException("providerUsername cannot be empty");
         }
 
         if (taskId.isEmpty())
@@ -83,7 +83,7 @@ public final class Bid implements Detailed, Elastic, Serializable
             throw new IllegalArgumentException("value must be positive");
         }
 
-        this.providerId = providerId;
+        this.providerUsername = providerUsername;
         this.taskId = taskId;
         this.value = value;
     }
@@ -92,12 +92,12 @@ public final class Bid implements Detailed, Elastic, Serializable
      * Creates a bid with an elastic ID.
      *
      * @param elasticId  The bid's elastic ID.
-     * @param providerId The associated provider's ID.
+     * @param providerUsername The associated provider's ID.
      * @param taskId     The associated task's ID.
      * @param value      The bid's monetary value.
-     * @throws IllegalArgumentException For an empty providerId or taskId, or a non-positive value.
+     * @throws IllegalArgumentException For an empty providerUsername or taskId, or a non-positive value.
      */
-    public Bid(@NonNull final String elasticId, @NonNull final String providerId,
+    public Bid(@NonNull final String elasticId, @NonNull final String providerUsername,
                @NonNull final String taskId, @NonNull final BigDecimal value)
     {
         if (elasticId.isEmpty())
@@ -105,9 +105,9 @@ public final class Bid implements Detailed, Elastic, Serializable
             throw new IllegalArgumentException("elasticId cannot be empty");
         }
 
-        if (providerId.isEmpty())
+        if (providerUsername.isEmpty())
         {
-            throw new IllegalArgumentException("providerId cannot be empty");
+            throw new IllegalArgumentException("providerUsername cannot be empty");
         }
 
         if (taskId.isEmpty())
@@ -121,7 +121,7 @@ public final class Bid implements Detailed, Elastic, Serializable
         }
 
         this.elasticId = elasticId;
-        this.providerId = providerId;
+        this.providerUsername = providerUsername;
         this.taskId = taskId;
         this.value = value;
     }
@@ -130,9 +130,9 @@ public final class Bid implements Detailed, Elastic, Serializable
      * @return The associated provider's ID.
      */
     @NonNull
-    public final String getProviderId()
+    public final String getProviderUsername()
     {
-        return this.providerId;
+        return this.providerUsername;
     }
 
     /**
@@ -159,7 +159,7 @@ public final class Bid implements Detailed, Elastic, Serializable
     {
         final Intent intent = new Intent(context, detailActivityClass);
         intent.putExtra(Detailed.DETAILS_KEY, (ArrayList<Detail>) Arrays
-                .asList(new Detail("providerId", this.getProviderId(), null),
+                .asList(new Detail("providerUsername", this.getProviderUsername(), null),
                         new Detail("taskId", this.getTaskId(), null),
                         new Detail("value", this.getValue().toString(), null)));
         intent.putExtra(Detailed.TITLE_KEY, "Bid");
@@ -202,7 +202,7 @@ public final class Bid implements Detailed, Elastic, Serializable
     @Override
     public final int hashCode()
     {
-        return Objects.hash(this.getProviderId(), this.getTaskId(), this.getValue());
+        return Objects.hash(this.getProviderUsername(), this.getTaskId(), this.getValue());
     }
 
     /**
@@ -225,7 +225,7 @@ public final class Bid implements Detailed, Elastic, Serializable
 
         final Bid bid = (Bid) object;
 
-        return new EqualsBuilder().append(this.getProviderId(), bid.getProviderId())
+        return new EqualsBuilder().append(this.getProviderUsername(), bid.getProviderUsername())
                 .append(this.getTaskId(), bid.getTaskId()).append(this.getValue(), bid.getValue())
                 .isEquals();
     }
