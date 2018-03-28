@@ -154,7 +154,7 @@ implements <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyw
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyway/model/task/Task.html#Task-java.lang.String-java.lang.String-ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid:A-java.lang.String-java.lang.String-">Task</a></span>(java.lang.String&nbsp;id,
-    java.lang.String&nbsp;requesterId,
+    java.lang.String&nbsp;requesterUsername,
     <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyway/model/bid/Bid.html" title="class in ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid">Bid</a>[]&nbsp;bids,
     java.lang.String&nbsp;title,
     java.lang.String&nbsp;description)</code>
@@ -163,8 +163,8 @@ implements <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyw
 </tr>
 <tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyway/model/task/Task.html#Task-java.lang.String-java.lang.String-java.lang.String-ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid:A-java.lang.String-java.lang.String-boolean-">Task</a></span>(java.lang.String&nbsp;id,
-    java.lang.String&nbsp;requesterId,
-    java.lang.String&nbsp;providerId,
+    java.lang.String&nbsp;requesterUsername,
+    java.lang.String&nbsp;providerUsername,
     <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyway/model/bid/Bid.html" title="class in ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid">Bid</a>[]&nbsp;bids,
     java.lang.String&nbsp;title,
     java.lang.String&nbsp;description,
@@ -174,7 +174,7 @@ implements <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyw
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyway/model/task/Task.html#Task-java.lang.String-java.lang.String-java.lang.String-java.lang.String-">Task</a></span>(java.lang.String&nbsp;id,
-    java.lang.String&nbsp;requesterId,
+    java.lang.String&nbsp;requesterUsername,
     java.lang.String&nbsp;title,
     java.lang.String&nbsp;description)</code>
 <div class="block">Creates a requested task.</div>
@@ -197,7 +197,7 @@ implements <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyw
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyway/model/task/Task.html" title="class in ca.ualberta.cs.w18t11.whoselineisitanyway.model.task">Task</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyway/model/task/Task.html#assignProvider-java.lang.String-">assignProvider</a></span>(java.lang.String&nbsp;providerId)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyway/model/task/Task.html#assignProvider-java.lang.String-">assignProvider</a></span>(java.lang.String&nbsp;providerUsername)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyway/model/bid/Bid.html" title="class in ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid">Bid</a>[]</code></td>
@@ -280,7 +280,7 @@ implements <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyw
 <pre>public&nbsp;Task(@NonNull
             java.lang.String&nbsp;id,
             @NonNull
-            java.lang.String&nbsp;requesterId,
+            java.lang.String&nbsp;requesterUsername,
             @NonNull
             java.lang.String&nbsp;title,
             @NonNull
@@ -289,7 +289,7 @@ implements <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyw
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>id</code> - The task's id.</dd>
-<dd><code>requesterId</code> - The associated requester's ID.</dd>
+<dd><code>requesterUsername</code> - The associated requester's ID.</dd>
 <dd><code>title</code> - The task's title.</dd>
 <dd><code>description</code> - The task's description.</dd>
 </dl>
@@ -304,7 +304,7 @@ implements <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyw
 <pre>public&nbsp;Task(@NonNull
             java.lang.String&nbsp;id,
             @NonNull
-            java.lang.String&nbsp;requesterId,
+            java.lang.String&nbsp;requesterUsername,
             @NonNull
             <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyway/model/bid/Bid.html" title="class in ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid">Bid</a>[]&nbsp;bids,
             @NonNull
@@ -315,7 +315,7 @@ implements <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyw
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>id</code> - The task's id.</dd>
-<dd><code>requesterId</code> - The associated requester's ID.</dd>
+<dd><code>requesterUsername</code> - The associated requester's ID.</dd>
 <dd><code>bids</code> - The associated bids.</dd>
 <dd><code>title</code> - The task's title.</dd>
 <dd><code>description</code> - The task's description.</dd>
@@ -333,9 +333,9 @@ implements <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyw
 <pre>public&nbsp;Task(@NonNull
             java.lang.String&nbsp;id,
             @NonNull
-            java.lang.String&nbsp;requesterId,
+            java.lang.String&nbsp;requesterUsername,
             @NonNull
-            java.lang.String&nbsp;providerId,
+            java.lang.String&nbsp;providerUsername,
             @NonNull
             <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyway/model/bid/Bid.html" title="class in ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid">Bid</a>[]&nbsp;bids,
             @NonNull
@@ -347,8 +347,8 @@ implements <a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyw
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>id</code> - The task's id.</dd>
-<dd><code>requesterId</code> - The associated requester's ID.</dd>
-<dd><code>providerId</code> - The associated provider's ID.</dd>
+<dd><code>requesterUsername</code> - The associated requester's ID.</dd>
+<dd><code>providerUsername</code> - The associated provider's ID.</dd>
 <dd><code>bids</code> - The associated bids.</dd>
 <dd><code>title</code> - The task's title.</dd>
 <dd><code>description</code> - The task's description.</dd>
@@ -496,12 +496,12 @@ public final&nbsp;<a href="../../../../../../../ca/ualberta/cs/w18t11/whoselinei
 <h4>assignProvider</h4>
 <pre>@NonNull
 public final&nbsp;<a href="../../../../../../../ca/ualberta/cs/w18t11/whoselineisitanyway/model/task/Task.html" title="class in ca.ualberta.cs.w18t11.whoselineisitanyway.model.task">Task</a>&nbsp;assignProvider(@NonNull
-                                          java.lang.String&nbsp;providerId)</pre>
+                                          java.lang.String&nbsp;providerUsername)</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A copy of the task assigned to the provider.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.IllegalArgumentException</code> - For an empty providerId.</dd>
+<dd><code>java.lang.IllegalArgumentException</code> - For an empty providerUsername.</dd>
 <dd><code>java.lang.IllegalStateException</code> - For a non-bidded task.</dd>
 </dl>
 </li>

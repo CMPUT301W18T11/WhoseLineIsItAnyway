@@ -22,7 +22,7 @@ public final class BidUnitTest
     {
         final String otherProviderId = "otherProviderId";
         Assert.assertEquals(otherProviderId,
-                new Bid(otherProviderId, BidUnitTest.taskId, BidUnitTest.value).getProviderId());
+                new Bid(otherProviderId, BidUnitTest.taskId, BidUnitTest.value).getProviderUsername());
     }
 
     @Test
