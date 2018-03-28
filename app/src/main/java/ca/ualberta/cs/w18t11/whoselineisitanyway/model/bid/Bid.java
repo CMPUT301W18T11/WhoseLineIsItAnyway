@@ -22,7 +22,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
  * Represents a bid.
  *
  * @author Mark Griffith, Samuel Dolha
- * @version 3.0
+ * @version 3.1
  */
 public final class Bid implements Detailed, Elastic, Serializable
 {
