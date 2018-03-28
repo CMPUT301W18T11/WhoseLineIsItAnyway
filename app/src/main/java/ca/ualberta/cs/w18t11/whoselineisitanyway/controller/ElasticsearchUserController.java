@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway.controllers;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.controller;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -10,7 +10,9 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
@@ -20,35 +22,36 @@ import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 
 /**
- * Elastic Search controller for handling Task queries
+ * Elastic Search controller for handling User queries
  *
  * @author Mark Griffith
  * @version 1.0
  */
-public class ElasticSearchTaskController {
-    private static String typeStr = "tasks";
+public class ElasticsearchUserController
+{
+    private static String typeStr = "users";
     private static String idxStr = "cmput301w18t11_whoselineisitanyways";
     private static JestDroidClient client;
 
     /**
-     * Async task for adding tasks to the database
+     * Async task for adding users to the database
      */
-    public static class AddTasksTask extends AsyncTask<Task, Void, String>
+    public static class AddUsersTask extends AsyncTask<User, Void, String>
     {
         /**
-         * Adds the given list of tasks to the database and sets their elastic id's
+         * Adds the given list of Users to the database and sets their elastic id's
          *
-         * @param tasks Tasks to add to the database
+         * @param users Users to add to the database
          * @return assigned elastic id on success else null
          */
         @Override
-        protected String doInBackground(Task... tasks)
+        protected String doInBackground(User... users)
         {
             verifyConfig();
 
-            for (Task task : tasks)
+            for (User user : users)
             {
-                Index idx = new Index.Builder(task).index(idxStr).type(typeStr).build();
+                Index idx = new Index.Builder(user).index(idxStr).type(typeStr).build();
 
                 try
                 {
@@ -56,8 +59,8 @@ public class ElasticSearchTaskController {
                     if (result.isSucceeded())
                     {
                         // Elasticsearch was successful
-                        Log.i("Elasticsearch Success", "Setting task id");
-                        task.setElasticId(result.getId());
+                        Log.i("Elasticsearch Success", "Setting user id");
+                        user.setElasticId(result.getId());
                         return result.getId();
                     }
                     else
@@ -71,8 +74,7 @@ public class ElasticSearchTaskController {
                 catch (Exception e)
                 {
                     // Probably disconnected
-                    Log.i("Elasticsearch Error", "Unexpected exception: " +
-                            e.toString());
+                    Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
                 }
             }
             return null;
@@ -80,31 +82,31 @@ public class ElasticSearchTaskController {
     }
 
     /**
-     * Async task for getting a task from the database using its elastic id
+     * Async task for getting a user from the database using its elastic id
      */
-    public static class GetTaskByIdTask extends AsyncTask<String, Void, Task>
+    public static class GetUserByIdTask extends AsyncTask<String, Void, User>
     {
         /**
-         * Gets a task from the database based on its elastic id
+         * Gets a user from the database based on its elastic id
          *
-         * @param taskId elastic id of the task to get
-         * @return the found task on success else null
+         * @param userId elastic id of the user to get
+         * @return the found user on success else null
          */
         @Override
-        protected Task doInBackground(String... taskId)
+        protected User doInBackground(String... userId)
         {
             verifyConfig();
 
-            Get get = new Get.Builder(idxStr, taskId[0]).type(typeStr).build();
+            Get get = new Get.Builder(idxStr, userId[0]).type(typeStr).build();
 
             try
             {
                 JestResult result = client.execute(get);
-                if(result.isSucceeded())
+                if (result.isSucceeded())
                 {
-                    // Task found
-                    Task task = result.getSourceAsObject(Task.class);
-                    return task;
+                    // User found
+                    User user = result.getSourceAsObject(User.class);
+                    return user;
                 }
                 else
                 {
@@ -119,33 +121,35 @@ public class ElasticSearchTaskController {
                 // Probably disconnected
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
             }
-            // Task not found
-            return null;
+            // User not found, return blank User object
+            return new User("Default Name",
+                    new EmailAddress("DefaultLocalPart", "Domain@Default.com"),
+                    new PhoneNumber(0, 0, 0, 0));
         }
     }
 
     /**
-     * Async task for getting tasks from the database
+     * Async task for getting users from the database
      */
-    public static class GetTaskssTask extends AsyncTask<String, Void, ArrayList<Task>>
+    public static class GetUsersTask extends AsyncTask<String, Void, ArrayList<User>>
     {
         /**
-         * Gets a list of tasks in the database matching a search query
+         * Gets a list of users in the database matching a search query
          *
-         * @param query search query detailing which tasks to get from the database
-         * @return found tasks on success else null
+         * @param query search query detailing which users to get from the database
+         * @return list of users on success else null
          */
         @Override
-        protected ArrayList<Task> doInBackground(String... query)
+        protected ArrayList<User> doInBackground(String... query)
         {
             verifyConfig();
 
-            ArrayList<Task> task = new ArrayList<Task>();
+            ArrayList<User> users = new ArrayList<User>();
 
             // Build the query
             if (query.length < 1)
             {
-                Log.i("Elasticsearch Error","Invalid query");
+                Log.i("Elasticsearch Error", "Invalid query");
                 return null;
             }
 
@@ -157,10 +161,10 @@ public class ElasticSearchTaskController {
             try
             {
                 SearchResult result = client.execute(search);
-                if(result.isSucceeded())
+                if (result.isSucceeded())
                 {
-                    List<Task> foundTasks = result.getSourceAsObjectList(Task.class);
-                    task.addAll(foundTasks);
+                    List<User> foundUsers = result.getSourceAsObjectList(User.class);
+                    users.addAll(foundUsers);
                 }
                 else
                 {
@@ -176,40 +180,37 @@ public class ElasticSearchTaskController {
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
                 return null;
             }
-            return task;
+            return users;
         }
     }
 
     /**
-     * Async task for updating a task in the database
+     * Async task for updating a user in the database
      */
-    public static class UpdateTaskTask extends AsyncTask<Task, Void, Boolean>
+    public static class UpdateUserTask extends AsyncTask<User, Void, Boolean>
     {
         /**
-         * Finds and replaces the task in the database having the same elastic id
-         * as the given task
+         * Finds and replaces the user in the database having the same elastic id
+         * as the given user
          *
-         * @param task Task to update
+         * @param user User to update
          * @return Boolean.TRUE on success else Boolean.FALSE
          */
         @Override
-        protected Boolean doInBackground(Task... task)
+        protected Boolean doInBackground(User... user)
         {
             verifyConfig();
 
-            Index index = new Index.Builder(task[0])
-                    .index(idxStr)
-                    .type(typeStr)
-                    .id(task[0].getElasticId())
-                    .build();
+            Index index = new Index.Builder(user[0]).index(idxStr).type(typeStr)
+                    .id(user[0].getElasticId()).build();
 
             try
             {
                 DocumentResult result = client.execute(index);
                 if (result.isSucceeded())
                 {
-                    Log.i("Elasticsearch Success", "updated task: " +
-                            task[0].getElasticId());
+                    Log.i("Elasticsearch Success", "updated user: " +
+                            user[0].getUsername());
                     return Boolean.TRUE;
                 }
                 else
@@ -229,31 +230,31 @@ public class ElasticSearchTaskController {
     }
 
     /**
-     * Async task for removing a task in the database
+     * Async task for removing a user in the database
      */
-    public static class RemoveTaskTask extends AsyncTask<Task, Void, Void>
+    public static class RemoveUserTask extends AsyncTask<User, Void, Void>
     {
         /**
-         * Removes the given task from the database
+         * Removes the given user from the database
          *
-         * @param task Task to remove
+         * @param user User to remove
          * @return null
          */
         @Override
-        protected Void doInBackground(Task... task)
+        protected Void doInBackground(User... user)
         {
             verifyConfig();
 
             Delete delete =
-                    new Delete.Builder(task[0].getElasticId()).index(idxStr).type(typeStr).build();
+                    new Delete.Builder(user[0].getElasticId()).index(idxStr).type(typeStr).build();
 
             try
             {
                 DocumentResult result = client.execute(delete);
                 if (result.isSucceeded())
                 {
-                    Log.i("Elasticsearch Success", "deleted task: " +
-                            task[0].getElasticId());
+                    Log.i("Elasticsearch Success", "deleted user: " +
+                            user[0].getUsername());
                 }
                 else
                 {

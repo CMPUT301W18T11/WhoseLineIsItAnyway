@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway.controllers;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.controller;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -10,9 +10,7 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
@@ -22,36 +20,36 @@ import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 
 /**
- * Elastic Search controller for handling User queries
+ * Elastic Search controller for handling Bid queries
  *
  * @author Mark Griffith
  * @version 1.0
  */
-public class ElasticSearchUserController
+public class ElasticsearchBidController
 {
-    private static String typeStr = "users";
+    private static String typeStr = "bids";
     private static String idxStr = "cmput301w18t11_whoselineisitanyways";
     private static JestDroidClient client;
 
     /**
-     * Async task for adding users to the database
+     * Async task for adding bids to the database
      */
-    public static class AddUsersTask extends AsyncTask<User, Void, String>
+    public static class AddBidsTask extends AsyncTask<Bid, Void, String>
     {
         /**
-         * Adds the given list of Users to the database and sets their elastic id's
+         * Adds the given list of bids to the database and sets their elastic id's
          *
-         * @param users Users to add to the database
+         * @param bids Bids to add to the database
          * @return assigned elastic id on success else null
          */
         @Override
-        protected String doInBackground(User... users)
+        protected String doInBackground(Bid... bids)
         {
             verifyConfig();
 
-            for (User user : users)
+            for (Bid bid: bids)
             {
-                Index idx = new Index.Builder(user).index(idxStr).type(typeStr).build();
+                Index idx = new Index.Builder(bid).index(idxStr).type(typeStr).build();
 
                 try
                 {
@@ -59,8 +57,8 @@ public class ElasticSearchUserController
                     if (result.isSucceeded())
                     {
                         // Elasticsearch was successful
-                        Log.i("Elasticsearch Success", "Setting user id");
-                        user.setElasticId(result.getId());
+                        Log.i("Elasticsearch Success", "Setting bid id");
+                        bid.setElasticId(result.getId());
                         return result.getId();
                     }
                     else
@@ -74,7 +72,8 @@ public class ElasticSearchUserController
                 catch (Exception e)
                 {
                     // Probably disconnected
-                    Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
+                    Log.i("Elasticsearch Error", "Unexpected exception: " +
+                            e.toString());
                 }
             }
             return null;
@@ -82,31 +81,31 @@ public class ElasticSearchUserController
     }
 
     /**
-     * Async task for getting a user from the database using its elastic id
+     * Async task for getting a bid from the database using its elastic id
      */
-    public static class GetUserByIdTask extends AsyncTask<String, Void, User>
+    public static class GetBidByIdTask extends AsyncTask<String, Void, Bid>
     {
         /**
-         * Gets a user from the database based on its elastic id
+         * Gets a bid from the database based on its elastic id
          *
-         * @param userId elastic id of the user to get
-         * @return the found user on success else null
+         * @param bidId elastic id of the bid to get
+         * @return the found bid on success else null
          */
         @Override
-        protected User doInBackground(String... userId)
+        protected Bid doInBackground(String... bidId)
         {
             verifyConfig();
 
-            Get get = new Get.Builder(idxStr, userId[0]).type(typeStr).build();
+            Get get = new Get.Builder(idxStr, bidId[0]).type(typeStr).build();
 
             try
             {
                 JestResult result = client.execute(get);
-                if (result.isSucceeded())
+                if(result.isSucceeded())
                 {
-                    // User found
-                    User user = result.getSourceAsObject(User.class);
-                    return user;
+                    // Bid found
+                    Bid bid = result.getSourceAsObject(Bid.class);
+                    return bid;
                 }
                 else
                 {
@@ -121,35 +120,34 @@ public class ElasticSearchUserController
                 // Probably disconnected
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
             }
-            // User not found, return blank User object
-            return new User("Default Name",
-                    new EmailAddress("DefaultLocalPart", "Domain@Default.com"),
-                    new PhoneNumber(0, 0, 0, 0));
+            // Bid not found
+            return null;
         }
+
     }
 
     /**
-     * Async task for getting users from the database
+     * Async task for getting bids from the database
      */
-    public static class GetUsersTask extends AsyncTask<String, Void, ArrayList<User>>
+    public static class GetBidsTask extends AsyncTask<String, Void, ArrayList<Bid>>
     {
         /**
-         * Gets a list of users in the database matching a search query
+         * Gets a list of bids in the database matching a search query
          *
-         * @param query search query detailing which users to get from the database
-         * @return list of users on success else null
+         * @param query search query detailing which bids to get from the database
+         * @return list of bids on success else null
          */
         @Override
-        protected ArrayList<User> doInBackground(String... query)
+        protected ArrayList<Bid> doInBackground(String... query)
         {
             verifyConfig();
 
-            ArrayList<User> users = new ArrayList<User>();
+            ArrayList<Bid> bids = new ArrayList<Bid>();
 
             // Build the query
             if (query.length < 1)
             {
-                Log.i("Elasticsearch Error", "Invalid query");
+                Log.i("Elasticsearch Error","invalid query");
                 return null;
             }
 
@@ -161,10 +159,10 @@ public class ElasticSearchUserController
             try
             {
                 SearchResult result = client.execute(search);
-                if (result.isSucceeded())
+                if(result.isSucceeded())
                 {
-                    List<User> foundUsers = result.getSourceAsObjectList(User.class);
-                    users.addAll(foundUsers);
+                    List<Bid> foundBids = result.getSourceAsObjectList(Bid.class);
+                    bids.addAll(foundBids);
                 }
                 else
                 {
@@ -180,37 +178,39 @@ public class ElasticSearchUserController
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
                 return null;
             }
-            return users;
+            return bids;
         }
     }
 
     /**
      * Async task for updating a user in the database
      */
-    public static class UpdateUserTask extends AsyncTask<User, Void, Boolean>
+    public static class UpdateBidTask extends AsyncTask<Bid, Void, Boolean>
     {
         /**
-         * Finds and replaces the user in the database having the same elastic id
-         * as the given user
+         * Finds and replaces a bid in the database having the same elastic id
+         * as the given bid
          *
-         * @param user User to update
+         * @param bid Bid to update
          * @return Boolean.TRUE on success else Boolean.FALSE
          */
         @Override
-        protected Boolean doInBackground(User... user)
+        protected Boolean doInBackground(Bid... bid)
         {
             verifyConfig();
 
-            Index index = new Index.Builder(user[0]).index(idxStr).type(typeStr)
-                    .id(user[0].getElasticId()).build();
+            Index index = new Index.Builder(bid[0])
+                    .index(idxStr)
+                    .type(typeStr)
+                    .id(bid[0].getElasticId())
+                    .build();
 
             try
             {
                 DocumentResult result = client.execute(index);
                 if (result.isSucceeded())
                 {
-                    Log.i("Elasticsearch Success", "updated user: " +
-                            user[0].getUsername());
+                    Log.i("Elasticsearch Success", "updated bid");
                     return Boolean.TRUE;
                 }
                 else
@@ -230,31 +230,30 @@ public class ElasticSearchUserController
     }
 
     /**
-     * Async task for removing a user in the database
+     * Async task for removing a bid in the database
      */
-    public static class RemoveUserTask extends AsyncTask<User, Void, Void>
+    public static class RemoveBidTask extends AsyncTask<Bid, Void, Void>
     {
         /**
-         * Removes the given user from the database
+         * Removes the given bid from the database
          *
-         * @param user User to remove
+         * @param bid Bid to remove
          * @return null
          */
         @Override
-        protected Void doInBackground(User... user)
+        protected Void doInBackground(Bid... bid)
         {
             verifyConfig();
 
             Delete delete =
-                    new Delete.Builder(user[0].getElasticId()).index(idxStr).type(typeStr).build();
+                    new Delete.Builder(bid[0].getElasticId()).index(idxStr).type(typeStr).build();
 
             try
             {
                 DocumentResult result = client.execute(delete);
                 if (result.isSucceeded())
                 {
-                    Log.i("Elasticsearch Success", "deleted user: " +
-                            user[0].getUsername());
+                    Log.i("Elasticsearch Success", "deleted bid");
                 }
                 else
                 {
@@ -288,4 +287,5 @@ public class ElasticSearchUserController
             client = (JestDroidClient) factory.getObject();
         }
     }
+
 }

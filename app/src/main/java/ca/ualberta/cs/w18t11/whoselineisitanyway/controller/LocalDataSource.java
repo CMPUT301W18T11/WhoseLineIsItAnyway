@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.controller;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -27,15 +27,15 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
  * @author Samuel Dolha
  * @version 2.0
  */
-public final class FileDataSource implements DataSource
+public final class LocalDataSource implements DataSource
 {
     private static final String SUFFIX = ".data";
 
-    private static final String USERS_FILENAME = "Users" + FileDataSource.SUFFIX;
+    private static final String USERS_FILENAME = "Users" + LocalDataSource.SUFFIX;
 
-    private static final String TASKS_FILENAME = "Tasks" + FileDataSource.SUFFIX;
+    private static final String TASKS_FILENAME = "Tasks" + LocalDataSource.SUFFIX;
 
-    private static final String BIDS_FILENAME = "Bids" + FileDataSource.SUFFIX;
+    private static final String BIDS_FILENAME = "Bids" + LocalDataSource.SUFFIX;
 
     /**
      * The JSON converter.
@@ -57,7 +57,7 @@ public final class FileDataSource implements DataSource
      * @param context The context of the application.
      * @see Context
      */
-    public FileDataSource(@NonNull final Context context)
+    public LocalDataSource(@NonNull final Context context)
     {
         this.context = context;
     }
@@ -96,8 +96,8 @@ public final class FileDataSource implements DataSource
             {
                 try (BufferedReader bufferedReader = new BufferedReader(inputStreamReader))
                 {
-                    return FileDataSource.GSON
-                            .fromJson(bufferedReader, FileDataSource.getFileType(filename));
+                    return LocalDataSource.GSON
+                            .fromJson(bufferedReader, LocalDataSource.getFileType(filename));
                 }
             }
         }
@@ -113,7 +113,7 @@ public final class FileDataSource implements DataSource
             {
                 try (BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter))
                 {
-                    FileDataSource.GSON.toJson(items, bufferedWriter);
+                    LocalDataSource.GSON.toJson(items, bufferedWriter);
                     bufferedWriter.flush();
                 }
             }

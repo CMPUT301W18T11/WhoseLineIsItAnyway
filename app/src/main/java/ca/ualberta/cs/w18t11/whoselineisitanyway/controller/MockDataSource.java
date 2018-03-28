@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.controller;
 
 import android.support.annotation.NonNull;
 

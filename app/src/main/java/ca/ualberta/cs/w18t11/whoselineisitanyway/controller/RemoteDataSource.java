@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.controller;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -6,9 +6,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import ca.ualberta.cs.w18t11.whoselineisitanyway.controllers.ElasticSearchBidController;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.controllers.ElasticSearchTaskController;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.controllers.ElasticSearchUserController;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
@@ -33,8 +30,8 @@ public class RemoteDataSource implements DataSource
      */
     public User getUserById(String elasticId)
     {
-        ElasticSearchUserController.GetUserByIdTask getUserTask =
-                new ElasticSearchUserController.GetUserByIdTask();
+        ElasticsearchUserController.GetUserByIdTask getUserTask =
+                new ElasticsearchUserController.GetUserByIdTask();
         getUserTask.execute(elasticId);
 
         try
@@ -67,8 +64,8 @@ public class RemoteDataSource implements DataSource
                 "  }" +
                 "}";
 
-        ElasticSearchUserController.GetUsersTask getUsersTask =
-                new ElasticSearchUserController.GetUsersTask();
+        ElasticsearchUserController.GetUsersTask getUsersTask =
+                new ElasticsearchUserController.GetUsersTask();
         getUsersTask.execute(query);
 
         try
@@ -106,8 +103,8 @@ public class RemoteDataSource implements DataSource
                 "    }" +
                 "}";
 
-        ElasticSearchUserController.GetUsersTask getAllUsersTask
-                = new ElasticSearchUserController.GetUsersTask();
+        ElasticsearchUserController.GetUsersTask getAllUsersTask
+                = new ElasticsearchUserController.GetUsersTask();
         getAllUsersTask.execute(query);
 
         try
@@ -137,8 +134,8 @@ public class RemoteDataSource implements DataSource
      */
     @Override
     public boolean addUser(@NonNull User user) {
-        ElasticSearchUserController.AddUsersTask addUserTask =
-                new ElasticSearchUserController.AddUsersTask();
+        ElasticsearchUserController.AddUsersTask addUserTask =
+                new ElasticsearchUserController.AddUsersTask();
         addUserTask.execute(user);
 
         try
@@ -166,8 +163,8 @@ public class RemoteDataSource implements DataSource
      */
     @Override
     public boolean removeUser(@NonNull User user) {
-        ElasticSearchUserController.RemoveUserTask removeUserTask =
-                new ElasticSearchUserController.RemoveUserTask();
+        ElasticsearchUserController.RemoveUserTask removeUserTask =
+                new ElasticsearchUserController.RemoveUserTask();
         removeUserTask.execute(user);
 
         try
@@ -202,8 +199,8 @@ public class RemoteDataSource implements DataSource
                 "    }" +
                 "}";
 
-        ElasticSearchTaskController.GetTaskssTask getAllTasksTask
-                = new ElasticSearchTaskController.GetTaskssTask();
+        ElasticsearchTaskController.GetTaskssTask getAllTasksTask
+                = new ElasticsearchTaskController.GetTaskssTask();
         getAllTasksTask.execute(query);
 
         try
@@ -233,8 +230,8 @@ public class RemoteDataSource implements DataSource
      */
     @Override
     public boolean addTask(@NonNull Task task) {
-        ElasticSearchTaskController.AddTasksTask addTaskTask =
-                new ElasticSearchTaskController.AddTasksTask();
+        ElasticsearchTaskController.AddTasksTask addTaskTask =
+                new ElasticsearchTaskController.AddTasksTask();
         addTaskTask.execute(task);
 
         try
@@ -276,8 +273,8 @@ public class RemoteDataSource implements DataSource
                 "    }" +
                 "}";
 
-        ElasticSearchBidController.GetBidsTask getAllBidsTask
-                = new ElasticSearchBidController.GetBidsTask();
+        ElasticsearchBidController.GetBidsTask getAllBidsTask
+                = new ElasticsearchBidController.GetBidsTask();
         getAllBidsTask.execute(query);
 
         try
@@ -307,8 +304,8 @@ public class RemoteDataSource implements DataSource
      */
     @Override
     public boolean addBid(@NonNull Bid bid) {
-        ElasticSearchBidController.AddBidsTask addBidTask =
-                new ElasticSearchBidController.AddBidsTask ();
+        ElasticsearchBidController.AddBidsTask addBidTask =
+                new ElasticsearchBidController.AddBidsTask ();
         addBidTask.execute(bid);
 
         try

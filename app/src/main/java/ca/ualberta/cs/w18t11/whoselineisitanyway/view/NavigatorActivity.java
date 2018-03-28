@@ -21,8 +21,8 @@ import java.util.Arrays;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.DataSource;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.DataSourceManager;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSource;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 

@@ -1,4 +1,4 @@
-package ca.ualberta.cs.w18t11.whoselineisitanyway.controllers;
+package ca.ualberta.cs.w18t11.whoselineisitanyway.controller;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -10,7 +10,7 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
@@ -20,36 +20,36 @@ import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 
 /**
- * Elastic Search controller for handling Bid queries
+ * Elastic Search controller for handling Task queries
  *
  * @author Mark Griffith
  * @version 1.0
  */
-public class ElasticSearchBidController
+public class ElasticsearchTaskController
 {
-    private static String typeStr = "bids";
+    private static String typeStr = "tasks";
     private static String idxStr = "cmput301w18t11_whoselineisitanyways";
     private static JestDroidClient client;
 
     /**
-     * Async task for adding bids to the database
+     * Async task for adding tasks to the database
      */
-    public static class AddBidsTask extends AsyncTask<Bid, Void, String>
+    public static class AddTasksTask extends AsyncTask<Task, Void, String>
     {
         /**
-         * Adds the given list of bids to the database and sets their elastic id's
+         * Adds the given list of tasks to the database and sets their elastic id's
          *
-         * @param bids Bids to add to the database
+         * @param tasks Tasks to add to the database
          * @return assigned elastic id on success else null
          */
         @Override
-        protected String doInBackground(Bid... bids)
+        protected String doInBackground(Task... tasks)
         {
             verifyConfig();
 
-            for (Bid bid: bids)
+            for (Task task : tasks)
             {
-                Index idx = new Index.Builder(bid).index(idxStr).type(typeStr).build();
+                Index idx = new Index.Builder(task).index(idxStr).type(typeStr).build();
 
                 try
                 {
@@ -57,8 +57,8 @@ public class ElasticSearchBidController
                     if (result.isSucceeded())
                     {
                         // Elasticsearch was successful
-                        Log.i("Elasticsearch Success", "Setting bid id");
-                        bid.setElasticId(result.getId());
+                        Log.i("Elasticsearch Success", "Setting task id");
+                        task.setElasticId(result.getId());
                         return result.getId();
                     }
                     else
@@ -81,31 +81,31 @@ public class ElasticSearchBidController
     }
 
     /**
-     * Async task for getting a bid from the database using its elastic id
+     * Async task for getting a task from the database using its elastic id
      */
-    public static class GetBidByIdTask extends AsyncTask<String, Void, Bid>
+    public static class GetTaskByIdTask extends AsyncTask<String, Void, Task>
     {
         /**
-         * Gets a bid from the database based on its elastic id
+         * Gets a task from the database based on its elastic id
          *
-         * @param bidId elastic id of the bid to get
-         * @return the found bid on success else null
+         * @param taskId elastic id of the task to get
+         * @return the found task on success else null
          */
         @Override
-        protected Bid doInBackground(String... bidId)
+        protected Task doInBackground(String... taskId)
         {
             verifyConfig();
 
-            Get get = new Get.Builder(idxStr, bidId[0]).type(typeStr).build();
+            Get get = new Get.Builder(idxStr, taskId[0]).type(typeStr).build();
 
             try
             {
                 JestResult result = client.execute(get);
                 if(result.isSucceeded())
                 {
-                    // Bid found
-                    Bid bid = result.getSourceAsObject(Bid.class);
-                    return bid;
+                    // Task found
+                    Task task = result.getSourceAsObject(Task.class);
+                    return task;
                 }
                 else
                 {
@@ -120,34 +120,33 @@ public class ElasticSearchBidController
                 // Probably disconnected
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
             }
-            // Bid not found
+            // Task not found
             return null;
         }
-
     }
 
     /**
-     * Async task for getting bids from the database
+     * Async task for getting tasks from the database
      */
-    public static class GetBidsTask extends AsyncTask<String, Void, ArrayList<Bid>>
+    public static class GetTaskssTask extends AsyncTask<String, Void, ArrayList<Task>>
     {
         /**
-         * Gets a list of bids in the database matching a search query
+         * Gets a list of tasks in the database matching a search query
          *
-         * @param query search query detailing which bids to get from the database
-         * @return list of bids on success else null
+         * @param query search query detailing which tasks to get from the database
+         * @return found tasks on success else null
          */
         @Override
-        protected ArrayList<Bid> doInBackground(String... query)
+        protected ArrayList<Task> doInBackground(String... query)
         {
             verifyConfig();
 
-            ArrayList<Bid> bids = new ArrayList<Bid>();
+            ArrayList<Task> task = new ArrayList<Task>();
 
             // Build the query
             if (query.length < 1)
             {
-                Log.i("Elasticsearch Error","invalid query");
+                Log.i("Elasticsearch Error","Invalid query");
                 return null;
             }
 
@@ -161,8 +160,8 @@ public class ElasticSearchBidController
                 SearchResult result = client.execute(search);
                 if(result.isSucceeded())
                 {
-                    List<Bid> foundBids = result.getSourceAsObjectList(Bid.class);
-                    bids.addAll(foundBids);
+                    List<Task> foundTasks = result.getSourceAsObjectList(Task.class);
+                    task.addAll(foundTasks);
                 }
                 else
                 {
@@ -178,31 +177,31 @@ public class ElasticSearchBidController
                 Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
                 return null;
             }
-            return bids;
+            return task;
         }
     }
 
     /**
-     * Async task for updating a user in the database
+     * Async task for updating a task in the database
      */
-    public static class UpdateBidTask extends AsyncTask<Bid, Void, Boolean>
+    public static class UpdateTaskTask extends AsyncTask<Task, Void, Boolean>
     {
         /**
-         * Finds and replaces a bid in the database having the same elastic id
-         * as the given bid
+         * Finds and replaces the task in the database having the same elastic id
+         * as the given task
          *
-         * @param bid Bid to update
+         * @param task Task to update
          * @return Boolean.TRUE on success else Boolean.FALSE
          */
         @Override
-        protected Boolean doInBackground(Bid... bid)
+        protected Boolean doInBackground(Task... task)
         {
             verifyConfig();
 
-            Index index = new Index.Builder(bid[0])
+            Index index = new Index.Builder(task[0])
                     .index(idxStr)
                     .type(typeStr)
-                    .id(bid[0].getElasticId())
+                    .id(task[0].getElasticId())
                     .build();
 
             try
@@ -210,7 +209,8 @@ public class ElasticSearchBidController
                 DocumentResult result = client.execute(index);
                 if (result.isSucceeded())
                 {
-                    Log.i("Elasticsearch Success", "updated bid");
+                    Log.i("Elasticsearch Success", "updated task: " +
+                            task[0].getElasticId());
                     return Boolean.TRUE;
                 }
                 else
@@ -230,30 +230,31 @@ public class ElasticSearchBidController
     }
 
     /**
-     * Async task for removing a bid in the database
+     * Async task for removing a task in the database
      */
-    public static class RemoveBidTask extends AsyncTask<Bid, Void, Void>
+    public static class RemoveTaskTask extends AsyncTask<Task, Void, Void>
     {
         /**
-         * Removes the given bid from the database
+         * Removes the given task from the database
          *
-         * @param bid Bid to remove
+         * @param task Task to remove
          * @return null
          */
         @Override
-        protected Void doInBackground(Bid... bid)
+        protected Void doInBackground(Task... task)
         {
             verifyConfig();
 
             Delete delete =
-                    new Delete.Builder(bid[0].getElasticId()).index(idxStr).type(typeStr).build();
+                    new Delete.Builder(task[0].getElasticId()).index(idxStr).type(typeStr).build();
 
             try
             {
                 DocumentResult result = client.execute(delete);
                 if (result.isSucceeded())
                 {
-                    Log.i("Elasticsearch Success", "deleted bid");
+                    Log.i("Elasticsearch Success", "deleted task: " +
+                            task[0].getElasticId());
                 }
                 else
                 {
@@ -287,5 +288,4 @@ public class ElasticSearchBidController
             client = (JestDroidClient) factory.getObject();
         }
     }
-
 }
