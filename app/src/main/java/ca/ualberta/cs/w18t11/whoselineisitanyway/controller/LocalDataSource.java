@@ -130,7 +130,7 @@ public final class LocalDataSource implements DataSource
         }
         catch (IOException exception)
         {
-            return new User[0];
+            return null;
         }
     }
 
@@ -178,7 +178,7 @@ public final class LocalDataSource implements DataSource
         }
         catch (IOException exception)
         {
-            return new Task[0];
+            return null;
         }
     }
 
@@ -226,7 +226,7 @@ public final class LocalDataSource implements DataSource
         }
         catch (IOException exception)
         {
-            return new Bid[0];
+            return null;
         }
     }
 
