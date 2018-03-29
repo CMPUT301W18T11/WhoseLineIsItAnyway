@@ -1,13 +1,9 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.controller;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
-import java.math.BigDecimal;
-
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 /**
@@ -39,53 +35,107 @@ public class DataSourceManager
      */
     private User currentUser;
 
-    //TODO: Ensure all commands check if we can grab or set data in remote before using local
+    private Context mContext;
+
+    private static final String DB_FILENAME = "Database_Shared_Preference_File";
 
     /**
      * Creates a DataSourceManager
      *
      * @see DataSource
      */
-    private DataSourceManager()
+    private DataSourceManager(Context context)
     {
-        final User[] users = new User[]{
-                new User("bob", new EmailAddress("bob", "gmail.com"),
-                        new PhoneNumber(0, 123, 456, 7890)),
-                new User("alice", new EmailAddress("alice", "gmail.com"),
-                        new PhoneNumber(0, 123, 456, 7890)),
-                new User("eve", new EmailAddress("eve", "gmail.com"),
-                        new PhoneNumber(0, 123, 456, 7890))
-        };
-        final Bid[] bids = new Bid[]{
-                new Bid(users[1].getUsername(), "id1", new BigDecimal(5)),
-                new Bid(users[2].getUsername(), "id1", new BigDecimal(6)),
-                new Bid(users[2].getUsername(), "id2", new BigDecimal(500)),
-                new Bid(users[0].getUsername(), "id2", new BigDecimal(750)),
-                new Bid(users[2].getUsername(), "id3", new BigDecimal(5)),
-                new Bid(users[0].getUsername(), "id3", new BigDecimal(7))
-        };
-        final Task[] tasks = new Task[]{
-                new Task("id1", users[0].getUsername(), "Demo Task 1", "A really good task"),
-                new Task("id2", users[1].getUsername(), "Demo Task 2", "A really great task"),
-                new Task("id3", users[1].getUsername(), users[0].getUsername(),
-                        new Bid[]{bids[4], bids[5]}, "Demo Task 3", "A alright task", false)
-        };
-
         this.remoteDataSource = new RemoteDataSource();
-        this.localDataSource = new MockDataSource(users, tasks, bids);
+        this.localDataSource = new LocalDataSource(context);
+        this.mContext = context;
+    }
+
+    /**
+     * @return User[] array of all the current users
+     */
+    public User[] getAllUsers()
+    {
+        if (getOfflineChanges() == true)
+        {
+            synchronizeDataSources();
+        }
+
+        User[] allUsers;
+
+        if ((allUsers = localDataSource.getUsers()) != null)
+        {
+            return allUsers;
+        }
+
+        if ((allUsers = remoteDataSource.getUsers()) != null)
+        {
+            return allUsers;
+        }
+
+        return null;
+    }
+
+    /**
+     * Adds the given user to the local data source.
+     * Attempts to add the given user to the database.
+     * Sets offline changes if adding to the database fails.
+     *
+     * @param user user to add to data sources
+     * @return true if user was at least added to local data source, else false
+     */
+    public boolean addUser(User user)
+    {
+        // Attempt to add user locally
+        if (localDataSource.addUser(user) == true)
+        {
+            if (remoteDataSource.addUser(user) == false)
+            {
+                // Adding the user online failed. Trigger offline changes
+                setOfflineChanges(true);
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
      * @return DataSourceManager the singleton copy of the data source manager
      */
-    public static DataSourceManager getInstance()
+    public static DataSourceManager getInstance(Context context)
     {
         if (DataSourceManager.instance != null)
         {
             return DataSourceManager.instance;
         }
-        DataSourceManager.instance = new DataSourceManager();
+        DataSourceManager.instance = new DataSourceManager(context);
         return DataSourceManager.instance;
+    }
+
+    /**
+     * Updates the database shared preference file to indicate if offline
+     * changes are present or not
+     *
+     * @param yesno true if offline changes are present, else false
+     */
+    private void setOfflineChanges(boolean yesno)
+    {
+        SharedPreferences sp = mContext.getSharedPreferences(DB_FILENAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean("offline_changes", yesno);
+        editor.apply();
+    }
+
+    /**
+     * Checks if there are offline changes triggered in the database shared
+     * preference file
+     *
+     * @return true if offline changes present, else false
+     */
+    private boolean getOfflineChanges()
+    {
+        SharedPreferences sp =  mContext.getSharedPreferences(DB_FILENAME, Context.MODE_PRIVATE);
+        return sp.getBoolean("offline_changes", false);
     }
 
     /**
@@ -95,7 +145,29 @@ public class DataSourceManager
      */
     public boolean synchronizeDataSources()
     {
-        // TODO: Implement
+        // TODO: Implement for Tasks and Bids
+
+        // If there are offline changes, we need to synchronize the data sources
+        if (getOfflineChanges() == true)
+        {
+            // Synchronize the users
+            User[] localUsers;
+            if ((localUsers = localDataSource.getUsers()) != null)
+            {
+                for (User user : localUsers)
+                {
+                    if (!remoteDataSource.addUser(user))
+                    {
+                        // Adding user to the database failed because connection is still bad
+                        // Terminate synchronization
+                        Log.i("DataSourceManager.sync", " Synchronization failed.");
+                        return false;
+                    }
+                }
+                // Make sure to set offline changes to false after syncing
+                setOfflineChanges(false);
+            }
+        }
         return true;
     }
 
@@ -120,8 +192,7 @@ public class DataSourceManager
      */
     public void setCurrentUser(String username)
     {
-        // TODO: make this check remote first
-        for (User user : getLocalDataSource().getUsers())
+        for (User user : localDataSource.getUsers())
         {
             if (user.getUsername().equals(username))
             {
@@ -129,6 +200,15 @@ public class DataSourceManager
                 return;
             }
         }
+
+        User user;
+        user = remoteDataSource.getUserByUsername(username);
+        if (user != null)
+        {
+            currentUser = user;
+            return;
+        }
+
         // TODO: Create user if they don't exist
         Log.i("DataSourceManager: ", "User not set");
     }
