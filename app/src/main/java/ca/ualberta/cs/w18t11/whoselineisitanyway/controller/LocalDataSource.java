@@ -2,20 +2,22 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.controller;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
@@ -90,6 +92,17 @@ public final class LocalDataSource implements DataSource
     private <T> T[] readFile(@NonNull final String filename)
             throws IOException
     {
+        File folder = new File(this.context.getFilesDir().toString());
+        File file = new File(folder.getAbsolutePath() + "/" + filename);
+        if (!folder.exists())
+        {
+            folder.mkdir();
+        }
+        if (!file.exists())
+        {
+            file.createNewFile();
+        }
+
         try (FileInputStream fileInputStream = this.context.openFileInput(filename))
         {
             try (InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream))
@@ -126,11 +139,12 @@ public final class LocalDataSource implements DataSource
     {
         try
         {
-            return this.readFile(USERS_FILENAME);
+            User[] users = this.readFile(USERS_FILENAME);
+            return users;
         }
         catch (IOException exception)
         {
-            return new User[0];
+            return null;
         }
     }
 
@@ -139,15 +153,24 @@ public final class LocalDataSource implements DataSource
     {
         try
         {
-            final Collection<User> users = Arrays.asList((User[]) this.readFile(USERS_FILENAME));
+            ArrayList<User> users;
+            User[] fromFile = this.readFile(USERS_FILENAME);
+            if (fromFile == null)
+            {
+                users = new ArrayList<User>();
+            }
+            else
+            {
+                users = new ArrayList<>(Arrays.asList(fromFile));
+            }
             users.add(user);
             this.writeFile(USERS_FILENAME, users.toArray(new User[0]));
         }
         catch (IOException exception)
         {
+            Log.i("LocalDataSource.addUser", "IOException: " + exception.toString());
             return false;
         }
-
         return true;
     }
 
@@ -156,7 +179,16 @@ public final class LocalDataSource implements DataSource
     {
         try
         {
-            final Collection<User> users = Arrays.asList((User[]) this.readFile(USERS_FILENAME));
+            ArrayList<User> users;
+            User[] fromFile = this.readFile(USERS_FILENAME);
+            if (fromFile == null)
+            {
+                return false;
+            }
+            else
+            {
+                users = new ArrayList<>(Arrays.asList(fromFile));
+            }
             users.remove(user);
             this.writeFile(USERS_FILENAME, users.toArray(new User[0]));
         }
@@ -164,7 +196,6 @@ public final class LocalDataSource implements DataSource
         {
             return false;
         }
-
         return true;
     }
 
@@ -178,7 +209,7 @@ public final class LocalDataSource implements DataSource
         }
         catch (IOException exception)
         {
-            return new Task[0];
+            return null;
         }
     }
 
@@ -187,7 +218,16 @@ public final class LocalDataSource implements DataSource
     {
         try
         {
-            final Collection<Task> tasks = Arrays.asList((Task[]) this.readFile(TASKS_FILENAME));
+            ArrayList<Task> tasks;
+            Task[] fromFile = this.readFile(TASKS_FILENAME);
+            if (fromFile == null)
+            {
+                tasks = new ArrayList<Task>();
+            }
+            else
+            {
+                tasks = new ArrayList<>(Arrays.asList(fromFile));
+            }
             tasks.add(task);
             this.writeFile(TASKS_FILENAME, tasks.toArray(new Task[0]));
         }
@@ -195,7 +235,6 @@ public final class LocalDataSource implements DataSource
         {
             return false;
         }
-
         return true;
     }
 
@@ -204,7 +243,16 @@ public final class LocalDataSource implements DataSource
     {
         try
         {
-            final Collection<Task> tasks = Arrays.asList((Task[]) this.readFile(TASKS_FILENAME));
+            ArrayList<Task> tasks;
+            Task[] fromFile = this.readFile(TASKS_FILENAME);
+            if (fromFile == null)
+            {
+                return false;
+            }
+            else
+            {
+                tasks = new ArrayList<>(Arrays.asList(fromFile));
+            }
             tasks.remove(task);
             this.writeFile(TASKS_FILENAME, tasks.toArray(new Task[0]));
         }
@@ -212,7 +260,6 @@ public final class LocalDataSource implements DataSource
         {
             return false;
         }
-
         return true;
     }
 
@@ -226,7 +273,7 @@ public final class LocalDataSource implements DataSource
         }
         catch (IOException exception)
         {
-            return new Bid[0];
+            return null;
         }
     }
 
@@ -235,7 +282,16 @@ public final class LocalDataSource implements DataSource
     {
         try
         {
-            final Collection<Bid> bids = Arrays.asList((Bid[]) this.readFile(BIDS_FILENAME));
+            ArrayList<Bid> bids;
+            Bid[] fromFile = this.readFile(BIDS_FILENAME);
+            if (fromFile == null)
+            {
+                bids = new ArrayList<Bid>();
+            }
+            else
+            {
+                bids = new ArrayList<>(Arrays.asList(fromFile));
+            }
             bids.add(bid);
             this.writeFile(BIDS_FILENAME, bids.toArray(new Bid[0]));
         }
@@ -243,7 +299,6 @@ public final class LocalDataSource implements DataSource
         {
             return false;
         }
-
         return true;
     }
 
@@ -252,7 +307,16 @@ public final class LocalDataSource implements DataSource
     {
         try
         {
-            final Collection<Bid> bids = Arrays.asList((Bid[]) this.readFile(BIDS_FILENAME));
+            ArrayList<Bid> bids;
+            Bid[] fromFile = this.readFile(BIDS_FILENAME);
+            if (fromFile == null)
+            {
+                return false;
+            }
+            else
+            {
+                bids = new ArrayList<>(Arrays.asList(fromFile));
+            }
             bids.remove(bid);
             this.writeFile(BIDS_FILENAME, bids.toArray(new Bid[0]));
         }
@@ -260,7 +324,6 @@ public final class LocalDataSource implements DataSource
         {
             return false;
         }
-
         return true;
     }
 
