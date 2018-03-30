@@ -140,9 +140,7 @@ public class UserLoginActivity extends AppCompatActivity implements UserRegister
         else
         {
             // attempt authentication against a network
-            User user = DataSourceManager.getInstance()
-                    .getRemoteDataSource()
-                    .getUserByUsername(username);
+            User user = DataSourceManager.getInstance(this).getUser(username);
 
             if (user != null)
             {
@@ -166,7 +164,7 @@ public class UserLoginActivity extends AppCompatActivity implements UserRegister
         Log.i("UserLogin", "Registered user. Logging in...");
 
         // Set the current user and start the app
-        DataSourceManager.getInstance().setCurrentUser(user.getUsername());
+        DataSourceManager.getInstance(this).setCurrentUser(user.getUsername());
         Intent intent = new Intent(this, NavigatorActivity.class);
         this.startActivity(intent);
     }
@@ -182,7 +180,7 @@ public class UserLoginActivity extends AppCompatActivity implements UserRegister
     @Override
     public void RegisterDiag_PosResultListener(final User result) {
         this.user = result;
-        if (DataSourceManager.getInstance().getRemoteDataSource().addUser(this.user))
+        if (DataSourceManager.getInstance(this).addUser(this.user))
         {
             loginUser(this.user);
         }
