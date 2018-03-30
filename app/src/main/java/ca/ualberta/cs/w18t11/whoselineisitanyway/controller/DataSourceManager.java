@@ -60,10 +60,7 @@ public class DataSourceManager
      */
     public User[] getAllUsers()
     {
-        if (getOfflineUserChanges())
-        {
-            synchronizeDataSources();
-        }
+        synchronizeUserChanges();
 
         User[] allUsers;
         if ((allUsers = localDataSource.getUsers()) != null)
@@ -80,15 +77,54 @@ public class DataSourceManager
     }
 
     /**
+     * @return Task[] array of all the current tasks
+     */
+    public Task[] getAllTasks()
+    {
+        synchronizeTaskChanges();
+
+        Task[] allTasks;
+        if ((allTasks = localDataSource.getTasks()) != null)
+        {
+            return allTasks;
+        }
+
+        if ((allTasks= remoteDataSource.getTasks()) != null)
+        {
+            return allTasks;
+        }
+
+        return null;
+    }
+
+    /**
+     * @return Bids[] array of all the current users
+     */
+    public Bid[] getAllBids()
+    {
+        synchronizeBidChanges();
+
+        Bid[] allBids;
+        if ((allBids = localDataSource.getBids()) != null)
+        {
+            return allBids;
+        }
+
+        if ((allBids = remoteDataSource.getBids()) != null)
+        {
+            return allBids;
+        }
+
+        return null;
+    }
+
+    /**
      * @param username
      * @return the user with the username if found, else null
      */
     public User getUser(String username)
     {
-        if (getOfflineUserChanges())
-        {
-            synchronizeDataSources();
-        }
+        synchronizeUserChanges();
 
         User[] users = localDataSource.getUsers();
         if (users != null)
@@ -113,9 +149,86 @@ public class DataSourceManager
     }
 
     /**
+     * Finds and returns a task based on it's requester's username and the task's title
+     *
+     * @param requesterUsername username of the task's requester
+     * @param taskTitle title of the desired task
+     * @return Task if found, else null
+     */
+    public Task getTask(String requesterUsername, String taskTitle)
+    {
+        synchronizeTaskChanges();
+
+        Task[] tasks = localDataSource.getTasks();
+        if (tasks != null)
+        {
+            for (Task task : tasks)
+            {
+                if (task.getRequesterUsername().equals(requesterUsername) &&
+                        task.getTitle().equals(taskTitle))
+                {
+                    return task;
+                }
+            }
+        }
+
+        // TODO implement ElasticSearchTaskController getTasksByTitle async task
+//        tasks = remoteDataSource.getTasksByTitle(taskTitle);
+//        for (Task task : tasks)
+//        {
+//            if (task.getRequesterUsername().equals(requesterUsername))
+//            {
+//                return task;
+//            }
+//        }
+
+        return null;
+    }
+
+    /**
+     * Finds and returns a bid based on it's provider's username and the bid's id
+     *
+     * @param providerUsername username of the bid's provider
+     * @param taskId id of the task on which the bid was made
+     * @return Bid if success, else null
+     */
+    public Bid getBid(String providerUsername, String taskId)
+    {
+        synchronizeBidChanges();
+
+        Bid[] bids = localDataSource.getBids();
+        if (bids != null)
+        {
+            for (Bid bid : bids)
+            {
+                if (bid.getProviderUsername().equals(providerUsername) &&
+                        bid.getTaskId().equals(taskId))
+                {
+                    return bid;
+                }
+            }
+        }
+
+        // TODO implement ElasticsearchBidController getBidsByTaskId async task
+//        bids = remoteDataSource.getBidsByTaskId(taskId);
+//        if (bids != null)
+//        {
+//            for (Bid bid : bids)
+//            {
+//                if (bid.getProviderUsername().equals(providerUsername))
+//                {
+//                    return bid;
+//                }
+//            }
+//        }
+
+        return null;
+    }
+
+    /**
      * Adds the given user to the local data source.
      * Attempts to add the given user to the database.
-     * Sets offline changes if adding to the database fails.
+     * Triggers offline changes if adding to the database fails.
      *
      * @param user user to add to data sources
      * @return true if user was at least added to local data source, else false
@@ -133,6 +246,54 @@ public class DataSourceManager
             return true;
         }
         Log.i("DataSourceManager.addUser","Failed to add user" + user.getUsername());
+        return false;
+    }
+
+    /**
+     * Adds the given task to the local data source.
+     * Attempts to add the given task to the database.
+     * Triggers offline changes if adding to the database fails.
+     *
+     * @param task task to add to data sources
+     * @return true if user was at least added to local data source, else false
+     */
+    public boolean addTask(Task task)
+    {
+        // Attempt to add user locally
+        if (localDataSource.addTask(task))
+        {
+            if (!remoteDataSource.addTask(task))
+            {
+                // Adding the user online failed. Trigger offline changes
+                setOfflineTaskChanges(true);
+            }
+            return true;
+        }
+        Log.i("DataSourceManager.addUser","Failed to add task" + task.getTitle());
+        return false;
+    }
+
+    /**
+     * Adds the given bid to the local data source.
+     * Attempts to add the given bid to the database.
+     * Trigger offline changes if adding to the database fails.
+     *
+     * @param bid bid to add to data sources
+     * @return true if user was at least added to local data source, else false
+     */
+    public boolean addBid(Bid bid)
+    {
+        // Attempt to add user locally
+        if (localDataSource.addBid(bid))
+        {
+            if (!remoteDataSource.addBid(bid))
+            {
+                // Adding the user online failed. Trigger offline changes
+                setOfflineBidChanges(true);
+            }
+            return true;
+        }
+        Log.i("DataSourceManager.addUser","Failed to add bid" + bid.getValue());
         return false;
     }
 
@@ -159,6 +320,50 @@ public class DataSourceManager
     }
 
     /**
+     * Removes a task from the local data source.
+     * Attempts to remove the task from the database.
+     * Triggers offline changes if removing from the database fails.
+     *
+     * @param task task to remove
+     * @return true if task was at least removed from the local data source, else false
+     */
+    public boolean removeTask(Task task)
+    {
+        if (localDataSource.removeTask(task))
+        {
+            if (!remoteDataSource.removeTask(task))
+            {
+                setOfflineUserChanges(true);
+            }
+            return true;
+        }
+        Log.i("DataSourceManager.addUser","Failed to remove user" + task.getTitle());
+        return false;
+    }
+
+    /**
+     * Removes a bid from the local data source.
+     * Attempts to remove the bid from the database.
+     * Triggers offline changes if removing from the database fails.
+     *
+     * @param bid bid to remove
+     * @return true if bid was at least removed from the local data source, else false
+     */
+    public boolean removeUser(Bid bid)
+    {
+        if (localDataSource.removeBid(bid))
+        {
+            if (!remoteDataSource.removeBid(bid))
+            {
+                setOfflineUserChanges(true);
+            }
+            return true;
+        }
+        Log.i("DataSourceManager.addUser","Failed to remove user" + bid.getValue());
+        return false;
+    }
+
+    /**
      * @return DataSourceManager the singleton copy of the data source manager
      */
     public static DataSourceManager getInstance(Context context)
@@ -172,89 +377,58 @@ public class DataSourceManager
     }
 
     /**
-     * Synchronize and changes made to the local data source with the remote.
-     */
-    private void synchronizeDataSources()
-    {
-        Log.i("DataSourceManager",
-                "Attempting to synchronize local and remote data sources...");
-
-        // If there are offline changes, we need to synchronize the data sources
-        if (getOfflineUserChanges())
-        {
-            // Synchronize the users
-            if (synchronizeUserChanges())
-            {
-                setOfflineUserChanges(false);
-            }
-        }
-
-        // Check for changes to the tasks
-        if (getOfflineTaskChanges())
-        {
-            // Synchronize the users
-            if (synchronizeTaskChanges())
-            {
-                setOfflineTaskChanges(false);
-            }
-        }
-
-        // Check for changes to the bids
-        if (getOfflineBidChanges())
-        {
-            // Synchronize the users
-            if (synchronizeBidChanges())
-            {
-                setOfflineBidChanges(false);
-            }
-        }
-    }
-
-    /**
      * Synchronizes the users in the localDataSource to the remoteDataSource.
      *
      * @return boolean true if sync was successful, else false
      */
-    private boolean synchronizeUserChanges()
+    private void synchronizeUserChanges()
     {
-        User[] localUsers;
-        if ((localUsers = localDataSource.getUsers()) != null)
+        if (getOfflineUserChanges())
         {
-            for (User user : localUsers)
+            User[] localUsers;
+            if ((localUsers = localDataSource.getUsers()) != null)
             {
-                if (!remoteDataSource.addUser(user))
+                for (User user : localUsers)
                 {
-                    // Adding user to the database failed because connection is still bad
-                    // Terminate synchronization
-                    Log.i("DataSourceManager.syncUsers", " Synchronization failed.");
-                    return false;
+                    if (!remoteDataSource.addUser(user))
+                    {
+                        // Adding user to the database failed because connection is still bad
+                        // Terminate synchronization
+                        Log.i("DataSourceManager.syncUsers", " Synchronization failed.");
+                        return;
+                    }
                 }
             }
+            Log.i("DataSourceManager.syncUsers", " Synchronization success!");
+            setOfflineUserChanges(false);
         }
-        return true;
     }
     /**
      * Synchronizes the tasks in the localDataSource to the remoteDataSource.
      *
      * @return boolean true if sync was successful, else false
      */
-    private boolean synchronizeTaskChanges()
+    private void synchronizeTaskChanges()
     {
-        Task[] localTasks;
-        if ((localTasks = localDataSource.getTasks()) != null)
+        if (getOfflineTaskChanges())
         {
-            for (Task task: localTasks)
+            Task[] localTasks;
+            if ((localTasks = localDataSource.getTasks()) != null)
             {
-                if (!remoteDataSource.addTask(task))
+                for (Task task : localTasks)
                 {
-                    // Adding user to the database failed because connection is still bad
-                    // Terminate synchronization
-                    Log.i("DataSourceManager.syncTasks", " Synchronization failed.");
-                    return false;
+                    if (!remoteDataSource.addTask(task))
+                    {
+                        // Adding user to the database failed because connection is still bad
+                        // Terminate synchronization
+                        Log.i("DataSourceManager.syncTasks", " Synchronization failed.");
+                        return;
+                    }
                 }
             }
+            Log.i("DataSourceManager.syncTasks", " Synchronization success!");
+            setOfflineTaskChanges(false);
         }
-        return true;
     }
 
     /**
@@ -262,23 +436,27 @@ public class DataSourceManager
      *
      * @return boolean true if sync was successful, else false
      */
-    private boolean synchronizeBidChanges()
+    private void synchronizeBidChanges()
     {
-        Bid[] localBids;
-        if ((localBids = localDataSource.getBids()) != null)
+        if (getOfflineBidChanges())
         {
-            for (Bid bid : localBids)
+            Bid[] localBids;
+            if ((localBids = localDataSource.getBids()) != null)
             {
-                if (!remoteDataSource.addBid(bid))
+                for (Bid bid : localBids)
                 {
-                    // Adding user to the database failed because connection is still bad
-                    // Terminate synchronization
-                    Log.i("DataSourceManager.syncUsers", " Synchronization failed.");
-                    return false;
+                    if (!remoteDataSource.addBid(bid))
+                    {
+                        // Adding user to the database failed because connection is still bad
+                        // Terminate synchronization
+                        Log.i("DataSourceManager.syncBids", " Synchronization failed.");
+                        return;
+                    }
                 }
             }
+            Log.i("DataSourceManager.syncBids", " Synchronization success!");
+            setOfflineBidChanges(false);
         }
-        return true;
     }
 
     /**
