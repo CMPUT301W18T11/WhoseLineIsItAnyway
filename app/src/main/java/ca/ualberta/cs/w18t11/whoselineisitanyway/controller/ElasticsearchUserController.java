@@ -36,7 +36,7 @@ public class ElasticsearchUserController
     /**
      * Async task for adding users to the database
      */
-    public static class AddUsersTask extends AsyncTask<User, Void, String>
+    public static class OldAddUsersTask extends AsyncTask<User, Void, String>
     {
         /**
          * Adds the given list of Users to the database and sets their elastic id's
@@ -78,6 +78,84 @@ public class ElasticsearchUserController
                 }
             }
             return null;
+        }
+    }
+
+    /**
+     * Async task for adding users to the database
+     * It first attempts to update the user. If the user is not found in the database, it adds
+     * the new user to the database
+     */
+    public static class AddUsersTask extends AsyncTask<User, Void, Boolean>
+    {
+        /**
+         * Adds the given list of Users to the database and sets their elastic id's
+         *
+         * @param users Users to add to the database
+         * @return assigned elastic id on success else null
+         */
+        @Override
+        protected Boolean doInBackground(User... users)
+        {
+            verifyConfig();
+
+            for (User user : users)
+            {
+                // First, we try to see if it already exists in the database
+                Index index = new Index.Builder(user).index(idxStr).type(typeStr)
+                        .id(user.getElasticId()).build();
+
+                try
+                {
+                    DocumentResult result = client.execute(index);
+                    if (result.isSucceeded())
+                    {
+                        Log.i("Elasticsearch Success", "updated user: " +
+                                user.getUsername());
+                        return Boolean.TRUE;
+                    }
+                    else
+                    {
+                        Log.i("Elasticsearch Error",
+                                "index missing or could not connect:" +
+                                        Integer.toString(result.getResponseCode()));
+
+                        // If we couldn't find the object with the index, we add it to the databse
+                        Index idx = new Index.Builder(user).index(idxStr).type(typeStr).build();
+
+                        try
+                        {
+                            result = client.execute(idx);
+                            if (result.isSucceeded())
+                            {
+                                // Elasticsearch was successful
+                                Log.i("Elasticsearch Success", "Added new user to db!");
+                                user.setElasticId(result.getId());
+                                return Boolean.TRUE;
+                            }
+                            else
+                            {
+                                Log.i("Elasticsearch Error",
+                                        "index msising or could not connect:" +
+                                                Integer.toString(result.getResponseCode()));
+                                return Boolean.FALSE;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            // Probably disconnected
+                            Log.i("Elasticsearch Error", "Unexpected exception: " +
+                                    e.toString());
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.i("Elasticsearch Error", "Unexpected exception: " +
+                            e.toString());
+                }
+            }
+            return Boolean.FALSE;
         }
     }
 
