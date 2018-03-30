@@ -245,7 +245,7 @@ public class DataSourceManager
             }
             return true;
         }
-        Log.i("DataSourceManager.addUser","Failed to add user" + user.getUsername());
+        Log.i("DataSourceManager.addUser","Failed to add user:" + user.getUsername());
         return false;
     }
 
@@ -269,7 +269,7 @@ public class DataSourceManager
             }
             return true;
         }
-        Log.i("DataSourceManager.addUser","Failed to add task" + task.getTitle());
+        Log.i("DataSourceManager.addUser","Failed to add task:" + task.getTitle());
         return false;
     }
 
@@ -293,7 +293,7 @@ public class DataSourceManager
             }
             return true;
         }
-        Log.i("DataSourceManager.addUser","Failed to add bid" + bid.getValue());
+        Log.i("DataSourceManager.addUser","Failed to add bid:" + bid.getValue());
         return false;
     }
 
@@ -315,7 +315,7 @@ public class DataSourceManager
             }
             return true;
         }
-        Log.i("DataSourceManager.addUser","Failed to remove user" + user.getUsername());
+        Log.i("DataSourceManager.removeUser","Failed to remove user:" + user.getUsername());
         return false;
     }
 
@@ -337,7 +337,7 @@ public class DataSourceManager
             }
             return true;
         }
-        Log.i("DataSourceManager.addUser","Failed to remove user" + task.getTitle());
+        Log.i("DataSourceManager.removeTask","Failed to remove task:" + task.getTitle());
         return false;
     }
 
@@ -349,7 +349,7 @@ public class DataSourceManager
      * @param bid bid to remove
      * @return true if bid was at least removed from the local data source, else false
      */
-    public boolean removeUser(Bid bid)
+    public boolean removeBid(Bid bid)
     {
         if (localDataSource.removeBid(bid))
         {
@@ -359,7 +359,7 @@ public class DataSourceManager
             }
             return true;
         }
-        Log.i("DataSourceManager.addUser","Failed to remove user" + bid.getValue());
+        Log.i("DataSourceManager.removeBid","Failed to remove bid:" + bid.getValue());
         return false;
     }
 
