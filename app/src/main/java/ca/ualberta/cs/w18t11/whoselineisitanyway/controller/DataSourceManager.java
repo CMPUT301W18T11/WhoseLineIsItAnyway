@@ -11,12 +11,11 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 /**
  * Manages the remote and local data sources used withing the application
  *
- * @author Brad Ofrim, Samuel Dolha
- * @version 1.1
+ * @author Brad Ofrim, Samuel Dolha, Mark Griffith
+ * @version 2.0
  */
 public class DataSourceManager
 {
-
     /**
      * Singleton instance
      */
@@ -80,6 +79,10 @@ public class DataSourceManager
         return null;
     }
 
+    /**
+     * @param username
+     * @return the user with the username if found, else null
+     */
     public User getUser(String username)
     {
         if (getOfflineUserChanges())
@@ -170,8 +173,6 @@ public class DataSourceManager
 
     /**
      * Synchronize and changes made to the local data source with the remote.
-     *
-     * @return boolean representing if the synchronize was successful
      */
     private void synchronizeDataSources()
     {
@@ -209,6 +210,11 @@ public class DataSourceManager
         }
     }
 
+    /**
+     * Synchronizes the users in the localDataSource to the remoteDataSource.
+     *
+     * @return boolean true if sync was successful, else false
+     */
     private boolean synchronizeUserChanges()
     {
         User[] localUsers;
@@ -227,7 +233,11 @@ public class DataSourceManager
         }
         return true;
     }
-
+    /**
+     * Synchronizes the tasks in the localDataSource to the remoteDataSource.
+     *
+     * @return boolean true if sync was successful, else false
+     */
     private boolean synchronizeTaskChanges()
     {
         Task[] localTasks;
@@ -247,6 +257,11 @@ public class DataSourceManager
         return true;
     }
 
+    /**
+     * Synchronizes the bids in the localDataSource to the remoteDataSource.
+     *
+     * @return boolean true if sync was successful, else false
+     */
     private boolean synchronizeBidChanges()
     {
         Bid[] localBids;
