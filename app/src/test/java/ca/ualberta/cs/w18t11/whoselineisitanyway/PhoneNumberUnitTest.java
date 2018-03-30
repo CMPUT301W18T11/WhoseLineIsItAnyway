@@ -3,10 +3,34 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Locale;
+
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 
 public final class PhoneNumberUnitTest
 {
+    @Test
+    public final void testFromString()
+    {
+        final int countryCode = 1;
+        final int areaCode = 555;
+        final int exchangeCode = 123;
+        final int lineNumber = 6789;
+        final PhoneNumber phoneNumber = PhoneNumber.fromString(
+                String.format(Locale.getDefault(), "+%d (%d) %d-%d", countryCode, areaCode,
+                        exchangeCode, lineNumber));
+        Assert.assertEquals(countryCode, phoneNumber.getCountryCode());
+        Assert.assertEquals(areaCode, phoneNumber.getAreaCode());
+        Assert.assertEquals(exchangeCode, phoneNumber.getExchangeCode());
+        Assert.assertEquals(lineNumber, phoneNumber.getLineNumber());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public final void testFromMalformedString()
+    {
+        PhoneNumber.fromString("15551236789");
+    }
+
     @Test
     public final void testGetCountryCode()
     {
