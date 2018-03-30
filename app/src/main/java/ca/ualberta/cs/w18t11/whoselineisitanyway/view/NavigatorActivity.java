@@ -19,10 +19,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSource;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
@@ -106,8 +105,13 @@ public class NavigatorActivity extends AppCompatActivity
         }
         if (id == R.id.logout)
         {
-            Log.i("OPTIONS: ", "Logout Option Selected");
-            // TODO Handle
+            Log.i("OPTIONS: ", "Logout Option Selected. Attempting to logout...");
+
+            /* TODO do we need to unset the DataSourceManager's current user? It just gets set
+                    on the next login anyways... */
+            Intent outgoingIntent = new Intent(this, UserLoginActivity.class);
+            startActivity(outgoingIntent);
+            finish();
             return true;
         }
 
@@ -120,44 +124,53 @@ public class NavigatorActivity extends AppCompatActivity
     {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        Intent outgoingIntent = new Intent(this, DetailableListActivity.class);
         String outgoingTitle = "List";
+        Intent outgoingIntent = new Intent(this, DetailableListActivity.class);
+        DataSourceManager dm = DataSourceManager.getInstance(this);
+        User currentUser = dm.getCurrentUser();
         ArrayList<Detailed> detaileds = new ArrayList<>();
-        DataSource dataSource = DataSourceManager.getInstance().getLocalDataSource();
-        final Task[] allTasks = dataSource.getTasks();
-        final Bid[] allBids = dataSource.getBids();
 
-        User currentUser = DataSourceManager.getInstance().getCurrentUser();
+        Task[] allTasks = dm.getAllTasks();
+        Bid[] allBids = dm.getAllBids();
+
 
         if (id == R.id.all_tasks)
         {
             Log.i("NAVBAR: ", "All Tasks Selected");
             outgoingTitle = "All Tasks";
-            detaileds.addAll(Arrays.asList(allTasks));
+            if (allTasks != null)
+            {
+                detaileds.addAll(Arrays.asList(allTasks));
+            }
         }
         else if (id == R.id.my_tasks)
         {
             Log.i("NAVBAR: ", "My Tasks Selected");
             outgoingTitle = "My Tasks";
-            for (Task task : allTasks)
+            if (allTasks != null)
             {
-                if (task.getRequesterUsername().equals(currentUser.getUsername()))
+                for (Task task : allTasks)
                 {
-                    detaileds.add(task);
+                    if (task.getRequesterUsername().equals(currentUser.getUsername()))
+                    {
+                        detaileds.add(task);
+                    }
                 }
             }
-
         }
         else if (id == R.id.assigned_tasks)
         {
             Log.i("NAVBAR: ", "Assigned Tasks Selected");
             outgoingTitle = "Assigned Tasks";
-            for (Task task : allTasks)
+            if (allTasks != null)
             {
-                if (task.getProviderUsername() != null && task.getProviderUsername()
-                        .equals(currentUser.getUsername()))
+                for (Task task : allTasks)
                 {
-                    detaileds.add(task);
+                    if (task.getProviderUsername() != null && task.getProviderUsername()
+                            .equals(currentUser.getUsername()))
+                    {
+                        detaileds.add(task);
+                    }
                 }
             }
         }
@@ -171,11 +184,14 @@ public class NavigatorActivity extends AppCompatActivity
         {
             Log.i("NAVBAR: ", "My Bids Selected");
             outgoingTitle = "My Bids";
-            for (Bid bid : allBids)
+            if (allBids != null)
             {
-                if (bid.getProviderUsername().equals(currentUser.getUsername()))
+                for (Bid bid : allBids)
                 {
-                    detaileds.add(bid);
+                    if (bid.getProviderUsername().equals(currentUser.getUsername()))
+                    {
+                        detaileds.add(bid);
+                    }
                 }
             }
         }
