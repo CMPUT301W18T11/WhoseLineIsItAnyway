@@ -9,7 +9,6 @@ import com.searchly.jestdroid.JestDroidClient;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import io.searchbox.client.JestResult;
@@ -24,7 +23,7 @@ import io.searchbox.core.SearchResult;
  * Elastic Search controller for handling Task queries
  *
  * @author Mark Griffith
- * @version 1.0
+ * @version 1.1
  */
 public class ElasticsearchTaskController
 {
@@ -63,7 +62,7 @@ public class ElasticsearchTaskController
                     if (result.isSucceeded())
                     {
                         Log.i("Elasticsearch Success", "updated task: " +
-                                task[0].getElasticId());
+                                task.getElasticId());
                         return Boolean.TRUE;
                     }
                     else

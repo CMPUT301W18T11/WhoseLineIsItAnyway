@@ -23,7 +23,7 @@ import io.searchbox.core.SearchResult;
  * Elastic Search controller for handling Bid queries
  *
  * @author Mark Griffith
- * @version 1.0
+ * @version 1.1
  */
 public class ElasticsearchBidController
 {
@@ -32,51 +32,79 @@ public class ElasticsearchBidController
     private static JestDroidClient client;
 
     /**
-     * Async task for adding bids to the database
+     * Async task for updating the bids in the database
      */
-    public static class AddBidsTask extends AsyncTask<Bid, Void, String>
+    public static class AddBidsTask extends AsyncTask<Bid, Void, Boolean>
     {
         /**
-         * Adds the given list of bids to the database and sets their elastic id's
+         * It first attempts to update the bid in the database.
+         * If the bod isn't found, it adds the bid to the database and sets its elastic id
          *
-         * @param bids Bids to add to the database
-         * @return assigned elastic id on success else null
+         * @param bids Bids to update/add to the database
+         * @return Boolean.true if bid was updated added, else Boolean.false
          */
         @Override
-        protected String doInBackground(Bid... bids)
+        protected Boolean doInBackground(Bid... bids)
         {
             verifyConfig();
 
             for (Bid bid: bids)
             {
-                Index idx = new Index.Builder(bid).index(idxStr).type(typeStr).build();
+
+                Index index = new Index.Builder(bid)
+                        .index(idxStr)
+                        .type(typeStr)
+                        .id(bid.getElasticId())
+                        .build();
 
                 try
                 {
-                    DocumentResult result = client.execute(idx);
+                    DocumentResult result = client.execute(index);
                     if (result.isSucceeded())
                     {
-                        // Elasticsearch was successful
-                        Log.i("Elasticsearch Success", "Setting bid id");
-                        bid.setElasticId(result.getId());
-                        return result.getId();
+                        Log.i("Elasticsearch Success", "updated bid!");
+                        return Boolean.TRUE;
                     }
                     else
                     {
                         Log.i("Elasticsearch Error",
-                                "index msising or could not connect:" +
+                                "index missing or could not connect:" +
                                         Integer.toString(result.getResponseCode()));
-                        return null;
+                        Index idx = new Index.Builder(bid).index(idxStr).type(typeStr).build();
+
+                        try
+                        {
+                            result = client.execute(idx);
+                            if (result.isSucceeded())
+                            {
+                                // Elasticsearch was successful
+                                Log.i("Elasticsearch Success", "Added new bid to db!");
+                                bid.setElasticId(result.getId());
+                                return Boolean.TRUE;
+                            }
+                            else
+                            {
+                                Log.i("Elasticsearch Error",
+                                        "index missing or could not connect:" +
+                                                Integer.toString(result.getResponseCode()));
+                                return Boolean.FALSE;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            // Probably disconnected
+                            Log.i("Elasticsearch Error", "Unexpected exception: " +
+                                    e.toString());
+                        }
                     }
                 }
                 catch (Exception e)
                 {
-                    // Probably disconnected
                     Log.i("Elasticsearch Error", "Unexpected exception: " +
                             e.toString());
                 }
             }
-            return null;
+            return Boolean.FALSE;
         }
     }
 
@@ -183,6 +211,47 @@ public class ElasticsearchBidController
     }
 
     /**
+     * Async task for removing a bid in the database
+     */
+    public static class RemoveBidTask extends AsyncTask<Bid, Void, Void>
+    {
+        /**
+         * Removes the given bid from the database
+         *
+         * @param bid Bid to remove
+         * @return null
+         */
+        @Override
+        protected Void doInBackground(Bid... bid)
+        {
+            verifyConfig();
+
+            Delete delete =
+                    new Delete.Builder(bid[0].getElasticId()).index(idxStr).type(typeStr).build();
+
+            try
+            {
+                DocumentResult result = client.execute(delete);
+                if (result.isSucceeded())
+                {
+                    Log.i("Elasticsearch Success", "deleted bid");
+                }
+                else
+                {
+                    Log.i("Elasticsearch Error",
+                            "index missing or could not connect:" +
+                                    Integer.toString(result.getResponseCode()));
+                }
+            }
+            catch (Exception e)
+            {
+                Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
+            }
+            return null;
+        }
+    }
+
+    /**
      * Async task for updating a user in the database
      */
     public static class UpdateBidTask extends AsyncTask<Bid, Void, Boolean>
@@ -230,41 +299,49 @@ public class ElasticsearchBidController
     }
 
     /**
-     * Async task for removing a bid in the database
+     * Async task for adding bids to the database
      */
-    public static class RemoveBidTask extends AsyncTask<Bid, Void, Void>
+    public static class OldAddBidsTask extends AsyncTask<Bid, Void, String>
     {
         /**
-         * Removes the given bid from the database
+         * Adds the given list of bids to the database and sets their elastic id's
          *
-         * @param bid Bid to remove
-         * @return null
+         * @param bids Bids to add to the database
+         * @return assigned elastic id on success else null
          */
         @Override
-        protected Void doInBackground(Bid... bid)
+        protected String doInBackground(Bid... bids)
         {
             verifyConfig();
 
-            Delete delete =
-                    new Delete.Builder(bid[0].getElasticId()).index(idxStr).type(typeStr).build();
+            for (Bid bid: bids)
+            {
+                Index idx = new Index.Builder(bid).index(idxStr).type(typeStr).build();
 
-            try
-            {
-                DocumentResult result = client.execute(delete);
-                if (result.isSucceeded())
+                try
                 {
-                    Log.i("Elasticsearch Success", "deleted bid");
+                    DocumentResult result = client.execute(idx);
+                    if (result.isSucceeded())
+                    {
+                        // Elasticsearch was successful
+                        Log.i("Elasticsearch Success", "Setting bid id");
+                        bid.setElasticId(result.getId());
+                        return result.getId();
+                    }
+                    else
+                    {
+                        Log.i("Elasticsearch Error",
+                                "index msising or could not connect:" +
+                                        Integer.toString(result.getResponseCode()));
+                        return null;
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    Log.i("Elasticsearch Error",
-                            "index missing or could not connect:" +
-                                    Integer.toString(result.getResponseCode()));
+                    // Probably disconnected
+                    Log.i("Elasticsearch Error", "Unexpected exception: " +
+                            e.toString());
                 }
-            }
-            catch (Exception e)
-            {
-                Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
             }
             return null;
         }
