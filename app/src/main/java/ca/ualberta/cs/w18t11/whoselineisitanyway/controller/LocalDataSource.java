@@ -18,7 +18,6 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
@@ -180,7 +179,16 @@ public final class LocalDataSource implements DataSource
     {
         try
         {
-            final Collection<User> users = Arrays.asList((User[]) this.readFile(USERS_FILENAME));
+            ArrayList<User> users;
+            User[] fromFile = this.readFile(USERS_FILENAME);
+            if (fromFile == null)
+            {
+                return false;
+            }
+            else
+            {
+                users = new ArrayList<>(Arrays.asList(fromFile));
+            }
             users.remove(user);
             this.writeFile(USERS_FILENAME, users.toArray(new User[0]));
         }
@@ -211,7 +219,7 @@ public final class LocalDataSource implements DataSource
         try
         {
             ArrayList<Task> tasks;
-            Task[] fromFile = this.readFile(USERS_FILENAME);
+            Task[] fromFile = this.readFile(TASKS_FILENAME);
             if (fromFile == null)
             {
                 tasks = new ArrayList<Task>();
@@ -235,7 +243,16 @@ public final class LocalDataSource implements DataSource
     {
         try
         {
-            final Collection<Task> tasks = Arrays.asList((Task[]) this.readFile(TASKS_FILENAME));
+            ArrayList<Task> tasks;
+            Task[] fromFile = this.readFile(TASKS_FILENAME);
+            if (fromFile == null)
+            {
+                return false;
+            }
+            else
+            {
+                tasks = new ArrayList<>(Arrays.asList(fromFile));
+            }
             tasks.remove(task);
             this.writeFile(TASKS_FILENAME, tasks.toArray(new Task[0]));
         }
@@ -266,7 +283,7 @@ public final class LocalDataSource implements DataSource
         try
         {
             ArrayList<Bid> bids;
-            Bid[] fromFile = this.readFile(USERS_FILENAME);
+            Bid[] fromFile = this.readFile(BIDS_FILENAME);
             if (fromFile == null)
             {
                 bids = new ArrayList<Bid>();
@@ -290,7 +307,16 @@ public final class LocalDataSource implements DataSource
     {
         try
         {
-            final Collection<Bid> bids = Arrays.asList((Bid[]) this.readFile(BIDS_FILENAME));
+            ArrayList<Bid> bids;
+            Bid[] fromFile = this.readFile(BIDS_FILENAME);
+            if (fromFile == null)
+            {
+                return false;
+            }
+            else
+            {
+                bids = new ArrayList<>(Arrays.asList(fromFile));
+            }
             bids.remove(bid);
             this.writeFile(BIDS_FILENAME, bids.toArray(new Bid[0]));
         }
