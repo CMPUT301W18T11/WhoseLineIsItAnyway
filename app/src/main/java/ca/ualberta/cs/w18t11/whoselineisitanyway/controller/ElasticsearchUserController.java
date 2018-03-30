@@ -25,7 +25,7 @@ import io.searchbox.core.SearchResult;
  * Elastic Search controller for handling User queries
  *
  * @author Mark Griffith
- * @version 1.0
+ * @version 1.1
  */
 public class ElasticsearchUserController
 {
