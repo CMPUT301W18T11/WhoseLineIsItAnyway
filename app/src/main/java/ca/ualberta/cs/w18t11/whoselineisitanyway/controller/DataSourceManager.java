@@ -56,13 +56,12 @@ public class DataSourceManager
      */
     public User[] getAllUsers()
     {
-        if (getOfflineChanges() == true)
+        if (getOfflineChanges())
         {
             synchronizeDataSources();
         }
 
         User[] allUsers;
-
         if ((allUsers = localDataSource.getUsers()) != null)
         {
             return allUsers;
@@ -71,6 +70,35 @@ public class DataSourceManager
         if ((allUsers = remoteDataSource.getUsers()) != null)
         {
             return allUsers;
+        }
+
+        return null;
+    }
+
+    public User getUser(String username)
+    {
+        if (getOfflineChanges())
+        {
+            synchronizeDataSources();
+        }
+
+        User[] users = localDataSource.getUsers();
+        if (users != null)
+        {
+            for (User user : users)
+            {
+                if (user.getUsername().equals(username))
+                {
+                    return user;
+                }
+            }
+        }
+
+        User user;
+        user = remoteDataSource.getUserByUsername(username);
+        if (user != null)
+        {
+            return user;
         }
 
         return null;
@@ -87,15 +115,38 @@ public class DataSourceManager
     public boolean addUser(User user)
     {
         // Attempt to add user locally
-        if (localDataSource.addUser(user) == true)
+        if (localDataSource.addUser(user))
         {
-            if (remoteDataSource.addUser(user) == false)
+            if (!remoteDataSource.addUser(user))
             {
                 // Adding the user online failed. Trigger offline changes
                 setOfflineChanges(true);
             }
             return true;
         }
+        Log.i("DataSourceManager.addUser","Failed to add user" + user.getUsername());
+        return false;
+    }
+
+    /**
+     * Removes a user from the local data source.
+     * Attempts to remove the user from the database.
+     * Sets offline changes if removing from the database fails.
+     *
+     * @param user user to remove
+     * @return true if user was at least removed from the local data source, else false
+     */
+    public boolean removeUser(User user)
+    {
+        if (localDataSource.removeUser(user))
+        {
+            if (!remoteDataSource.removeUser(user))
+            {
+                setOfflineChanges(true);
+            }
+            return true;
+        }
+        Log.i("DataSourceManager.addUser","Failed to remove user" + user.getUsername());
         return false;
     }
 
@@ -143,8 +194,11 @@ public class DataSourceManager
      *
      * @return boolean representing if the synchronize was successful
      */
-    public boolean synchronizeDataSources()
+    private void synchronizeDataSources()
     {
+        Log.i("DataSourceManager",
+                "Attempting to synchronize local and remote data sources...");
+
         // TODO: Implement for Tasks and Bids
 
         // If there are offline changes, we need to synchronize the data sources
@@ -161,14 +215,13 @@ public class DataSourceManager
                         // Adding user to the database failed because connection is still bad
                         // Terminate synchronization
                         Log.i("DataSourceManager.sync", " Synchronization failed.");
-                        return false;
+                        return;
                     }
                 }
                 // Make sure to set offline changes to false after syncing
                 setOfflineChanges(false);
             }
         }
-        return true;
     }
 
     /**
@@ -192,12 +245,16 @@ public class DataSourceManager
      */
     public void setCurrentUser(String username)
     {
-        for (User user : localDataSource.getUsers())
+        User[] users = localDataSource.getUsers();
+        if (users != null)
         {
-            if (user.getUsername().equals(username))
+            for (User user : users)
             {
-                currentUser = user;
-                return;
+                if (user.getUsername().equals(username))
+                {
+                    currentUser = user;
+                    return;
+                }
             }
         }
 
@@ -212,6 +269,11 @@ public class DataSourceManager
         // TODO: Create user if they don't exist
         Log.i("DataSourceManager: ", "User not set");
     }
+
+    /**
+     * Indicate who the current user is
+     */
+    public void setCurrentUser(User user) { currentUser = user; }
 
     /**
      * @return User who the current user is
