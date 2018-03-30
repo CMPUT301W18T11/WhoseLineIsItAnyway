@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 /**
@@ -38,6 +40,9 @@ public class DataSourceManager
     private Context mContext;
 
     private static final String DB_FILENAME = "Database_Shared_Preference_File";
+    private static final String USER_CHANGES = "user_offline_changes";
+    private static final String TASK_CHANGES = "task_offline_changes";
+    private static final String BID_CHANGES = "bid_offline_changes";
 
     /**
      * Creates a DataSourceManager
@@ -56,7 +61,7 @@ public class DataSourceManager
      */
     public User[] getAllUsers()
     {
-        if (getOfflineChanges())
+        if (getOfflineUserChanges())
         {
             synchronizeDataSources();
         }
@@ -77,7 +82,7 @@ public class DataSourceManager
 
     public User getUser(String username)
     {
-        if (getOfflineChanges())
+        if (getOfflineUserChanges())
         {
             synchronizeDataSources();
         }
@@ -120,7 +125,7 @@ public class DataSourceManager
             if (!remoteDataSource.addUser(user))
             {
                 // Adding the user online failed. Trigger offline changes
-                setOfflineChanges(true);
+                setOfflineUserChanges(true);
             }
             return true;
         }
@@ -142,7 +147,7 @@ public class DataSourceManager
         {
             if (!remoteDataSource.removeUser(user))
             {
-                setOfflineChanges(true);
+                setOfflineUserChanges(true);
             }
             return true;
         }
@@ -164,32 +169,6 @@ public class DataSourceManager
     }
 
     /**
-     * Updates the database shared preference file to indicate if offline
-     * changes are present or not
-     *
-     * @param yesno true if offline changes are present, else false
-     */
-    private void setOfflineChanges(boolean yesno)
-    {
-        SharedPreferences sp = mContext.getSharedPreferences(DB_FILENAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putBoolean("offline_changes", yesno);
-        editor.apply();
-    }
-
-    /**
-     * Checks if there are offline changes triggered in the database shared
-     * preference file
-     *
-     * @return true if offline changes present, else false
-     */
-    private boolean getOfflineChanges()
-    {
-        SharedPreferences sp =  mContext.getSharedPreferences(DB_FILENAME, Context.MODE_PRIVATE);
-        return sp.getBoolean("offline_changes", false);
-    }
-
-    /**
      * Synchronize and changes made to the local data source with the remote.
      *
      * @return boolean representing if the synchronize was successful
@@ -199,45 +178,170 @@ public class DataSourceManager
         Log.i("DataSourceManager",
                 "Attempting to synchronize local and remote data sources...");
 
-        // TODO: Implement for Tasks and Bids
-
         // If there are offline changes, we need to synchronize the data sources
-        if (getOfflineChanges() == true)
+        if (getOfflineUserChanges())
         {
             // Synchronize the users
-            User[] localUsers;
-            if ((localUsers = localDataSource.getUsers()) != null)
+            if (synchronizeUserChanges())
             {
-                for (User user : localUsers)
-                {
-                    if (!remoteDataSource.addUser(user))
-                    {
-                        // Adding user to the database failed because connection is still bad
-                        // Terminate synchronization
-                        Log.i("DataSourceManager.sync", " Synchronization failed.");
-                        return;
-                    }
-                }
-                // Make sure to set offline changes to false after syncing
-                setOfflineChanges(false);
+                setOfflineUserChanges(false);
+            }
+        }
+
+        // Check for changes to the tasks
+        if (getOfflineTaskChanges())
+        {
+            // Synchronize the users
+            if (synchronizeTaskChanges())
+            {
+                setOfflineTaskChanges(false);
+            }
+        }
+
+        // Check for changes to the bids
+        if (getOfflineBidChanges())
+        {
+            // Synchronize the users
+            if (synchronizeBidChanges())
+            {
+                setOfflineBidChanges(false);
             }
         }
     }
 
-    /**
-     * @return DataSource the  copy of the local data source
-     */
-    public DataSource getLocalDataSource()
+    private boolean synchronizeUserChanges()
     {
-        return localDataSource;
+        User[] localUsers;
+        if ((localUsers = localDataSource.getUsers()) != null)
+        {
+            for (User user : localUsers)
+            {
+                if (!remoteDataSource.addUser(user))
+                {
+                    // Adding user to the database failed because connection is still bad
+                    // Terminate synchronization
+                    Log.i("DataSourceManager.syncUsers", " Synchronization failed.");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean synchronizeTaskChanges()
+    {
+        Task[] localTasks;
+        if ((localTasks = localDataSource.getTasks()) != null)
+        {
+            for (Task task: localTasks)
+            {
+                if (!remoteDataSource.addTask(task))
+                {
+                    // Adding user to the database failed because connection is still bad
+                    // Terminate synchronization
+                    Log.i("DataSourceManager.syncTasks", " Synchronization failed.");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean synchronizeBidChanges()
+    {
+        Bid[] localBids;
+        if ((localBids = localDataSource.getBids()) != null)
+        {
+            for (Bid bid : localBids)
+            {
+                if (!remoteDataSource.addBid(bid))
+                {
+                    // Adding user to the database failed because connection is still bad
+                    // Terminate synchronization
+                    Log.i("DataSourceManager.syncUsers", " Synchronization failed.");
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
-     * @return DataSource the  copy of the remote data source
+     * Updates the database shared preference file to indicate if offline
+     * changes are present for Users
+     *
+     * @param yesno true if offline changes are present for Users, else false
      */
-    public DataSource getRemoteDataSource()
+    private void setOfflineUserChanges(boolean yesno)
     {
-        return remoteDataSource;
+        SharedPreferences sp = mContext.getSharedPreferences(DB_FILENAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(USER_CHANGES, yesno);
+        editor.apply();
+    }
+
+    /**
+     * Updates the database shared preference file to indicate if offline
+     * changes are present for Tasks
+     *
+     * @param yesno true if offline changes are present for Tasks, else false
+     */
+    private void setOfflineTaskChanges(boolean yesno)
+    {
+        SharedPreferences sp = mContext.getSharedPreferences(DB_FILENAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(TASK_CHANGES, yesno);
+        editor.apply();
+    }
+
+    /**
+     * Updates the database shared preference file to indicate if offline
+     * changes are present for Bids
+     *
+     * @param yesno true if offline changes are present for Bids, else false
+     */
+    private void setOfflineBidChanges(boolean yesno)
+    {
+        SharedPreferences sp = mContext.getSharedPreferences(DB_FILENAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(BID_CHANGES, yesno);
+        editor.apply();
+    }
+
+    /**
+     * Checks if there are offline changes to the Users triggered in the database shared
+     * preference file
+     *
+     * @return true if offline changes present for Users, else false
+     */
+    private boolean getOfflineUserChanges()
+    {
+        SharedPreferences sp =  mContext.getSharedPreferences(DB_FILENAME, Context.MODE_PRIVATE);
+        return sp.getBoolean(USER_CHANGES, false);
+    }
+
+    /**
+     * Checks if there are offline changes to the Tasks triggered in the database shared
+     * preference file
+     *
+     * @return true if offline changes present for Tasks, else false
+     */
+    private boolean getOfflineTaskChanges()
+    {
+        SharedPreferences sp =  mContext.getSharedPreferences(DB_FILENAME, Context.MODE_PRIVATE);
+        return sp.getBoolean(TASK_CHANGES, false);
+    }
+
+    /**
+     * Checks if there are offline changes to the Bids triggered in the database shared
+     * preference file
+     *
+     * @return true if offline changes present for Bid, else false
+     */
+    private boolean getOfflineBidChanges()
+    {
+        SharedPreferences sp =  mContext.getSharedPreferences(DB_FILENAME, Context.MODE_PRIVATE);
+        return sp.getBoolean(BID_CHANGES, false);
     }
 
     /**
@@ -281,5 +385,21 @@ public class DataSourceManager
     public User getCurrentUser()
     {
         return currentUser;
+    }
+
+    /**
+     * @return DataSource the  copy of the local data source
+     */
+    public DataSource getLocalDataSource()
+    {
+        return localDataSource;
+    }
+
+    /**
+     * @return DataSource the  copy of the remote data source
+     */
+    public DataSource getRemoteDataSource()
+    {
+        return remoteDataSource;
     }
 }
