@@ -34,65 +34,16 @@ public class ElasticsearchUserController
     private static JestDroidClient client;
 
     /**
-     * Async task for adding users to the database
-     */
-    public static class OldAddUsersTask extends AsyncTask<User, Void, String>
-    {
-        /**
-         * Adds the given list of Users to the database and sets their elastic id's
-         *
-         * @param users Users to add to the database
-         * @return assigned elastic id on success else null
-         */
-        @Override
-        protected String doInBackground(User... users)
-        {
-            verifyConfig();
-
-            for (User user : users)
-            {
-                Index idx = new Index.Builder(user).index(idxStr).type(typeStr).build();
-
-                try
-                {
-                    DocumentResult result = client.execute(idx);
-                    if (result.isSucceeded())
-                    {
-                        // Elasticsearch was successful
-                        Log.i("Elasticsearch Success", "Setting user id");
-                        user.setElasticId(result.getId());
-                        return result.getId();
-                    }
-                    else
-                    {
-                        Log.i("Elasticsearch Error",
-                                "index msising or could not connect:" +
-                                        Integer.toString(result.getResponseCode()));
-                        return null;
-                    }
-                }
-                catch (Exception e)
-                {
-                    // Probably disconnected
-                    Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
-                }
-            }
-            return null;
-        }
-    }
-
-    /**
-     * Async task for adding users to the database
-     * It first attempts to update the user. If the user is not found in the database, it adds
-     * the new user to the database
+     * Async task for updating the users in the database
      */
     public static class AddUsersTask extends AsyncTask<User, Void, Boolean>
     {
         /**
-         * Adds the given list of Users to the database and sets their elastic id's
+         * It first attempts to update the user in the database.
+         * If the user isn't found, it adds the user to the database and sets its elastic id
          *
-         * @param users Users to add to the database
-         * @return assigned elastic id on success else null
+         * @param users Users to update/add to the database
+         * @return Boolean.true if user was updated added, else Boolean.false
          */
         @Override
         protected Boolean doInBackground(User... users)
@@ -102,8 +53,11 @@ public class ElasticsearchUserController
             for (User user : users)
             {
                 // First, we try to see if it already exists in the database
-                Index index = new Index.Builder(user).index(idxStr).type(typeStr)
-                        .id(user.getElasticId()).build();
+                Index index = new Index.Builder(user)
+                        .index(idxStr)
+                        .type(typeStr)
+                        .id(user.getElasticId())
+                        .build();
 
                 try
                 {
@@ -136,7 +90,7 @@ public class ElasticsearchUserController
                             else
                             {
                                 Log.i("Elasticsearch Error",
-                                        "index msising or could not connect:" +
+                                        "index missing or could not connect:" +
                                                 Integer.toString(result.getResponseCode()));
                                 return Boolean.FALSE;
                             }
@@ -263,6 +217,48 @@ public class ElasticsearchUserController
     }
 
     /**
+     * Async task for removing a user in the database
+     */
+    public static class RemoveUserTask extends AsyncTask<User, Void, Void>
+    {
+        /**
+         * Removes the given user from the database
+         *
+         * @param user User to remove
+         * @return null
+         */
+        @Override
+        protected Void doInBackground(User... user)
+        {
+            verifyConfig();
+
+            Delete delete =
+                    new Delete.Builder(user[0].getElasticId()).index(idxStr).type(typeStr).build();
+
+            try
+            {
+                DocumentResult result = client.execute(delete);
+                if (result.isSucceeded())
+                {
+                    Log.i("Elasticsearch Success", "deleted user: " +
+                            user[0].getUsername());
+                }
+                else
+                {
+                    Log.i("Elasticsearch Error",
+                            "index missing or could not connect:" +
+                                    Integer.toString(result.getResponseCode()));
+                }
+            }
+            catch (Exception e)
+            {
+                Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
+            }
+            return null;
+        }
+    }
+
+    /**
      * Async task for updating a user in the database
      */
     public static class UpdateUserTask extends AsyncTask<User, Void, Boolean>
@@ -308,42 +304,48 @@ public class ElasticsearchUserController
     }
 
     /**
-     * Async task for removing a user in the database
+     * Async task for adding users to the database
      */
-    public static class RemoveUserTask extends AsyncTask<User, Void, Void>
+    public static class OldAddUsersTask extends AsyncTask<User, Void, String>
     {
         /**
-         * Removes the given user from the database
+         * Adds the given list of Users to the database and sets their elastic id's
          *
-         * @param user User to remove
-         * @return null
+         * @param users Users to add to the database
+         * @return assigned elastic id on success else null
          */
         @Override
-        protected Void doInBackground(User... user)
+        protected String doInBackground(User... users)
         {
             verifyConfig();
 
-            Delete delete =
-                    new Delete.Builder(user[0].getElasticId()).index(idxStr).type(typeStr).build();
+            for (User user : users)
+            {
+                Index idx = new Index.Builder(user).index(idxStr).type(typeStr).build();
 
-            try
-            {
-                DocumentResult result = client.execute(delete);
-                if (result.isSucceeded())
+                try
                 {
-                    Log.i("Elasticsearch Success", "deleted user: " +
-                            user[0].getUsername());
+                    DocumentResult result = client.execute(idx);
+                    if (result.isSucceeded())
+                    {
+                        // Elasticsearch was successful
+                        Log.i("Elasticsearch Success", "Setting user id");
+                        user.setElasticId(result.getId());
+                        return result.getId();
+                    }
+                    else
+                    {
+                        Log.i("Elasticsearch Error",
+                                "index msising or could not connect:" +
+                                        Integer.toString(result.getResponseCode()));
+                        return null;
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    Log.i("Elasticsearch Error",
-                            "index missing or could not connect:" +
-                                    Integer.toString(result.getResponseCode()));
+                    // Probably disconnected
+                    Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
                 }
-            }
-            catch (Exception e)
-            {
-                Log.i("Elasticsearch Error", "Unexpected exception: " + e.toString());
             }
             return null;
         }
