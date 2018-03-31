@@ -452,11 +452,11 @@ public final class Task implements Detailed, Elastic, Serializable
     public final <T extends DetailActivity> void showDetails(
             @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
     {
-        final ArrayList<Detail> details = (ArrayList<Detail>) Arrays
-                .asList(new Detail("title", this.getTitle(), null),
+        final ArrayList<Detail> details = new ArrayList<>(Arrays.asList(
+                        new Detail("title", this.getTitle(), null),
                         new Detail("description", this.getDescription(), null),
                         new Detail("status", this.getStatus().toString(), null),
-                        new Detail("requesterUsername", this.getRequesterUsername(), null));
+                        new Detail("requesterUsername", this.getRequesterUsername(), null)));
 
         if (this.getProviderUsername() != null)
         {
