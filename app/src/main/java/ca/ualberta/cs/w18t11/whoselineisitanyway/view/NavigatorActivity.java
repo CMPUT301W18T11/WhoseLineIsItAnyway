@@ -172,7 +172,7 @@ public class NavigatorActivity extends AppCompatActivity
             // TODO Handle
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
         outgoingIntent.putExtra(DetailableListActivity.DATA_TITLE, outgoingTitle);
