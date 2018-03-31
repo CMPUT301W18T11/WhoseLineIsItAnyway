@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "ca.ualberta.cs.w18t11.whoselineisitanyway"
-        minSdkVersion 26
+        minSdkVersion 22
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"

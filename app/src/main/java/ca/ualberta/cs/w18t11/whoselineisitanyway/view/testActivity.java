@@ -33,18 +33,17 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidatorRe
  *
  * @author Lucas Thalen
  */
-public class testActivity extends AppCompatActivity
+public class testActivity extends AppCompatActivity implements SetMapLocationDialog.MapDialogReturnListener, UserRegisterDialog.diagUserRegistrationListener
 {
     private LatLng location;
     private boolean res = false;
     private User resultUser;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
 
+        setContentView(R.layout.activity_test);
+        super.onCreate(savedInstanceState);
         Button btnTest = (Button) findViewById(R.id.btnTest);
         Button btnMapSetDialog = (Button) findViewById(R.id.btn_mapdiag);
         Button button = (Button) findViewById(R.id.debug_Button);
@@ -52,7 +51,10 @@ public class testActivity extends AppCompatActivity
         {
             @Override
             public void onClick(View view)
+
             {
+                UserRegisterDialog usrDiag = new UserRegisterDialog();
+                usrDiag.showDialog(testActivity.this, "test");
             }
         });
         btnMapSetDialog.setOnClickListener(new View.OnClickListener()
@@ -60,7 +62,7 @@ public class testActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-
+                dothings();
             }
         });
         button.setOnClickListener(new View.OnClickListener() {
@@ -72,5 +74,25 @@ public class testActivity extends AppCompatActivity
 
     }
 
+    private void dothings() {
+        SetMapLocationDialog mapDiag = new SetMapLocationDialog(this);
+        mapDiag.showDialog();
+    }
 
+    @Override
+    public void MapSetDialog_PosResult(LatLng result) {
+        if (result != null) {
+            Toast.makeText(this, String.valueOf(result.latitude) + " " + String.valueOf(result.longitude), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void RegisterDiag_PosResultListener(User result) {
+
+    }
+
+    @Override
+    public void RegisterDiag_NegResultListener() {
+
+    }
 }

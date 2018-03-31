@@ -7,6 +7,7 @@ import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -72,7 +73,8 @@ public class UserRegisterDialog {
         diagBuilder.setView(diagView);
 
         diag = diagBuilder.create();
-        diag.setContentView(diagView);
+        //diag.requestWindowFeature(Window.set);
+        //diag.setContentView(diagView);
         // End dialog making stuff
 
         final TextView txtUsername = (TextView) diagView.findViewById(R.id.txtUsername);
