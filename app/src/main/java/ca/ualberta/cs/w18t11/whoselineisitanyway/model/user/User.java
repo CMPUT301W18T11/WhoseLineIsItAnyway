@@ -221,8 +221,6 @@ public final class User implements Detailed, Elastic, Serializable
 
         final User user = (User) object;
 
-        return new EqualsBuilder().append(this.getUsername(), user.getUsername())
-                .append(this.getEmailAddress(), user.getEmailAddress())
-                .append(this.getPhoneNumber(), user.getPhoneNumber()).isEquals();
+        return this.getUsername().equals(user.getUsername());
     }
 }
