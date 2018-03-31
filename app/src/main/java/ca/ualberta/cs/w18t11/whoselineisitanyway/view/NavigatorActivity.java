@@ -222,6 +222,10 @@ public class NavigatorActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Build a list containing all tasks.
+     * @return ArrayList of the details representing those tasks.
+     */
     private ArrayList<Detailed> buildAllTasksList()
     {
         // TODO: Extract filtering to the DataSourceManager
@@ -229,6 +233,10 @@ public class NavigatorActivity extends AppCompatActivity
         return new ArrayList<Detailed>(Arrays.asList(allTasks));
     }
 
+    /**
+     * Build a list of all tasks requested by the current user.
+     * @return ArrayList of the details representing those tasks.
+     */
     private ArrayList<Detailed> buildMyTasksList()
     {
         // TODO: Extract filtering to the DataSourceManager
@@ -250,6 +258,10 @@ public class NavigatorActivity extends AppCompatActivity
         return detailedArrayList;
     }
 
+    /**
+     * Build a list of all tasks assigned to the current user.
+     * @return ArrayList of the details representing those tasks.
+     */
     private ArrayList<Detailed> buildAssignedTasksList()
     {
         // TODO: Extract filtering to the DataSourceManager
@@ -272,20 +284,29 @@ public class NavigatorActivity extends AppCompatActivity
         return detailedArrayList;
     }
 
+    /**
+     * Build a list of all tasks nearby the current user.
+     * @return ArrayList of the details representing those tasks.
+     */
     private ArrayList<Detailed> buildNearbyTasksList()
     {
         // TODO: Extract filtering to the DataSourceManager
         ArrayList<Detailed> detailedArrayList = new ArrayList<>();
         Detailed[] allTasks = DataSourceManager.getInstance(this).getAllTasks();
 
-        // TODO: Add tasks based on distance
+        // TODO: Add tasks based on distance (and status?)
 
         return detailedArrayList;
     }
 
+    /**
+     * Build a list of all bids posted by the current user.
+     * @return ArrayList of the details representing those tasks.
+     */
     private ArrayList<Detailed> buildMyBidsList()
     {
         // TODO: Extract filtering to the DataSourceManager
+        // TODO: Check if we should only display bids on tasks that are currently unassigned?
         ArrayList<Detailed> detailedArrayList = new ArrayList<>();
         Bid[] allBids = DataSourceManager.getInstance(this).getAllBids();
         User currentUser = DataSourceManager.getInstance(this).getCurrentUser();
