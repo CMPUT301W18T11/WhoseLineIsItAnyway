@@ -2,11 +2,17 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.controller;
 
 import android.support.annotation.NonNull;
 
+import org.apache.commons.lang3.ObjectUtils;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 /**
@@ -38,6 +44,7 @@ public final class MockDataSource implements DataSource
      */
     private final Collection<Bid> bids;
 
+
     /**
      * @param users The users initially present in the data source.
      * @param tasks The tasks initially present in the data source.
@@ -52,43 +59,55 @@ public final class MockDataSource implements DataSource
         this.users = Arrays.asList(users);
         this.tasks = Arrays.asList(tasks);
         this.bids = Arrays.asList(bids);
-//        // Build a list of users
-//        User currentUser = new User(new EmailAddress("bob", "gmail.com"),
-//                new PhoneNumber(0, 123, 456, 7890), "bob");
-//        User providerUserA = new User(new EmailAddress("alice", "gmail.com"),
-//                new PhoneNumber(0, 123, 456, 7890), "alice");
-//        User providerUserB = new User(new EmailAddress("eve", "gmail.com"),
-//                new PhoneNumber(0, 123, 456, 7890), "eve");
-//
-//        allUsers.add(currentUser);
-//        allUsers.add(providerUserA);
-//        allUsers.add(providerUserB);
-//
-//        // Build a list of bids
-//        Bid bid1a = new Bid(providerUserA.getUsername(), "task1ID", new BigDecimal(5));
-//        Bid bid1b = new Bid(providerUserB.getUsername(), "task1ID", new BigDecimal(6));
-//        Bid bid2b = new Bid(providerUserB.getUsername(), "task2ID", new BigDecimal(500));
-//        Bid bid2c = new Bid(currentUser.getUsername(), "task2ID", new BigDecimal(750));
-//        Bid bid3b = new Bid(providerUserB.getUsername(), "task3ID", new BigDecimal(5));
-//        Bid bid3c = new Bid(currentUser.getUsername(), "task3ID", new BigDecimal(7));
-//
-//        allBids.add(bid1a);
-//        allBids.add(bid1b);
-//        allBids.add(bid2b);
-//        allBids.add(bid2c);
-//        allBids.add(bid3b);
-//        allBids.add(bid3c);
-//
-//        Bid[] mockBidList = {bid3b, bid3c};
-//
-//        //Build a list of tasks
-//        Task task1 = new Task("id1", currentUser.getUsername(), "Demo Task 1", "A really good task");
-//        Task task2 = new Task("id2", providerUserA.getUsername(), "Demo Task 2", "A really great task");
-//        Task task3 = new Task("id3", providerUserA.getUsername(), currentUser.getUsername(), mockBidList, "Demo Task 3", "A alright task", Boolean.FALSE);
-//
-//        allTasks.add(task1);
-//        allTasks.add(task2);
-//        allTasks.add(task3);
+    }
+
+    /**
+     * @see User
+     * @see Task
+     * @see Bid
+     */
+    public MockDataSource()
+    {
+        this.users = new ArrayList<>();
+        this.tasks = new ArrayList<>();
+        this.bids = new ArrayList<>();
+        // Build a list of users
+        User currentUser = new User("bob", new EmailAddress("bob", "gmail.com"),
+                new PhoneNumber(0, 123, 456, 7890));
+        User providerUserA = new User("alice", new EmailAddress("alice", "gmail.com"),
+                new PhoneNumber(0, 123, 456, 7890));
+        User providerUserB = new User("eve", new EmailAddress("eve", "gmail.com"),
+                new PhoneNumber(0, 123, 456, 7890));
+
+        this.users.add(currentUser);
+        this.users.add(providerUserA);
+        this.users.add(providerUserB);
+
+        // Build a list of bids
+        Bid bid1a = new Bid(providerUserA.getUsername(), "task1ID", new BigDecimal(5));
+        Bid bid1b = new Bid(providerUserB.getUsername(), "task1ID", new BigDecimal(6));
+        Bid bid2b = new Bid(providerUserB.getUsername(), "task2ID", new BigDecimal(500));
+        Bid bid2c = new Bid(currentUser.getUsername(), "task2ID", new BigDecimal(750));
+        //Bid bid3b = new Bid(providerUserB.getUsername(), "task3ID", new BigDecimal(5));
+        //Bid bid3c = new Bid(currentUser.getUsername(), "task3ID", new BigDecimal(7));
+
+        this.bids.add(bid1a);
+        this.bids.add(bid1b);
+        this.bids.add(bid2b);
+        this.bids.add(bid2c);
+        //this.bids.add(bid3b);
+        //this.bids.add(bid3c);
+
+        //Bid[] mockBidList = {bid3b, bid3c};
+
+        //Build a list of tasks
+        Task task1 = new Task("id1", currentUser.getUsername(), "Demo Task 1", "A really good task");
+        Task task2 = new Task("id2", providerUserA.getUsername(), "Demo Task 2", "A really great task");
+        //Task task3 = new Task("id3", providerUserA.getUsername(), currentUser.getUsername(), mockBidList, "Demo Task 3", "A alright task", Boolean.FALSE);
+
+        this.tasks.add(task1);
+        this.tasks.add(task2);
+        //this.tasks.add(task3);
     }
 
     /**
@@ -208,14 +227,26 @@ public final class MockDataSource implements DataSource
     @Override
     public User getUserById(String elasticId)
     {
-        // TODO implement
+        for(User user: users)
+        {
+            if(user.getElasticId() != null && user.getElasticId().equals(elasticId))
+            {
+                return user;
+            }
+        }
         return null;
     }
 
     @Override
     public User getUserByUsername(String username)
     {
-        // TODO implement
+        for(User user: users)
+        {
+            if(user.getUsername().equals(username))
+            {
+                return user;
+            }
+        }
         return null;
     }
 }
