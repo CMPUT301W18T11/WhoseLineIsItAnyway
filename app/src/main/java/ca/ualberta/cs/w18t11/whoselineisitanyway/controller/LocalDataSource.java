@@ -33,23 +33,6 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 final class LocalDataSource implements DataSource
 {
     /**
-     * The file types.
-     */
-    private enum Filename
-    {
-        USERS,
-        TASKS,
-        BIDS;
-
-        @NonNull
-        @Override
-        public final String toString()
-        {
-            return this.name() + ".data";
-        }
-    }
-
-    /**
      * The JSON converter.
      *
      * @see Gson
@@ -478,5 +461,22 @@ final class LocalDataSource implements DataSource
     public final boolean removeBid(@NonNull final Bid bid)
     {
         return this.remove(Filename.BIDS, bid);
+    }
+
+    /**
+     * The file types.
+     */
+    private enum Filename
+    {
+        USERS,
+        TASKS,
+        BIDS;
+
+        @NonNull
+        @Override
+        public final String toString()
+        {
+            return this.name() + ".data";
+        }
     }
 }

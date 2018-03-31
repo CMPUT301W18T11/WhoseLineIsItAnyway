@@ -5,8 +5,12 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,79 +30,6 @@ public final class DataSourceManager implements DataSource
      * The shared string preferences key corresponding to the current username.
      */
     private static final String CURRENT_USERNAME_KEY = "CURRENT_USERNAME";
-
-    /**
-     * Represents two lists consisting of items unique to each array, respectively.
-     *
-     * @param <T> The expected type of item
-     */
-    private static final class ArrayDiff<T>
-    {
-        /**
-         * The items unique to the first array.
-         *
-         * @see T
-         */
-        private final ArrayList<T> firstItems;
-
-        /**
-         * The items unique to the second array.
-         *
-         * @see T
-         */
-        private final ArrayList<T> secondItems;
-
-        /**
-         * @param firstArray  The first array.
-         * @param secondArray The second array.
-         * @see T
-         */
-        private ArrayDiff(@Nullable final T[] firstArray, @Nullable final T[] secondArray)
-        {
-            this.firstItems = new ArrayList<>();
-            this.secondItems = new ArrayList<>();
-
-            if (secondArray != null)
-            {
-                this.secondItems.addAll(Arrays.asList(secondArray));
-            }
-
-            if (firstArray != null)
-            {
-                for (T firstItem : firstArray)
-                {
-                    if (this.secondItems.contains(firstItem))
-                    {
-                        this.secondItems.remove(firstItem);
-                    }
-                    else
-                    {
-                        this.firstItems.add(firstItem);
-                    }
-                }
-            }
-        }
-
-        /**
-         * @return The items unique to the first array.
-         *
-         * @see T
-         */
-        private ArrayList<T> getFirstItems()
-        {
-            return this.firstItems;
-        }
-
-        /**
-         * @return The items unique to the second array.
-         *
-         * @see T
-         */
-        private ArrayList<T> getSecondItems()
-        {
-            return this.secondItems;
-        }
-    }
 
     /**
      * The accumulator for assigning unique identifiers to instances of the class.
@@ -498,5 +429,83 @@ public final class DataSourceManager implements DataSource
         final boolean remoteResult = this.remoteDataSource.removeBid(bid);
 
         return localResult && remoteResult;
+    }
+
+    /**
+     * Represents two lists consisting of items unique to each array, respectively.
+     *
+     * @param <T> The expected type of item
+     */
+    private static final class ArrayDiff<T>
+    {
+        /**
+         * The items unique to the first array.
+         *
+         * @see ImmutableCollection
+         * @see T
+         */
+        private final ImmutableCollection<T> firstItems;
+
+        /**
+         * The items unique to the second array.
+         *
+         * @see ImmutableCollection
+         * @see T
+         */
+        private final ImmutableCollection<T> secondItems;
+
+        /**
+         * @param firstArray  The first array.
+         * @param secondArray The second array.
+         * @see T
+         */
+        ArrayDiff(@Nullable final T[] firstArray, @Nullable final T[] secondArray)
+        {
+            final Collection<T> firstCollection = new ArrayList<>();
+            final Collection<T> secondCollection = new ArrayList<>();
+
+            if (secondArray != null)
+            {
+                secondCollection.addAll(Arrays.asList(secondArray));
+            }
+
+            if (firstArray != null)
+            {
+                for (T firstItem : firstArray)
+                {
+                    if (secondCollection.contains(firstItem))
+                    {
+                        secondCollection.remove(firstItem);
+                    }
+                    else
+                    {
+                        firstCollection.add(firstItem);
+                    }
+                }
+            }
+
+            this.firstItems = new ImmutableList.Builder<T>().addAll(firstCollection).build();
+            this.secondItems = new ImmutableList.Builder<T>().addAll(secondCollection).build();
+        }
+
+        /**
+         * @return The items unique to the first array.
+         * @see ImmutableCollection
+         * @see T
+         */
+        ImmutableCollection<T> getFirstItems()
+        {
+            return this.firstItems;
+        }
+
+        /**
+         * @return The items unique to the second array.
+         * @see ImmutableCollection
+         * @see T
+         */
+        ImmutableCollection<T> getSecondItems()
+        {
+            return this.secondItems;
+        }
     }
 }
