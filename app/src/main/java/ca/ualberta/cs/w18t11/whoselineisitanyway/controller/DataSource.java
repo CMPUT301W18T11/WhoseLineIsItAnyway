@@ -3,8 +3,6 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.controller;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.concurrent.ExecutionException;
-
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
