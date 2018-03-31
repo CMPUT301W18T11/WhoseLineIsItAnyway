@@ -1,6 +1,7 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.controller;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -21,10 +22,14 @@ public class RemoteDataSource implements DataSource
     /**
      * Constructor
      */
-    public RemoteDataSource() {}
+    public RemoteDataSource()
+    {
+        // Do nothing here.
+    }
 
     /**
      * Gets a user from the database by their elastic id
+     *
      * @param elasticId User's elasticId
      * @return User if found. null if not found
      */
@@ -51,6 +56,7 @@ public class RemoteDataSource implements DataSource
 
     /**
      * Gets a user from the database
+     *
      * @param username User's username
      * @return User if found. null if not found
      */
@@ -89,6 +95,7 @@ public class RemoteDataSource implements DataSource
 
     /**
      * Gets all the users from the database if connected
+     *
      * @return Array of Users
      */
     @NonNull
@@ -127,13 +134,23 @@ public class RemoteDataSource implements DataSource
         return null;
     }
 
+    @Nullable
+    @Override
+    public User getUser(@NonNull final String username) throws IllegalArgumentException
+    {
+        // TODO implement
+        return null;
+    }
+
     /**
      * Adds a user to the database
+     *
      * @param user The user to add
      * @return true if user was successfully added to the database
      */
     @Override
-    public boolean addUser(@NonNull User user) {
+    public boolean addUser(@NonNull User user)
+    {
         ElasticsearchUserController.AddUsersTask addUserTask =
                 new ElasticsearchUserController.AddUsersTask();
         addUserTask.execute(user);
@@ -158,11 +175,13 @@ public class RemoteDataSource implements DataSource
 
     /**
      * Removes a user from the database
+     *
      * @param user The user to remove.
      * @return
      */
     @Override
-    public boolean removeUser(@NonNull User user) {
+    public boolean removeUser(@NonNull User user)
+    {
         ElasticsearchUserController.RemoveUserTask removeUserTask =
                 new ElasticsearchUserController.RemoveUserTask();
         removeUserTask.execute(user);
@@ -185,6 +204,7 @@ public class RemoteDataSource implements DataSource
 
     /**
      * Gets all the tasks from the database if connected
+     *
      * @return Array of Tasks
      */
     @NonNull
@@ -223,13 +243,23 @@ public class RemoteDataSource implements DataSource
         return null;
     }
 
+    @Nullable
+    @Override
+    public Task getTask(@NonNull final String requesterUsername, @NonNull final String title)
+            throws IllegalArgumentException
+    {
+        return null;
+    }
+
     /**
      * Adds a task to the database
+     *
      * @param task The task to add
      * @return true if task was successfully added to the database
      */
     @Override
-    public boolean addTask(@NonNull Task task) {
+    public boolean addTask(@NonNull Task task)
+    {
         ElasticsearchTaskController.AddTasksTask addTaskTask =
                 new ElasticsearchTaskController.AddTasksTask();
         addTaskTask.execute(task);
@@ -253,12 +283,15 @@ public class RemoteDataSource implements DataSource
     }
 
     @Override
-    public boolean removeTask(@NonNull Task task) {
+    public boolean removeTask(@NonNull Task task)
+    {
+        // TODO implement
         return false;
     }
 
     /**
      * Gets all the bids from the database if connected
+     *
      * @return Array of Bids
      */
     @NonNull
@@ -297,15 +330,26 @@ public class RemoteDataSource implements DataSource
         return null;
     }
 
+    @Nullable
+    @Override
+    public Bid getBid(@NonNull final String providerUsername, @NonNull final String taskId)
+            throws IllegalArgumentException
+    {
+        // TODO implement
+        return null;
+    }
+
     /**
      * Adds a bid to the database
+     *
      * @param bid The bid to add
      * @return true if bid was successfully added to the database
      */
     @Override
-    public boolean addBid(@NonNull Bid bid) {
+    public boolean addBid(@NonNull Bid bid)
+    {
         ElasticsearchBidController.AddBidsTask addBidTask =
-                new ElasticsearchBidController.AddBidsTask ();
+                new ElasticsearchBidController.AddBidsTask();
         addBidTask.execute(bid);
 
         try
@@ -327,7 +371,9 @@ public class RemoteDataSource implements DataSource
     }
 
     @Override
-    public boolean removeBid(@NonNull Bid bid) {
+    public boolean removeBid(@NonNull Bid bid)
+    {
+        // TODO implement
         return false;
     }
 }

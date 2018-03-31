@@ -25,8 +25,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
  */
 public abstract class EditCreateTaskTemplate extends AppCompatActivity
 {
-
-    final private DataSourceManager DSM = DataSourceManager.getInstance();
+    final private DataSourceManager DSM = new DataSourceManager(this);
     private Task newTask;
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -74,7 +73,7 @@ public abstract class EditCreateTaskTemplate extends AppCompatActivity
 
                 createTask(title, descr, "IMAGE_PLACEHOLDER");
                 if (! (newTask == null)) {
-                    DSM.getLocalDataSource().addTask(newTask);
+                    DSM.addTask(newTask);
                 }
                 finish();
 

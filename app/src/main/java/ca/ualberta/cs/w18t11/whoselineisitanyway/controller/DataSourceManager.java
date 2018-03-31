@@ -2,597 +2,501 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.controller;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 /**
- * Manages the remote and local data sources used withing the application
+ * Manages offline and online data synchronization.
  *
  * @author Brad Ofrim, Samuel Dolha, Mark Griffith
- * @version 2.0
+ * @version 3.0
  */
-public class DataSourceManager
+public final class DataSourceManager implements DataSource
 {
     /**
-     * Singleton instance
+     * The shared string preferences key corresponding to the current username.
      */
-    private static DataSourceManager instance;
+    private static final String CURRENT_USERNAME_KEY = "CURRENT_USERNAME";
 
     /**
-     * The server
+     * Represents two lists consisting of items unique to each array, respectively.
+     *
+     * @param <T> The expected type of item
      */
-    private DataSource remoteDataSource;
+    private static final class ArrayDiff<T>
+    {
+        /**
+         * The items unique to the first array.
+         *
+         * @see T
+         */
+        private final ArrayList<T> firstItems;
+
+        /**
+         * The items unique to the second array.
+         *
+         * @see T
+         */
+        private final ArrayList<T> secondItems;
+
+        /**
+         * @param firstArray  The first array.
+         * @param secondArray The second array.
+         * @see T
+         */
+        private ArrayDiff(@Nullable final T[] firstArray, @Nullable final T[] secondArray)
+        {
+            this.firstItems = new ArrayList<>();
+            this.secondItems = new ArrayList<>();
+
+            if (secondArray != null)
+            {
+                this.secondItems.addAll(Arrays.asList(secondArray));
+            }
+
+            if (firstArray != null)
+            {
+                for (T firstItem : firstArray)
+                {
+                    if (this.secondItems.contains(firstItem))
+                    {
+                        this.secondItems.remove(firstItem);
+                    }
+                    else
+                    {
+                        this.firstItems.add(firstItem);
+                    }
+                }
+            }
+        }
+
+        /**
+         * @return The items unique to the first array.
+         *
+         * @see T
+         */
+        private ArrayList<T> getFirstItems()
+        {
+            return this.firstItems;
+        }
+
+        /**
+         * @return The items unique to the second array.
+         *
+         * @see T
+         */
+        private ArrayList<T> getSecondItems()
+        {
+            return this.secondItems;
+        }
+    }
 
     /**
-     * A local copy of data used when remote is not accessible
+     * The accumulator for assigning unique identifiers to instances of the class.
+     *
+     * @see AtomicInteger
      */
-    private DataSource localDataSource;
+    private static AtomicInteger nextId = new AtomicInteger(0);
 
     /**
-     * Indication of who the current user is
-     */
-    private User currentUser;
-
-    private Context mContext;
-
-    private static final String DB_FILENAME = "Database_Shared_Preference_File";
-    private static final String USER_CHANGES = "user_offline_changes";
-    private static final String TASK_CHANGES = "task_offline_changes";
-    private static final String BID_CHANGES = "bid_offline_changes";
-
-    /**
-     * Creates a DataSourceManager
+     * The local data source that is always available.
      *
      * @see DataSource
      */
-    private DataSourceManager(Context context)
+    @NonNull
+    private final DataSource localDataSource;
+
+    /**
+     * The remote data source, requiring Internet connectivity.
+     *
+     * @see DataSource
+     */
+    @NonNull
+    private final DataSource remoteDataSource;
+
+    /**
+     * The shared preferences filename.
+     */
+    @NonNull
+    private final String preferencesFilename;
+
+    /**
+     * The application environment context.
+     *
+     * @see Context
+     */
+    @NonNull
+    private final Context context;
+
+    /**
+     * @param context The application environment context.
+     * @see Context
+     */
+    public DataSourceManager(@NonNull final Context context)
     {
         this.remoteDataSource = new RemoteDataSource();
         this.localDataSource = new LocalDataSource(context);
-        this.mContext = context;
+        this.preferencesFilename = String.format(Locale.getDefault(), "DataSourceManager%d.prefs",
+                DataSourceManager.nextId.getAndAdd(1));
+        this.context = context;
     }
 
     /**
-     * @return User[] array of all the current users
+     * Synchronizes the users present in the local and remote data sources.
      */
-    public User[] getAllUsers()
+    private void synchronizeUsers()
     {
-        synchronizeUserChanges();
+        final ArrayDiff<User> usersDiff = new ArrayDiff<>(this.localDataSource.getUsers(),
+                this.remoteDataSource.getUsers());
 
-        User[] allUsers;
-        if ((allUsers = localDataSource.getUsers()) != null)
+        for (User user : usersDiff.getFirstItems())
         {
-            return allUsers;
+            this.remoteDataSource.addUser(user);
         }
 
-        if ((allUsers = remoteDataSource.getUsers()) != null)
+        for (User user : usersDiff.getSecondItems())
         {
-            return allUsers;
+            this.localDataSource.addUser(user);
         }
-
-        return null;
     }
 
     /**
-     * @return Task[] array of all the current tasks
+     * Synchronizes the tasks present in the local and remote data sources.
      */
-    public Task[] getAllTasks()
+    private void synchronizeTasks()
     {
-        synchronizeTaskChanges();
+        final ArrayDiff<Task> tasksDiff = new ArrayDiff<>(this.localDataSource.getTasks(),
+                this.remoteDataSource.getTasks());
 
-        Task[] allTasks;
-        if ((allTasks = localDataSource.getTasks()) != null)
+        for (Task task : tasksDiff.getFirstItems())
         {
-            return allTasks;
+            this.remoteDataSource.addTask(task);
         }
 
-        if ((allTasks= remoteDataSource.getTasks()) != null)
+        for (Task task : tasksDiff.getSecondItems())
         {
-            return allTasks;
+            this.localDataSource.addTask(task);
         }
-
-        return null;
     }
 
     /**
-     * @return Bids[] array of all the current users
+     * Synchronizes the bids present in the local and remote data sources.
      */
-    public Bid[] getAllBids()
+    private void synchronizeBids()
     {
-        synchronizeBidChanges();
+        final ArrayDiff<Bid> bidsDiff = new ArrayDiff<>(this.localDataSource.getBids(),
+                this.remoteDataSource.getBids());
 
-        Bid[] allBids;
-        if ((allBids = localDataSource.getBids()) != null)
+        for (Bid bid : bidsDiff.getFirstItems())
         {
-            return allBids;
+            this.remoteDataSource.addBid(bid);
         }
 
-        if ((allBids = remoteDataSource.getBids()) != null)
+        for (Bid bid : bidsDiff.getSecondItems())
         {
-            return allBids;
+            this.localDataSource.addBid(bid);
         }
-
-        return null;
     }
 
     /**
-     * @param username
-     * @return the user with the username if found, else null
+     * @return The current user, or null if there is no current user.
+     * @throws IllegalStateException If the current user is absent from the local data source.
+     * @see User
      */
-    public User getUser(String username)
+    @Nullable
+    public final User getCurrentUser() throws IllegalStateException
     {
-        synchronizeUserChanges();
+        this.synchronizeUsers();
+        final String username = this.context
+                .getSharedPreferences(this.preferencesFilename, Context.MODE_PRIVATE)
+                .getString(DataSourceManager.CURRENT_USERNAME_KEY, null);
 
-        User[] users = localDataSource.getUsers();
-        if (users != null)
+        if (username == null)
         {
-            for (User user : users)
+            return null;
+        }
+
+        final User user = this.localDataSource.getUser(username);
+
+        if (user == null)
+        {
+            throw new IllegalStateException("current user is absent from the local data source");
+        }
+
+        return user;
+    }
+
+    /**
+     * Sets the current user.
+     *
+     * @param user The user to become the current user.
+     * @throws IllegalArgumentException For a user not present in the local data source.
+     * @see User
+     */
+    public final void setCurrentUser(@NonNull final User user) throws IllegalArgumentException
+    {
+        this.synchronizeUsers();
+        final String errorMessage = "user must be present in the local data source";
+        final User[] localUsers = this.localDataSource.getUsers();
+
+        if (localUsers == null)
+        {
+            throw new IllegalArgumentException(errorMessage);
+        }
+
+        boolean presentInLocal = false;
+
+        for (User localUser : localUsers)
+        {
+            if (localUser.equals(user))
             {
-                if (user.getUsername().equals(username))
-                {
-                    return user;
-                }
+                presentInLocal = true;
+
+                break;
             }
         }
 
-        User user;
-        user = remoteDataSource.getUserByUsername(username);
-        if (user != null)
+        if (!presentInLocal)
         {
-            return user;
+            throw new IllegalArgumentException(errorMessage);
         }
 
-        return null;
-    }
-
-    /**
-     * Finds and returns a task based on it's requester's username and the task's title
-     *
-     * @param requesterUsername username of the task's requester
-     * @param taskTitle title of the desired task
-     * @return Task if found, else null
-     */
-    public Task getTask(String requesterUsername, String taskTitle)
-    {
-        synchronizeTaskChanges();
-
-        Task[] tasks = localDataSource.getTasks();
-        if (tasks != null)
-        {
-            for (Task task : tasks)
-            {
-                if (task.getRequesterUsername().equals(requesterUsername) &&
-                        task.getTitle().equals(taskTitle))
-                {
-                    return task;
-                }
-            }
-        }
-
-        // TODO implement ElasticSearchTaskController getTasksByTitle async task
-//        tasks = remoteDataSource.getTasksByTitle(taskTitle);
-//        for (Task task : tasks)
-//        {
-//            if (task.getRequesterUsername().equals(requesterUsername))
-//            {
-//                return task;
-//            }
-//        }
-
-        return null;
-    }
-
-    /**
-     * Finds and returns a bid based on it's provider's username and the bid's id
-     *
-     * @param providerUsername username of the bid's provider
-     * @param taskId id of the task on which the bid was made
-     * @return Bid if success, else null
-     */
-    public Bid getBid(String providerUsername, String taskId)
-    {
-        synchronizeBidChanges();
-
-        Bid[] bids = localDataSource.getBids();
-        if (bids != null)
-        {
-            for (Bid bid : bids)
-            {
-                if (bid.getProviderUsername().equals(providerUsername) &&
-                        bid.getTaskId().equals(taskId))
-                {
-                    return bid;
-                }
-            }
-        }
-
-        // TODO implement ElasticsearchBidController getBidsByTaskId async task
-//        bids = remoteDataSource.getBidsByTaskId(taskId);
-//        if (bids != null)
-//        {
-//            for (Bid bid : bids)
-//            {
-//                if (bid.getProviderUsername().equals(providerUsername))
-//                {
-//                    return bid;
-//                }
-//            }
-//        }
-
-        return null;
-    }
-
-    /**
-     * Adds the given user to the local data source.
-     * Attempts to add the given user to the database.
-     * Triggers offline changes if adding to the database fails.
-     *
-     * @param user user to add to data sources
-     * @return true if user was at least added to local data source, else false
-     */
-    public boolean addUser(User user)
-    {
-        // Attempt to add user locally
-        if (localDataSource.addUser(user))
-        {
-            if (!remoteDataSource.addUser(user))
-            {
-                // Adding the user online failed. Trigger offline changes
-                setOfflineUserChanges(true);
-            }
-            return true;
-        }
-        Log.i("DataSourceManager.addUser","Failed to add user:" + user.getUsername());
-        return false;
-    }
-
-    /**
-     * Adds the given task to the local data source.
-     * Attempts to add the given task to the database.
-     * Triggers offline changes if adding to the database fails.
-     *
-     * @param task task to add to data sources
-     * @return true if user was at least added to local data source, else false
-     */
-    public boolean addTask(Task task)
-    {
-        // Attempt to add user locally
-        if (localDataSource.addTask(task))
-        {
-            if (!remoteDataSource.addTask(task))
-            {
-                // Adding the user online failed. Trigger offline changes
-                setOfflineTaskChanges(true);
-            }
-            return true;
-        }
-        Log.i("DataSourceManager.addUser","Failed to add task:" + task.getTitle());
-        return false;
-    }
-
-    /**
-     * Adds the given bid to the local data source.
-     * Attempts to add the given bid to the database.
-     * Trigger offline changes if adding to the database fails.
-     *
-     * @param bid bid to add to data sources
-     * @return true if user was at least added to local data source, else false
-     */
-    public boolean addBid(Bid bid)
-    {
-        // Attempt to add user locally
-        if (localDataSource.addBid(bid))
-        {
-            if (!remoteDataSource.addBid(bid))
-            {
-                // Adding the user online failed. Trigger offline changes
-                setOfflineBidChanges(true);
-            }
-            return true;
-        }
-        Log.i("DataSourceManager.addUser","Failed to add bid:" + bid.getValue());
-        return false;
-    }
-
-    /**
-     * Removes a user from the local data source.
-     * Attempts to remove the user from the database.
-     * Sets offline changes if removing from the database fails.
-     *
-     * @param user user to remove
-     * @return true if user was at least removed from the local data source, else false
-     */
-    public boolean removeUser(User user)
-    {
-        if (localDataSource.removeUser(user))
-        {
-            if (!remoteDataSource.removeUser(user))
-            {
-                setOfflineUserChanges(true);
-            }
-            return true;
-        }
-        Log.i("DataSourceManager.removeUser","Failed to remove user:" + user.getUsername());
-        return false;
-    }
-
-    /**
-     * Removes a task from the local data source.
-     * Attempts to remove the task from the database.
-     * Triggers offline changes if removing from the database fails.
-     *
-     * @param task task to remove
-     * @return true if task was at least removed from the local data source, else false
-     */
-    public boolean removeTask(Task task)
-    {
-        if (localDataSource.removeTask(task))
-        {
-            if (!remoteDataSource.removeTask(task))
-            {
-                setOfflineUserChanges(true);
-            }
-            return true;
-        }
-        Log.i("DataSourceManager.removeTask","Failed to remove task:" + task.getTitle());
-        return false;
-    }
-
-    /**
-     * Removes a bid from the local data source.
-     * Attempts to remove the bid from the database.
-     * Triggers offline changes if removing from the database fails.
-     *
-     * @param bid bid to remove
-     * @return true if bid was at least removed from the local data source, else false
-     */
-    public boolean removeBid(Bid bid)
-    {
-        if (localDataSource.removeBid(bid))
-        {
-            if (!remoteDataSource.removeBid(bid))
-            {
-                setOfflineUserChanges(true);
-            }
-            return true;
-        }
-        Log.i("DataSourceManager.removeBid","Failed to remove bid:" + bid.getValue());
-        return false;
-    }
-
-    /**
-     * @return DataSourceManager the singleton copy of the data source manager
-     */
-    public static DataSourceManager getInstance(Context context)
-    {
-        if (DataSourceManager.instance != null)
-        {
-            return DataSourceManager.instance;
-        }
-        DataSourceManager.instance = new DataSourceManager(context);
-        return DataSourceManager.instance;
-    }
-
-    /**
-     * Synchronizes the users in the localDataSource to the remoteDataSource.
-     *
-     * @return boolean true if sync was successful, else false
-     */
-    private void synchronizeUserChanges()
-    {
-        if (getOfflineUserChanges())
-        {
-            User[] localUsers;
-            if ((localUsers = localDataSource.getUsers()) != null)
-            {
-                for (User user : localUsers)
-                {
-                    if (!remoteDataSource.addUser(user))
-                    {
-                        // Adding user to the database failed because connection is still bad
-                        // Terminate synchronization
-                        Log.i("DataSourceManager.syncUsers", " Synchronization failed.");
-                        return;
-                    }
-                }
-            }
-            Log.i("DataSourceManager.syncUsers", " Synchronization success!");
-            setOfflineUserChanges(false);
-        }
-    }
-    /**
-     * Synchronizes the tasks in the localDataSource to the remoteDataSource.
-     *
-     * @return boolean true if sync was successful, else false
-     */
-    private void synchronizeTaskChanges()
-    {
-        if (getOfflineTaskChanges())
-        {
-            Task[] localTasks;
-            if ((localTasks = localDataSource.getTasks()) != null)
-            {
-                for (Task task : localTasks)
-                {
-                    if (!remoteDataSource.addTask(task))
-                    {
-                        // Adding user to the database failed because connection is still bad
-                        // Terminate synchronization
-                        Log.i("DataSourceManager.syncTasks", " Synchronization failed.");
-                        return;
-                    }
-                }
-            }
-            Log.i("DataSourceManager.syncTasks", " Synchronization success!");
-            setOfflineTaskChanges(false);
-        }
-    }
-
-    /**
-     * Synchronizes the bids in the localDataSource to the remoteDataSource.
-     *
-     * @return boolean true if sync was successful, else false
-     */
-    private void synchronizeBidChanges()
-    {
-        if (getOfflineBidChanges())
-        {
-            Bid[] localBids;
-            if ((localBids = localDataSource.getBids()) != null)
-            {
-                for (Bid bid : localBids)
-                {
-                    if (!remoteDataSource.addBid(bid))
-                    {
-                        // Adding user to the database failed because connection is still bad
-                        // Terminate synchronization
-                        Log.i("DataSourceManager.syncBids", " Synchronization failed.");
-                        return;
-                    }
-                }
-            }
-            Log.i("DataSourceManager.syncBids", " Synchronization success!");
-            setOfflineBidChanges(false);
-        }
-    }
-
-    /**
-     * Updates the database shared preference file to indicate if offline
-     * changes are present for Users
-     *
-     * @param yesno true if offline changes are present for Users, else false
-     */
-    private void setOfflineUserChanges(boolean yesno)
-    {
-        SharedPreferences sp = mContext.getSharedPreferences(DB_FILENAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putBoolean(USER_CHANGES, yesno);
+        final SharedPreferences.Editor editor = this.context
+                .getSharedPreferences(this.preferencesFilename, Context.MODE_PRIVATE).edit();
+        editor.putString(CURRENT_USERNAME_KEY, user.getUsername());
         editor.apply();
     }
 
     /**
-     * Updates the database shared preference file to indicate if offline
-     * changes are present for Tasks
-     *
-     * @param yesno true if offline changes are present for Tasks, else false
+     * @return All users present in the data source, or null if an error occurs.
+     * @see DataSource
+     * @see User
      */
-    private void setOfflineTaskChanges(boolean yesno)
+    @Nullable
+    @Override
+    public final User[] getUsers()
     {
-        SharedPreferences sp = mContext.getSharedPreferences(DB_FILENAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putBoolean(TASK_CHANGES, yesno);
-        editor.apply();
+        this.synchronizeUsers();
+
+        return this.localDataSource.getUsers();
     }
 
     /**
-     * Updates the database shared preference file to indicate if offline
-     * changes are present for Bids
-     *
-     * @param yesno true if offline changes are present for Bids, else false
+     * @return The user with that username, or null if no such user exists in the data source.
+     * @throws IllegalArgumentException For an empty username.
+     * @see DataSource
+     * @see User
      */
-    private void setOfflineBidChanges(boolean yesno)
+    @Nullable
+    @Override
+    public final User getUser(@NonNull final String username) throws IllegalArgumentException
     {
-        SharedPreferences sp = mContext.getSharedPreferences(DB_FILENAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putBoolean(BID_CHANGES, yesno);
-        editor.apply();
-    }
-
-    /**
-     * Checks if there are offline changes to the Users triggered in the database shared
-     * preference file
-     *
-     * @return true if offline changes present for Users, else false
-     */
-    private boolean getOfflineUserChanges()
-    {
-        SharedPreferences sp =  mContext.getSharedPreferences(DB_FILENAME, Context.MODE_PRIVATE);
-        return sp.getBoolean(USER_CHANGES, false);
-    }
-
-    /**
-     * Checks if there are offline changes to the Tasks triggered in the database shared
-     * preference file
-     *
-     * @return true if offline changes present for Tasks, else false
-     */
-    private boolean getOfflineTaskChanges()
-    {
-        SharedPreferences sp =  mContext.getSharedPreferences(DB_FILENAME, Context.MODE_PRIVATE);
-        return sp.getBoolean(TASK_CHANGES, false);
-    }
-
-    /**
-     * Checks if there are offline changes to the Bids triggered in the database shared
-     * preference file
-     *
-     * @return true if offline changes present for Bid, else false
-     */
-    private boolean getOfflineBidChanges()
-    {
-        SharedPreferences sp =  mContext.getSharedPreferences(DB_FILENAME, Context.MODE_PRIVATE);
-        return sp.getBoolean(BID_CHANGES, false);
-    }
-
-    /**
-     * Indicate who the current user is
-     */
-    public void setCurrentUser(String username)
-    {
-        User[] users = localDataSource.getUsers();
-        if (users != null)
+        if (username.isEmpty())
         {
-            for (User user : users)
-            {
-                if (user.getUsername().equals(username))
-                {
-                    currentUser = user;
-                    return;
-                }
-            }
+            throw new IllegalArgumentException("username cannot be empty");
         }
 
-        User user;
-        user = remoteDataSource.getUserByUsername(username);
-        if (user != null)
+        this.synchronizeUsers();
+
+        return this.localDataSource.getUser(username);
+    }
+
+    /**
+     * Adds a user to the data source.
+     *
+     * @param user The user to add.
+     * @return Whether the user is present in the data source.
+     * @see DataSource
+     * @see User
+     */
+    @Override
+    public final boolean addUser(@NonNull final User user)
+    {
+        this.synchronizeUsers();
+        final boolean localResult = this.localDataSource.addUser(user);
+        final boolean remoteResult = this.remoteDataSource.addUser(user);
+
+        return localResult && remoteResult;
+    }
+
+    /**
+     * Removes a user from the data source.
+     *
+     * @param user The user to remove.
+     * @return Whether the user is absent from the data source.
+     * @see DataSource
+     * @see User
+     */
+    @Override
+    public final boolean removeUser(@NonNull final User user)
+    {
+        this.synchronizeUsers();
+        final boolean localResult = this.localDataSource.removeUser(user);
+        final boolean remoteResult = this.remoteDataSource.removeUser(user);
+
+        return localResult && remoteResult;
+    }
+
+    /**
+     * @return All tasks present in the data source, or null if an error occurs.
+     * @see DataSource
+     * @see Task
+     */
+    @Nullable
+    @Override
+    public final Task[] getTasks()
+    {
+        this.synchronizeTasks();
+
+        return this.localDataSource.getTasks();
+    }
+
+    /**
+     * @return The task with that requester and title, or null if no such task exists in the data
+     * source.
+     * @throws IllegalArgumentException For an empty requesterUsername or title.
+     * @see DataSource
+     * @see Task
+     */
+    @Nullable
+    @Override
+    public final Task getTask(@NonNull final String requesterUsername, @NonNull final String title)
+            throws IllegalArgumentException
+    {
+        if (requesterUsername.isEmpty())
         {
-            currentUser = user;
-            return;
+            throw new IllegalArgumentException("requesterUsername cannot be empty");
         }
 
-        // TODO: Create user if they don't exist
-        Log.i("DataSourceManager: ", "User not set");
+        if (title.isEmpty())
+        {
+            throw new IllegalArgumentException("title cannot be empty");
+        }
+
+        this.synchronizeTasks();
+
+        return this.localDataSource.getTask(requesterUsername, title);
     }
 
     /**
-     * Indicate who the current user is
+     * Adds a task to the data source.
+     *
+     * @param task The task to add.
+     * @return Whether the task is present in the data source.
+     * @see DataSource
+     * @see Task
      */
-    public void setCurrentUser(User user) { currentUser = user; }
-
-    /**
-     * @return User who the current user is
-     */
-    public User getCurrentUser()
+    @Override
+    public final boolean addTask(@NonNull final Task task)
     {
-        return currentUser;
+        this.synchronizeTasks();
+        final boolean localResult = this.localDataSource.addTask(task);
+        final boolean remoteResult = this.remoteDataSource.addTask(task);
+
+        return localResult && remoteResult;
     }
 
     /**
-     * @return DataSource the  copy of the local data source
+     * Removes a task from the data source.
+     *
+     * @param task The task to remove.
+     * @return Whether the task is absent from the data source.
+     * @see DataSource
+     * @see Task
      */
-    public DataSource getLocalDataSource()
+    @Override
+    public final boolean removeTask(@NonNull final Task task)
     {
-        return localDataSource;
+        this.synchronizeTasks();
+        final boolean localResult = this.localDataSource.removeTask(task);
+        final boolean remoteResult = this.remoteDataSource.removeTask(task);
+
+        return localResult && remoteResult;
     }
 
     /**
-     * @return DataSource the  copy of the remote data source
+     * @return All bids present in the data source, or null if an error occurs.
+     * @see DataSource
+     * @see Bid
      */
-    public DataSource getRemoteDataSource()
+    @Nullable
+    @Override
+    public final Bid[] getBids()
     {
-        return remoteDataSource;
+        this.synchronizeBids();
+
+        return this.localDataSource.getBids();
+    }
+
+    /**
+     * @return The bid from that provider on that task, or null if no such bid exists in the data
+     * source.
+     * @throws IllegalArgumentException For an empty providerUsername or taskId.
+     * @see DataSource
+     * @see Bid
+     */
+    @Nullable
+    @Override
+    public final Bid getBid(@NonNull final String providerUsername, @NonNull final String taskId)
+            throws IllegalArgumentException
+    {
+        if (providerUsername.isEmpty())
+        {
+            throw new IllegalArgumentException("providerUsername cannot be empty");
+        }
+
+        if (taskId.isEmpty())
+        {
+            throw new IllegalArgumentException("taskId cannot be empty");
+        }
+
+        this.synchronizeBids();
+
+        return this.localDataSource.getBid(providerUsername, taskId);
+    }
+
+    /**
+     * Adds a bid to the data source.
+     *
+     * @param bid The bid to add.
+     * @return Whether the bid is present in the data source.
+     * @see DataSource
+     * @see Bid
+     */
+    @Override
+    public final boolean addBid(@NonNull final Bid bid)
+    {
+        this.synchronizeBids();
+        final boolean localResult = this.localDataSource.addBid(bid);
+        final boolean remoteResult = this.remoteDataSource.addBid(bid);
+
+        return localResult && remoteResult;
+    }
+
+    /**
+     * Removes a bid from the data source.
+     *
+     * @param bid The user to remove.
+     * @return Whether the bid is absent from the data source.
+     * @see DataSource
+     * @see Bid
+     */
+    @Override
+    public final boolean removeBid(@NonNull final Bid bid)
+    {
+        this.synchronizeBids();
+        final boolean localResult = this.localDataSource.removeBid(bid);
+        final boolean remoteResult = this.remoteDataSource.removeBid(bid);
+
+        return localResult && remoteResult;
     }
 }

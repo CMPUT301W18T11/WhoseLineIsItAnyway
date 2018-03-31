@@ -1,6 +1,7 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.controller;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,15 +14,16 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
  * Represents an in-memory data source.
  *
  * @author Brad Ofrim, Samuel Dolha
- * @version 2.0
+ * @version 3.0
  */
-public final class MockDataSource implements DataSource
+final class MockDataSource implements DataSource
 {
     /**
      * The users currently present in the data source.
      *
      * @see User
      */
+    @NonNull
     private final Collection<User> users;
 
     /**
@@ -29,6 +31,7 @@ public final class MockDataSource implements DataSource
      *
      * @see Task
      */
+    @NonNull
     private final Collection<Task> tasks;
 
     /**
@@ -36,6 +39,7 @@ public final class MockDataSource implements DataSource
      *
      * @see Bid
      */
+    @NonNull
     private final Collection<Bid> bids;
 
     /**
@@ -52,53 +56,44 @@ public final class MockDataSource implements DataSource
         this.users = Arrays.asList(users);
         this.tasks = Arrays.asList(tasks);
         this.bids = Arrays.asList(bids);
-//        // Build a list of users
-//        User currentUser = new User(new EmailAddress("bob", "gmail.com"),
-//                new PhoneNumber(0, 123, 456, 7890), "bob");
-//        User providerUserA = new User(new EmailAddress("alice", "gmail.com"),
-//                new PhoneNumber(0, 123, 456, 7890), "alice");
-//        User providerUserB = new User(new EmailAddress("eve", "gmail.com"),
-//                new PhoneNumber(0, 123, 456, 7890), "eve");
-//
-//        allUsers.add(currentUser);
-//        allUsers.add(providerUserA);
-//        allUsers.add(providerUserB);
-//
-//        // Build a list of bids
-//        Bid bid1a = new Bid(providerUserA.getUsername(), "task1ID", new BigDecimal(5));
-//        Bid bid1b = new Bid(providerUserB.getUsername(), "task1ID", new BigDecimal(6));
-//        Bid bid2b = new Bid(providerUserB.getUsername(), "task2ID", new BigDecimal(500));
-//        Bid bid2c = new Bid(currentUser.getUsername(), "task2ID", new BigDecimal(750));
-//        Bid bid3b = new Bid(providerUserB.getUsername(), "task3ID", new BigDecimal(5));
-//        Bid bid3c = new Bid(currentUser.getUsername(), "task3ID", new BigDecimal(7));
-//
-//        allBids.add(bid1a);
-//        allBids.add(bid1b);
-//        allBids.add(bid2b);
-//        allBids.add(bid2c);
-//        allBids.add(bid3b);
-//        allBids.add(bid3c);
-//
-//        Bid[] mockBidList = {bid3b, bid3c};
-//
-//        //Build a list of tasks
-//        Task task1 = new Task("id1", currentUser.getUsername(), "Demo Task 1", "A really good task");
-//        Task task2 = new Task("id2", providerUserA.getUsername(), "Demo Task 2", "A really great task");
-//        Task task3 = new Task("id3", providerUserA.getUsername(), currentUser.getUsername(), mockBidList, "Demo Task 3", "A alright task", Boolean.FALSE);
-//
-//        allTasks.add(task1);
-//        allTasks.add(task2);
-//        allTasks.add(task3);
     }
 
     /**
      * @return All users present in the data source.
+     * @see DataSource
      * @see User
      */
     @NonNull
+    @Override
     public final User[] getUsers()
     {
         return this.users.toArray(new User[0]);
+    }
+
+    /**
+     * @return The user with that username, or null if no such user exists in the data source.
+     * @throws IllegalArgumentException For an empty username.
+     * @see DataSource
+     * @see User
+     */
+    @Nullable
+    @Override
+    public final User getUser(@NonNull final String username) throws IllegalArgumentException
+    {
+        if (username.isEmpty())
+        {
+            throw new IllegalArgumentException("username cannot be empty");
+        }
+
+        for (User user : this.users)
+        {
+            if (user.getUsername().equals(username))
+            {
+                return user;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -106,8 +101,10 @@ public final class MockDataSource implements DataSource
      *
      * @param user The user to add.
      * @return Whether the user is present in the data source.
+     * @see DataSource
      * @see User
      */
+    @Override
     public final boolean addUser(@NonNull final User user)
     {
         this.users.add(user);
@@ -120,9 +117,11 @@ public final class MockDataSource implements DataSource
      *
      * @param user The user to remove.
      * @return Whether the user is absent from the data source.
+     * @see DataSource
      * @see User
      */
-    public boolean removeUser(@NonNull final User user)
+    @Override
+    public final boolean removeUser(@NonNull final User user)
     {
         this.users.remove(user);
 
@@ -131,12 +130,38 @@ public final class MockDataSource implements DataSource
 
     /**
      * @return All tasks present in the data source.
+     * @see DataSource
      * @see Task
      */
     @NonNull
+    @Override
     public final Task[] getTasks()
     {
         return this.tasks.toArray(new Task[0]);
+    }
+
+    /**
+     * @return The task with that requester and title, or null if no such task exists in the data
+     * source.
+     * @throws IllegalArgumentException For an empty requesterUsername or title.
+     * @see DataSource
+     * @see Task
+     */
+    @Nullable
+    @Override
+    public final Task getTask(@NonNull final String requesterUsername, @NonNull final String title)
+            throws IllegalArgumentException
+    {
+        for (Task task : this.tasks)
+        {
+            if (task.getRequesterUsername().equals(requesterUsername) && task.getTitle()
+                    .equals(title))
+            {
+                return task;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -144,9 +169,11 @@ public final class MockDataSource implements DataSource
      *
      * @param task The task to add.
      * @return Whether the task is present in the data source.
+     * @see DataSource
      * @see Task
      */
-    public boolean addTask(@NonNull final Task task)
+    @Override
+    public final boolean addTask(@NonNull final Task task)
     {
         this.tasks.add(task);
 
@@ -158,9 +185,11 @@ public final class MockDataSource implements DataSource
      *
      * @param task The task to remove.
      * @return Whether the task is absent from the data source.
+     * @see DataSource
      * @see Task
      */
-    public boolean removeTask(@NonNull final Task task)
+    @Override
+    public final boolean removeTask(@NonNull final Task task)
     {
         this.tasks.remove(task);
 
@@ -169,12 +198,38 @@ public final class MockDataSource implements DataSource
 
     /**
      * @return All bids present in the data source.
+     * @see DataSource
      * @see Bid
      */
     @NonNull
+    @Override
     public final Bid[] getBids()
     {
         return this.bids.toArray(new Bid[0]);
+    }
+
+    /**
+     * @return The bid from that provider on that task, or null if no such bid exists in the data
+     * source.
+     * @throws IllegalArgumentException For an empty providerUsername or taskId.
+     * @see DataSource
+     * @see Bid
+     */
+    @Nullable
+    @Override
+    public final Bid getBid(@NonNull final String providerUsername, @NonNull final String taskId)
+            throws IllegalArgumentException
+    {
+        for (Bid bid : this.bids)
+        {
+            if (bid.getProviderUsername().equals(providerUsername) && bid.getTaskId()
+                    .equals(taskId))
+            {
+                return bid;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -182,9 +237,11 @@ public final class MockDataSource implements DataSource
      *
      * @param bid The bid to add.
      * @return Whether the bid is present in the data source.
+     * @see DataSource
      * @see Bid
      */
-    public boolean addBid(@NonNull final Bid bid)
+    @Override
+    public final boolean addBid(@NonNull final Bid bid)
     {
         this.bids.add(bid);
 
@@ -196,26 +253,14 @@ public final class MockDataSource implements DataSource
      *
      * @param bid The user to remove.
      * @return Whether the bid is absent from the data source.
+     * @see DataSource
      * @see Bid
      */
-    public boolean removeBid(@NonNull final Bid bid)
+    @Override
+    public final boolean removeBid(@NonNull final Bid bid)
     {
         this.bids.remove(bid);
 
         return true;
-    }
-
-    @Override
-    public User getUserById(String elasticId)
-    {
-        // TODO implement
-        return null;
-    }
-
-    @Override
-    public User getUserByUsername(String username)
-    {
-        // TODO implement
-        return null;
     }
 }
