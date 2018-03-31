@@ -158,10 +158,10 @@ public final class Bid implements Detailed, Elastic, Serializable
             @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
     {
         final Intent intent = new Intent(context, detailActivityClass);
-        intent.putExtra(Detailed.DETAILS_KEY, (ArrayList<Detail>) Arrays
-                .asList(new Detail("providerUsername", this.getProviderUsername(), null),
+        intent.putExtra(Detailed.DETAILS_KEY, new ArrayList<>(Arrays.asList(
+                        new Detail("providerUsername", this.getProviderUsername(), null),
                         new Detail("taskId", this.getTaskId(), null),
-                        new Detail("value", this.getValue().toString(), null)));
+                        new Detail("value", this.getValue().toString(), null))));
         intent.putExtra(Detailed.TITLE_KEY, "Bid");
 
         context.startActivity(intent);
