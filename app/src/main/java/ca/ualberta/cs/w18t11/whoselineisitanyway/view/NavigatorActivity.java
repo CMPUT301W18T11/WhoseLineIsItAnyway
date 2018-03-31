@@ -138,62 +138,33 @@ public class NavigatorActivity extends AppCompatActivity
         {
             Log.i("NAVBAR: ", "All Tasks Selected");
             outgoingTitle = "All Tasks";
-            if (allTasks != null)
-            {
-                detaileds.addAll(Arrays.asList(allTasks));
-            }
+            detaileds = buildAllTasksList();
         }
         else if (id == R.id.my_tasks)
         {
             Log.i("NAVBAR: ", "My Tasks Selected");
             outgoingTitle = "My Tasks";
-            if (allTasks != null)
-            {
-                for (Task task : allTasks)
-                {
-                    if (task.getRequesterUsername().equals(currentUser.getUsername()))
-                    {
-                        detaileds.add(task);
-                    }
-                }
-            }
+            detaileds = buildMyTasksList();
         }
         else if (id == R.id.assigned_tasks)
         {
             Log.i("NAVBAR: ", "Assigned Tasks Selected");
             outgoingTitle = "Assigned Tasks";
-            if (allTasks != null)
-            {
-                for (Task task : allTasks)
-                {
-                    if (task.getProviderUsername() != null && task.getProviderUsername()
-                            .equals(currentUser.getUsername()))
-                    {
-                        detaileds.add(task);
-                    }
-                }
-            }
+            detaileds = buildAssignedTasksList();
         }
         else if (id == R.id.nearby_tasks)
         {
             Log.i("NAVBAR: ", "Nearby Tasks Selected");
             outgoingTitle = "Nearby Tasks";
-            // TODO filter tasks based on location
+            detaileds = buildNearbyTasksList();
         }
         else if (id == R.id.my_bids)
         {
             Log.i("NAVBAR: ", "My Bids Selected");
             outgoingTitle = "My Bids";
-            if (allBids != null)
-            {
-                for (Bid bid : allBids)
-                {
-                    if (bid.getProviderUsername().equals(currentUser.getUsername()))
-                    {
-                        detaileds.add(bid);
-                    }
-                }
-            }
+            detaileds = buildMyBidsList();
+
+
         }
         else if (id == R.id.create_task)
         {
@@ -249,5 +220,87 @@ public class NavigatorActivity extends AppCompatActivity
         {
             viewStub.addView(view, params);
         }
+    }
+
+    private ArrayList<Detailed> buildAllTasksList()
+    {
+        // TODO: Extract filtering to the DataSourceManager
+        Task[] allTasks = DataSourceManager.getInstance(this).getAllTasks();
+        return new ArrayList<Detailed>(Arrays.asList(allTasks));
+    }
+
+    private ArrayList<Detailed> buildMyTasksList()
+    {
+        // TODO: Extract filtering to the DataSourceManager
+        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
+        Task[] allTasks = DataSourceManager.getInstance(this).getAllTasks();
+        User currentUser = DataSourceManager.getInstance(this).getCurrentUser();
+
+        if (allTasks != null)
+        {
+            for (Task task : allTasks)
+            {
+                if (task.getRequesterUsername().equals(currentUser.getUsername()))
+                {
+                    detailedArrayList.add(task);
+                }
+            }
+        }
+
+        return detailedArrayList;
+    }
+
+    private ArrayList<Detailed> buildAssignedTasksList()
+    {
+        // TODO: Extract filtering to the DataSourceManager
+        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
+        Task[] allTasks = DataSourceManager.getInstance(this).getAllTasks();
+        User currentUser = DataSourceManager.getInstance(this).getCurrentUser();
+
+        if (allTasks != null)
+        {
+            for (Task task : allTasks)
+            {
+                if (task.getProviderUsername() != null && task.getProviderUsername()
+                        .equals(currentUser.getUsername()))
+                {
+                    detailedArrayList.add(task);
+                }
+            }
+        }
+
+        return detailedArrayList;
+    }
+
+    private ArrayList<Detailed> buildNearbyTasksList()
+    {
+        // TODO: Extract filtering to the DataSourceManager
+        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
+        Detailed[] allTasks = DataSourceManager.getInstance(this).getAllTasks();
+
+        // TODO: Add tasks based on distance
+
+        return detailedArrayList;
+    }
+
+    private ArrayList<Detailed> buildMyBidsList()
+    {
+        // TODO: Extract filtering to the DataSourceManager
+        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
+        Bid[] allBids = DataSourceManager.getInstance(this).getAllBids();
+        User currentUser = DataSourceManager.getInstance(this).getCurrentUser();
+
+        if (allBids != null)
+        {
+            for (Bid bid : allBids)
+            {
+                if (bid.getProviderUsername().equals(currentUser.getUsername()))
+                {
+                    detailedArrayList.add(bid);
+                }
+            }
+        }
+
+        return detailedArrayList;
     }
 }
