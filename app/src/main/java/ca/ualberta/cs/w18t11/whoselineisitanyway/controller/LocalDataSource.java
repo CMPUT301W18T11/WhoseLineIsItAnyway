@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -14,9 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Predicate;
 
@@ -80,7 +80,7 @@ final class LocalDataSource implements DataSource
      * @return All items present in the file, or null if an error occurs.
      */
     @Nullable
-    private <T> ArrayList<T> readFile(@NonNull final Filename filename)
+    private <T> ImmutableCollection<T> readFile(@NonNull final Filename filename)
     {
         try (FileInputStream fileInputStream = this.context.openFileInput(filename.toString()))
         {
@@ -89,7 +89,7 @@ final class LocalDataSource implements DataSource
                 try (BufferedReader bufferedReader = new BufferedReader(inputStreamReader))
                 {
                     return LocalDataSource.GSON
-                            .fromJson(bufferedReader, new TypeToken<ArrayList<T>>()
+                            .fromJson(bufferedReader, new TypeToken<ImmutableCollection<T>>()
                             {
                             }.getType());
                 }
@@ -106,9 +106,10 @@ final class LocalDataSource implements DataSource
      *
      * @param filename The name of the file to which to write.
      * @param <T>      The expected type of items.
+     * @throws IOException If an error occurs while writing.
      */
-    private <T> void writeFile(@NonNull final Filename filename, @NonNull final ArrayList<T> items)
-            throws IOException
+    private <T> void writeFile(@NonNull final Filename filename,
+                               @NonNull final ImmutableCollection<T> items) throws IOException
     {
         try (FileOutputStream fileOutputStream = this.context
                 .openFileOutput(filename.toString(), Context.MODE_PRIVATE))
@@ -125,14 +126,15 @@ final class LocalDataSource implements DataSource
     }
 
     /**
+     * @param filename  The name of the file to which to write.
      * @param predicate The predicate with which to test the items.
      * @param <T>       The expected type of items.
      * @return The item satisfying the predicate, or null if no such item exists in the file.
      */
     @Nullable
-    private <T> T get(@NonNull final Predicate<T> predicate)
+    private <T> T get(@NonNull final Filename filename, @NonNull final Predicate<T> predicate)
     {
-        final ArrayList<T> items = this.readFile(Filename.USERS);
+        final ImmutableCollection<T> items = this.readFile(filename);
 
         if (items == null)
         {
@@ -158,15 +160,13 @@ final class LocalDataSource implements DataSource
      */
     private <T> boolean add(@NonNull final Filename filename, @NonNull final T item)
     {
-        ArrayList<T> items = this.readFile(filename);
+        final ImmutableCollection<T> oldItems = this.readFile(filename);
 
-        if (items == null)
+        if (oldItems == null)
         {
             try
             {
-                items = new ArrayList<>();
-                items.add(item);
-                this.writeFile(filename, items);
+                this.writeFile(filename, new ImmutableList.Builder<T>().add(item).build());
 
                 return true;
             }
@@ -176,26 +176,21 @@ final class LocalDataSource implements DataSource
             }
         }
 
-        final ArrayList<T> itemsToReplace = new ArrayList<>();
+        final Collection<T> items = new ArrayList<>(oldItems);
 
-        for (T oldItem : items)
+        for (T oldItem : oldItems)
         {
             if (oldItem.equals(item))
             {
-                itemsToReplace.add(oldItem);
+                items.remove(oldItem);
             }
-        }
-
-        for (T itemToReplace : itemsToReplace)
-        {
-            items.remove(itemToReplace);
         }
 
         items.add(item);
 
         try
         {
-            this.writeFile(Filename.USERS, items);
+            this.writeFile(filename, new ImmutableList.Builder<T>().addAll(items).build());
         }
         catch (IOException exception)
         {
@@ -214,13 +209,13 @@ final class LocalDataSource implements DataSource
      */
     private <T> boolean remove(@NonNull final Filename filename, @NonNull final T item)
     {
-        ArrayList<T> items = this.readFile(filename);
+        final ImmutableCollection<T> oldItems = this.readFile(filename);
 
-        if (items == null)
+        if (oldItems == null)
         {
             try
             {
-                this.writeFile(filename, new ArrayList<T>());
+                this.writeFile(filename, new ImmutableList.Builder<T>().add(item).build());
 
                 return true;
             }
@@ -230,14 +225,21 @@ final class LocalDataSource implements DataSource
             }
         }
 
-        while (items.contains(item))
+        final Collection<T> items = new ArrayList<>(oldItems);
+
+        for (T oldItem : oldItems)
         {
-            items.remove(item);
+            if (oldItem.equals(item))
+            {
+                items.remove(oldItem);
+            }
         }
+
+        items.add(item);
 
         try
         {
-            this.writeFile(Filename.USERS, items);
+            this.writeFile(filename, new ImmutableList.Builder<T>().addAll(items).build());
         }
         catch (IOException exception)
         {
@@ -257,7 +259,7 @@ final class LocalDataSource implements DataSource
     @Override
     public final User[] getUsers()
     {
-        final ArrayList<User> users = this.readFile(Filename.USERS);
+        final ImmutableCollection<User> users = this.readFile(Filename.USERS);
 
         if (users == null)
         {
@@ -282,7 +284,7 @@ final class LocalDataSource implements DataSource
             throw new IllegalArgumentException("username cannot be empty");
         }
 
-        return this.get(new Predicate<User>()
+        return this.get(Filename.USERS, new Predicate<User>()
         {
             @Override
             public final boolean test(@NonNull final User user)
@@ -329,7 +331,7 @@ final class LocalDataSource implements DataSource
     @Override
     public final Task[] getTasks()
     {
-        final ArrayList<Task> tasks = this.readFile(Filename.TASKS);
+        final ImmutableCollection<Task> tasks = this.readFile(Filename.TASKS);
 
         if (tasks == null)
         {
@@ -361,7 +363,7 @@ final class LocalDataSource implements DataSource
             throw new IllegalArgumentException("title cannot be empty");
         }
 
-        return this.get(new Predicate<Task>()
+        return this.get(Filename.TASKS, new Predicate<Task>()
         {
             @Override
             public final boolean test(@NonNull final Task task)
@@ -409,7 +411,7 @@ final class LocalDataSource implements DataSource
     @Override
     public final Bid[] getBids()
     {
-        final ArrayList<Bid> bids = this.readFile(Filename.BIDS);
+        final ImmutableCollection<Bid> bids = this.readFile(Filename.BIDS);
 
         if (bids == null)
         {
@@ -441,7 +443,7 @@ final class LocalDataSource implements DataSource
             throw new IllegalArgumentException("taskId cannot be empty");
         }
 
-        return this.get(new Predicate<Bid>()
+        return this.get(Filename.BIDS, new Predicate<Bid>()
         {
             @Override
             public final boolean test(@NonNull final Bid bid)
