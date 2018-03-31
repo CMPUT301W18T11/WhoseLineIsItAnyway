@@ -61,6 +61,9 @@ final class LocalDataSource implements DataSource
      * @param filename The name of the file to read.
      * @param <T>      The expected type of items.
      * @return All items present in the file, or null if an error occurs.
+     * @see Filename
+     * @see ImmutableCollection
+     * @see T
      */
     @Nullable
     private <T> ImmutableCollection<T> readFile(@NonNull final Filename filename)
@@ -90,6 +93,9 @@ final class LocalDataSource implements DataSource
      * @param filename The name of the file to which to write.
      * @param <T>      The expected type of items.
      * @throws IOException If an error occurs while writing.
+     * @see Filename
+     * @see ImmutableCollection
+     * @see T
      */
     private <T> void writeFile(@NonNull final Filename filename,
                                @NonNull final ImmutableCollection<T> items) throws IOException
@@ -113,6 +119,9 @@ final class LocalDataSource implements DataSource
      * @param predicate The predicate with which to test the items.
      * @param <T>       The expected type of items.
      * @return The item satisfying the predicate, or null if no such item exists in the file.
+     * @see Filename
+     * @see Predicate
+     * @see T
      */
     @Nullable
     private <T> T get(@NonNull final Filename filename, @NonNull final Predicate<T> predicate)
@@ -140,6 +149,8 @@ final class LocalDataSource implements DataSource
      * @param item     The item to add.
      * @param <T>      The expected type of items.
      * @return Whether the item is present in the file.
+     * @see Filename
+     * @see T
      */
     private <T> boolean add(@NonNull final Filename filename, @NonNull final T item)
     {
@@ -189,6 +200,8 @@ final class LocalDataSource implements DataSource
      * @param item     The item to remove.
      * @param <T>      The expected type of items.
      * @return Whether the item is absent from the file.
+     * @see Filename
+     * @see T
      */
     private <T> boolean remove(@NonNull final Filename filename, @NonNull final T item)
     {
@@ -387,8 +400,8 @@ final class LocalDataSource implements DataSource
 
     /**
      * @return All bids present in the filesystem, or null if an error occurs.
-     * @see DataSource
      * @see Bid
+     * @see DataSource
      */
     @Nullable
     @Override
@@ -408,8 +421,8 @@ final class LocalDataSource implements DataSource
      * @return The bid from that provider on that task, or null if no such bid exists in the
      * filesystem.
      * @throws IllegalArgumentException For an empty providerUsername or taskId.
-     * @see DataSource
      * @see Bid
+     * @see DataSource
      */
     @Nullable
     @Override
@@ -443,6 +456,7 @@ final class LocalDataSource implements DataSource
      * @param bid The bid to add.
      * @return Whether the bid is present in the filesystem.
      * @see Bid
+     * @see DataSource
      */
     @Override
     public final boolean addBid(@NonNull final Bid bid)
@@ -456,6 +470,7 @@ final class LocalDataSource implements DataSource
      * @param bid The bid to add.
      * @return Whether the bid is present in the filesystem.
      * @see Bid
+     * @see DataSource
      */
     @Override
     public final boolean removeBid(@NonNull final Bid bid)

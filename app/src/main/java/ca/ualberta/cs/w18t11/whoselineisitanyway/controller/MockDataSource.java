@@ -46,9 +46,9 @@ final class MockDataSource implements DataSource
      * @param users The users initially present in the data source.
      * @param tasks The tasks initially present in the data source.
      * @param bids  The bids initially present in the data source.
-     * @see User
-     * @see Task
      * @see Bid
+     * @see Task
+     * @see User
      */
     public MockDataSource(@NonNull final User[] users, @NonNull final Task[] tasks,
                           @NonNull final Bid[] bids)
@@ -198,8 +198,8 @@ final class MockDataSource implements DataSource
 
     /**
      * @return All bids present in the data source.
-     * @see DataSource
      * @see Bid
+     * @see DataSource
      */
     @NonNull
     @Override
@@ -212,8 +212,8 @@ final class MockDataSource implements DataSource
      * @return The bid from that provider on that task, or null if no such bid exists in the data
      * source.
      * @throws IllegalArgumentException For an empty providerUsername or taskId.
-     * @see DataSource
      * @see Bid
+     * @see DataSource
      */
     @Nullable
     @Override
@@ -237,8 +237,8 @@ final class MockDataSource implements DataSource
      *
      * @param bid The bid to add.
      * @return Whether the bid is present in the data source.
-     * @see DataSource
      * @see Bid
+     * @see DataSource
      */
     @Override
     public final boolean addBid(@NonNull final Bid bid)
@@ -253,8 +253,8 @@ final class MockDataSource implements DataSource
      *
      * @param bid The user to remove.
      * @return Whether the bid is absent from the data source.
-     * @see DataSource
      * @see Bid
+     * @see DataSource
      */
     @Override
     public final boolean removeBid(@NonNull final Bid bid)
