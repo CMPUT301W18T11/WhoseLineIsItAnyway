@@ -126,43 +126,37 @@ public class NavigatorActivity extends AppCompatActivity
         int id = item.getItemId();
         String outgoingTitle = "List";
         Intent outgoingIntent = new Intent(this, DetailableListActivity.class);
-        DataSourceManager dm = DataSourceManager.getInstance(this);
-        User currentUser = dm.getCurrentUser();
-        ArrayList<Detailed> detaileds = new ArrayList<>();
-
-        Task[] allTasks = dm.getAllTasks();
-        Bid[] allBids = dm.getAllBids();
-
+        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
 
         if (id == R.id.all_tasks)
         {
             Log.i("NAVBAR: ", "All Tasks Selected");
             outgoingTitle = "All Tasks";
-            detaileds = buildAllTasksList();
+            detailedArrayList = buildAllTasksList();
         }
         else if (id == R.id.my_tasks)
         {
             Log.i("NAVBAR: ", "My Tasks Selected");
             outgoingTitle = "My Tasks";
-            detaileds = buildMyTasksList();
+            detailedArrayList = buildMyTasksList();
         }
         else if (id == R.id.assigned_tasks)
         {
             Log.i("NAVBAR: ", "Assigned Tasks Selected");
             outgoingTitle = "Assigned Tasks";
-            detaileds = buildAssignedTasksList();
+            detailedArrayList = buildAssignedTasksList();
         }
         else if (id == R.id.nearby_tasks)
         {
             Log.i("NAVBAR: ", "Nearby Tasks Selected");
             outgoingTitle = "Nearby Tasks";
-            detaileds = buildNearbyTasksList();
+            detailedArrayList = buildNearbyTasksList();
         }
         else if (id == R.id.my_bids)
         {
             Log.i("NAVBAR: ", "My Bids Selected");
             outgoingTitle = "My Bids";
-            detaileds = buildMyBidsList();
+            detailedArrayList = buildMyBidsList();
 
 
         }
@@ -176,7 +170,7 @@ public class NavigatorActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
 
         outgoingIntent.putExtra(DetailableListActivity.DATA_TITLE, outgoingTitle);
-        outgoingIntent.putExtra(DetailableListActivity.DATA_DETAILABLE_LIST, detaileds);
+        outgoingIntent.putExtra(DetailableListActivity.DATA_DETAILABLE_LIST, detailedArrayList);
 
         startActivity(outgoingIntent);
         finish();
