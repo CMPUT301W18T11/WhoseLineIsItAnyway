@@ -1,6 +1,7 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
@@ -32,4 +33,7 @@ public interface Detailed
      */
     <T extends DetailActivity> void showDetails(@NonNull final Class<T> detailActivityClass,
                                                 @NonNull final Context context);
+
+    <T extends DetailActivity> Intent getDetailsIntent(@NonNull final Class<T> detailActivityClass,
+                                                       @NonNull final Context context);
 }
