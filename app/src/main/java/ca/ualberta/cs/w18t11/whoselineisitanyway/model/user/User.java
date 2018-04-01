@@ -181,14 +181,28 @@ public final class User implements Detailed, Elastic, Serializable
     public final <T extends DetailActivity> void showDetails(
             @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
     {
+        context.startActivity(getDetailsIntent(detailActivityClass, context));
+    }
+
+    /**
+     * Get an intent to show the details of the User.
+     *
+     * @param detailActivityClass The activity in which to display the details.
+     * @param context             The context in which to start the activity.
+     * @param <T>                 The type of DetailActivity.
+     * @see Detailed
+     */
+    @Override
+    public final <T extends DetailActivity> Intent getDetailsIntent(
+            @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
+    {
         final Intent intent = new Intent(context, detailActivityClass);
         intent.putExtra(Detailed.DETAILS_KEY, (ArrayList<Detail>) Arrays
                 .asList(new Detail("username", this.getUsername(), null),
                         new Detail("emailAddress", this.getEmailAddress().toString(), null),
                         new Detail("phoneNUmber", this.getPhoneNumber().toString(), null)));
         intent.putExtra(Detailed.TITLE_KEY, "User");
-
-        context.startActivity(intent);
+        return intent;
     }
 
     /**

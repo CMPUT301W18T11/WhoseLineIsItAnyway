@@ -471,6 +471,35 @@ public final class Task implements Detailed, Elastic, Serializable
     }
 
     /**
+     * Get an intent to show the details of the Task.
+     *
+     * @param detailActivityClass The activity in which to display the details.
+     * @param context             The context in which to start the activity.
+     * @param <T>                 The type of DetailActivity.
+     * @see Detailed
+     */
+    @Override
+    public final <T extends DetailActivity> Intent getDetailsIntent(
+            @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
+    {
+        final ArrayList<Detail> details = new ArrayList<>(Arrays.asList(
+                new Detail("title", this.getTitle(), null),
+                new Detail("description", this.getDescription(), null),
+                new Detail("status", this.getStatus().toString(), null),
+                new Detail("requesterUsername", this.getRequesterUsername(), null)));
+
+        if (this.getProviderUsername() != null)
+        {
+            details.add(new Detail("providerUsername", this.getProviderUsername(), null));
+        }
+
+        final Intent intent = new Intent(context, detailActivityClass);
+        intent.putExtra(Detailed.DETAILS_KEY, details);
+        intent.putExtra(Detailed.TITLE_KEY, "Task");
+        return intent;
+    }
+
+    /**
      * @return A hashcode of the task.
      * @see Object
      */

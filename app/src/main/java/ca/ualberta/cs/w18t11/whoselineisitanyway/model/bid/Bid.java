@@ -153,18 +153,35 @@ public final class Bid implements Detailed, Elastic, Serializable
         return this.value;
     }
 
+    /**
+     * Show the details of the bid.
+     */
     @Override
     public final <T extends DetailActivity> void showDetails(
             @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
     {
+        context.startActivity(getDetailsIntent(detailActivityClass, context));
+    }
+
+    /**
+     * Get an intent to show the details of the bid.
+     *
+     * @param detailActivityClass The activity in which to display the details.
+     * @param context             The context in which to start the activity.
+     * @param <T>                 The type of DetailActivity.
+     * @see Detailed
+     */
+    @Override
+    public final <T extends DetailActivity> Intent getDetailsIntent(
+            @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
+    {
         final Intent intent = new Intent(context, detailActivityClass);
         intent.putExtra(Detailed.DETAILS_KEY, new ArrayList<>(Arrays.asList(
-                        new Detail("providerUsername", this.getProviderUsername(), null),
-                        new Detail("taskId", this.getTaskId(), null),
-                        new Detail("value", this.getValue().toString(), null))));
+                new Detail("providerUsername", this.getProviderUsername(), null),
+                new Detail("taskId", this.getTaskId(), null),
+                new Detail("value", this.getValue().toString(), null))));
         intent.putExtra(Detailed.TITLE_KEY, "Bid");
-
-        context.startActivity(intent);
+        return intent;
     }
 
     /**
