@@ -203,26 +203,6 @@ public class SetMapLocationDialog implements OnMapReadyCallback, GoogleApiClient
 		}
 
 	}
-
-/*	private void getLocation() {
-		mFusedLocationProvider = LocationServices.getFusedLocationProviderClient(caller);
-		try {
-		mFusedLocationProvider.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-			@Override
-			public void onSuccess(Location location) {
-				if (location.hasAccuracy()) {
-					// TODO Remove toast
-					Toast.makeText(caller, "Does location have accuracy?" + String.valueOf(location.getAccuracy()), Toast.LENGTH_SHORT).show();
-					if (location.getAccuracy() <= 100000000) {
-						setUserLoc(location);
-						initMap();
-					}
-				}
-
-			}
-		}); } catch (SecurityException ex) {}
-	}*/
-
 	//region GetLocation GoodAccuracyButSlow
 	private void getLocation() {
 		mFusedLocationProvider = LocationServices.getFusedLocationProviderClient(caller);

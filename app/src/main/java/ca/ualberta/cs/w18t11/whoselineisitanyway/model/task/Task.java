@@ -28,6 +28,10 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
  */
 public final class Task implements Detailed, Elastic, Serializable
 {
+
+    //TODO Implement location value
+    //TODO implement photo storage
+
     /**
      * An auto-generated, unique ID to support class versioning for Serializable.
      *

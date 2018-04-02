@@ -163,7 +163,11 @@ public class NavigatorActivity extends AppCompatActivity
         else if (id == R.id.create_task)
         {
             Log.i("NAVBAR: ", "Create Task Selected");
-            // TODO Handle
+
+            // TODO Implement transition for task create/modify
+
+/*            Intent intent = new Intent(this, CreateModifyTaskActivity.class);
+            startActivity(intent);*/
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
