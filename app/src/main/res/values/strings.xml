@@ -45,16 +45,49 @@
     <string name="create_task_titleHint">(Enter a Title)</string>
     <string name="create_task_DescriptionHint">(Enter Description of Task)</string>
     <string name="create_task_btnUploadImage">Select photos (Optional)</string>
-    <string-array name="DEBUG_create_task_DefaultImagesList">
-        <item>Test1.img</item>
-        <item>Test2.img</item>
-        <item>Test3.img</item>
-    </string-array>
+    <string name="create_task_instructions">Green-bordered images will be accepted, red are too large and will be rejected.
+    To view an image blowup, tap the image. To remove an image, Long-Press it.
+    </string>
+    <string name="activity_task_modify_btn_CallLocationDiag">Set Location (Optional)</string>
 
     <!-- Strings related to navigation drawer -->
     <string name="navigation_drawer_open">Open</string>
     <string name="navigation_drawer_close">Close</string>
     <string name="title_activity_maps">Map</string>
     <string name="dialog_place_bid_Hint">($0.00)</string>
+
+    <!-- TESTING STRINGS DO NOT USE IN MAIN PRODUCTION -->
+    <string name="hugeString">
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+        Old man caught a strong weedleOld man caught a strong weedle
+    </string>
 
 </resources>

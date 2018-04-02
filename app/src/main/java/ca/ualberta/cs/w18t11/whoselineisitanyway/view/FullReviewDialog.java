@@ -33,8 +33,6 @@ public class FullReviewDialog {
         diagBuilder.setView(diagView);
 
         diag = diagBuilder.create();
-        diag.setContentView(diagView);
-
 
         TextView reviewField = (TextView) diagView.findViewById(R.id.txt_Reviewtext);
         reviewField.setText(rate.fullReview());
