@@ -150,37 +150,41 @@ public final class RatingCollector
     final public String toString()
     {
         int JUSTIFY_LEN = 18;
-        StringBuilder strCreate = new StringBuilder();
-        strCreate.append(
-                "SUMMARY | (" + String.valueOf(getRatingCount()) + ") Reviews" + "\n" +
-                        "===========================\n"
-        );
-        strCreate.append(
-                String.format("%-" + String.valueOf(JUSTIFY_LEN) + "s", "Overall:") +
-                        String.format("%-6s", new String(new char[avgRating]).replace("\0", "*")) +
-                        "(" + String.valueOf(avgRating) + ")" +
-                        "\n"
-        );
-        strCreate.append(
-                String.format("%-" + String.valueOf(JUSTIFY_LEN) + "s", "Quality:") +
-                        String.format("%-6s", new String(new char[avgQuality]).replace("\0", "*")) +
-                        "(" + String.valueOf(avgQuality) + ")" +
-                        "\n"
-        );
-        strCreate.append(
-                String.format("%-" + String.valueOf(JUSTIFY_LEN) + "s", "Speed:") +
-                        String.format("%-6s", new String(new char[avgTTC]).replace("\0", "*")) +
-                        "(" + String.valueOf(avgTTC) + ")" +
-                        "\n"
-        );
-        strCreate.append(
-                String.format("%-" + String.valueOf(JUSTIFY_LEN) + "s", "Professionalism:") +
-                        String.format("%-6s", new String(new char[avgProf]).replace("\0", "*")) +
-                        "(" + String.valueOf(avgProf) + ")" +
-                        "\n"
-        );
+        if (ratings.isEmpty()) {
+            StringBuilder strCreate = new StringBuilder();
+            strCreate.append(
+                    "SUMMARY | (" + String.valueOf(getRatingCount()) + ") Reviews" + "\n" +
+                            "===========================\n"
+            );
+            strCreate.append(
+                    String.format("%-" + String.valueOf(JUSTIFY_LEN) + "s", "Overall:") +
+                            String.format("%-6s", new String(new char[avgRating]).replace("\0", "*")) +
+                            "(" + String.valueOf(avgRating) + ")" +
+                            "\n"
+            );
+            strCreate.append(
+                    String.format("%-" + String.valueOf(JUSTIFY_LEN) + "s", "Quality:") +
+                            String.format("%-6s", new String(new char[avgQuality]).replace("\0", "*")) +
+                            "(" + String.valueOf(avgQuality) + ")" +
+                            "\n"
+            );
+            strCreate.append(
+                    String.format("%-" + String.valueOf(JUSTIFY_LEN) + "s", "Speed:") +
+                            String.format("%-6s", new String(new char[avgTTC]).replace("\0", "*")) +
+                            "(" + String.valueOf(avgTTC) + ")" +
+                            "\n"
+            );
+            strCreate.append(
+                    String.format("%-" + String.valueOf(JUSTIFY_LEN) + "s", "Professionalism:") +
+                            String.format("%-6s", new String(new char[avgProf]).replace("\0", "*")) +
+                            "(" + String.valueOf(avgProf) + ")" +
+                            "\n"
+            );
 
-        return strCreate.toString();
+            return strCreate.toString();
+        } else {
+            return "SUMMARY (0 Reviews - Unrated User)";
+        }
             
     }
     final public ArrayList<Rating> getRatingsList() {
