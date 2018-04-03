@@ -48,12 +48,9 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
  * @author Lucas
  * @see Task
  */
-public class CreateModifyTaskActivity extends NavigatorActivity implements SetMapLocationDialog.MapDialogReturnListener {
+public class CreateModifyTaskActivity extends AppCompatActivity implements SetMapLocationDialog.MapDialogReturnListener {
     private DataSourceManager DSM = DataSourceManager.getInstance(this);
-    private Task returnTask;
-    private ArrayList<String> imagePaths = new ArrayList<String>();
     private LinearLayout filmstrip; // Hold the container for the objects
-    final int MAX_FILEZIZE = 65535; // in Bytes
     final int MAX_CHARLIMIT_TITLE = 30; // Maximum length of Task Title
     final int MAX_CHARLIMIT_DESCRIPTION = 300; // Maximum length of Task Description
     private int PICK_IMAGES = 1256;
