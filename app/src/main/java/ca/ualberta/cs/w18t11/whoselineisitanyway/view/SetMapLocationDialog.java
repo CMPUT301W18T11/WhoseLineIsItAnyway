@@ -3,10 +3,7 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -22,12 +19,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -36,21 +29,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
-
-import static android.content.Context.LOCATION_SERVICE;
 
 
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
-
-
-import java.io.DataOutputStream;
-import java.security.Security;
 
 
 // TODO Remove toasts used in debugging
@@ -235,7 +220,7 @@ public class SetMapLocationDialog implements OnMapReadyCallback, GoogleApiClient
 						foundLocation = true;
 						mFusedLocationProvider.removeLocationUpdates(mLocationCallback);
 						setUserLoc(best);
-						gMap_CameMove();
+						gMap_CamMove();
 						appAlert.cancel();
 						appAlert.makeText(caller, "Location acquired.", Toast.LENGTH_SHORT).show();
 					}
@@ -277,7 +262,7 @@ public class SetMapLocationDialog implements OnMapReadyCallback, GoogleApiClient
 	private void setMoveAllowed(boolean allowed) {
 		canMoveCam = allowed;
 	}
-	private void gMap_CameMove() {
+	private void gMap_CamMove() {
 		if (userLocation != null && gMap != null) {
 			LatLng usrPoint = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
 			CameraUpdate camChange = CameraUpdateFactory.newCameraPosition(

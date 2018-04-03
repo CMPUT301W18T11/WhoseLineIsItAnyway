@@ -162,12 +162,20 @@ public class NavigatorActivity extends AppCompatActivity
         }
         else if (id == R.id.create_task)
         {
+
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+
             Log.i("NAVBAR: ", "Create Task Selected");
 
-            // TODO Implement transition for task create/modify
+            // TODO fix return-to-login screen error
+            // TODO make inheritance compatible?
 
-/*            Intent intent = new Intent(this, CreateModifyTaskActivity.class);
-            startActivity(intent);*/
+            outgoingTitle= "Create Task";
+            outgoingIntent = new Intent(this, CreateModifyTaskActivity.class);
+            startActivity(outgoingIntent);
+            finish();
+            return true;
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
