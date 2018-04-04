@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +37,7 @@ public class NavigatorActivity extends AppCompatActivity
     private ActionBarDrawerToggle toggle;
     /*Taken From: https://gist.github.com/anandbose/7d6efb35c900eaba3b26*/
     private FrameLayout viewStub; //This is the framelayout to keep your content view
+    private DataSourceManager DSM = DataSourceManager.getInstance(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -73,6 +75,12 @@ public class NavigatorActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
+        // Set the user field text in the navbar
+        ((TextView) findViewById(R.id.drawer_username))
+                .setText(DSM.getCurrentUser().getUsername());
+        ((TextView) findViewById(R.id.drawer_email))
+                .setText(DSM.getCurrentUser().getEmailAddress().toString());
+
         // Adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.list, menu);
         return true;
