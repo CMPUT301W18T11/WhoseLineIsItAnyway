@@ -5,8 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableCollection;
-import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -17,8 +15,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
@@ -58,26 +56,22 @@ final class LocalDataSource implements DataSource
     }
 
     /**
-     * @param filename The name of the file to read.
+     * @param fileType The type of file to read.
      * @param <T>      The expected type of items.
      * @return All items present in the file, or null if an error occurs.
-     * @see Filename
-     * @see ImmutableCollection
+     * @see FileType
      * @see T
      */
     @Nullable
-    private <T> ImmutableCollection<T> readFile(@NonNull final Filename filename)
+    private <T> ArrayList<T> readFile(@NonNull final FileType fileType)
     {
-        try (FileInputStream fileInputStream = this.context.openFileInput(filename.toString()))
+        try (FileInputStream fileInputStream = this.context.openFileInput(fileType.getFilename()))
         {
             try (InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream))
             {
                 try (BufferedReader bufferedReader = new BufferedReader(inputStreamReader))
                 {
-                    return LocalDataSource.GSON
-                            .fromJson(bufferedReader, new TypeToken<ImmutableCollection<T>>()
-                            {
-                            }.getType());
+                    return LocalDataSource.GSON.fromJson(bufferedReader, fileType.getType());
                 }
             }
         }
@@ -90,18 +84,17 @@ final class LocalDataSource implements DataSource
     /**
      * Writes the data to a file.
      *
-     * @param filename The name of the file to which to write.
+     * @param fileType The type of file to which to write.
      * @param <T>      The expected type of items.
      * @throws IOException If an error occurs while writing.
-     * @see Filename
-     * @see ImmutableCollection
+     * @see FileType
      * @see T
      */
-    private <T> void writeFile(@NonNull final Filename filename,
-                               @NonNull final ImmutableCollection<T> items) throws IOException
+    private <T> void writeFile(@NonNull final FileType fileType,
+                               @NonNull final ArrayList<T> items) throws IOException
     {
         try (FileOutputStream fileOutputStream = this.context
-                .openFileOutput(filename.toString(), Context.MODE_PRIVATE))
+                .openFileOutput(fileType.getFilename(), Context.MODE_PRIVATE))
         {
             try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream))
             {
@@ -115,18 +108,18 @@ final class LocalDataSource implements DataSource
     }
 
     /**
-     * @param filename  The name of the file to which to write.
+     * @param fileType  The type of file to which to write.
      * @param predicate The predicate with which to test the items.
      * @param <T>       The expected type of items.
      * @return The item satisfying the predicate, or null if no such item exists in the file.
-     * @see Filename
+     * @see FileType
      * @see Predicate
      * @see T
      */
     @Nullable
-    private <T> T get(@NonNull final Filename filename, @NonNull final Predicate<T> predicate)
+    private <T> T get(@NonNull final FileType fileType, @NonNull final Predicate<T> predicate)
     {
-        final ImmutableCollection<T> items = this.readFile(filename);
+        final ArrayList<T> items = this.readFile(fileType);
 
         if (items == null)
         {
@@ -145,22 +138,24 @@ final class LocalDataSource implements DataSource
     }
 
     /**
-     * @param filename The name of the file to which to write.
+     * @param fileType The type of file to which to write.
      * @param item     The item to add.
      * @param <T>      The expected type of items.
      * @return Whether the item is present in the file.
-     * @see Filename
+     * @see FileType
      * @see T
      */
-    private <T> boolean add(@NonNull final Filename filename, @NonNull final T item)
+    private <T> boolean add(@NonNull final FileType fileType, @NonNull final T item)
     {
-        final ImmutableCollection<T> oldItems = this.readFile(filename);
+        ArrayList<T> items = this.readFile(fileType);
 
-        if (oldItems == null)
+        if (items == null)
         {
             try
             {
-                this.writeFile(filename, new ImmutableList.Builder<T>().add(item).build());
+                items = new ArrayList<T>(1);
+                items.add(item);
+                this.writeFile(fileType, items);
 
                 return true;
             }
@@ -170,21 +165,12 @@ final class LocalDataSource implements DataSource
             }
         }
 
-        final Collection<T> items = new ArrayList<>(oldItems);
-
-        for (T oldItem : oldItems)
-        {
-            if (oldItem.equals(item))
-            {
-                items.remove(oldItem);
-            }
-        }
-
+        items.remove(item); // Remove an existing copy, if one exists.
         items.add(item);
 
         try
         {
-            this.writeFile(filename, new ImmutableList.Builder<T>().addAll(items).build());
+            this.writeFile(fileType, items);
         }
         catch (IOException exception)
         {
@@ -196,22 +182,22 @@ final class LocalDataSource implements DataSource
     }
 
     /**
-     * @param filename The name of the file to which to write.
+     * @param fileType The type of file to which to write.
      * @param item     The item to remove.
      * @param <T>      The expected type of items.
      * @return Whether the item is absent from the file.
-     * @see Filename
+     * @see FileType
      * @see T
      */
-    private <T> boolean remove(@NonNull final Filename filename, @NonNull final T item)
+    private <T> boolean remove(@NonNull final FileType fileType, @NonNull final T item)
     {
-        final ImmutableCollection<T> oldItems = this.readFile(filename);
+        ArrayList<T> items = this.readFile(fileType);
 
-        if (oldItems == null)
+        if (items == null)
         {
             try
             {
-                this.writeFile(filename, new ImmutableList.Builder<T>().add(item).build());
+                this.writeFile(fileType, new ArrayList<T>());
 
                 return true;
             }
@@ -221,21 +207,11 @@ final class LocalDataSource implements DataSource
             }
         }
 
-        final Collection<T> items = new ArrayList<>(oldItems);
-
-        for (T oldItem : oldItems)
-        {
-            if (oldItem.equals(item))
-            {
-                items.remove(oldItem);
-            }
-        }
-
-        items.add(item);
+        items.remove(item);
 
         try
         {
-            this.writeFile(filename, new ImmutableList.Builder<T>().addAll(items).build());
+            this.writeFile(fileType, items);
         }
         catch (IOException exception)
         {
@@ -255,7 +231,7 @@ final class LocalDataSource implements DataSource
     @Override
     public final User[] getUsers()
     {
-        final ImmutableCollection<User> users = this.readFile(Filename.USERS);
+        final ArrayList<User> users = this.readFile(FileType.USERS);
 
         if (users == null)
         {
@@ -280,7 +256,7 @@ final class LocalDataSource implements DataSource
             throw new IllegalArgumentException("username cannot be empty");
         }
 
-        return this.get(Filename.USERS, new Predicate<User>()
+        return this.get(FileType.USERS, new Predicate<User>()
         {
             @Override
             public final boolean apply(@Nullable final User user)
@@ -301,7 +277,7 @@ final class LocalDataSource implements DataSource
     @Override
     public final boolean addUser(@NonNull final User user)
     {
-        return this.add(Filename.USERS, user);
+        return this.add(FileType.USERS, user);
     }
 
     /**
@@ -315,7 +291,7 @@ final class LocalDataSource implements DataSource
     @Override
     public final boolean removeUser(@NonNull final User user)
     {
-        return this.remove(Filename.USERS, user);
+        return this.remove(FileType.USERS, user);
     }
 
     /**
@@ -327,7 +303,7 @@ final class LocalDataSource implements DataSource
     @Override
     public final Task[] getTasks()
     {
-        final ImmutableCollection<Task> tasks = this.readFile(Filename.TASKS);
+        final ArrayList<Task> tasks = this.readFile(FileType.TASKS);
 
         if (tasks == null)
         {
@@ -359,7 +335,7 @@ final class LocalDataSource implements DataSource
             throw new IllegalArgumentException("title cannot be empty");
         }
 
-        return this.get(Filename.TASKS, new Predicate<Task>()
+        return this.get(FileType.TASKS, new Predicate<Task>()
         {
             @Override
             public final boolean apply(@Nullable final Task task)
@@ -381,7 +357,7 @@ final class LocalDataSource implements DataSource
     @Override
     public final boolean addTask(@NonNull final Task task)
     {
-        return this.add(Filename.TASKS, task);
+        return this.add(FileType.TASKS, task);
     }
 
     /**
@@ -395,7 +371,7 @@ final class LocalDataSource implements DataSource
     @Override
     public final boolean removeTask(@NonNull final Task task)
     {
-        return this.remove(Filename.TASKS, task);
+        return this.remove(FileType.TASKS, task);
     }
 
     /**
@@ -407,7 +383,7 @@ final class LocalDataSource implements DataSource
     @Override
     public final Bid[] getBids()
     {
-        final ImmutableCollection<Bid> bids = this.readFile(Filename.BIDS);
+        final ArrayList<Bid> bids = this.readFile(FileType.BIDS);
 
         if (bids == null)
         {
@@ -439,7 +415,7 @@ final class LocalDataSource implements DataSource
             throw new IllegalArgumentException("taskId cannot be empty");
         }
 
-        return this.get(Filename.BIDS, new Predicate<Bid>()
+        return this.get(FileType.BIDS, new Predicate<Bid>()
         {
             @Override
             public final boolean apply(@Nullable final Bid bid)
@@ -461,7 +437,7 @@ final class LocalDataSource implements DataSource
     @Override
     public final boolean addBid(@NonNull final Bid bid)
     {
-        return this.add(Filename.BIDS, bid);
+        return this.add(FileType.BIDS, bid);
     }
 
     /**
@@ -475,23 +451,42 @@ final class LocalDataSource implements DataSource
     @Override
     public final boolean removeBid(@NonNull final Bid bid)
     {
-        return this.remove(Filename.BIDS, bid);
+        return this.remove(FileType.BIDS, bid);
     }
 
     /**
      * The file types.
      */
-    private enum Filename
+    private enum FileType
     {
-        USERS,
-        TASKS,
-        BIDS;
+        USERS(new TypeToken<ArrayList<User>>()
+        {
+        }.getType()),
+        TASKS(new TypeToken<ArrayList<Task>>()
+        {
+        }.getType()),
+        BIDS(new TypeToken<ArrayList<Bid>>()
+        {
+        }.getType());
 
         @NonNull
-        @Override
-        public final String toString()
+        private final Type arrayType;
+
+        FileType(@NonNull final Type arrayType)
+        {
+            this.arrayType = arrayType;
+        }
+
+        @NonNull
+        public final String getFilename()
         {
             return this.name() + ".data";
+        }
+
+        @NonNull
+        public final Type getType()
+        {
+            return this.arrayType;
         }
     }
 }
