@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +13,7 @@ import java.util.Objects;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.rating.RatingCollector;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 
@@ -52,6 +51,13 @@ public final class User implements Detailed, Elastic, Serializable
     @NonNull
     private final PhoneNumber phoneNumber;
     /**
+     * The user's rating collector
+     *
+     * @see RatingCollector
+     */
+    @NonNull
+    private final RatingCollector ratingCollector;
+    /**
      * The user's unique ID in Elasticsearch.
      */
     @Nullable
@@ -79,6 +85,7 @@ public final class User implements Detailed, Elastic, Serializable
         this.username = username;
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
+        this.ratingCollector = new RatingCollector();
     }
 
     /**
@@ -110,6 +117,7 @@ public final class User implements Detailed, Elastic, Serializable
         this.username = username;
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
+        this.ratingCollector = new RatingCollector();
     }
 
     /**
@@ -140,6 +148,13 @@ public final class User implements Detailed, Elastic, Serializable
     {
         return this.phoneNumber;
     }
+
+    /**
+     * @return The user's rating collector
+     * @see RatingCollector
+     */
+    @NonNull
+    public final RatingCollector getRatingCollector() { return this.ratingCollector; }
 
     /**
      * @return The user's elastic ID.
