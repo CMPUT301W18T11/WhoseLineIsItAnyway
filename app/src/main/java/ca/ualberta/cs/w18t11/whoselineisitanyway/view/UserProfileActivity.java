@@ -1,8 +1,11 @@
+package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -14,11 +17,10 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.rating.Rating;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.rating.RatingCollector;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.view.FullReviewDialog;
 
 
 /**
- * <h1>UserProfileActivity</h1>
+ * <h1>ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserProfileActivity</h1>
  * This is an activity to show an arbitrarily passed user profile to a requester. READ ONLY
  * Make sure to pass the user as part of the bundle to this intent, tagged as EXISTING_USER
  * @author Lucas Thalen
@@ -27,14 +29,15 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.view.FullReviewDialog;
  */
 public class UserProfileActivity extends AppCompatActivity {
 
-    TextView usernameField = (TextView) findViewById(R.id.txt_userName);
-    TextView contactField = (TextView) findViewById(R.id.txt_contact);
-    TextView ratingSummary = (TextView) findViewById(R.id.txt_reviewHeader);
-    ListView ratingList = (ListView) findViewById(R.id.lst_reviews);
-    Button btnClose = (Button) findViewById(R.id.btn_close);
+    TextView usernameField;
+    TextView contactField;
+    TextView ratingSummary;
+    ListView ratingList;
+    Button btnClose;
     User currentUser; // Get the user that the person wants to see data on from the intent bundle
     ArrayList<Rating> ratings; // Get a list of ratings from the rating collector - is there a more OOP way to do this?
     RatingCollector reviews; // Get the ratingcollector from the user so that ratings can be read.
+    private ArrayAdapter<Rating> ratingListAdapter;
 
 
     @Override
@@ -51,7 +54,14 @@ public class UserProfileActivity extends AppCompatActivity {
             finish(); // Exit the intent, there was an irrecoverable error
         }
 
-        reviews = currentUser.getRatingCollector(); // TODO implement a way to get the ratingcollector from the user
+        usernameField = (TextView) findViewById(R.id.txt_userName);
+        contactField = (TextView) findViewById(R.id.txt_contact);
+        ratingSummary = (TextView) findViewById(R.id.txt_reviewHeader);
+        ratingList = (ListView) findViewById(R.id.lst_reviews);
+        btnClose = (Button) findViewById(R.id.btn_close);
+
+        // Extract the user's ratings
+        reviews = currentUser.getRatingCollector();
         ratings = reviews.getRatingsList();
 
         usernameField.setText(currentUser.getUsername()); // Set the username
@@ -65,14 +75,15 @@ public class UserProfileActivity extends AppCompatActivity {
         contactField.setText(contactInfo); // Set the contact info to this string
         ratingSummary.setText(reviews.toString()); // This gets the general summary (5 reviews, 5 stars, blah blah and sets it as text
 
-        // TODO add RatingCollector retrieval to User object
-        // TODO add listview adapter code to act on RatingsList in private global vars
 
+        // Initialize Rating Adapter to act on the list of user ratings
+        ratingListAdapter = new ArrayAdapter<Rating>(this, R.layout.list_object, ratings);
+        ratingList.setAdapter(ratingListAdapter);
+        ratingListAdapter.notifyDataSetChanged();
 
         // EVENT HANDLERS
         btnClose_onClick(); // On closing the intent. Doesn't have to do anything special, so just close it.
         lstRatings_onItemClicked(); // Get the rating that was selected and push it to full review to see the full text + stats for it
-
     }
 
     private void btnClose_onClick() {
