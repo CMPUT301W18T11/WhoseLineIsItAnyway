@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
@@ -18,7 +19,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.function.Predicate;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
@@ -135,7 +135,7 @@ final class LocalDataSource implements DataSource
 
         for (T item : items)
         {
-            if (predicate.test(item))
+            if (predicate.apply(item))
             {
                 return item;
             }
@@ -283,9 +283,9 @@ final class LocalDataSource implements DataSource
         return this.get(Filename.USERS, new Predicate<User>()
         {
             @Override
-            public final boolean test(@NonNull final User user)
+            public final boolean apply(@Nullable final User user)
             {
-                return user.getUsername().equals(username);
+                return user != null && user.getUsername().equals(username);
             }
         });
     }
@@ -362,10 +362,10 @@ final class LocalDataSource implements DataSource
         return this.get(Filename.TASKS, new Predicate<Task>()
         {
             @Override
-            public final boolean test(@NonNull final Task task)
+            public final boolean apply(@Nullable final Task task)
             {
-                return task.getRequesterUsername().equals(requesterUsername) && task.getTitle()
-                        .equals(title);
+                return task != null && task.getRequesterUsername().equals(requesterUsername) && task
+                        .getTitle().equals(title);
             }
         });
     }
@@ -442,10 +442,10 @@ final class LocalDataSource implements DataSource
         return this.get(Filename.BIDS, new Predicate<Bid>()
         {
             @Override
-            public final boolean test(@NonNull final Bid bid)
+            public final boolean apply(@Nullable final Bid bid)
             {
-                return bid.getProviderUsername().equals(providerUsername) && bid.getTaskId()
-                        .equals(taskId);
+                return bid != null && bid.getProviderUsername().equals(providerUsername) && bid
+                        .getTaskId().equals(taskId);
             }
         });
     }
