@@ -19,8 +19,8 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
  */
 public class DetailableListActivity extends NavigatorActivity
 {
-    static final String DATA_DETAILABLE_LIST = "com.whoselineisitanyway.DATA_DETAILABLE_LIST";
-    static final String DATA_TITLE = "com.whoselineisitanyway.DATA_DETAILABLE_TITLE";
+    public static final String DATA_DETAILABLE_LIST = "com.whoselineisitanyway.DATA_DETAILABLE_LIST";
+    public static final String DATA_TITLE = "com.whoselineisitanyway.DATA_DETAILABLE_TITLE";
     private String title;
     private ListView detailsLV;
     private ArrayList<Detailed> detailList;
