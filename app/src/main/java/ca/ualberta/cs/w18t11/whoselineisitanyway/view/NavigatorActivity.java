@@ -135,6 +135,12 @@ public class NavigatorActivity extends AppCompatActivity
         String outgoingTitle = "List";
         Intent outgoingIntent = new Intent(this, DetailableListActivity.class);
         ArrayList<Detailed> detailedArrayList = new ArrayList<>();
+        DataSourceManager dm = new DataSourceManager(this);
+        User currentUser = dm.getCurrentUser();
+
+        Task[] allTasks = dm.getTasks();
+        Bid[] allBids = dm.getBids();
+
 
         if (id == R.id.all_tasks)
         {

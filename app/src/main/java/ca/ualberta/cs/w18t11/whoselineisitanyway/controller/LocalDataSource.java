@@ -2,22 +2,23 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.controller;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.support.annotation.Nullable;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.function.Predicate;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
@@ -26,19 +27,11 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 /**
  * Represents a file-based data source.
  *
- * @author Samuel Dolha
- * @version 2.0
+ * @author Samuel Dolha, Mark Griffith
+ * @version 3.0
  */
-public final class LocalDataSource implements DataSource
+final class LocalDataSource implements DataSource
 {
-    private static final String SUFFIX = ".data";
-
-    private static final String USERS_FILENAME = "Users" + LocalDataSource.SUFFIX;
-
-    private static final String TASKS_FILENAME = "Tasks" + LocalDataSource.SUFFIX;
-
-    private static final String BIDS_FILENAME = "Bids" + LocalDataSource.SUFFIX;
-
     /**
      * The JSON converter.
      *
@@ -53,74 +46,62 @@ public final class LocalDataSource implements DataSource
      * @see Context
      */
     @NonNull
-    private Context context;
+    private final Context context;
 
     /**
      * @param context The context of the application.
      * @see Context
      */
-    public LocalDataSource(@NonNull final Context context)
+    LocalDataSource(@NonNull final Context context)
     {
         this.context = context;
     }
 
-    @NonNull
-    private static Type getFileType(@NonNull final String filename)
+    /**
+     * @param filename The name of the file to read.
+     * @param <T>      The expected type of items.
+     * @return All items present in the file, or null if an error occurs.
+     * @see Filename
+     * @see ImmutableCollection
+     * @see T
+     */
+    @Nullable
+    private <T> ImmutableCollection<T> readFile(@NonNull final Filename filename)
     {
-        switch (filename)
-        {
-            case USERS_FILENAME:
-                return new TypeToken<User[]>()
-                {
-                }.getType();
-
-            case TASKS_FILENAME:
-                return new TypeToken<Task[]>()
-                {
-                }.getType();
-
-            case BIDS_FILENAME:
-                return new TypeToken<Bid[]>()
-                {
-                }.getType();
-
-            default:
-                throw new IllegalArgumentException("Unrecognized filename");
-        }
-    }
-
-    private <T> T[] readFile(@NonNull final String filename)
-            throws IOException
-    {
-        File folder = new File(this.context.getFilesDir().toString());
-        File file = new File(folder.getAbsolutePath() + "/" + filename);
-        if (!folder.exists())
-        {
-            folder.mkdir();
-        }
-        if (!file.exists())
-        {
-            file.createNewFile();
-        }
-
-        try (FileInputStream fileInputStream = this.context.openFileInput(filename))
+        try (FileInputStream fileInputStream = this.context.openFileInput(filename.toString()))
         {
             try (InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream))
             {
                 try (BufferedReader bufferedReader = new BufferedReader(inputStreamReader))
                 {
                     return LocalDataSource.GSON
-                            .fromJson(bufferedReader, LocalDataSource.getFileType(filename));
+                            .fromJson(bufferedReader, new TypeToken<ImmutableCollection<T>>()
+                            {
+                            }.getType());
                 }
             }
         }
+        catch (IOException exception)
+        {
+            return null;
+        }
     }
 
-    private <T> void writeFile(@NonNull final String filename, @NonNull final T[] items)
-            throws IOException
+    /**
+     * Writes the data to a file.
+     *
+     * @param filename The name of the file to which to write.
+     * @param <T>      The expected type of items.
+     * @throws IOException If an error occurs while writing.
+     * @see Filename
+     * @see ImmutableCollection
+     * @see T
+     */
+    private <T> void writeFile(@NonNull final Filename filename,
+                               @NonNull final ImmutableCollection<T> items) throws IOException
     {
         try (FileOutputStream fileOutputStream = this.context
-                .openFileOutput(filename, Context.MODE_PRIVATE))
+                .openFileOutput(filename.toString(), Context.MODE_PRIVATE))
         {
             try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream))
             {
@@ -133,211 +114,384 @@ public final class LocalDataSource implements DataSource
         }
     }
 
-    @NonNull
-    @Override
-    public User[] getUsers()
+    /**
+     * @param filename  The name of the file to which to write.
+     * @param predicate The predicate with which to test the items.
+     * @param <T>       The expected type of items.
+     * @return The item satisfying the predicate, or null if no such item exists in the file.
+     * @see Filename
+     * @see Predicate
+     * @see T
+     */
+    @Nullable
+    private <T> T get(@NonNull final Filename filename, @NonNull final Predicate<T> predicate)
     {
-        try
-        {
-            User[] users = this.readFile(USERS_FILENAME);
-            return users;
-        }
-        catch (IOException exception)
+        final ImmutableCollection<T> items = this.readFile(filename);
+
+        if (items == null)
         {
             return null;
         }
-    }
 
-    @Override
-    public boolean addUser(@NonNull final User user)
-    {
-        try
+        for (T item : items)
         {
-            ArrayList<User> users;
-            User[] fromFile = this.readFile(USERS_FILENAME);
-            if (fromFile == null)
+            if (predicate.test(item))
             {
-                users = new ArrayList<User>();
+                return item;
             }
-            else
-            {
-                users = new ArrayList<>(Arrays.asList(fromFile));
-            }
-            users.add(user);
-            this.writeFile(USERS_FILENAME, users.toArray(new User[0]));
         }
-        catch (IOException exception)
-        {
-            Log.i("LocalDataSource.addUser", "IOException: " + exception.toString());
-            return false;
-        }
-        return true;
-    }
 
-    @Override
-    public boolean removeUser(@NonNull final User user)
-    {
-        try
-        {
-            ArrayList<User> users;
-            User[] fromFile = this.readFile(USERS_FILENAME);
-            if (fromFile == null)
-            {
-                return false;
-            }
-            else
-            {
-                users = new ArrayList<>(Arrays.asList(fromFile));
-            }
-            users.remove(user);
-            this.writeFile(USERS_FILENAME, users.toArray(new User[0]));
-        }
-        catch (IOException exception)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    @NonNull
-    @Override
-    public Task[] getTasks()
-    {
-        try
-        {
-            return this.readFile(TASKS_FILENAME);
-        }
-        catch (IOException exception)
-        {
-            return null;
-        }
-    }
-
-    @Override
-    public boolean addTask(@NonNull final Task task)
-    {
-        try
-        {
-            ArrayList<Task> tasks;
-            Task[] fromFile = this.readFile(TASKS_FILENAME);
-            if (fromFile == null)
-            {
-                tasks = new ArrayList<Task>();
-            }
-            else
-            {
-                tasks = new ArrayList<>(Arrays.asList(fromFile));
-            }
-            tasks.add(task);
-            this.writeFile(TASKS_FILENAME, tasks.toArray(new Task[0]));
-        }
-        catch (IOException exception)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean removeTask(@NonNull final Task task)
-    {
-        try
-        {
-            ArrayList<Task> tasks;
-            Task[] fromFile = this.readFile(TASKS_FILENAME);
-            if (fromFile == null)
-            {
-                return false;
-            }
-            else
-            {
-                tasks = new ArrayList<>(Arrays.asList(fromFile));
-            }
-            tasks.remove(task);
-            this.writeFile(TASKS_FILENAME, tasks.toArray(new Task[0]));
-        }
-        catch (IOException exception)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    @NonNull
-    @Override
-    public Bid[] getBids()
-    {
-        try
-        {
-            return this.readFile(BIDS_FILENAME);
-        }
-        catch (IOException exception)
-        {
-            return null;
-        }
-    }
-
-    @Override
-    public boolean addBid(@NonNull final Bid bid)
-    {
-        try
-        {
-            ArrayList<Bid> bids;
-            Bid[] fromFile = this.readFile(BIDS_FILENAME);
-            if (fromFile == null)
-            {
-                bids = new ArrayList<Bid>();
-            }
-            else
-            {
-                bids = new ArrayList<>(Arrays.asList(fromFile));
-            }
-            bids.add(bid);
-            this.writeFile(BIDS_FILENAME, bids.toArray(new Bid[0]));
-        }
-        catch (IOException exception)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean removeBid(@NonNull final Bid bid)
-    {
-        try
-        {
-            ArrayList<Bid> bids;
-            Bid[] fromFile = this.readFile(BIDS_FILENAME);
-            if (fromFile == null)
-            {
-                return false;
-            }
-            else
-            {
-                bids = new ArrayList<>(Arrays.asList(fromFile));
-            }
-            bids.remove(bid);
-            this.writeFile(BIDS_FILENAME, bids.toArray(new Bid[0]));
-        }
-        catch (IOException exception)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public User getUserById(String elasticId)
-    {
-        // TODO implement
         return null;
     }
 
-    @Override
-    public User getUserByUsername(String username)
+    /**
+     * @param filename The name of the file to which to write.
+     * @param item     The item to add.
+     * @param <T>      The expected type of items.
+     * @return Whether the item is present in the file.
+     * @see Filename
+     * @see T
+     */
+    private <T> boolean add(@NonNull final Filename filename, @NonNull final T item)
     {
-        // TODO implement
-        return null;
+        final ImmutableCollection<T> oldItems = this.readFile(filename);
+
+        if (oldItems == null)
+        {
+            try
+            {
+                this.writeFile(filename, new ImmutableList.Builder<T>().add(item).build());
+
+                return true;
+            }
+            catch (IOException exception)
+            {
+                return false;
+            }
+        }
+
+        final Collection<T> items = new ArrayList<>(oldItems);
+
+        for (T oldItem : oldItems)
+        {
+            if (oldItem.equals(item))
+            {
+                items.remove(oldItem);
+            }
+        }
+
+        items.add(item);
+
+        try
+        {
+            this.writeFile(filename, new ImmutableList.Builder<T>().addAll(items).build());
+        }
+        catch (IOException exception)
+        {
+            return false;
+        }
+
+        return true;
+
+    }
+
+    /**
+     * @param filename The name of the file to which to write.
+     * @param item     The item to remove.
+     * @param <T>      The expected type of items.
+     * @return Whether the item is absent from the file.
+     * @see Filename
+     * @see T
+     */
+    private <T> boolean remove(@NonNull final Filename filename, @NonNull final T item)
+    {
+        final ImmutableCollection<T> oldItems = this.readFile(filename);
+
+        if (oldItems == null)
+        {
+            try
+            {
+                this.writeFile(filename, new ImmutableList.Builder<T>().add(item).build());
+
+                return true;
+            }
+            catch (IOException exception)
+            {
+                return false;
+            }
+        }
+
+        final Collection<T> items = new ArrayList<>(oldItems);
+
+        for (T oldItem : oldItems)
+        {
+            if (oldItem.equals(item))
+            {
+                items.remove(oldItem);
+            }
+        }
+
+        items.add(item);
+
+        try
+        {
+            this.writeFile(filename, new ImmutableList.Builder<T>().addAll(items).build());
+        }
+        catch (IOException exception)
+        {
+            return false;
+        }
+
+        return true;
+
+    }
+
+    /**
+     * @return All users present in the filesystem, or null if an error occurs.
+     * @see DataSource
+     * @see User
+     */
+    @Nullable
+    @Override
+    public final User[] getUsers()
+    {
+        final ImmutableCollection<User> users = this.readFile(Filename.USERS);
+
+        if (users == null)
+        {
+            return null;
+        }
+
+        return users.toArray(new User[0]);
+    }
+
+    /**
+     * @return The user with that username, or null if no such user exists in the filesystem.
+     * @throws IllegalArgumentException For an empty username.
+     * @see DataSource
+     * @see User
+     */
+    @Nullable
+    @Override
+    public final User getUser(@NonNull final String username) throws IllegalArgumentException
+    {
+        if (username.isEmpty())
+        {
+            throw new IllegalArgumentException("username cannot be empty");
+        }
+
+        return this.get(Filename.USERS, new Predicate<User>()
+        {
+            @Override
+            public final boolean test(@NonNull final User user)
+            {
+                return user.getUsername().equals(username);
+            }
+        });
+    }
+
+    /**
+     * Adds a user to the filesystem.
+     *
+     * @param user The user to add.
+     * @return Whether the user is present in the filesystem.
+     * @see DataSource
+     * @see User
+     */
+    @Override
+    public final boolean addUser(@NonNull final User user)
+    {
+        return this.add(Filename.USERS, user);
+    }
+
+    /**
+     * Removes a user from the filesystem.
+     *
+     * @param user The user to remove.
+     * @return Whether the user is absent from the filesystem.
+     * @see DataSource
+     * @see User
+     */
+    @Override
+    public final boolean removeUser(@NonNull final User user)
+    {
+        return this.remove(Filename.USERS, user);
+    }
+
+    /**
+     * @return All tasks present in the filesystem, or null if an error occurs.
+     * @see DataSource
+     * @see Task
+     */
+    @Nullable
+    @Override
+    public final Task[] getTasks()
+    {
+        final ImmutableCollection<Task> tasks = this.readFile(Filename.TASKS);
+
+        if (tasks == null)
+        {
+            return null;
+        }
+
+        return tasks.toArray(new Task[0]);
+    }
+
+    /**
+     * @return The task with that requester and title, or null if no such task exists in the
+     * filesystem.
+     * @throws IllegalArgumentException For an empty requesterUsername or title.
+     * @see DataSource
+     * @see Task
+     */
+    @Nullable
+    @Override
+    public final Task getTask(@NonNull final String requesterUsername, @NonNull final String title)
+            throws IllegalArgumentException
+    {
+        if (requesterUsername.isEmpty())
+        {
+            throw new IllegalArgumentException("requesterUsername cannot be empty");
+        }
+
+        if (title.isEmpty())
+        {
+            throw new IllegalArgumentException("title cannot be empty");
+        }
+
+        return this.get(Filename.TASKS, new Predicate<Task>()
+        {
+            @Override
+            public final boolean test(@NonNull final Task task)
+            {
+                return task.getRequesterUsername().equals(requesterUsername) && task.getTitle()
+                        .equals(title);
+            }
+        });
+    }
+
+    /**
+     * Adds a task to the filesystem.
+     *
+     * @param task The task to add.
+     * @return Whether the task is present in the filesystem.
+     * @see DataSource
+     * @see Task
+     */
+    @Override
+    public final boolean addTask(@NonNull final Task task)
+    {
+        return this.add(Filename.TASKS, task);
+    }
+
+    /**
+     * Removes a task from the filesystem.
+     *
+     * @param task The task to remove.
+     * @return Whether the task is absent from the filesystem.
+     * @see DataSource
+     * @see Task
+     */
+    @Override
+    public final boolean removeTask(@NonNull final Task task)
+    {
+        return this.remove(Filename.TASKS, task);
+    }
+
+    /**
+     * @return All bids present in the filesystem, or null if an error occurs.
+     * @see Bid
+     * @see DataSource
+     */
+    @Nullable
+    @Override
+    public final Bid[] getBids()
+    {
+        final ImmutableCollection<Bid> bids = this.readFile(Filename.BIDS);
+
+        if (bids == null)
+        {
+            return null;
+        }
+
+        return bids.toArray(new Bid[0]);
+    }
+
+    /**
+     * @return The bid from that provider on that task, or null if no such bid exists in the
+     * filesystem.
+     * @throws IllegalArgumentException For an empty providerUsername or taskId.
+     * @see Bid
+     * @see DataSource
+     */
+    @Nullable
+    @Override
+    public final Bid getBid(@NonNull final String providerUsername, @NonNull final String taskId)
+            throws IllegalArgumentException
+    {
+        if (providerUsername.isEmpty())
+        {
+            throw new IllegalArgumentException("providerUsername cannot be empty");
+        }
+
+        if (taskId.isEmpty())
+        {
+            throw new IllegalArgumentException("taskId cannot be empty");
+        }
+
+        return this.get(Filename.BIDS, new Predicate<Bid>()
+        {
+            @Override
+            public final boolean test(@NonNull final Bid bid)
+            {
+                return bid.getProviderUsername().equals(providerUsername) && bid.getTaskId()
+                        .equals(taskId);
+            }
+        });
+    }
+
+    /**
+     * Adds a bid to the filesystem.
+     *
+     * @param bid The bid to add.
+     * @return Whether the bid is present in the filesystem.
+     * @see Bid
+     * @see DataSource
+     */
+    @Override
+    public final boolean addBid(@NonNull final Bid bid)
+    {
+        return this.add(Filename.BIDS, bid);
+    }
+
+    /**
+     * Adds a bid to the filesystem.
+     *
+     * @param bid The bid to add.
+     * @return Whether the bid is present in the filesystem.
+     * @see Bid
+     * @see DataSource
+     */
+    @Override
+    public final boolean removeBid(@NonNull final Bid bid)
+    {
+        return this.remove(Filename.BIDS, bid);
+    }
+
+    /**
+     * The file types.
+     */
+    private enum Filename
+    {
+        USERS,
+        TASKS,
+        BIDS;
+
+        @NonNull
+        @Override
+        public final String toString()
+        {
+            return this.name() + ".data";
+        }
     }
 }
