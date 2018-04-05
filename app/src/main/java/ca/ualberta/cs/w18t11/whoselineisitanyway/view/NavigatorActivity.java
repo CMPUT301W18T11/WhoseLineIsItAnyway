@@ -250,6 +250,12 @@ public class NavigatorActivity extends AppCompatActivity
     {
         // TODO: Extract filtering to the DataSourceManager
         Task[] allTasks = new DataSourceManager(this).getTasks();
+
+        if (allTasks == null)
+        {
+            return new ArrayList<>();
+        }
+
         return new ArrayList<Detailed>(Arrays.asList(allTasks));
     }
 
