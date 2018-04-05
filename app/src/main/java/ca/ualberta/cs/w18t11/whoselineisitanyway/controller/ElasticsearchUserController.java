@@ -30,7 +30,7 @@ import io.searchbox.core.SearchResult;
 public class ElasticsearchUserController
 {
     private static String typeStr = "users";
-    private static String idxStr = "cmput301w18t11_whoselineisitanyways";
+    private static String idxStr = "cmput301w18t11";
     private static JestDroidClient client;
 
     /**

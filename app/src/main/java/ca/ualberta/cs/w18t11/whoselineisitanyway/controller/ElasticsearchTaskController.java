@@ -28,7 +28,7 @@ import io.searchbox.core.SearchResult;
 public class ElasticsearchTaskController
 {
     private static String typeStr = "tasks";
-    private static String idxStr = "cmput301w18t11_whoselineisitanyways";
+    private static String idxStr = "cmput301w18t11";
     private static JestDroidClient client;
 
     /**
