@@ -4,6 +4,7 @@
     <string name="title_CreateTaskActivity">Create/Add New Task</string>
     <string name="title_UserLoginActivity">Welcome! - Log In/Sign Up</string>
     <string name="title_EditTaskActivity">Edit Task</string>
+    <string name="title_UserProfile">User Profile</string>
 
     <!-- Generic Strings -->
     <string name="GENERIC_OK">OK</string>
