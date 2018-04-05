@@ -10,6 +10,7 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.constants.Constants;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
@@ -28,7 +29,7 @@ import io.searchbox.core.SearchResult;
 public class ElasticsearchTaskController
 {
     private static String typeStr = "tasks";
-    private static String idxStr = "cmput301w18t11";
+
     private static JestDroidClient client;
 
     /**
@@ -51,7 +52,7 @@ public class ElasticsearchTaskController
             for (Task task : tasks)
             {
                 Index index = new Index.Builder(task)
-                        .index(idxStr)
+                        .index(Constants.ELASTICSEARCH_INDEX)
                         .type(typeStr)
                         .id(task.getElasticId())
                         .build();
@@ -71,7 +72,7 @@ public class ElasticsearchTaskController
                                 "index missing or could not connect:" +
                                         Integer.toString(result.getResponseCode()));
 
-                        Index idx = new Index.Builder(task).index(idxStr).type(typeStr).build();
+                        Index idx = new Index.Builder(task).index(Constants.ELASTICSEARCH_INDEX).type(typeStr).build();
 
                         try
                         {
@@ -125,7 +126,7 @@ public class ElasticsearchTaskController
         {
             verifyConfig();
 
-            Get get = new Get.Builder(idxStr, taskId[0]).type(typeStr).build();
+            Get get = new Get.Builder(Constants.ELASTICSEARCH_INDEX, taskId[0]).type(typeStr).build();
 
             try
             {
@@ -180,7 +181,7 @@ public class ElasticsearchTaskController
             }
 
             Search search = new Search.Builder(query[0])
-                    .addIndex(idxStr)
+                    .addIndex(Constants.ELASTICSEARCH_INDEX)
                     .addType(typeStr)
                     .build();
 
@@ -227,7 +228,7 @@ public class ElasticsearchTaskController
             verifyConfig();
 
             Delete delete =
-                    new Delete.Builder(task[0].getElasticId()).index(idxStr).type(typeStr).build();
+                    new Delete.Builder(task[0].getElasticId()).index(Constants.ELASTICSEARCH_INDEX).type(typeStr).build();
 
             try
             {
@@ -270,7 +271,7 @@ public class ElasticsearchTaskController
             verifyConfig();
 
             Index index = new Index.Builder(task[0])
-                    .index(idxStr)
+                    .index(Constants.ELASTICSEARCH_INDEX)
                     .type(typeStr)
                     .id(task[0].getElasticId())
                     .build();
@@ -318,7 +319,7 @@ public class ElasticsearchTaskController
 
             for (Task task : tasks)
             {
-                Index idx = new Index.Builder(task).index(idxStr).type(typeStr).build();
+                Index idx = new Index.Builder(task).index(Constants.ELASTICSEARCH_INDEX).type(typeStr).build();
 
                 try
                 {
@@ -358,7 +359,7 @@ public class ElasticsearchTaskController
         {
             Log.i("ElasticSearch", "verifying config...");
             DroidClientConfig.Builder builder =
-                    new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
+                    new DroidClientConfig.Builder(Constants.ELASTICSEARCH_URL);
             JestClientFactory factory = new JestClientFactory();
 
             DroidClientConfig config = builder.build();
