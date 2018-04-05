@@ -320,7 +320,6 @@ final class MockDataSource implements DataSource
         return true;
     }
 
-    @Override
     public User getUserById(String elasticId)
     {
         for(User user: users)
@@ -333,7 +332,6 @@ final class MockDataSource implements DataSource
         return null;
     }
 
-    @Override
     public User getUserByUsername(String username)
     {
         for(User user: users)

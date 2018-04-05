@@ -37,7 +37,7 @@ public class NavigatorActivity extends AppCompatActivity
     private ActionBarDrawerToggle toggle;
     /*Taken From: https://gist.github.com/anandbose/7d6efb35c900eaba3b26*/
     private FrameLayout viewStub; //This is the framelayout to keep your content view
-    private DataSourceManager DSM = DataSourceManager.getInstance(this);
+    private DataSourceManager DSM = new DataSourceManager(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -249,7 +249,7 @@ public class NavigatorActivity extends AppCompatActivity
     private ArrayList<Detailed> buildAllTasksList()
     {
         // TODO: Extract filtering to the DataSourceManager
-        Task[] allTasks = DataSourceManager.getInstance(this).getAllTasks();
+        Task[] allTasks = new DataSourceManager(this).getTasks();
         return new ArrayList<Detailed>(Arrays.asList(allTasks));
     }
 
@@ -261,8 +261,8 @@ public class NavigatorActivity extends AppCompatActivity
     {
         // TODO: Extract filtering to the DataSourceManager
         ArrayList<Detailed> detailedArrayList = new ArrayList<>();
-        Task[] allTasks = DataSourceManager.getInstance(this).getAllTasks();
-        User currentUser = DataSourceManager.getInstance(this).getCurrentUser();
+        Task[] allTasks = new DataSourceManager(this).getTasks();
+        User currentUser = new DataSourceManager(this).getCurrentUser();
 
         if (allTasks != null)
         {
@@ -286,8 +286,8 @@ public class NavigatorActivity extends AppCompatActivity
     {
         // TODO: Extract filtering to the DataSourceManager
         ArrayList<Detailed> detailedArrayList = new ArrayList<>();
-        Task[] allTasks = DataSourceManager.getInstance(this).getAllTasks();
-        User currentUser = DataSourceManager.getInstance(this).getCurrentUser();
+        Task[] allTasks = new DataSourceManager(this).getTasks();
+        User currentUser = new DataSourceManager(this).getCurrentUser();
 
         if (allTasks != null)
         {
@@ -312,7 +312,7 @@ public class NavigatorActivity extends AppCompatActivity
     {
         // TODO: Extract filtering to the DataSourceManager
         ArrayList<Detailed> detailedArrayList = new ArrayList<>();
-        Detailed[] allTasks = DataSourceManager.getInstance(this).getAllTasks();
+        Detailed[] allTasks = new DataSourceManager(this).getTasks();
 
         // TODO: Add tasks based on distance (and status?)
 
@@ -328,8 +328,8 @@ public class NavigatorActivity extends AppCompatActivity
         // TODO: Extract filtering to the DataSourceManager
         // TODO: Check if we should only display bids on tasks that are currently unassigned?
         ArrayList<Detailed> detailedArrayList = new ArrayList<>();
-        Bid[] allBids = DataSourceManager.getInstance(this).getAllBids();
-        User currentUser = DataSourceManager.getInstance(this).getCurrentUser();
+        Bid[] allBids = new DataSourceManager(this).getBids();
+        User currentUser = new DataSourceManager(this).getCurrentUser();
 
         if (allBids != null)
         {
