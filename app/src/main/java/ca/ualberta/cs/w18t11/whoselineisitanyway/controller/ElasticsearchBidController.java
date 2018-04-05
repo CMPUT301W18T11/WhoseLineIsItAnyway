@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.constants.Constants;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
@@ -28,7 +29,7 @@ import io.searchbox.core.SearchResult;
 public class ElasticsearchBidController
 {
     private static String typeStr = "bids";
-    private static String idxStr = "cmput301w18t11_whoselineisitanyways";
+
     private static JestDroidClient client;
 
     /**
@@ -52,7 +53,7 @@ public class ElasticsearchBidController
             {
 
                 Index index = new Index.Builder(bid)
-                        .index(idxStr)
+                        .index(Constants.ELASTICSEARCH_INDEX)
                         .type(typeStr)
                         .id(bid.getElasticId())
                         .build();
@@ -70,7 +71,7 @@ public class ElasticsearchBidController
                         Log.i("Elasticsearch Error",
                                 "index missing or could not connect:" +
                                         Integer.toString(result.getResponseCode()));
-                        Index idx = new Index.Builder(bid).index(idxStr).type(typeStr).build();
+                        Index idx = new Index.Builder(bid).index(Constants.ELASTICSEARCH_INDEX).type(typeStr).build();
 
                         try
                         {
@@ -124,7 +125,7 @@ public class ElasticsearchBidController
         {
             verifyConfig();
 
-            Get get = new Get.Builder(idxStr, bidId[0]).type(typeStr).build();
+            Get get = new Get.Builder(Constants.ELASTICSEARCH_INDEX, bidId[0]).type(typeStr).build();
 
             try
             {
@@ -180,7 +181,7 @@ public class ElasticsearchBidController
             }
 
             Search search = new Search.Builder(query[0])
-                    .addIndex(idxStr)
+                    .addIndex(Constants.ELASTICSEARCH_INDEX)
                     .addType(typeStr)
                     .build();
 
@@ -227,7 +228,7 @@ public class ElasticsearchBidController
             verifyConfig();
 
             Delete delete =
-                    new Delete.Builder(bid[0].getElasticId()).index(idxStr).type(typeStr).build();
+                    new Delete.Builder(bid[0].getElasticId()).index(Constants.ELASTICSEARCH_INDEX).type(typeStr).build();
 
             try
             {
@@ -269,7 +270,7 @@ public class ElasticsearchBidController
             verifyConfig();
 
             Index index = new Index.Builder(bid[0])
-                    .index(idxStr)
+                    .index(Constants.ELASTICSEARCH_INDEX)
                     .type(typeStr)
                     .id(bid[0].getElasticId())
                     .build();
@@ -316,7 +317,7 @@ public class ElasticsearchBidController
 
             for (Bid bid: bids)
             {
-                Index idx = new Index.Builder(bid).index(idxStr).type(typeStr).build();
+                Index idx = new Index.Builder(bid).index(Constants.ELASTICSEARCH_INDEX).type(typeStr).build();
 
                 try
                 {
@@ -356,7 +357,7 @@ public class ElasticsearchBidController
         {
             Log.i("ElasticSearch", "verifying config...");
             DroidClientConfig.Builder builder =
-                    new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
+                    new DroidClientConfig.Builder(Constants.ELASTICSEARCH_URL);
             JestClientFactory factory = new JestClientFactory();
 
             DroidClientConfig config = builder.build();

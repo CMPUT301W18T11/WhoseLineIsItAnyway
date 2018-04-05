@@ -31,7 +31,7 @@ public abstract class EditCreateTaskTemplate extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_task_modify_template);
+//        setContentView(R.layout.activity_task_modify_template);
 
     }
 

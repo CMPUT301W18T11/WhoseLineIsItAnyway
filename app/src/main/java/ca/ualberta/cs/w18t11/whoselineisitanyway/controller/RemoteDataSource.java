@@ -117,6 +117,12 @@ public class RemoteDataSource implements DataSource
         try
         {
             ArrayList<User> users = getAllUsersTask.get();
+
+            if (users == null)
+            {
+                return new User[0];
+            }
+
             return users.toArray(new User[users.size()]);
         }
         catch (InterruptedException e)
@@ -226,6 +232,12 @@ public class RemoteDataSource implements DataSource
         try
         {
             ArrayList<Task> tasks = getAllTasksTask.get();
+
+            if (tasks == null)
+            {
+                return new Task[0];
+            }
+
             return tasks.toArray(new Task[tasks.size()]);
         }
         catch (InterruptedException e)
@@ -313,6 +325,12 @@ public class RemoteDataSource implements DataSource
         try
         {
             ArrayList<Bid> bids = getAllBidsTask.get();
+
+            if (bids == null)
+            {
+                return new Bid[0];
+            }
+
             return bids.toArray(new Bid[bids.size()]);
         }
         catch (InterruptedException e)
