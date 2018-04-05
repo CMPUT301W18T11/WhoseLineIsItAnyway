@@ -31,7 +31,13 @@
     <TextView
         android:id="@+id/debug_textview"
         android:layout_width="match_parent"
-        android:layout_height="308dp"
+        android:layout_height="85dp"
         android:fontFamily="monospace"
         android:text="TextView" />
+
+    <ImageView
+        android:id="@+id/debug_imgview"
+        android:layout_width="match_parent"
+        android:layout_height="461dp"
+        app:srcCompat="@android:drawable/btn_star" />
 </LinearLayout>

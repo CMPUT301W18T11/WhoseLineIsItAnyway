@@ -1,6 +1,8 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 
 import android.app.AlertDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -10,10 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import org.w3c.dom.Text;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.rating.Rating;
@@ -44,6 +49,19 @@ public class testActivity extends AppCompatActivity implements SetMapLocationDia
 
         setContentView(R.layout.activity_test);
         super.onCreate(savedInstanceState);
+
+        TextView debugText = (TextView) findViewById(R.id.debug_textview);
+        Bitmap.Config config = Bitmap.Config.RGB_565;
+        Bitmap test = BitmapFactory.decodeResource(getResources(), R.drawable.bone_chew_dog).copy(config, false);
+        ImageView debugimg = (ImageView) findViewById(R.id.debug_imgview);
+        debugimg.setImageBitmap(test);
+        debugimg.setScaleType(ImageView.ScaleType.FIT_XY);
+        double area = test.getWidth() * test.getHeight();
+        int size = test.getByteCount();
+        int overhead = test.getRowBytes();
+
+        debugText.setText(String.valueOf(area) + "    :    " + String.valueOf(size) + "\n" + String.valueOf(overhead));
+
         Button btnTest = (Button) findViewById(R.id.btnTest);
         Button btnMapSetDialog = (Button) findViewById(R.id.btn_mapdiag);
         Button button = (Button) findViewById(R.id.debug_Button);

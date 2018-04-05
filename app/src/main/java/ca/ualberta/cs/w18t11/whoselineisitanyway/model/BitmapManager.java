@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,12 +20,14 @@ import java.io.InputStream;
  * @see Bitmap
  */
 public class BitmapManager {
+    final private Bitmap.Config bmpOptions = Bitmap.Config.RGB_565;
     private long MAX_FILE_SIZE = 65535;
     private Bitmap img;
     private boolean status;
     private long size;
     private Context context;
-
+    private boolean compressed = false;
+    private int[] compress_params = new int[3]; // height, width, quality
     /**
      * Constructor, Uri input variant (Used with image gallery picker)
      * @param resourceLocation  the resource identifier in the filesystem
@@ -34,12 +38,12 @@ public class BitmapManager {
         // get bitmap from filesystem
         try {
             InputStream readStream = context.getContentResolver().openInputStream(resourceLocation);
-            this.img = BitmapFactory.decodeStream(readStream);
+            this.img = BitmapFactory.decodeStream(readStream).copy(bmpOptions, false);
 
         } catch (IOException ex) {
             Log.i("BitmapManager Uri", "Failed to create bitmap from image.");
         }
-
+        getCompressionParams();
         setCompressedSize(); // get size of compressed bitmap
         status = size <= MAX_FILE_SIZE; // set status as valid attachment
     }
@@ -49,7 +53,8 @@ public class BitmapManager {
      * @param img A pre-made bitmap to be applied to the manager
      */
     public BitmapManager(final Bitmap img) {
-        this.img = img;
+        this.img = img.copy(bmpOptions, false);
+        getCompressionParams();
         setCompressedSize();
         status = size <= MAX_FILE_SIZE;
     }
@@ -59,9 +64,11 @@ public class BitmapManager {
      * @param img Base-64 string representing a bitmap image
      */
     public BitmapManager(final String img) {
-        this.img = decodeB64Str(img); // decode base-64 string into bitmap
+        this.img = decodeB64Str(img).copy(bmpOptions, false); // decode base-64 string into bitmap
+        getCompressionParams();
         setCompressedSize(); // set size of compressed bitmap image
         status = size <= MAX_FILE_SIZE; // set status as a valid attachment
+        compressed = true;
     }
 
     /**
@@ -85,7 +92,7 @@ public class BitmapManager {
      * @return thuumbnail (Bitmap)
      */
     public Bitmap getScaledBitmap() {
-        final double IMG_SCALE_THRESHOLD = 300.0; // Adjust this for scaling
+        final double IMG_SCALE_THRESHOLD = 200.0; // Adjust this for scaling
         int scaledHeight = 0;
         int scaledWidth = 0;
 
@@ -97,6 +104,34 @@ public class BitmapManager {
         } else { return img; }
     }
 
+    private void getCompressionParams() {
+        double MAX_AREA = 500000; // allows any configuration of sqrt(500000)x... img - seems to be a good size + aggressive fs reduction
+        int quality = 50; // JPEG 50% still looks absolutely fine
+        compress_params[2] = quality;
+        long initsize = setCompressedSize();
+        if (compressed || initsize <= MAX_FILE_SIZE) {
+            // Image has been compressed before - retrieved from server, therefore it obviously meets limit
+            compress_params[0] = img.getHeight();
+            compress_params[1] = img.getWidth();
+            compress_params[2] = 100;
+            size = initsize;
+        } else {
+            // Rescale the width and height to fit within MAX_AREA
+            double ratio = img.getHeight() / ((double) img.getWidth());
+            int newWidth = (int) Math.sqrt(MAX_AREA / ratio);
+            int newHeight = (int) (newWidth * ratio);
+
+            // set params (HEIGHT, WIDTH, JPEG OUTPUT QUALITY
+            compress_params[0] = newHeight;
+            compress_params[1] = newWidth;
+            compress_params[2] = quality;
+        }
+
+       img = Bitmap.createScaledBitmap(img, compress_params[1], compress_params[0], true).copy(bmpOptions, false);
+       this.size = setCompressedSize();
+
+
+    }
     /**
      * Get the base64 representation of the image (in str format)
      * @return bitmap (base64 String)
@@ -115,7 +150,12 @@ public class BitmapManager {
     }
     private String encodeB64Bitmap () {
         ByteArrayOutputStream encodingArray = new ByteArrayOutputStream();
-        img.compress(Bitmap.CompressFormat.JPEG, 30, encodingArray);
+        if (compressed) {
+            img.compress(Bitmap.CompressFormat.JPEG, 100, encodingArray);
+        } else {
+            img.compress(Bitmap.CompressFormat.JPEG, compress_params[2], encodingArray);
+        }
+
         return Base64.encodeToString(encodingArray.toByteArray(), Base64.DEFAULT);
     }
 
@@ -128,13 +168,16 @@ public class BitmapManager {
         return img.sameAs(other.getFullImg());
     }
 
-    private void setCompressedSize() {
+    private long setCompressedSize() {
         // compress the bitmap into a jpeg .30 quality and get its size; this is what will be encoded
         // when it is submitted to the server, if it is a valid attachment
         ByteArrayOutputStream encodingArray = new ByteArrayOutputStream();
-        img.compress(Bitmap.CompressFormat.JPEG, 30, encodingArray);
-        size = (long) encodingArray.size();
-        encodingArray.reset();
+        if (compressed) {
+            img.compress(Bitmap.CompressFormat.JPEG, 100, encodingArray);
+        } else {
+            img.compress(Bitmap.CompressFormat.JPEG, compress_params[2], encodingArray);
+        }
+        return encodingArray.size();
     }
 
     /**
