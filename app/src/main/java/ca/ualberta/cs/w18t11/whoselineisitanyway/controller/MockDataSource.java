@@ -88,30 +88,30 @@ final class MockDataSource implements DataSource
         this.users.add(providerUserB);
 
         // Build a list of bids
-        Bid bid1a = new Bid(providerUserA.getUsername(), "task1ID", new BigDecimal(5));
-        Bid bid1b = new Bid(providerUserB.getUsername(), "task1ID", new BigDecimal(6));
-        Bid bid2b = new Bid(providerUserB.getUsername(), "task2ID", new BigDecimal(500));
-        Bid bid2c = new Bid(currentUser.getUsername(), "task2ID", new BigDecimal(750));
-        //Bid bid3b = new Bid(providerUserB.getUsername(), "task3ID", new BigDecimal(5));
-        //Bid bid3c = new Bid(currentUser.getUsername(), "task3ID", new BigDecimal(7));
+        Bid bid1a = new Bid(providerUserA.getUsername(), "id1", new BigDecimal(5));
+        Bid bid1b = new Bid(providerUserB.getUsername(), "id1", new BigDecimal(6));
+        Bid bid2b = new Bid(providerUserB.getUsername(), "id2", new BigDecimal(500));
+        Bid bid2c = new Bid(currentUser.getUsername(), "id2", new BigDecimal(750));
+        Bid bid3b = new Bid(providerUserB.getUsername(), "id3", new BigDecimal(5));
+        Bid bid3c = new Bid(currentUser.getUsername(), "id3", new BigDecimal(7));
 
         this.bids.add(bid1a);
         this.bids.add(bid1b);
         this.bids.add(bid2b);
         this.bids.add(bid2c);
-        //this.bids.add(bid3b);
-        //this.bids.add(bid3c);
+        this.bids.add(bid3b);
+        this.bids.add(bid3c);
 
-        //Bid[] mockBidList = {bid3b, bid3c};
+        Bid[] mockBidList = {bid3b, bid3c};
 
         //Build a list of tasks
         Task task1 = new Task("id1", currentUser.getUsername(), "Demo Task 1", "A really good task");
         Task task2 = new Task("id2", providerUserA.getUsername(), "Demo Task 2", "A really great task");
-        //Task task3 = new Task("id3", providerUserA.getUsername(), currentUser.getUsername(), mockBidList, "Demo Task 3", "A alright task", Boolean.FALSE);
+        Task task3 = new Task("id3", providerUserA.getUsername(), currentUser.getUsername(), mockBidList, "Demo Task 3", "An alright task", Boolean.FALSE);
 
         this.tasks.add(task1);
         this.tasks.add(task2);
-        //this.tasks.add(task3);
+        this.tasks.add(task3);
     }
 
     /**
