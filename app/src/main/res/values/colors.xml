@@ -5,6 +5,7 @@
     <color name="colorPrimaryDark">#d1848c</color>
     <color name="colorGreen">#A9DFBE</color>
     <color name="colorBlue">#A9DFBE</color>
+    <color name="colorLinked">#A9DFBE</color>
     <color name="white">#ffffff</color>
     <color name="darkgray">#6c6c6c</color>
 </resources>
