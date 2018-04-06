@@ -260,6 +260,16 @@ public class RemoteDataSource implements DataSource
     public Task getTask(@NonNull final String requesterUsername, @NonNull final String title)
             throws IllegalArgumentException
     {
+        // TODO: Implement
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public Task getTask(@NonNull final String taskId)
+            throws IllegalArgumentException
+    {
+        // TODO: Implement
         return null;
     }
 

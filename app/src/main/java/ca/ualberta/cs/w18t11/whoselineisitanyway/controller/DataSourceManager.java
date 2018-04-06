@@ -310,6 +310,28 @@ public final class DataSourceManager implements DataSource
     }
 
     /**
+     * @return The task with that taskId, or null if no such task exists in the data
+     * source.
+     * @throws IllegalArgumentException For an empty taskId.
+     * @see DataSource
+     * @see Task
+     */
+    @Nullable
+    @Override
+    public final Task getTask(@NonNull final String taskId)
+            throws IllegalArgumentException
+    {
+        if (taskId.isEmpty())
+        {
+            throw new IllegalArgumentException("taskId cannot be empty");
+        }
+
+        this.synchronizeTasks();
+
+        return this.localDataSource.getTask(taskId);
+    }
+
+    /**
      * Adds a task to the data source.
      *
      * @param task The task to add.

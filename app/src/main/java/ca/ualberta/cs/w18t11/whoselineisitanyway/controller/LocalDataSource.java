@@ -347,6 +347,33 @@ final class LocalDataSource implements DataSource
     }
 
     /**
+     * @return The task with that taskId, or null if no such task exists in the
+     * filesystem.
+     * @throws IllegalArgumentException For an empty taskId.
+     * @see DataSource
+     * @see Task
+     */
+    @Nullable
+    @Override
+    public final Task getTask(@NonNull final String taskId)
+            throws IllegalArgumentException
+    {
+        if (taskId.isEmpty())
+        {
+            throw new IllegalArgumentException("taskId cannot be empty");
+        }
+
+        return this.get(FileType.TASKS, new Predicate<Task>()
+        {
+            @Override
+            public final boolean apply(@Nullable final Task task)
+            {
+                return task != null && task.getElasticId().equals(taskId);
+            }
+        });
+    }
+
+    /**
      * Adds a task to the filesystem.
      *
      * @param task The task to add.

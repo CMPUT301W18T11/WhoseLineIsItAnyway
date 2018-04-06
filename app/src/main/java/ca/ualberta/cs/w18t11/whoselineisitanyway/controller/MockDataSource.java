@@ -221,6 +221,29 @@ final class MockDataSource implements DataSource
     }
 
     /**
+     * @return The task with that taskId, or null if no such task exists in the data
+     * source.
+     * @throws IllegalArgumentException For an empty taskId.
+     * @see DataSource
+     * @see Task
+     */
+    @Nullable
+    @Override
+    public final Task getTask(@NonNull final String taskId)
+            throws IllegalArgumentException
+    {
+        for (Task task : this.tasks)
+        {
+            if (task.getRequesterUsername().equals(taskId))
+            {
+                return task;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Adds a task to the data source.
      *
      * @param task The task to add.
