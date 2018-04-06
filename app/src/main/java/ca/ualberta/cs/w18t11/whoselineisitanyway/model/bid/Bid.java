@@ -2,6 +2,7 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -13,9 +14,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 
 /**
@@ -177,7 +181,7 @@ public final class Bid implements Detailed, Elastic, Serializable
     {
         final Intent intent = new Intent(context, detailActivityClass);
         intent.putExtra(Detailed.DETAILS_KEY, new ArrayList<>(Arrays.asList(
-                new Detail("providerUsername", this.getProviderUsername(), null),
+                new Detail("providerUsername", this.getProviderUsername(), null),//buildUserDetailIntent(context, this.getProviderUsername())),
                 new Detail("taskId", this.getTaskId(), null),
                 new Detail("value", this.getValue().toString(), null))));
         intent.putExtra(Detailed.TITLE_KEY, "Bid");
@@ -245,5 +249,38 @@ public final class Bid implements Detailed, Elastic, Serializable
         return new EqualsBuilder().append(this.getProviderUsername(), bid.getProviderUsername())
                 .append(this.getTaskId(), bid.getTaskId()).append(this.getValue(), bid.getValue())
                 .isEquals();
+    }
+
+    /**
+     * Make an intent for displaying related users.
+     *
+     * @param context to show from.
+     * @param username of the user to show.
+     * @return Intent used to show the user profile.
+     */
+    private Intent buildUserDetailIntent(Context context, String username)
+    {
+        DataSourceManager dataSourceManager = new DataSourceManager(context);
+        Bundle bundle = new Bundle();
+        User user = dataSourceManager.getUser(username);
+        Intent outgoingIntent = new Intent();
+        bundle.putSerializable("EXISTING_USER", user);
+
+        outgoingIntent.putExtras(bundle);
+
+        return outgoingIntent;
+    }
+
+    /**
+     * Make an intent for displaying the task for which the bid was placed on.
+     *
+     * @param context to show from.
+     * @return Intent used to show the task.
+     * */
+    private Intent buildTaskDetailIntent(Context context, String requesterName, String title)
+    {
+        DataSourceManager dataSourceManager = new DataSourceManager(context);
+        Task task = dataSourceManager.getTask(requesterName, title);
+        return task.getDetailsIntent(DetailActivity.class, context);
     }
 }
