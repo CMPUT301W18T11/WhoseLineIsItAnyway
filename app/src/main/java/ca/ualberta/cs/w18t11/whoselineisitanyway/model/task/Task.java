@@ -2,6 +2,7 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.model.task;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -14,10 +15,12 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Objects;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailableListActivity;
 
@@ -462,7 +465,7 @@ public final class Task implements Detailed, Elastic, Serializable
                         new Detail("description", this.getDescription(), null),
                         new Detail("status", this.getStatus().toString(), null),
                         new Detail("requesterUsername", this.getRequesterUsername(), null),
-                        new Detail("", "Bids", this.buildBidsListDetail(context))));
+                        new Detail("", "Bids", this.buildBidsListDetailIntent(context))));
 
         if (this.getProviderUsername() != null)
         {
@@ -492,11 +495,11 @@ public final class Task implements Detailed, Elastic, Serializable
                 new Detail("title", this.getTitle(), null),
                 new Detail("description", this.getDescription(), null),
                 new Detail("status", this.getStatus().toString(), null),
-                new Detail("requesterUsername", this.getRequesterUsername(), null)));
+                new Detail("requesterUsername", this.getRequesterUsername(), buildUserDetailIntent(context, this.getRequesterUsername()))));
 
         if (this.getProviderUsername() != null)
         {
-            details.add(new Detail("providerUsername", this.getProviderUsername(), null));
+            details.add(new Detail("providerUsername", this.getProviderUsername(), buildUserDetailIntent(context, this.getProviderUsername())));
         }
 
         final Intent intent = new Intent(context, detailActivityClass);
@@ -549,7 +552,7 @@ public final class Task implements Detailed, Elastic, Serializable
      * @param context to show from
      * @return Intent used to show the list of bids.
      */
-    private Intent buildBidsListDetail(Context context)
+    private Intent buildBidsListDetailIntent(Context context)
     {
         Intent outgoingIntent = new Intent(context, DetailableListActivity.class);
         String outgoingTitle = "Bids";
@@ -560,6 +563,26 @@ public final class Task implements Detailed, Elastic, Serializable
         }
         outgoingIntent.putExtra(DetailableListActivity.DATA_TITLE, outgoingTitle);
         outgoingIntent.putExtra(DetailableListActivity.DATA_DETAILABLE_LIST, bidsArrayList);
+        return outgoingIntent;
+    }
+
+    /**
+     * Make an intent for displaying related users.
+     *
+     * @param context to show from.
+     * @param username of the user to show.
+     * @return Intent used to show the user profile.
+     */
+    private Intent buildUserDetailIntent(Context context, String username)
+    {
+        DataSourceManager dataSourceManager = new DataSourceManager(context);
+        Bundle bundle = new Bundle();
+        User user = dataSourceManager.getUser(username);
+        Intent outgoingIntent = new Intent();
+        bundle.putSerializable("EXISTING_USER", user);
+
+        outgoingIntent.putExtras(bundle);
+
         return outgoingIntent;
     }
 }
