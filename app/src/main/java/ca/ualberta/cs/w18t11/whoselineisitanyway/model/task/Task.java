@@ -23,6 +23,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailableListActivity;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserProfileActivity;
 
 /**
  * Represents a task.
@@ -460,23 +461,7 @@ public final class Task implements Detailed, Elastic, Serializable
     public final <T extends DetailActivity> void showDetails(
             @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
     {
-        final ArrayList<Detail> details = new ArrayList<>(Arrays.asList(
-                        new Detail("title", this.getTitle(), null),
-                        new Detail("description", this.getDescription(), null),
-                        new Detail("status", this.getStatus().toString(), null),
-                        new Detail("requesterUsername", this.getRequesterUsername(), null),
-                        new Detail("", "Bids", this.buildBidsListDetailIntent(context))));
-
-        if (this.getProviderUsername() != null)
-        {
-            details.add(new Detail("providerUsername", this.getProviderUsername(), null));
-        }
-
-        final Intent intent = new Intent(context, detailActivityClass);
-        intent.putExtra(Detailed.DETAILS_KEY, details);
-        intent.putExtra(Detailed.TITLE_KEY, "Task");
-
-        context.startActivity(intent);
+        context.startActivity(getDetailsIntent(detailActivityClass, context));
     }
 
     /**
@@ -575,11 +560,9 @@ public final class Task implements Detailed, Elastic, Serializable
      */
     private Intent buildUserDetailIntent(Context context, String username)
     {
-        DataSourceManager dataSourceManager = new DataSourceManager(context);
         Bundle bundle = new Bundle();
-        User user = dataSourceManager.getUser(username);
-        Intent outgoingIntent = new Intent();
-        bundle.putSerializable("EXISTING_USER", user);
+        Intent outgoingIntent = new Intent(context, UserProfileActivity.class);
+        bundle.putString(UserProfileActivity.DATA_EXISTING_USERNAME, username);
 
         outgoingIntent.putExtras(bundle);
 
