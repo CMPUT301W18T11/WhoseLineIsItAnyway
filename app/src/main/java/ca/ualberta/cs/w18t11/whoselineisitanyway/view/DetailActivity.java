@@ -3,6 +3,8 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -92,5 +94,16 @@ public class DetailActivity extends AppCompatActivity
                     new PhoneNumber(3, 333, 333, 3333));
             user.showDetails(DetailActivity.class, this);
         }
+
+        detailList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View view, int i, long l) {
+                Detail detail = rowAdapter.getItem(i);
+                if(detail.isLinked())
+                {
+                    startActivity(detail.getLink());
+                }
+            }
+        });
     }
 }
