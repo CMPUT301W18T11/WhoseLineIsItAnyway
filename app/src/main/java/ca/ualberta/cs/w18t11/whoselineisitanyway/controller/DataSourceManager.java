@@ -11,8 +11,6 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
@@ -27,16 +25,16 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 public final class DataSourceManager implements DataSource
 {
     /**
-     * The shared string preferences key corresponding to the current username.
+     * The shared preferences filename.
      */
-    private static final String CURRENT_USERNAME_KEY = "CURRENT_USERNAME";
+    @NonNull
+    private static final String PREFERENCES_FILENAME = "DataSourceManager.prefs";
 
     /**
-     * The accumulator for assigning unique identifiers to instances of the class.
-     *
-     * @see AtomicInteger
+     * The shared string preferences key corresponding to the current username.
      */
-    private static AtomicInteger nextId = new AtomicInteger(0);
+    @NonNull
+    private static final String CURRENT_USERNAME_KEY = "CURRENT_USERNAME";
 
     /**
      * The local data source that is always available.
@@ -55,12 +53,6 @@ public final class DataSourceManager implements DataSource
     private final DataSource remoteDataSource;
 
     /**
-     * The shared preferences filename.
-     */
-    @NonNull
-    private final String preferencesFilename;
-
-    /**
      * The application environment context.
      *
      * @see Context
@@ -76,8 +68,6 @@ public final class DataSourceManager implements DataSource
     {
         this.remoteDataSource = new RemoteDataSource();
         this.localDataSource = new LocalDataSource(context);
-        this.preferencesFilename = String.format(Locale.getDefault(), "DataSourceManager%d.prefs",
-                DataSourceManager.nextId.getAndAdd(1));
         this.context = context;
     }
 
@@ -148,7 +138,7 @@ public final class DataSourceManager implements DataSource
     {
         this.synchronizeUsers();
         final String username = this.context
-                .getSharedPreferences(this.preferencesFilename, Context.MODE_PRIVATE)
+                .getSharedPreferences(DataSourceManager.PREFERENCES_FILENAME, Context.MODE_PRIVATE)
                 .getString(DataSourceManager.CURRENT_USERNAME_KEY, null);
 
         if (username == null)
@@ -202,7 +192,8 @@ public final class DataSourceManager implements DataSource
         }
 
         final SharedPreferences.Editor editor = this.context
-                .getSharedPreferences(this.preferencesFilename, Context.MODE_PRIVATE).edit();
+                .getSharedPreferences(DataSourceManager.PREFERENCES_FILENAME, Context.MODE_PRIVATE)
+                .edit();
         editor.putString(CURRENT_USERNAME_KEY, user.getUsername());
         editor.apply();
     }

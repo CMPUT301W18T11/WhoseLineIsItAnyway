@@ -49,7 +49,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
  * @see Task
  */
 public class CreateModifyTaskActivity extends AppCompatActivity implements SetMapLocationDialog.MapDialogReturnListener {
-    private DataSourceManager DSM = DataSourceManager.getInstance(this);
+    private DataSourceManager DSM = new DataSourceManager(this);
     private LinearLayout filmstrip; // Hold the container for the objects
     final int MAX_CHARLIMIT_TITLE = 30; // Maximum length of Task Title
     final int MAX_CHARLIMIT_DESCRIPTION = 300; // Maximum length of Task Description

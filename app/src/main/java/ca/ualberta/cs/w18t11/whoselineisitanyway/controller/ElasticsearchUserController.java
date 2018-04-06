@@ -10,6 +10,7 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.constants.Constants;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
@@ -30,7 +31,7 @@ import io.searchbox.core.SearchResult;
 public class ElasticsearchUserController
 {
     private static String typeStr = "users";
-    private static String idxStr = "cmput301w18t11_whoselineisitanyways";
+
     private static JestDroidClient client;
 
     /**
@@ -54,7 +55,7 @@ public class ElasticsearchUserController
             {
                 // First, we try to see if it already exists in the database
                 Index index = new Index.Builder(user)
-                        .index(idxStr)
+                        .index(Constants.ELASTICSEARCH_INDEX)
                         .type(typeStr)
                         .id(user.getElasticId())
                         .build();
@@ -75,7 +76,7 @@ public class ElasticsearchUserController
                                         Integer.toString(result.getResponseCode()));
 
                         // If we couldn't find the object with the index, we add it to the databse
-                        Index idx = new Index.Builder(user).index(idxStr).type(typeStr).build();
+                        Index idx = new Index.Builder(user).index(Constants.ELASTICSEARCH_INDEX).type(typeStr).build();
 
                         try
                         {
@@ -129,7 +130,7 @@ public class ElasticsearchUserController
         {
             verifyConfig();
 
-            Get get = new Get.Builder(idxStr, userId[0]).type(typeStr).build();
+            Get get = new Get.Builder(Constants.ELASTICSEARCH_INDEX, userId[0]).type(typeStr).build();
 
             try
             {
@@ -186,7 +187,7 @@ public class ElasticsearchUserController
             }
 
             Search search = new Search.Builder(query[0])
-                    .addIndex(idxStr)
+                    .addIndex(Constants.ELASTICSEARCH_INDEX)
                     .addType(typeStr)
                     .build();
 
@@ -233,7 +234,7 @@ public class ElasticsearchUserController
             verifyConfig();
 
             Delete delete =
-                    new Delete.Builder(user[0].getElasticId()).index(idxStr).type(typeStr).build();
+                    new Delete.Builder(user[0].getElasticId()).index(Constants.ELASTICSEARCH_INDEX).type(typeStr).build();
 
             try
             {
@@ -275,7 +276,7 @@ public class ElasticsearchUserController
         {
             verifyConfig();
 
-            Index index = new Index.Builder(user[0]).index(idxStr).type(typeStr)
+            Index index = new Index.Builder(user[0]).index(Constants.ELASTICSEARCH_INDEX).type(typeStr)
                     .id(user[0].getElasticId()).build();
 
             try
@@ -321,7 +322,7 @@ public class ElasticsearchUserController
 
             for (User user : users)
             {
-                Index idx = new Index.Builder(user).index(idxStr).type(typeStr).build();
+                Index idx = new Index.Builder(user).index(Constants.ELASTICSEARCH_INDEX).type(typeStr).build();
 
                 try
                 {
@@ -360,7 +361,7 @@ public class ElasticsearchUserController
         {
             Log.i("ElasticSearch", "verifying config...");
             DroidClientConfig.Builder builder =
-                    new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
+                    new DroidClientConfig.Builder(Constants.ELASTICSEARCH_URL);
             JestClientFactory factory = new JestClientFactory();
 
             DroidClientConfig config = builder.build();
