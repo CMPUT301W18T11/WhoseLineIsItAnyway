@@ -56,6 +56,12 @@ public class DetailRowAdapter extends ArrayAdapter<Detail>
         rowTitle.setText(details.get(position).getTitle());
         rowInfo.setText(details.get(position).getInformation());
 
+        // Render clickable links
+        if(details.get(position).isLinked())
+        {
+            rowInfo.setTextColor(parent.getResources().getColor(R.color.colorLinked));
+        }
+
         return detailRow;
     }
 
