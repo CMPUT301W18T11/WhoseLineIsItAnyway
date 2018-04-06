@@ -19,6 +19,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailableListActivity;
 
 /**
  * Represents a task.
@@ -460,7 +461,8 @@ public final class Task implements Detailed, Elastic, Serializable
                         new Detail("title", this.getTitle(), null),
                         new Detail("description", this.getDescription(), null),
                         new Detail("status", this.getStatus().toString(), null),
-                        new Detail("requesterUsername", this.getRequesterUsername(), null)));
+                        new Detail("requesterUsername", this.getRequesterUsername(), null),
+                        new Detail("", "Bids", this.buildBidsListDetail(context))));
 
         if (this.getProviderUsername() != null)
         {
@@ -539,5 +541,25 @@ public final class Task implements Detailed, Elastic, Serializable
                 .append(this.getTitle(), task.getTitle())
                 .append(this.getDescription(), task.getDescription())
                 .append(this.getStatus(), task.getStatus()).isEquals();
+    }
+
+    /**
+     * Make an intent for displaying the tasks bids
+     *
+     * @param context to show from
+     * @return Intent used to show the list of bids.
+     */
+    private Intent buildBidsListDetail(Context context)
+    {
+        Intent outgoingIntent = new Intent(context, DetailableListActivity.class);
+        String outgoingTitle = "Bids";
+        ArrayList<Detailed> bidsArrayList = new ArrayList<>();
+        if(this.getBids() != null)
+        {
+            for(Bid bid: this.getBids()) { bidsArrayList.add(bid); }
+        }
+        outgoingIntent.putExtra(DetailableListActivity.DATA_TITLE, outgoingTitle);
+        outgoingIntent.putExtra(DetailableListActivity.DATA_DETAILABLE_LIST, bidsArrayList);
+        return outgoingIntent;
     }
 }
