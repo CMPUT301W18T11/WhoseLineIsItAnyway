@@ -21,6 +21,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserProfileActivity;
 
 /**
  * Represents a bid.
@@ -181,8 +182,8 @@ public final class Bid implements Detailed, Elastic, Serializable
     {
         final Intent intent = new Intent(context, detailActivityClass);
         intent.putExtra(Detailed.DETAILS_KEY, new ArrayList<>(Arrays.asList(
-                new Detail("providerUsername", this.getProviderUsername(), null),//buildUserDetailIntent(context, this.getProviderUsername())),
-                new Detail("taskId", this.getTaskId(), null),
+                new Detail("providerUsername", this.getProviderUsername(),buildUserDetailIntent(context, this.getProviderUsername())),
+                new Detail("taskId", this.getTaskId(), null),//buildTaskDetailIntent(context)),
                 new Detail("value", this.getValue().toString(), null))));
         intent.putExtra(Detailed.TITLE_KEY, "Bid");
         return intent;
@@ -260,11 +261,9 @@ public final class Bid implements Detailed, Elastic, Serializable
      */
     private Intent buildUserDetailIntent(Context context, String username)
     {
-        DataSourceManager dataSourceManager = new DataSourceManager(context);
         Bundle bundle = new Bundle();
-        User user = dataSourceManager.getUser(username);
-        Intent outgoingIntent = new Intent();
-        bundle.putSerializable("EXISTING_USER", user);
+        Intent outgoingIntent = new Intent(context, UserProfileActivity.class);
+        bundle.putString(UserProfileActivity.DATA_EXISTING_USERNAME, username);
 
         outgoingIntent.putExtras(bundle);
 
@@ -277,10 +276,10 @@ public final class Bid implements Detailed, Elastic, Serializable
      * @param context to show from.
      * @return Intent used to show the task.
      * */
-    private Intent buildTaskDetailIntent(Context context, String requesterName, String title)
+    private Intent buildTaskDetailIntent(Context context)
     {
         DataSourceManager dataSourceManager = new DataSourceManager(context);
-        Task task = dataSourceManager.getTask(requesterName, title);
+        Task task = dataSourceManager.getTask(getTaskId());
         return task.getDetailsIntent(DetailActivity.class, context);
     }
 }
