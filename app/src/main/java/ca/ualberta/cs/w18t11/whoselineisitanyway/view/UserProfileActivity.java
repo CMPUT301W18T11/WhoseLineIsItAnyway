@@ -14,6 +14,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.rating.Rating;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.rating.RatingCollector;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
@@ -22,21 +23,23 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 /**
  * <h1>ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserProfileActivity</h1>
  * This is an activity to show an arbitrarily passed user profile to a requester. READ ONLY
- * Make sure to pass the user as part of the bundle to this intent, tagged as EXISTING_USER
- * @author Lucas Thalen
+ * Make sure to pass the user's username as part of the intent, tagged as DATA_EXISTING_USERNAME
+ * @author Lucas Thalen, Brad Ofrim
  * @see User
  * @see RatingCollector
  */
 public class UserProfileActivity extends AppCompatActivity {
 
+    public static final String DATA_EXISTING_USERNAME = "com.whoselineisitanyway.DATA_EXISTING_USERNAME";
     TextView usernameField;
     TextView contactField;
     TextView ratingSummary;
     ListView ratingList;
     Button btnClose;
-    User currentUser; // Get the user that the person wants to see data on from the intent bundle
+    User user; // Get the user that the person wants to see data on from the intent bundle
     ArrayList<Rating> ratings; // Get a list of ratings from the rating collector - is there a more OOP way to do this?
     RatingCollector reviews; // Get the ratingcollector from the user so that ratings can be read.
+    DataSourceManager dataSourceManager;
     private ArrayAdapter<Rating> ratingListAdapter;
 
 
@@ -47,7 +50,9 @@ public class UserProfileActivity extends AppCompatActivity {
         setTitle("View User");
         // Check that a user has been passed in the intent, if not throw an error and alert user + log
         try {
-            currentUser = (User) savedInstanceState.get("EXISTING_USER");
+            dataSourceManager = new DataSourceManager(this);
+            String username = getIntent().getStringExtra(DATA_EXISTING_USERNAME);
+            user = dataSourceManager.getUser(username);
         } catch (RuntimeException ex) {
             Log.i("UserProfileView", "No user data was passed to the activity via intent! tag it with EXISTING_USER!");
             Toast.makeText(this, "There was an error and the user couldn't be shown.", Toast.LENGTH_SHORT).show();
@@ -61,16 +66,16 @@ public class UserProfileActivity extends AppCompatActivity {
         btnClose = (Button) findViewById(R.id.btn_close);
 
         // Extract the user's ratings
-        reviews = currentUser.getRatingCollector();
+        reviews = user.getRatingCollector();
         ratings = reviews.getRatingsList();
 
-        usernameField.setText(currentUser.getUsername()); // Set the username
+        usernameField.setText(user.getUsername()); // Set the username
         // Construct a nice string for the user's contact information with columnarizeText columns
         // Gives each field + 4 space minimum before showing the contact info so it lines up and looks nice.
         String contactInfo =
-                columnarizeText("Phone Number:", 18) + currentUser.getPhoneNumber().toString()
+                columnarizeText("Phone Number:", 18) + user.getPhoneNumber().toString()
                 + "\n" +
-                columnarizeText("Email Address:", 18) + currentUser.getEmailAddress().toString();
+                columnarizeText("Email Address:", 18) + user.getEmailAddress().toString();
 
         contactField.setText(contactInfo); // Set the contact info to this string
         ratingSummary.setText(reviews.toString()); // This gets the general summary (5 reviews, 5 stars, blah blah and sets it as text
