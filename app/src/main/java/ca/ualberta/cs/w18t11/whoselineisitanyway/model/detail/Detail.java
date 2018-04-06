@@ -73,6 +73,15 @@ public final class Detail implements Parcelable
     }
 
     /**
+     * @return The linked intent associated with the detail.
+     */
+    @NonNull
+    public final Intent getLink()
+    {
+        return this.linkingIntent;
+    }
+
+    /**
      * @return Whether the detail is linked to an intent.
      */
     public final boolean isLinked()
