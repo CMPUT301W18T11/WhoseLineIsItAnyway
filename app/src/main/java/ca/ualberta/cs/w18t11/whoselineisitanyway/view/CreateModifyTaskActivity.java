@@ -2,11 +2,8 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.net.Uri;
@@ -29,17 +26,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.BitmapManager;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bitmap.BitmapManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.TaskStatus;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 /**
  * <h1>CreateModifyTaskActivity</h1>
