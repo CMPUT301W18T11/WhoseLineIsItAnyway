@@ -47,6 +47,9 @@
             android:name=".view.DetailActivity"
             android:exported="true" />
         <activity
+            android:name=".view.TaskDetailActivity"
+            android:exported="true" />
+        <activity
             android:name=".view.CreateModifyTaskActivity"
             android:exported="true"
             android:label="@string/title_CreateTaskActivity" />

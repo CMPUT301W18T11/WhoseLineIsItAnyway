@@ -23,6 +23,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailableListActivity;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.TaskDetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserProfileActivity;
 
 /**
@@ -461,7 +462,7 @@ public final class Task implements Detailed, Elastic, Serializable
     public final <T extends DetailActivity> void showDetails(
             @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
     {
-        context.startActivity(getDetailsIntent(detailActivityClass, context));
+        context.startActivity(getDetailsIntent(TaskDetailActivity.class, context));
     }
 
     /**
