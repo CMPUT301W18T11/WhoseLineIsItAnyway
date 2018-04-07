@@ -57,6 +57,7 @@ public class CreateModifyTaskActivityTest
     String taskDescription;
     LatLng taskLocation;
     Task testTask;
+    DataSourceManager DSM;
     @Rule
     public ActivityTestRule<UserLoginActivity> activityRule = new ActivityTestRule<>(
             UserLoginActivity.class);
@@ -69,12 +70,12 @@ public class CreateModifyTaskActivityTest
         loginActivity = activityRule.getActivity();
 
         testUsername = "test";
-        taskTitle = "Intent Test Task";
+        taskTitle = "My Intent Task";
         taskDescription = "This task is for intent testing";
         taskLocation = new LatLng(53.5232, 113.5263);
         testTask = new Task(testUsername, taskTitle, taskDescription);
 
-        DataSourceManager DSM = new DataSourceManager(loginActivity);
+        DSM = new DataSourceManager(loginActivity);
         User user = DSM.getUser(testUsername);
         if (user == null)
         {
@@ -88,6 +89,7 @@ public class CreateModifyTaskActivityTest
     @After
     public void release()
     {
+        if (DSM.getTask(testUsername, taskTitle) != null) { DSM.removeTask(testTask); }
         Intents.release();
     }
 
@@ -186,6 +188,14 @@ public class CreateModifyTaskActivityTest
         onView(withId(R.id.btn_UploadImage))
                 .perform(click());
         intended(hasAction(Intent.ACTION_GET_CONTENT));
+        try
+        {
+            Thread.sleep(700);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
         mDevice.pressBack();
         intended(hasComponent(CreateModifyTaskActivity.class.getName()));
     }
