@@ -19,7 +19,6 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserProfileActivity;
 
@@ -37,12 +36,6 @@ public final class Bid implements Detailed, Elastic, Serializable
      * @see Serializable
      */
     private static final long serialVersionUID = 330240939337547492L;
-
-    /**
-     * The bid's elastic ID.
-     */
-    @Nullable
-    private String elasticId;
 
     /**
      * The associated provider's username.
@@ -63,11 +56,17 @@ public final class Bid implements Detailed, Elastic, Serializable
     private final BigDecimal value;
 
     /**
+     * The bid's elastic ID.
+     */
+    @Nullable
+    private String elasticId;
+
+    /**
      * Creates a bid without an elastic ID.
      *
      * @param providerUsername The associated provider's ID.
-     * @param taskId     The associated task's ID.
-     * @param value      The bid's monetary value.
+     * @param taskId           The associated task's ID.
+     * @param value            The bid's monetary value.
      * @throws IllegalArgumentException For an empty providerUsername or taskId, or a non-positive value.
      */
     public Bid(@NonNull final String providerUsername, @NonNull final String taskId,
@@ -96,10 +95,10 @@ public final class Bid implements Detailed, Elastic, Serializable
     /**
      * Creates a bid with an elastic ID.
      *
-     * @param elasticId  The bid's elastic ID.
+     * @param elasticId        The bid's elastic ID.
      * @param providerUsername The associated provider's ID.
-     * @param taskId     The associated task's ID.
-     * @param value      The bid's monetary value.
+     * @param taskId           The associated task's ID.
+     * @param value            The bid's monetary value.
      * @throws IllegalArgumentException For an empty providerUsername or taskId, or a non-positive value.
      */
     public Bid(@NonNull final String elasticId, @NonNull final String providerUsername,
@@ -182,7 +181,8 @@ public final class Bid implements Detailed, Elastic, Serializable
     {
         final Intent intent = new Intent(context, detailActivityClass);
         intent.putExtra(Detailed.DETAILS_KEY, new ArrayList<>(Arrays.asList(
-                new Detail("providerUsername", this.getProviderUsername(),buildUserLinkIntent(context, this.getProviderUsername())),
+                new Detail("providerUsername", this.getProviderUsername(),
+                        buildUserLinkIntent(context, this.getProviderUsername())),
                 new Detail("taskId", this.getTaskId(), null),//buildTaskDetailIntent(context)),
                 new Detail("value", this.getValue().toString(), null))));
         intent.putExtra(Detailed.TITLE_KEY, "Bid");
@@ -255,7 +255,7 @@ public final class Bid implements Detailed, Elastic, Serializable
     /**
      * Make an intent for displaying related users.
      *
-     * @param context to show from.
+     * @param context  to show from.
      * @param username of the user to show.
      * @return Intent used to show the user profile.
      */
@@ -275,11 +275,18 @@ public final class Bid implements Detailed, Elastic, Serializable
      *
      * @param context to show from.
      * @return Intent used to show the task.
-     * */
+     */
     private Intent buildTaskLinkIntent(Context context)
     {
         DataSourceManager dataSourceManager = new DataSourceManager(context);
         Task task = dataSourceManager.getTask(getTaskId());
         return task.getDetailsIntent(DetailActivity.class, context);
+    }
+
+    @Override
+    @NonNull
+    public final String toString()
+    {
+        return this.getProviderUsername() + ": " + this.getValue();
     }
 }
