@@ -225,7 +225,7 @@ public class TaskDetailActivity extends DetailActivity {
         // TODO: Add the images from the task.
     }
 
-    private void addBidButton(Task task, ViewGroup viewGroup, int index)
+    private void addBidButton(final Task task, ViewGroup viewGroup, int index)
     {
         // Make a view for the button
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -244,7 +244,7 @@ public class TaskDetailActivity extends DetailActivity {
         insertPoint.addView(view, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    private void addAcceptBidButton(Task task, ViewGroup viewGroup, int index)
+    private void addAcceptBidButton(final Task task, ViewGroup viewGroup, int index)
     {
         // Make a view for the button
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -262,7 +262,7 @@ public class TaskDetailActivity extends DetailActivity {
         insertPoint.addView(view, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    private void addEditTaskButton(Task task, ViewGroup viewGroup, int index)
+    private void addEditTaskButton(final Task task, ViewGroup viewGroup, int index)
     {
         // Make a view for the button
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -280,7 +280,7 @@ public class TaskDetailActivity extends DetailActivity {
         insertPoint.addView(view, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    private void addDeleteTaskButton(Task task, ViewGroup viewGroup, int index)
+    private void addDeleteTaskButton(final Task task, ViewGroup viewGroup, int index)
     {
         // Make a view for the button
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -298,7 +298,7 @@ public class TaskDetailActivity extends DetailActivity {
         insertPoint.addView(view, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    private void addCompleteTaskButton(Task task, ViewGroup viewGroup, int index)
+    private void addCompleteTaskButton(final Task task, ViewGroup viewGroup, int index)
     {
         // Make a view for the button
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -316,7 +316,7 @@ public class TaskDetailActivity extends DetailActivity {
         insertPoint.addView(view, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    private void addUnassignTaskButton(Task task, ViewGroup viewGroup, int index)
+    private void addUnassignTaskButton(final Task task, ViewGroup viewGroup, int index)
     {
         // Make a view for the button
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
