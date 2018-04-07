@@ -93,8 +93,9 @@ public class testActivity extends AppCompatActivity implements SetMapLocationDia
     }
 
     private void dothings() {
-        SetMapLocationDialog mapDiag = new SetMapLocationDialog(this);
-        mapDiag.showDialog();
+        LatLng testLoc = new LatLng(53.5232, -113.5263);
+        ShowTaskLocationDialog mapDiag = new ShowTaskLocationDialog(this);
+        mapDiag.showDialog(testLoc);
     }
 
     @Override

@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -52,19 +51,11 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
  * method. Anything else will result in a race condition where code progresses without the returned
  * result being properly assigned.
  */
-public class SetMapLocationDialog implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
-
-	// Allow passing data back to the calling activity using an event trigger to avoid async issues
-	public interface MapDialogReturnListener {
-		void MapSetDialog_PosResult(LatLng result);
-	}
-
+public class ShowTaskLocationDialog implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
 	// Initialization
 	private Activity caller;
 	private Context context;
-	private MapDialogReturnListener returnListener;
-	private boolean permissionsGranted = false;
 
 	// Dialog
 	private AlertDialog mapDiag;
@@ -74,12 +65,8 @@ public class SetMapLocationDialog implements OnMapReadyCallback, GoogleApiClient
 
 	// Location
 	private GoogleApiClient mGoogleApiClient;
-	private LatLng locResult;
-	private Location userLocation;
-	private FusedLocationProviderClient mFusedLocationProvider;
-	private LocationCallback mLocationCallback;
-	private boolean foundLocation = false;
-	private boolean canMoveCam = true;
+	private LatLng taskCoord;
+
 
 	// App Alerts
 	Toast appAlert;
@@ -89,21 +76,15 @@ public class SetMapLocationDialog implements OnMapReadyCallback, GoogleApiClient
 	 * Prompt for locations
 	 * @param caller Activity reference for the parent activity to the dialog
 	 */
-	public SetMapLocationDialog(final Activity caller) {
+	public ShowTaskLocationDialog(final Activity caller) {
 		this.caller = caller;
 		context = (Context) caller;
-		appAlert = Toast.makeText(caller, "", Toast.LENGTH_SHORT);
-		if (context instanceof MapDialogReturnListener) {
-			returnListener = (MapDialogReturnListener) context;
-		} else { throw new RuntimeException("Calling class must contain interface methods!"); }
 
-		getLocation();
 		initGoogleApi();
 		createDialog();
 		initMap();
 
 		// EVENTHANDLERS
-		btn_save_onClick();
 		btn_cancel_onClick();
 
 	}
@@ -134,7 +115,7 @@ public class SetMapLocationDialog implements OnMapReadyCallback, GoogleApiClient
 	//endregion
 
 	private void createDialog() {
-		final int LAYOUT_TEMPLATE = R.layout.dialog_setlocation; // Get the template for the dialog
+		final int LAYOUT_TEMPLATE = R.layout.dialog_tasklocation; // Get the template for the dialog
 
 		// CREATE DIALOG
 		AlertDialog.Builder diagBuilder = new AlertDialog.Builder(context);
@@ -143,75 +124,24 @@ public class SetMapLocationDialog implements OnMapReadyCallback, GoogleApiClient
 		diagBuilder.setView(diagView);
 
 		mapDiag = diagBuilder.create();
-		mapDiag.setTitle("Set a Location for the Task");
+		mapDiag.setTitle("View Task Location");
 
 		mapView = diagView.findViewById(R.id.map_mapdialog_setloc);
 
 	}
 
-	public void showDialog() {
+	public void showDialog(LatLng loc) {
+		this.taskCoord = loc;
+		// MAP CONTROL INITIALIZATION
+		mapView = (MapView) diagView.findViewById(R.id.map_mapdialog_setloc);
+		mapView.onCreate(mapDiag.onSaveInstanceState());
+		mapView.onResume();
 
-		if (permissionsGranted) {
-			// MAP CONTROL INITIALIZATION
-			mapView = (MapView) diagView.findViewById(R.id.map_mapdialog_setloc);
-			mapView.onCreate(mapDiag.onSaveInstanceState());
-			mapView.onResume();
 
+		mapDiag.show();
 
-			mapDiag.show();
-		} else {
-			Toast.makeText(caller, "You must enable locations access. You will not be able to set a location without this.", Toast.LENGTH_SHORT).show();
-			returnListener.MapSetDialog_PosResult(null);
-		}
 
 	}
-	//region GetLocation GoodAccuracyButSlow
-	private void getLocation() {
-		mFusedLocationProvider = LocationServices.getFusedLocationProviderClient(caller);
-		final LocationRequest locReq = LocationRequest.create()
-				.setFastestInterval(1)
-				.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-				.setInterval(1)
-				.setNumUpdates(1);
-
-		mLocationCallback = new LocationCallback() {
-			@Override
-			public void onLocationResult(LocationResult locationResult) {
-				if (!foundLocation && canMoveCam) {
-					Location best = null;
-					if (locationResult == null) {
-						return;
-					}
-					for (Location location : locationResult.getLocations()) {
-						if (best == null) {
-							best = location;
-						} else {
-							if (best.hasAccuracy() && location.hasAccuracy()) {
-								if (location.getAccuracy() < best.getAccuracy()) {
-									best = location;
-								}
-							}
-						}
-					}
-					if (best != null) {
-						foundLocation = true;
-						mFusedLocationProvider.removeLocationUpdates(mLocationCallback);
-						setUserLoc(best);
-						gMap_CamMove();
-						appAlert.cancel();
-						appAlert.makeText(caller, "Location acquired.", Toast.LENGTH_SHORT).show();
-					}
-				}
-			}
-
-		};
-
-		try {
-			mFusedLocationProvider.requestLocationUpdates(locReq,mLocationCallback, Looper.myLooper());
-		} catch (SecurityException ex) {}
-
-	}
-//endregion
 
 	private void initMap() {
 		if (ContextCompat.checkSelfPermission(caller, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -219,29 +149,21 @@ public class SetMapLocationDialog implements OnMapReadyCallback, GoogleApiClient
 			mapView.getMapAsync(new OnMapReadyCallback() {
 				@Override
 				public void onMapReady(GoogleMap googleMap) {
-					appAlert.cancel();
-					appAlert.makeText(caller, "Acquiring location...\nIf you don't want to wait, you can move the map.", Toast.LENGTH_SHORT).show();
-					gMap = googleMap;
-					gMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
-						@Override
-						public void onCameraMoveStarted(int i) {
-							if (i == REASON_GESTURE) { setMoveAllowed(false); }
-						}
-					});
+				gMap = googleMap;
 					try {
-						gMap.setMyLocationEnabled(true);
-					} catch (SecurityException ex) { Log.i("SetMapLocationDialog", "Permissions error."); }
-					gMap_onClickTarget();
+						gMap.setMyLocationEnabled(false);
+						gMap_CamMove();
+						gMap.addMarker(new MarkerOptions()
+								.position(taskCoord)
+								.title("Task Location"));
+					} catch (SecurityException ex) { Log.i("ShowTaskLoc", "Permissions error."); }
 				}
 			});
 		}
 	}
-	private void setMoveAllowed(boolean allowed) {
-		canMoveCam = allowed;
-	}
-	private void gMap_CamMove() {
-		if (userLocation != null && gMap != null) {
-			LatLng usrPoint = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+		private void gMap_CamMove() {
+		if (taskCoord != null && gMap != null) {
+			LatLng usrPoint = taskCoord;
 			CameraUpdate camChange = CameraUpdateFactory.newCameraPosition(
 					CameraPosition.builder()
 							.target(usrPoint)
@@ -251,47 +173,14 @@ public class SetMapLocationDialog implements OnMapReadyCallback, GoogleApiClient
 			gMap.moveCamera(camChange);
 		}
 	}
-	private void gMap_onClickTarget() {
-		gMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-			@Override
-			public void onMapClick(LatLng latLng) {
-				setResult(latLng);
-				gMap.clear();
-				gMap.addMarker(new MarkerOptions()
-						.position(latLng)
-						.title("Chosen Location"));
-			}
-		});
-	}
-
-	private void btn_save_onClick() {
-		Button save = (Button) diagView.findViewById(R.id.btn_mapdialog_Save);
-		save.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				mapDiag.dismiss();
-				returnListener.MapSetDialog_PosResult(locResult);
-
-			}
-		});
-	}
 	private void btn_cancel_onClick() {
 		Button cancel = (Button) diagView.findViewById(R.id.btn_mapdialog_Cancel);
 		cancel.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				returnListener.MapSetDialog_PosResult(null);
 				mapDiag.dismiss();
 			}
 		});
-	}
-
-	private void setResult(final LatLng res) {
-		locResult = res;
-	}
-
-	private void setUserLoc(final Location userLoc) {
-		userLocation = userLoc;
 	}
 
 	@Override
