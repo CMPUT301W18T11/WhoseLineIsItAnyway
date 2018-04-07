@@ -290,7 +290,10 @@ public class TaskDetailActivity extends DetailActivity {
         bidButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Add delete task button functionality
+                // TODO: Prompt for confirmation
+                DataSourceManager dataSourceManager = new DataSourceManager(view.getContext());
+                dataSourceManager.removeTask(task);
+                finish();
             }
         });
 
