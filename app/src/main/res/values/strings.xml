@@ -58,6 +58,15 @@
     <string name="dialog_place_bid_Hint">($0.00)</string>
     <string name="button_place_bid">Place Bid</string>
 
+    <!-- Strings for labeling details -->
+    <string name="detail_label_title">Title</string>
+    <string name="detail_label_description">Description</string>
+    <string name="detail_label_status">Status</string>
+    <string name="detail_label_requester">Requester Username</string>
+    <string name="detail_label_provider">Provider Username</string>
+    <string name="detail_label_amount">Amount</string>
+    <string name="detail_label_empty"> </string>
+
     <!-- TESTING STRINGS DO NOT USE IN MAIN PRODUCTION -->
     <string name="hugeString">
         Old man caught a strong weedleOld man caught a strong weedle
