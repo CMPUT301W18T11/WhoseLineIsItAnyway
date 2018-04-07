@@ -114,7 +114,7 @@ public class NavigatorActivity extends AppCompatActivity
         if (id == R.id.logout)
         {
             Log.i("OPTIONS: ", "Logout Option Selected. Attempting to logout...");
-            DSM.setCurrentUser(null);
+            DSM.unsetCurrentUser();
             Intent outgoingIntent = new Intent(this, UserLoginActivity.class);
             startActivity(outgoingIntent);
             finish();
