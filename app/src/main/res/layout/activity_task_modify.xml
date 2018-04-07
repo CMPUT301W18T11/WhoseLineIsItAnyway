@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/AppTheme"
     android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -44,9 +45,9 @@
             <LinearLayout
                 android:id="@+id/filmstrip_panel"
                 android:layout_width="wrap_content"
-                android:minHeight="30dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
+                android:minHeight="30dp"
                 android:orientation="horizontal" />
         </HorizontalScrollView>
 
@@ -59,6 +60,7 @@
 
         <Button
             android:id="@+id/btn_UploadImage"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="309dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
@@ -67,6 +69,7 @@
 
         <Button
             android:id="@+id/btn_ClearAllUploadImages"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -85,6 +88,7 @@
 
             <Button
                 android:id="@+id/btn_callLocationDiag"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="310dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -92,6 +96,7 @@
 
             <Button
                 android:id="@+id/btn_ClearLocation"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -119,6 +124,7 @@
 
             <Button
                 android:id="@+id/btn_Submit"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="302dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -126,6 +132,7 @@
 
             <Button
                 android:id="@+id/btn_Cancel"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -137,11 +144,11 @@
             android:id="@+id/txt_taskmodify_instructions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:text="@string/create_task_instructions"
-            android:textAlignment="center"
-            android:layout_marginRight="5dp"
-           android:layout_marginLeft="5dp"/>
+            android:textAlignment="center" />
     </LinearLayout>
 
 </LinearLayout>

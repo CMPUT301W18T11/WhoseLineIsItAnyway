@@ -59,7 +59,7 @@ public class DetailRowAdapter extends ArrayAdapter<Detail>
         // Render clickable links
         if(details.get(position).isLinked())
         {
-            rowInfo.setTextColor(parent.getResources().getColor(R.color.colorLinked));
+            rowInfo.setTextColor(parent.getResources().getColor(R.color.link));
         }
 
         return detailRow;
