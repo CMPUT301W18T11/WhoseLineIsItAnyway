@@ -182,7 +182,7 @@ public final class Bid implements Detailed, Elastic, Serializable
     {
         final Intent intent = new Intent(context, detailActivityClass);
         intent.putExtra(Detailed.DETAILS_KEY, new ArrayList<>(Arrays.asList(
-                new Detail("providerUsername", this.getProviderUsername(),buildUserDetailIntent(context, this.getProviderUsername())),
+                new Detail("providerUsername", this.getProviderUsername(),buildUserLinkIntent(context, this.getProviderUsername())),
                 new Detail("taskId", this.getTaskId(), null),//buildTaskDetailIntent(context)),
                 new Detail("value", this.getValue().toString(), null))));
         intent.putExtra(Detailed.TITLE_KEY, "Bid");
@@ -259,7 +259,7 @@ public final class Bid implements Detailed, Elastic, Serializable
      * @param username of the user to show.
      * @return Intent used to show the user profile.
      */
-    private Intent buildUserDetailIntent(Context context, String username)
+    private Intent buildUserLinkIntent(Context context, String username)
     {
         Bundle bundle = new Bundle();
         Intent outgoingIntent = new Intent(context, UserProfileActivity.class);
@@ -276,7 +276,7 @@ public final class Bid implements Detailed, Elastic, Serializable
      * @param context to show from.
      * @return Intent used to show the task.
      * */
-    private Intent buildTaskDetailIntent(Context context)
+    private Intent buildTaskLinkIntent(Context context)
     {
         DataSourceManager dataSourceManager = new DataSourceManager(context);
         Task task = dataSourceManager.getTask(getTaskId());

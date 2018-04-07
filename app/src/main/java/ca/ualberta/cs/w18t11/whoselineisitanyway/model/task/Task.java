@@ -480,11 +480,12 @@ public final class Task implements Detailed, Elastic, Serializable
                 new Detail("title", this.getTitle(), null),
                 new Detail("description", this.getDescription(), null),
                 new Detail("status", this.getStatus().toString(), null),
-                new Detail("requesterUsername", this.getRequesterUsername(), buildUserDetailIntent(context, this.getRequesterUsername()))));
+                new Detail("requesterUsername", this.getRequesterUsername(), buildUserLinkIntent(context, this.getRequesterUsername())),
+                new Detail("", "Bids", this.buildBidsListLinkIntent(context))));
 
         if (this.getProviderUsername() != null)
         {
-            details.add(new Detail("providerUsername", this.getProviderUsername(), buildUserDetailIntent(context, this.getProviderUsername())));
+            details.add(new Detail("providerUsername", this.getProviderUsername(), buildUserLinkIntent(context, this.getProviderUsername())));
         }
 
         final Intent intent = new Intent(context, detailActivityClass);
@@ -537,7 +538,7 @@ public final class Task implements Detailed, Elastic, Serializable
      * @param context to show from
      * @return Intent used to show the list of bids.
      */
-    private Intent buildBidsListDetailIntent(Context context)
+    private Intent buildBidsListLinkIntent(Context context)
     {
         Intent outgoingIntent = new Intent(context, DetailableListActivity.class);
         String outgoingTitle = "Bids";
@@ -558,7 +559,7 @@ public final class Task implements Detailed, Elastic, Serializable
      * @param username of the user to show.
      * @return Intent used to show the user profile.
      */
-    private Intent buildUserDetailIntent(Context context, String username)
+    private Intent buildUserLinkIntent(Context context, String username)
     {
         Bundle bundle = new Bundle();
         Intent outgoingIntent = new Intent(context, UserProfileActivity.class);
