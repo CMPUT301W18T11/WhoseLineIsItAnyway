@@ -108,7 +108,7 @@ public final class UserLoginActivity extends AppCompatActivity
     {
         Log.i("UserLogin", "Registered user. Logging in...");
 
-        String outgoingTitle = "List";
+        String outgoingTitle = "All Tasks";
         Intent outgoingIntent = new Intent(this, DetailedListActivity.class);
         Task[] allTasks = dataSourceManager.getTasks();
         ArrayList<Detailed> tasks = new ArrayList<Detailed>(Arrays.asList(allTasks));
