@@ -12,8 +12,13 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 
@@ -29,16 +34,12 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
  */
 public class UserLoginActivity extends AppCompatActivity implements UserRegisterDialog.diagUserRegistrationListener
 {
-    // A dummy authentication store containing known user names
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "bob", "alice", "eve"
-    };
-
     private EditText txtUsername;
     private View progressView;
     private View loginFormView;
-
     private User user; // The user to register if so required
+    private DataSourceManager DSM = new DataSourceManager(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -140,7 +141,7 @@ public class UserLoginActivity extends AppCompatActivity implements UserRegister
         else
         {
             // attempt authentication against a network
-            User user = new DataSourceManager(this).getUser(username);
+            User user = DSM.getUser(username);
 
             if (user != null)
             {
@@ -163,10 +164,15 @@ public class UserLoginActivity extends AppCompatActivity implements UserRegister
     {
         Log.i("UserLogin", "Registered user. Logging in...");
 
-        // Set the current user and start the app
-        new DataSourceManager(this).setCurrentUser(user);
-        Intent intent = new Intent(this, NavigatorActivity.class);
-        this.startActivity(intent);
+        String outgoingTitle = "List";
+        Intent outgoingIntent = new Intent(this, DetailedListActivity.class);
+        Task[] allTasks = DSM.getTasks();
+        ArrayList<Detailed> tasks = new ArrayList<Detailed>(Arrays.asList(allTasks));
+
+        outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
+        outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, tasks);
+        startActivity(outgoingIntent);
+        finish();
     }
 
     private void registerUser(String username)
@@ -180,7 +186,7 @@ public class UserLoginActivity extends AppCompatActivity implements UserRegister
     @Override
     public void RegisterDiag_PosResultListener(final User result) {
         this.user = result;
-        if (new DataSourceManager(this).addUser(this.user))
+        if (DSM.addUser(this.user))
         {
             loginUser(this.user);
         }

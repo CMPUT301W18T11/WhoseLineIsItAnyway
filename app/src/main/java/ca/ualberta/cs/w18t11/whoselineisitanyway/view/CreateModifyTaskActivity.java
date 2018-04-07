@@ -423,8 +423,8 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
                     (String) TaskParameters.get(KEYS.DESCR)
                     );
         }
-        // TODO once things are in order, implement DSM integration
-        // DSM.addTask(buildTask);
+        DSM.addTask(buildTask);
+        finish();
     }
 
     private int dpToPixels(int dp) {

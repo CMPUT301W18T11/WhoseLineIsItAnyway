@@ -114,9 +114,7 @@ public class NavigatorActivity extends AppCompatActivity
         if (id == R.id.logout)
         {
             Log.i("OPTIONS: ", "Logout Option Selected. Attempting to logout...");
-
-            /* TODO do we need to unset the DataSourceManager's current user? It just gets set
-                    on the next login anyways... */
+            DSM.setCurrentUser(null);
             Intent outgoingIntent = new Intent(this, UserLoginActivity.class);
             startActivity(outgoingIntent);
             finish();
@@ -135,11 +133,10 @@ public class NavigatorActivity extends AppCompatActivity
         String outgoingTitle = "List";
         Intent outgoingIntent = new Intent(this, DetailedListActivity.class);
         ArrayList<Detailed> detailedArrayList = new ArrayList<>();
-        DataSourceManager dm = new DataSourceManager(this);
-        User currentUser = dm.getCurrentUser();
+        User currentUser = DSM.getCurrentUser();
 
-        Task[] allTasks = dm.getTasks();
-        Bid[] allBids = dm.getBids();
+        Task[] allTasks = DSM.getTasks();
+        Bid[] allBids = DSM.getBids();
 
 
         if (id == R.id.all_tasks)
@@ -188,7 +185,6 @@ public class NavigatorActivity extends AppCompatActivity
             outgoingTitle= "Create Task";
             outgoingIntent = new Intent(this, CreateModifyTaskActivity.class);
             startActivity(outgoingIntent);
-            finish();
             return true;
         }
 
@@ -199,7 +195,6 @@ public class NavigatorActivity extends AppCompatActivity
         outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, detailedArrayList);
 
         startActivity(outgoingIntent);
-        finish();
         return true;
     }
 
