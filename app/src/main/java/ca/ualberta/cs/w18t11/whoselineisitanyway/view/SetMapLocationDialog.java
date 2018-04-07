@@ -150,20 +150,11 @@ public class SetMapLocationDialog implements OnMapReadyCallback, GoogleApiClient
 	}
 
 	public void showDialog() {
-
-		if (permissionsGranted) {
-			// MAP CONTROL INITIALIZATION
-			mapView = (MapView) diagView.findViewById(R.id.map_mapdialog_setloc);
-			mapView.onCreate(mapDiag.onSaveInstanceState());
-			mapView.onResume();
-
-
-			mapDiag.show();
-		} else {
-			Toast.makeText(caller, "You must enable locations access. You will not be able to set a location without this.", Toast.LENGTH_SHORT).show();
-			returnListener.MapSetDialog_PosResult(null);
-		}
-
+		// MAP CONTROL INITIALIZATION
+		mapView = (MapView) diagView.findViewById(R.id.map_mapdialog_setloc);
+		mapView.onCreate(mapDiag.onSaveInstanceState());
+		mapView.onResume();
+		mapDiag.show();
 	}
 	//region GetLocation GoodAccuracyButSlow
 	private void getLocation() {

@@ -337,11 +337,12 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
                     // Request location permissions
                     int PERMISSION_LOCATION_REQUEST_CODE = 0;
                     ActivityCompat.requestPermissions(CreateModifyTaskActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION_REQUEST_CODE);
-                    if (PERMISSION_LOCATION_REQUEST_CODE == PackageManager.PERMISSION_DENIED) {
-                        Toast.makeText(CreateModifyTaskActivity.this, "You must enable locations access. You will not be able to set a location without this.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        return;
-                    }
+                    return;
+//                    if (PERMISSION_LOCATION_REQUEST_CODE == PackageManager.PERMISSION_DENIED) {
+//                        Toast.makeText(CreateModifyTaskActivity.this, "You must enable locations access. You will not be able to set a location without this.", Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        return;
+//                    }
                 } else {
                     SetMapLocationDialog setLocation = new SetMapLocationDialog(CreateModifyTaskActivity.this);
                     setLocation.showDialog();
