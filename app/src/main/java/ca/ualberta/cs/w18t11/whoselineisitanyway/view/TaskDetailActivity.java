@@ -330,6 +330,9 @@ public class TaskDetailActivity extends DetailActivity {
             @Override
             public void onClick(View view) {
                 // TODO: Add unassign task button functionality
+                task.unassignProvider();
+                finish();
+                task.showDetails(TaskDetailActivity.class, view.getContext());
             }
         });
 
