@@ -211,11 +211,11 @@ public final class Rating
         {
             if (sentenceLen - 30 <= 6)
             {
-                reviewConstruct.append(comment.substring(0, comment.indexOf(".")));
+                reviewConstruct.append(comment.substring(0, comment.indexOf(".")) + "...");
             }
             else
             {
-                reviewConstruct.append(comment.substring(0, 30));
+                reviewConstruct.append(comment.substring(0, 30) + "...");
             }
         }
         else

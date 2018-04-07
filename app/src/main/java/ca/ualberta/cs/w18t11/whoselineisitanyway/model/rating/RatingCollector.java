@@ -150,7 +150,7 @@ public final class RatingCollector
     final public String toString()
     {
         int JUSTIFY_LEN = 18;
-        if (ratings.isEmpty()) {
+        if (ratings.isEmpty() != true) {
             StringBuilder strCreate = new StringBuilder();
             strCreate.append(
                     "SUMMARY | (" + String.valueOf(getRatingCount()) + ") Reviews" + "\n" +
