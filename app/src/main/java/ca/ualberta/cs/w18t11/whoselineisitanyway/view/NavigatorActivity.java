@@ -75,11 +75,21 @@ public class NavigatorActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        // Set the user field text in the navbar
-        ((TextView) findViewById(R.id.drawer_username))
-                .setText(DSM.getCurrentUser().getUsername());
-        ((TextView) findViewById(R.id.drawer_email))
-                .setText(DSM.getCurrentUser().getEmailAddress().toString());
+        if (DSM.getCurrentUser() != null)
+        {
+            // Set the user field text in the navbar
+            ((TextView) findViewById(R.id.drawer_username))
+                    .setText(DSM.getCurrentUser().getUsername());
+            ((TextView) findViewById(R.id.drawer_email))
+                    .setText(DSM.getCurrentUser().getEmailAddress().toString());
+        }
+        else
+        {
+            ((TextView) findViewById(R.id.drawer_username))
+                    .setText("");
+            ((TextView) findViewById(R.id.drawer_email))
+                    .setText("");
+        }
 
         // Adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.list, menu);
@@ -102,7 +112,11 @@ public class NavigatorActivity extends AppCompatActivity
         if (id == R.id.profile)
         {
             Log.i("OPTIONS: ", "Profile Option Selected");
-            // TODO Handle
+            Bundle bundle = new Bundle();
+            Intent outgoingIntent = new Intent(this, UserProfileActivity.class);
+            bundle.putString(UserProfileActivity.DATA_EXISTING_USERNAME, DSM.getCurrentUser().getUsername());
+            outgoingIntent.putExtras(bundle);
+            startActivity(outgoingIntent);
             return true;
         }
         if (id == R.id.search)
