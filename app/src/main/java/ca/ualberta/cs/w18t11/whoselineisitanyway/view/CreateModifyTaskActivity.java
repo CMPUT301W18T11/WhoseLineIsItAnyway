@@ -176,13 +176,14 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
 //region ImageSelection
 
     private void startImageSelection(){
-
+        boolean canContinue = false; // Allows one button press to call permissions and proceed to code
         if (!(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
             // Request location permissions
             int PERMISSION_LOCATION_REQUEST_CODE = 0;
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_LOCATION_REQUEST_CODE);
-            return;
-        } else {
+            canContinue = PERMISSION_LOCATION_REQUEST_CODE == PackageManager.PERMISSION_GRANTED;
+        } else { canContinue = true; }
+        if (canContinue) {
             Intent photoPickerIntent = new Intent();
             photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
             photoPickerIntent.setType("image/*");
