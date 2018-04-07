@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
@@ -24,9 +26,11 @@ public class TaskDetailActivity extends DetailActivity {
      */
     public void customizeUserInterface(ViewGroup viewGroup)
     {
+        Task task = getTaskFromIntent();
+        addTaskImages(task, viewGroup);
         try
         {
-            Task task = getTaskFromIntent();
+            //Task task = getTaskFromIntent();
             renderBasedOnTask(task, viewGroup);
         }
         catch(NullPointerException E)
@@ -189,6 +193,36 @@ public class TaskDetailActivity extends DetailActivity {
     private void renderOtherDoneTask(ViewGroup viewGroup)
     {
         // Show no additional UI elements
+    }
+
+    /**
+     * Add a section for viewing images to the UI
+     * @param task Task to add images for
+     * @param viewGroup Parent for adding user interface elements
+     */
+    private void addTaskImages(Task task, ViewGroup viewGroup)
+    {
+        LinearLayout linearLayout = new LinearLayout(this);
+        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(this);
+        LinearLayout filmStrip = new LinearLayout(this);
+        filmStrip.setId(R.id.filmstrip_panel);
+
+        horizontalScrollView.addView(filmStrip);
+        linearLayout.addView(horizontalScrollView);
+
+        ViewGroup insertPoint = findViewById(R.id.activity_detail_group);
+        insertPoint.addView(linearLayout, insertPoint.getChildCount());
+
+        insertImagesFromTask(task);
+    }
+
+    /**
+     * Insert images from the task
+     * @param task to insert images from
+     */
+    private void insertImagesFromTask(Task task)
+    {
+        // TODO: Add the images from the task.
     }
 
     private void addBidButton(ViewGroup viewGroup, int index)
