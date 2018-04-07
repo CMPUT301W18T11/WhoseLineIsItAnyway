@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Objects;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
@@ -52,6 +53,11 @@ public final class Task implements Detailed, Elastic, Serializable
      * The maximum description length allowed.
      */
     private static final int MAXIMUM_DESCRIPTION_LENGTH = 300;
+
+    /**
+     * Used to put the Task into an intent
+     */
+    public static final String TASK_KEY = "TASK_OBJECT";
 
     /**
      * The associated requester's username.
@@ -486,22 +492,22 @@ public final class Task implements Detailed, Elastic, Serializable
             @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
     {
         final ArrayList<Detail> details = new ArrayList<>(Arrays.asList(
-                new Detail("title", this.getTitle(), null),
-                new Detail("description", this.getDescription(), null),
-                new Detail("status", this.getStatus().toString(), null),
-                new Detail("requesterUsername", this.getRequesterUsername(),
-                        buildUserLinkIntent(context, this.getRequesterUsername())),
-                new Detail("", "Bids", this.buildBidsListLinkIntent(context))));
+                new Detail(context.getString(R.string.detail_label_title), this.getTitle(), null),
+                new Detail(context.getString(R.string.detail_label_description), this.getDescription(), null),
+                new Detail(context.getString(R.string.detail_label_status), this.getStatus().toString(), null),
+                new Detail(context.getString(R.string.detail_label_requester), this.getRequesterUsername(), buildUserLinkIntent(context, this.getRequesterUsername())),
+                new Detail(context.getString(R.string.detail_label_empty), "Bids", this.buildBidsListLinkIntent(context))));
 
         if (this.getProviderUsername() != null)
         {
-            details.add(new Detail("providerUsername", this.getProviderUsername(),
-                    buildUserLinkIntent(context, this.getProviderUsername())));
+            details.add(new Detail(context.getString(R.string.detail_label_provider), this.getProviderUsername(), buildUserLinkIntent(context, this.getProviderUsername())));
         }
 
         final Intent intent = new Intent(context, detailActivityClass);
         intent.putExtra(Detailed.DETAILS_KEY, details);
         intent.putExtra(Detailed.TITLE_KEY, "Task");
+
+        intent.putExtra(Task.TASK_KEY, this);
         return intent;
     }
 
