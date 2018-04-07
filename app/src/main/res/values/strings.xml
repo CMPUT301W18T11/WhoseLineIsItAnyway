@@ -56,6 +56,7 @@
     <string name="navigation_drawer_close">Close</string>
     <string name="title_activity_maps">Map</string>
     <string name="dialog_place_bid_Hint">($0.00)</string>
+    <string name="button_place_bid">Place Bid</string>
 
     <!-- TESTING STRINGS DO NOT USE IN MAIN PRODUCTION -->
     <string name="hugeString">

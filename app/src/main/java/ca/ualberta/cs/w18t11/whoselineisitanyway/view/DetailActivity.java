@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,14 +42,14 @@ public class DetailActivity extends AppCompatActivity
 
         initializeUserInterface();
         setupFromIntent();
-        customizeUserInterface();
+        customizeUserInterface(null);
     }
 
     /**
      * Customize the user interface by adding buttons or modifying default elements
      * To be overridden if needed, otherwise, leave it blank
      */
-    public void customizeUserInterface()
+    public void customizeUserInterface(ViewGroup viewGroup)
     {
         // Override
     }
