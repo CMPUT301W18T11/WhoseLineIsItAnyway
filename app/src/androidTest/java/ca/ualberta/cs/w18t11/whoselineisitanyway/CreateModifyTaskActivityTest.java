@@ -156,10 +156,10 @@ public class CreateModifyTaskActivityTest
     }
 
     /**
-     * Tests creating a task with a photo and location
+     * Tests clicking the 'Select Photos' button
      */
     @Test
-    public void CreateTaskWithPhotoTest()
+    public void ClickSelectPhotosButtonTest()
     {
         // Login and get to CreateModifyTaskActivity
         onView(withId(R.id.etxt_Username))
@@ -182,11 +182,12 @@ public class CreateModifyTaskActivityTest
         intended(hasComponent(CreateModifyTaskActivity.class.getName()));
         onView(withId(R.id.etxt_Description)).check(matches(withText(taskDescription)));
 
+        UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         onView(withId(R.id.btn_UploadImage))
                 .perform(click());
         intended(hasAction(Intent.ACTION_GET_CONTENT));
-        UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         mDevice.pressBack();
+        intended(hasComponent(CreateModifyTaskActivity.class.getName()));
     }
 
     /**
@@ -270,8 +271,8 @@ public class CreateModifyTaskActivityTest
         // Clear location
         onView(withId(R.id.btn_ClearLocation))
                 .perform(click());
-        onView(withId(R.id.etxt_Username))
-                .check(matches(withText("Location not set")));
+        onView(withId(R.id.txt_location_set))
+                .check(matches(withText("(Location not set)")));
 
         onView(withId(R.id.btn_Cancel))
                 .perform(click());
