@@ -181,19 +181,7 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
             // Request location permissions
             int PERMISSION_LOCATION_REQUEST_CODE = 0;
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_LOCATION_REQUEST_CODE);
-            if (PERMISSION_LOCATION_REQUEST_CODE == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(this, "You must enable storage access to add photos.", Toast.LENGTH_SHORT).show();
-
-            } else {
-
-                // https://stackoverflow.com/a/41330595/4914842
-                // tahsinRupam | Creative Commons 3.0 SA
-                // Posted 12/26/2016 | Accessed 04/02/2018
-                // Calling an intent to pick photos
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, PICK_IMAGES);
-            }
+            return;
         } else {
             Intent photoPickerIntent = new Intent();
             photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
@@ -342,13 +330,26 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SetMapLocationDialog setLocation = new SetMapLocationDialog(CreateModifyTaskActivity.this);
-                setLocation.showDialog();
+                // First check if the user has given permission to access location
+                if (!(ContextCompat.checkSelfPermission(
+                        CreateModifyTaskActivity.this,
+                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+                    // Request location permissions
+                    int PERMISSION_LOCATION_REQUEST_CODE = 0;
+                    ActivityCompat.requestPermissions(CreateModifyTaskActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION_REQUEST_CODE);
+                    if (PERMISSION_LOCATION_REQUEST_CODE == PackageManager.PERMISSION_DENIED) {
+                        Toast.makeText(CreateModifyTaskActivity.this, "You must enable locations access. You will not be able to set a location without this.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        return;
+                    }
+                } else {
+                    SetMapLocationDialog setLocation = new SetMapLocationDialog(CreateModifyTaskActivity.this);
+                    setLocation.showDialog();
+                }
             }
         });
-
-
     }
+
     @Override
     public void MapSetDialog_PosResult(LatLng result) {
         if (result != null) {

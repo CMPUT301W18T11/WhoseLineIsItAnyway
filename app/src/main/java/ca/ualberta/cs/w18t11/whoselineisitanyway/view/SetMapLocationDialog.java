@@ -1,25 +1,27 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,11 +33,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
-
-
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 
 
 // TODO Remove toasts used in debugging
@@ -100,7 +97,6 @@ public class SetMapLocationDialog implements OnMapReadyCallback, GoogleApiClient
 			returnListener = (MapDialogReturnListener) context;
 		} else { throw new RuntimeException("Calling class must contain interface methods!"); }
 
-		promptLocationPermissions();
 		getLocation();
 		initGoogleApi();
 		createDialog();
@@ -136,25 +132,6 @@ public class SetMapLocationDialog implements OnMapReadyCallback, GoogleApiClient
 		Log.i("SetMapLocationDialog","Failed to establish a Google Api Connection: " + connectionResult.getErrorMessage());
 	}
 	//endregion
-
-	private void promptLocationPermissions() {
-		if (!(ContextCompat.checkSelfPermission(caller, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-			// Request location permissions
-			int PERMISSION_LOCATION_REQUEST_CODE = 0;
-			ActivityCompat.requestPermissions(caller, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION_REQUEST_CODE);
-			if (PERMISSION_LOCATION_REQUEST_CODE == PackageManager.PERMISSION_DENIED) {
-				Toast.makeText(caller, "You must enable locations access. You will not be able to set a location without this.", Toast.LENGTH_SHORT).show();
-				returnListener.MapSetDialog_PosResult(null);
-			} else {
-				permissionsGranted = true;
-			}
-		} else {
-			permissionsGranted = true;
-		}
-		if (permissionsGranted == true) {
-			getLocation();
-		}
-	}
 
 	private void createDialog() {
 		final int LAYOUT_TEMPLATE = R.layout.location_setdialog_layout; // Get the template for the dialog

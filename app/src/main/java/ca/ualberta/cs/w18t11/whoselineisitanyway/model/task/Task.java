@@ -54,12 +54,6 @@ public final class Task implements Detailed, Elastic, Serializable
     private static final int MAXIMUM_DESCRIPTION_LENGTH = 300;
 
     /**
-     * The task's elastic ID.
-     */
-    @Nullable
-    private String elasticId;
-
-    /**
      * The associated requester's username.
      */
     @NonNull
@@ -100,15 +94,21 @@ public final class Task implements Detailed, Elastic, Serializable
     private final TaskStatus status;
 
     /**
+     * The task's elastic ID.
+     */
+    @Nullable
+    private String elasticId;
+
+    /**
      * Creates a task.
      *
-     * @param elasticId   The task's elastic ID.
+     * @param elasticId         The task's elastic ID.
      * @param requesterUsername The associated requester's ID.
      * @param providerUsername  The associated provider's ID.
-     * @param bids        The associated bids.
-     * @param title       The task's title.
-     * @param description The task's description.
-     * @param status      The task's status.
+     * @param bids              The associated bids.
+     * @param title             The task's title.
+     * @param description       The task's description.
+     * @param status            The task's status.
      * @throws IllegalArgumentException For an empty requesterUsername; a non-null, empty providerUsername; an
      *                                  assigned or done task without a bid associated with the
      *                                  providerUsername; or a title or description exceeding their
@@ -223,8 +223,8 @@ public final class Task implements Detailed, Elastic, Serializable
      * Creates a requested task without an elastic ID.
      *
      * @param requesterUsername The associated requester's ID.
-     * @param title       The task's title.
-     * @param description The task's description.
+     * @param title             The task's title.
+     * @param description       The task's description.
      */
     public Task(@NonNull final String requesterUsername, @NonNull final String title,
                 @NonNull final String description)
@@ -235,10 +235,10 @@ public final class Task implements Detailed, Elastic, Serializable
     /**
      * Creates a requested task with an elastic ID.
      *
-     * @param elasticId   The task's elastic ID.
+     * @param elasticId         The task's elastic ID.
      * @param requesterUsername The associated requester's ID.
-     * @param title       The task's title.
-     * @param description The task's description.
+     * @param title             The task's title.
+     * @param description       The task's description.
      */
     public Task(@NonNull final String elasticId, @NonNull final String requesterUsername,
                 @NonNull final String title, @NonNull final String description)
@@ -249,11 +249,11 @@ public final class Task implements Detailed, Elastic, Serializable
     /**
      * Creates a bidded task.
      *
-     * @param elasticId   The task's elastic ID.
+     * @param elasticId         The task's elastic ID.
      * @param requesterUsername The associated requester's ID.
-     * @param bids        The associated bids.
-     * @param title       The task's title.
-     * @param description The task's description.
+     * @param bids              The associated bids.
+     * @param title             The task's title.
+     * @param description       The task's description.
      * @see Bid
      */
     public Task(@NonNull final String elasticId, @NonNull final String requesterUsername,
@@ -266,13 +266,13 @@ public final class Task implements Detailed, Elastic, Serializable
     /**
      * Creates an assigned or done task.
      *
-     * @param elasticId   The task's elastic ID.
+     * @param elasticId         The task's elastic ID.
      * @param requesterUsername The associated requester's ID.
      * @param providerUsername  The associated provider's ID.
-     * @param bids        The associated bids.
-     * @param title       The task's title.
-     * @param description The task's description.
-     * @param done        Whether the task has been completed.
+     * @param bids              The associated bids.
+     * @param title             The task's title.
+     * @param description       The task's description.
+     * @param done              Whether the task has been completed.
      * @see Bid
      */
     public Task(@NonNull final String elasticId, @NonNull final String requesterUsername,
@@ -352,7 +352,8 @@ public final class Task implements Detailed, Elastic, Serializable
         switch (this.getStatus())
         {
             case REQUESTED:
-                return new Task(this.getElasticId(), this.getRequesterUsername(), null, new Bid[]{bid},
+                return new Task(this.getElasticId(), this.getRequesterUsername(), null,
+                        new Bid[]{bid},
                         this.getTitle(), this.getDescription(), TaskStatus.BIDDED);
 
             case BIDDED:
@@ -380,6 +381,13 @@ public final class Task implements Detailed, Elastic, Serializable
         }
     }
 
+    @Override
+    @NonNull
+    public final String toString()
+    {
+        return this.getRequesterUsername() + ": " + this.getTitle();
+    }
+
     /**
      * @return A copy of the task assigned to the provider.
      * @throws IllegalArgumentException For an empty providerUsername.
@@ -399,7 +407,8 @@ public final class Task implements Detailed, Elastic, Serializable
             throw new IllegalStateException("Cannot assign a non-bidded task");
         }
 
-        return new Task(this.getElasticId(), this.getRequesterUsername(), providerId, this.getBids(),
+        return new Task(this.getElasticId(), this.getRequesterUsername(), providerId,
+                this.getBids(),
                 this.getTitle(), this.getDescription(), TaskStatus.ASSIGNED);
     }
 
@@ -415,7 +424,8 @@ public final class Task implements Detailed, Elastic, Serializable
             throw new IllegalStateException("Cannot mark a non-assigned task as done");
         }
 
-        return new Task(this.getElasticId(), this.getRequesterUsername(), this.getProviderUsername(),
+        return new Task(this.getElasticId(), this.getRequesterUsername(),
+                this.getProviderUsername(),
                 this.getBids(), this.getTitle(), this.getDescription(), TaskStatus.DONE);
     }
 
@@ -479,12 +489,14 @@ public final class Task implements Detailed, Elastic, Serializable
                 new Detail("title", this.getTitle(), null),
                 new Detail("description", this.getDescription(), null),
                 new Detail("status", this.getStatus().toString(), null),
-                new Detail("requesterUsername", this.getRequesterUsername(), buildUserLinkIntent(context, this.getRequesterUsername())),
+                new Detail("requesterUsername", this.getRequesterUsername(),
+                        buildUserLinkIntent(context, this.getRequesterUsername())),
                 new Detail("", "Bids", this.buildBidsListLinkIntent(context))));
 
         if (this.getProviderUsername() != null)
         {
-            details.add(new Detail("providerUsername", this.getProviderUsername(), buildUserLinkIntent(context, this.getProviderUsername())));
+            details.add(new Detail("providerUsername", this.getProviderUsername(),
+                    buildUserLinkIntent(context, this.getProviderUsername())));
         }
 
         final Intent intent = new Intent(context, detailActivityClass);
@@ -500,8 +512,9 @@ public final class Task implements Detailed, Elastic, Serializable
     @Override
     public final int hashCode()
     {
-        return Objects.hash(this.getElasticId(), this.getRequesterUsername(), this.getProviderUsername(),
-                this.getBids(), this.getTitle(), this.getDescription(), this.getStatus());
+        return Objects
+                .hash(this.getElasticId(), this.getRequesterUsername(), this.getProviderUsername(),
+                        this.getBids(), this.getTitle(), this.getDescription(), this.getStatus());
     }
 
     /**
@@ -542,9 +555,12 @@ public final class Task implements Detailed, Elastic, Serializable
         Intent outgoingIntent = new Intent(context, DetailedListActivity.class);
         String outgoingTitle = "Bids";
         ArrayList<Detailed> bidsArrayList = new ArrayList<>();
-        if(this.getBids() != null)
+        if (this.getBids() != null)
         {
-            for(Bid bid: this.getBids()) { bidsArrayList.add(bid); }
+            for (Bid bid : this.getBids())
+            {
+                bidsArrayList.add(bid);
+            }
         }
         outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
         outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, bidsArrayList);
@@ -554,7 +570,7 @@ public final class Task implements Detailed, Elastic, Serializable
     /**
      * Make an intent for displaying related users.
      *
-     * @param context to show from.
+     * @param context  to show from.
      * @param username of the user to show.
      * @return Intent used to show the user profile.
      */
