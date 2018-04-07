@@ -199,6 +199,18 @@ public final class DataSourceManager implements DataSource
     }
 
     /**
+     * Unsets the current user.
+     */
+    public final void unsetCurrentUser()
+    {
+        final SharedPreferences.Editor editor = this.context
+                .getSharedPreferences(DataSourceManager.PREFERENCES_FILENAME, Context.MODE_PRIVATE)
+                .edit();
+        editor.remove(CURRENT_USERNAME_KEY);
+        editor.apply();
+    }
+
+    /**
      * @return All users present in the data source, or null if an error occurs.
      * @see DataSource
      * @see User

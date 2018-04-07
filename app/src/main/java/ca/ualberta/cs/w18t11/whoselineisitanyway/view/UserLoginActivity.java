@@ -169,6 +169,8 @@ public class UserLoginActivity extends AppCompatActivity implements UserRegister
         Task[] allTasks = DSM.getTasks();
         ArrayList<Detailed> tasks = new ArrayList<Detailed>(Arrays.asList(allTasks));
 
+        DSM.setCurrentUser(user);
+
         outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
         outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, tasks);
         startActivity(outgoingIntent);
