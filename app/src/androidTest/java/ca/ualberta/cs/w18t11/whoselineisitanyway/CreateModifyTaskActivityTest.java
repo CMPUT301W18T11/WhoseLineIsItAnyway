@@ -1,6 +1,7 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
 import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.NavigationViewActions;
 import android.support.test.espresso.intent.Intents;
@@ -25,6 +26,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.CreateModifyTaskActivity;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailedListActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserLoginActivity;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
@@ -118,8 +120,7 @@ public class CreateModifyTaskActivityTest
 
         onView(withId(R.id.btn_Submit))
                 .perform(click());
-
-//        intended(hasComponent(DetailedListActivity.class.getName()));
+        intended(hasComponent(DetailedListActivity.class.getName()));
     }
 
     /**
@@ -151,8 +152,7 @@ public class CreateModifyTaskActivityTest
 
         onView(withId(R.id.btn_Cancel))
                 .perform(click());
-
-//        intended(hasComponent(DetailedListActivity.class.getName()));
+        intended(hasComponent(DetailedListActivity.class.getName()));
     }
 
     /**
@@ -185,13 +185,8 @@ public class CreateModifyTaskActivityTest
         onView(withId(R.id.btn_UploadImage))
                 .perform(click());
         intended(hasAction(Intent.ACTION_GET_CONTENT));
-//        Espresso.onView(withContentDescription("")).perform(click());
-        // TODO click on image to upload
-
-        onView(withId(R.id.btn_Submit))
-                .perform(click());
-
-        // TODO ???
+        UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        mDevice.pressBack();
     }
 
     /**
@@ -233,52 +228,8 @@ public class CreateModifyTaskActivityTest
 
         onView(withId(R.id.btn_Submit))
                 .perform(click());
-
-//        intended(hasComponent(DetailedListActivity.class.getName()));
+        intended(hasComponent(DetailedListActivity.class.getName()));
     }
-
-    /**
-     * Tests adding a duplicate photo to the task
-     */
-//    @Test
-//    public void AddDuplicatePhotoTest()
-//    {
-//
-//        // Login and get to CreateModifyTaskActivity
-//        onView(withId(R.id.etxt_Username))
-//                .perform(typeText(testUsername), closeSoftKeyboard());
-//        onView(withId(R.id.btn_Login))
-//                .perform(click());
-//        onView(withId(R.id.drawer_layout))
-//                .check(matches(isClosed(Gravity.LEFT)))
-//                .perform(DrawerActions.open());
-//        onView(withId(R.id.nav_view))
-//                .perform(NavigationViewActions.navigateTo(R.id.create_task));
-//
-//        onView(withId(R.id.etxt_Title))
-//                .perform(replaceText(taskTitle), closeSoftKeyboard());
-//        intended(hasComponent(CreateModifyTaskActivity.class.getName()));
-//        onView(withId(R.id.etxt_Title)).check(matches(withText(taskTitle)));
-//
-//        onView(withId(R.id.etxt_Description))
-//                .perform(replaceText(taskDescription), closeSoftKeyboard());
-//        intended(hasComponent(CreateModifyTaskActivity.class.getName()));
-//        onView(withId(R.id.etxt_Description)).check(matches(withText(taskDescription)));
-//
-////        onView(withId(R.id.btn_UploadImage))
-////                .perform(click());
-//        // TODO click on image to upload
-//        intended(hasComponent(CreateModifyTaskActivity.class.getName()));
-//
-////        onView(withId(R.id.btn_UploadImage))
-////                .perform(click());
-//        // TODO click on image to upload
-//        intended(hasComponent(CreateModifyTaskActivity.class.getName()));
-//
-//        onView(withText("The image is a duplicate.")).check(matches(isDisplayed()));
-//
-//        // TODO ???
-//    }
 
     /**
      * Tests adding a photo and location to a task and clearing them
@@ -297,9 +248,9 @@ public class CreateModifyTaskActivityTest
         onView(withId(R.id.nav_view))
                 .perform(NavigationViewActions.navigateTo(R.id.create_task));
 
+        // TODO figure out how to click on the photo
 //        onView(withId(R.id.btn_Submit))
 //                .perform(click());
-        // TODO click on image to upload
 
         intended(hasComponent(CreateModifyTaskActivity.class.getName()));
 
@@ -310,7 +261,6 @@ public class CreateModifyTaskActivityTest
         onView(withContentDescription("Google Map")).perform(click());
         onView(withId(R.id.btn_mapdialog_Save))
                 .perform(click());
-
         intended(hasComponent(CreateModifyTaskActivity.class.getName()));
 
         // Clear photo
@@ -322,5 +272,9 @@ public class CreateModifyTaskActivityTest
                 .perform(click());
         onView(withId(R.id.etxt_Username))
                 .check(matches(withText("Location not set")));
+
+        onView(withId(R.id.btn_Cancel))
+                .perform(click());
+        intended(hasComponent(DetailedListActivity.class.getName()));
     }
 }
