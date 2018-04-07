@@ -1,10 +1,13 @@
 <resources>
 
-    <!-- Our Custom Application Theme -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorGreen</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorAccent">@color/link</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="android:colorForeground">@color/primary</item>
+        <item name="android:navigationBarColor">@color/primaryDark</item>
+        <item name="android:editTextBackground">@android:color/white</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -15,5 +18,4 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
 </resources>

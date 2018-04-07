@@ -66,7 +66,7 @@ public final class DataSourceManager implements DataSource
      */
     public DataSourceManager(@NonNull final Context context)
     {
-        this.remoteDataSource = new RemoteDataSource();
+        this.remoteDataSource = new MockDataSource();
         this.localDataSource = new LocalDataSource(context);
         this.context = context;
     }
