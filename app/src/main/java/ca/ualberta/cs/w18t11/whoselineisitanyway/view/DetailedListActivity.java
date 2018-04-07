@@ -17,7 +17,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
  * An activity for displaying a list of Detailed abjects.
  * Defines the action taken when clicking on each object in the list.
  */
-public class DetailableListActivity extends NavigatorActivity
+public class DetailedListActivity extends NavigatorActivity
 {
     public static final String DATA_DETAILABLE_LIST = "com.whoselineisitanyway.DATA_DETAILABLE_LIST";
     public static final String DATA_TITLE = "com.whoselineisitanyway.DATA_DETAILABLE_TITLE";
@@ -83,7 +83,7 @@ public class DetailableListActivity extends NavigatorActivity
 
     private void loadState()
     {
-        Log.i("DetailableListActivity", "Restoring saved instance state");
+        Log.i("DetailedListActivity", "Restoring saved instance state");
         // TODO implement
     }
 
@@ -95,7 +95,7 @@ public class DetailableListActivity extends NavigatorActivity
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState)
     {
-        Log.i("DetailableListActivity", "onSaveInstanceState is called");
+        Log.i("DetailedListActivity", "onSaveInstanceState is called");
         loadState();
         savedInstanceState.putSerializable("detailList", detailList);
         // Always call the superclass so it can save the view hierarchy state

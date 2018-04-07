@@ -36,7 +36,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.DetailableListActivity">
+        <activity android:name=".view.DetailedListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

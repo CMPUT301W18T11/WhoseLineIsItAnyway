@@ -15,14 +15,12 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Objects;
 
-import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailableListActivity;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailedListActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.TaskDetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserProfileActivity;
 
@@ -541,15 +539,15 @@ public final class Task implements Detailed, Elastic, Serializable
      */
     private Intent buildBidsListLinkIntent(Context context)
     {
-        Intent outgoingIntent = new Intent(context, DetailableListActivity.class);
+        Intent outgoingIntent = new Intent(context, DetailedListActivity.class);
         String outgoingTitle = "Bids";
         ArrayList<Detailed> bidsArrayList = new ArrayList<>();
         if(this.getBids() != null)
         {
             for(Bid bid: this.getBids()) { bidsArrayList.add(bid); }
         }
-        outgoingIntent.putExtra(DetailableListActivity.DATA_TITLE, outgoingTitle);
-        outgoingIntent.putExtra(DetailableListActivity.DATA_DETAILABLE_LIST, bidsArrayList);
+        outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
+        outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, bidsArrayList);
         return outgoingIntent;
     }
 

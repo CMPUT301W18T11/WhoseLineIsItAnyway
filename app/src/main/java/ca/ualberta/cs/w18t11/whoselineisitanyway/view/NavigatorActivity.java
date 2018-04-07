@@ -133,7 +133,7 @@ public class NavigatorActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         String outgoingTitle = "List";
-        Intent outgoingIntent = new Intent(this, DetailableListActivity.class);
+        Intent outgoingIntent = new Intent(this, DetailedListActivity.class);
         ArrayList<Detailed> detailedArrayList = new ArrayList<>();
         DataSourceManager dm = new DataSourceManager(this);
         User currentUser = dm.getCurrentUser();
@@ -195,8 +195,8 @@ public class NavigatorActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
-        outgoingIntent.putExtra(DetailableListActivity.DATA_TITLE, outgoingTitle);
-        outgoingIntent.putExtra(DetailableListActivity.DATA_DETAILABLE_LIST, detailedArrayList);
+        outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
+        outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, detailedArrayList);
 
         startActivity(outgoingIntent);
         finish();
