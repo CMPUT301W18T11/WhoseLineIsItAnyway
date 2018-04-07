@@ -2,6 +2,7 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -148,7 +149,7 @@ public class TaskDetailActivity extends DetailActivity {
      */
     private void renderMyDoneTask(Task task, ViewGroup viewGroup)
     {
-        // Show archive button?
+        addDeleteTaskButton(task, viewGroup, 0);
     }
 
     /**
@@ -273,6 +274,11 @@ public class TaskDetailActivity extends DetailActivity {
             @Override
             public void onClick(View view) {
                 // TODO: Add edit task button functionality
+                Bundle bundle = new Bundle();
+                Intent outgoingIntent = new Intent(view.getContext(), CreateModifyTaskActivity.class);
+                bundle.putSerializable("EXISTING_TASK", task);
+                outgoingIntent.putExtras(bundle);
+                startActivity(outgoingIntent);
             }
         });
 
