@@ -1,9 +1,12 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.NavigationViewActions;
+import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.test.uiautomator.UiDevice;
 import android.view.Gravity;
 
 import org.junit.Before;
@@ -16,6 +19,8 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.NavigatorActivity;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserLoginActivity;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserProfileActivity;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
@@ -23,6 +28,8 @@ import static android.support.test.espresso.Espresso.openActionBarOverflowOrOpti
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerMatchers.isClosed;
+import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
@@ -178,11 +185,22 @@ public class NavigatorActivityTest
     @Test
     public void testActionButtonOptions()
     {
+        Intents.init();
+
+        UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         onView(withText("Profile")).perform(click());
+        intended(hasComponent(UserProfileActivity.class.getName()));
+        mDevice.pressBack();
+
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         onView(withText("Search")).perform(click());
+        // TODO need to handle the action taken by search
+
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         onView(withText("Logout")).perform(click());
+        intended(hasComponent(UserLoginActivity.class.getName()));
+
+        Intents.release();
     }
 }

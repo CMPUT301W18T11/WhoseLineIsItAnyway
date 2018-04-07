@@ -95,7 +95,7 @@ public class CreateModifyTaskActivityTest
      * Tests creating a task without location or photo
      */
     @Test
-    public void CreateTaskBasicTest()
+    public void testCreateTaskBasic()
     {
         // Login and get to CreateModifyTaskActivity
         onView(withId(R.id.etxt_Username))
@@ -127,7 +127,7 @@ public class CreateModifyTaskActivityTest
      * Tests cancelling a task after typing in a title and description
      */
     @Test
-    public void CancelTaskCreationTest()
+    public void testCancelTaskCreation()
     {
         // Login and get to CreateModifyTaskActivity
         onView(withId(R.id.etxt_Username))
@@ -159,7 +159,7 @@ public class CreateModifyTaskActivityTest
      * Tests clicking the 'Select Photos' button
      */
     @Test
-    public void ClickSelectPhotosButtonTest()
+    public void testClickSelectPhotosButton()
     {
         // Login and get to CreateModifyTaskActivity
         onView(withId(R.id.etxt_Username))
@@ -194,7 +194,7 @@ public class CreateModifyTaskActivityTest
      * Tests creating a task with a photo and location
      */
     @Test
-    public void CreateTaskWithLocationTest()
+    public void testCreateTaskWithLocation()
     {
         // Login and get to CreateModifyTaskActivity
         onView(withId(R.id.etxt_Username))
@@ -236,7 +236,7 @@ public class CreateModifyTaskActivityTest
      * Tests adding a photo and location to a task and clearing them
      */
     @Test
-    public void ClearPhotoAndLocationTest()
+    public void testClearPhotoAndLocation()
     {
         // Login and get to CreateModifyTaskActivity
         onView(withId(R.id.etxt_Username))
