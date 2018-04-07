@@ -56,7 +56,6 @@
     <string name="navigation_drawer_close">Close</string>
     <string name="title_activity_maps">Map</string>
     <string name="dialog_place_bid_Hint">($0.00)</string>
-    <string name="button_place_bid">Place Bid</string>
 
     <!-- Strings for labeling details -->
     <string name="detail_label_title">Title</string>
@@ -66,6 +65,16 @@
     <string name="detail_label_provider">Provider Username</string>
     <string name="detail_label_amount">Amount</string>
     <string name="detail_label_empty"> </string>
+
+    <!-- Strings related to DetailActivity -->
+    <string name="button_placeholder">Button</string>
+    <string name="button_place_bid">Place Bid</string>
+    <string name="button_accept_bid">Accept Bid</string>
+    <string name="button_delete_task">Delete Task</string>
+    <string name="button_edit_task">Edit Task</string>
+    <string name="button_complete_task">Mark Done</string>
+    <string name="button_unassign_task">Unassign Task</string>
+
 
     <!-- TESTING STRINGS DO NOT USE IN MAIN PRODUCTION -->
     <string name="hugeString">
