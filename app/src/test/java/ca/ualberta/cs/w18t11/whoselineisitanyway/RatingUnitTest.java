@@ -120,7 +120,43 @@ public final class RatingUnitTest
         }
     }
 
-    //TODO add functions to test full and partial tostring methods, test length of review header (should be ~ 30, try with period)
+    @Test
+    public final void testSetReview() {
+        String test = "Terrible dogsitter! Now my dog just drools everywhere." +
+                " This is the full body of the review and should not show when the" +
+                " toString method is called, only when FullReview() is.";
+        Rating r = new Rating(1, 1, 1);
+        r.setReviewMSG(test);
 
+        assertTrue(r.toString() != "");
+
+    }
+
+    @Test
+    public final void testShortReview() {
+        String test = "Terrible dogsitter! Now my dog just drools everywhere." +
+                " This is the full body of the review and should not show when the" +
+                " toString method is called, only when FullReview() is.";
+        String notContains = "This is the full body of the review and should not show when the toString method is called, only when FullReview() is.";
+        Rating r = new Rating(1, 1, 1);
+        r.setReviewMSG(test);
+
+        assertEquals("Short Review LenTest", r.toString().length() <= 54, true);
+        assertEquals("Short Review ContentTest", r.toString().contains(notContains), false);
+        System.out.print("\n\nShort Review Contents:\n" + r.toString());
+    }
+
+    @Test
+    public final void testLongReview() {
+        String test = "Terrible dogsitter! Now my dog just drools everywhere." +
+                " This is the full body of the review and should not show when the" +
+                " toString method is called, only when FullReview() is.";
+        Rating r = new Rating(1, 4, 3);
+        r.setReviewMSG(test);
+        assertEquals("Long review ContentTest", r.fullReview().contains(test), true);
+        System.out.print("Long Review Contents:\n" + r.fullReview());
+
+
+    }
 
 }
