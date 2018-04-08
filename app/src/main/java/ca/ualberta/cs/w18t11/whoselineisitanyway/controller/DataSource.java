@@ -13,7 +13,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
  * @author Brad Ofrim, Samuel Dolha
  * @version 3.0
  */
-interface DataSource
+public interface DataSource
 {
     /**
      * @return All users present in the data source, or null if an error occurs.
