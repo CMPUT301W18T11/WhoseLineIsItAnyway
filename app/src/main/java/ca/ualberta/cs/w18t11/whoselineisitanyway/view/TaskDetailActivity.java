@@ -337,9 +337,11 @@ public class TaskDetailActivity extends DetailActivity {
             @Override
             public void onClick(View view) {
                 // TODO: Add unassign task button functionality
-                task.unassignProvider();
+                DataSourceManager dataSourceManager = new DataSourceManager(view.getContext());
+                Task unassignedTask = task.unassignProvider();
+                dataSourceManager.addTask(unassignedTask);
                 finish();
-                task.showDetails(TaskDetailActivity.class, view.getContext());
+                unassignedTask.showDetails(TaskDetailActivity.class, view.getContext());
             }
         });
 
