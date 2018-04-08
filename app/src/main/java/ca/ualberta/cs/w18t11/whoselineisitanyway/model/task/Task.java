@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -342,6 +343,35 @@ public final class Task implements Detailed, Elastic, Serializable
     public final Bid[] getBids()
     {
         return this.bids;
+    }
+
+    /**
+     * @return The bid with the lowest value.
+     * @see Bid
+     */
+    @NonNull
+    public final Bid getLowestBid()
+    {
+        if (this.getStatus() == TaskStatus.REQUESTED)
+        {
+            throw new IllegalStateException("Cannot get the lowest bid of a requested task");
+        }
+
+        final Bid[] bids = this.getBids();
+        assert bids != null;
+        Bid lowestBid = bids[0];
+
+        for (int index = 1; index < bids.length; index += 1)
+        {
+            final Bid bid = bids[index];
+
+            if (bid.getValue().compareTo(lowestBid.getValue()) < 0)
+            {
+                lowestBid = bid;
+            }
+        }
+
+        return lowestBid;
     }
 
     /**
