@@ -13,7 +13,7 @@
          location permissions for the 'MyLocation' functionality. 
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -22,48 +22,34 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.UserLoginActivity">
+        <activity
+            android:name=".view.UserLoginActivity"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.NavigatorActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".view.DetailedListActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity
+            android:name=".view.NavigatorActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".view.DetailedListActivity"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".view.DetailActivity"
-            android:exported="true" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".view.TaskDetailActivity"
-            android:exported="true" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".view.CreateModifyTaskActivity"
-            android:exported="true"
-            android:label="@string/title_CreateTaskActivity" />
-        <activity android:name=".view.testActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".view.testActivity" />
         <activity
             android:name=".view.UserProfileActivity"
-            android:exported="true"
-            android:label="@string/title_UserLoginActivity" />
+            android:theme="@style/AppTheme" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

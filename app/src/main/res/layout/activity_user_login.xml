@@ -36,14 +36,18 @@
             android:id="@+id/etxt_Username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:ems="10"
             android:hint="@string/prompt_username"
             android:inputType="textPersonName"
             android:maxLength="8"
-            android:textAlignment="center" />
+            android:padding="5dp"
+            android:textAlignment="center"
+            android:textColor="@color/link" />
 
         <Button
             android:id="@+id/btn_Login"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/action_sign_in" />

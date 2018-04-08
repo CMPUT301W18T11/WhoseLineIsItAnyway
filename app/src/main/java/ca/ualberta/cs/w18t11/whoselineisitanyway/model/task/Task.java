@@ -395,6 +395,44 @@ public final class Task implements Detailed, Elastic, Serializable
     }
 
     /**
+     * @return A copy of the task without an assigned provider.
+     * @throws IllegalStateException For a non-assigned task.
+     */
+    @NonNull
+    public final Task unassignProvider() throws IllegalStateException
+    {
+        if (this.getStatus() != TaskStatus.ASSIGNED)
+        {
+            throw new IllegalStateException("Cannot unassign a non-assigned task");
+        }
+
+        assert this.getBids() != null;
+        final ArrayList<Bid> bids = new ArrayList<>(Arrays.asList(this.getBids()));
+        Bid bidToRemove = null;
+
+        for (Bid bid : bids)
+        {
+            if (bid.getProviderUsername().equals(this.getProviderUsername()))
+            {
+                bidToRemove = bid;
+            }
+        }
+
+        assert bidToRemove != null;
+        bids.remove(bidToRemove);
+
+        if (bids.size() > 0)
+        {
+            return new Task(this.getElasticId(), this.getRequesterUsername(), null,
+                    bids.toArray(new Bid[bids.size()]), this.getTitle(), this.getDescription(),
+                    TaskStatus.BIDDED);
+        }
+
+        return new Task(this.getElasticId(), this.getRequesterUsername(), null, null,
+                this.getTitle(), this.getDescription(), TaskStatus.REQUESTED);
+    }
+
+    /**
      * @return A copy of the task assigned to the provider.
      * @throws IllegalArgumentException For an empty providerUsername.
      * @throws IllegalStateException    For a non-bidded task.
@@ -493,14 +531,21 @@ public final class Task implements Detailed, Elastic, Serializable
     {
         final ArrayList<Detail> details = new ArrayList<>(Arrays.asList(
                 new Detail(context.getString(R.string.detail_label_title), this.getTitle(), null),
-                new Detail(context.getString(R.string.detail_label_description), this.getDescription(), null),
-                new Detail(context.getString(R.string.detail_label_status), this.getStatus().toString(), null),
-                new Detail(context.getString(R.string.detail_label_requester), this.getRequesterUsername(), buildUserLinkIntent(context, this.getRequesterUsername())),
-                new Detail(context.getString(R.string.detail_label_empty), "Bids", this.buildBidsListLinkIntent(context))));
+                new Detail(context.getString(R.string.detail_label_description),
+                        this.getDescription(), null),
+                new Detail(context.getString(R.string.detail_label_status),
+                        this.getStatus().toString(), null),
+                new Detail(context.getString(R.string.detail_label_requester),
+                        this.getRequesterUsername(),
+                        buildUserLinkIntent(context, this.getRequesterUsername())),
+                new Detail(context.getString(R.string.detail_label_empty), "Bids",
+                        this.buildBidsListLinkIntent(context))));
 
         if (this.getProviderUsername() != null)
         {
-            details.add(new Detail(context.getString(R.string.detail_label_provider), this.getProviderUsername(), buildUserLinkIntent(context, this.getProviderUsername())));
+            details.add(new Detail(context.getString(R.string.detail_label_provider),
+                    this.getProviderUsername(),
+                    buildUserLinkIntent(context, this.getProviderUsername())));
         }
 
         final Intent intent = new Intent(context, detailActivityClass);
