@@ -109,5 +109,8 @@
         Old man caught a strong weedleOld man caught a strong weedle
         Old man caught a strong weedleOld man caught a strong weedle
     </string>
+    <string name="sign_out">Sign out</string>
+    <string name="profile">Profile</string>
+    <string name="search">Search</string>
 
 </resources>
