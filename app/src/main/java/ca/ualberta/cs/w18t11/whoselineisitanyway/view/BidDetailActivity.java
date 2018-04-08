@@ -44,8 +44,8 @@ public class BidDetailActivity extends DetailActivity {
         User currentUser = dataSourceManager.getCurrentUser();
         Task task = dataSourceManager.getTask(bid.getTaskId());
 
-        assert(currentUser != null);
-        assert(task != null);
+        assert currentUser != null;
+        assert task != null;
 
         if(currentUser.getUsername().equals(task.getRequesterUsername()))
         {

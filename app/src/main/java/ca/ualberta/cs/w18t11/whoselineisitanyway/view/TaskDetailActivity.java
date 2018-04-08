@@ -127,7 +127,6 @@ public class TaskDetailActivity extends DetailActivity {
     private void renderMyBiddedTask(Task task, ViewGroup viewGroup)
     {
         addDeleteTaskButton(task, viewGroup);
-        addAcceptBidButton(task, viewGroup);
     }
 
     /**
@@ -241,24 +240,6 @@ public class TaskDetailActivity extends DetailActivity {
 
         ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
 
-        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
-    }
-
-    private void addAcceptBidButton(final Task task, ViewGroup viewGroup)
-    {
-        // Make a view for the button
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.activity_detail_button, viewGroup);
-        Button bidButton = (Button) view.findViewById(R.id.detail_button);
-        bidButton.setText(R.string.button_accept_bid);
-        bidButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO: Add accept bid button functionality
-            }
-        });
-
-        ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
         insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
