@@ -471,11 +471,17 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
                             String.valueOf(tempLoc.getLongitude()) + ")");
                     resultTask.setLocation(tempLoc);
                 }
+                String image_data_for_log;
+                if (resultTask.getImages() == null) {
+                    image_data_for_log = "NULL";
+                } else {
+                    image_data_for_log = String.valueOf(resultTask.getImages().length);
+                }
                 Log.i("GenTask - Task","Generated Task:\n" +
                         "    Title: " + resultTask.getTitle() + "\n" +
                         "    Descr: " + String.valueOf(resultTask.getDescription().length()) + "\n" +
                         "    ES ID: " + String.valueOf(resultTask.getElasticId() != null) + "\n" +
-                        "    Pics #: " + String.valueOf(resultTask.getImages().length) + "\n" +
+                        "    Pics #: " + image_data_for_log + "\n" +
                         "    Loc: " + String.valueOf(resultTask.getLocation() != null)
 
                 );
