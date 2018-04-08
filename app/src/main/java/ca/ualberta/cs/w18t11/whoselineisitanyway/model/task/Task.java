@@ -433,9 +433,16 @@ public final class Task implements Detailed, Elastic, Serializable
 
                 bids.remove(bid);
 
+                if(bids.size() > 0)
+                {
+                    return new Task(this.getElasticId(), this.getRequesterUsername(), null,
+                            bids.toArray(new Bid[0]), this.getTitle(), this.getDescription(),
+                            TaskStatus.BIDDED).addExtras(this.images, this.location);
+                }
+
                 return new Task(this.getElasticId(), this.getRequesterUsername(), null,
-                        bids.toArray(new Bid[0]), this.getTitle(), this.getDescription(),
-                        TaskStatus.BIDDED).addExtras(this.images, this.location);
+                        null, this.getTitle(), this.getDescription(),
+                        TaskStatus.REQUESTED).addExtras(this.images, this.location);
 
             default:
                 throw new IllegalStateException("Cannot decline a bid on a non-bidded task");
