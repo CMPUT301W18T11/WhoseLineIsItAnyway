@@ -34,6 +34,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bitmap.BitmapManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.TaskStatus;
+import io.searchbox.client.JestClient;
 
 /**
  * <h1>CreateModifyTaskActivity</h1>
@@ -42,13 +43,13 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.TaskStatus;
  * @author Lucas
  * @see Task
  */
-public class CreateModifyTaskActivity extends AppCompatActivity implements SetMapLocationDialog.MapDialogReturnListener {
+public class CreateModifyTaskActivity extends AppCompatActivity implements SetMapLocationDialog.MapDialogReturnListener, ActivityCompat.OnRequestPermissionsResultCallback  {
     private DataSourceManager DSM = new DataSourceManager(this);
     private LinearLayout filmstrip; // Hold the container for the objects
     final int MAX_CHARLIMIT_TITLE = 30; // Maximum length of Task Title
     final int MAX_CHARLIMIT_DESCRIPTION = 300; // Maximum length of Task Description
     private int PICK_IMAGES = 1256;
-
+    private Task existingTask;
     private HashMap<KEYS, Object> TaskParameters = new HashMap<KEYS, Object>();  // Hold parameters of a task for easy Access during Creation
     private enum KEYS {
         TITLE("TITLE"),
@@ -63,6 +64,10 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
             this.value = val;
         }
     }
+
+
+    final int PERMISSION_REQUEST_READ_STORAGE = 0;
+    final int PERMISSION_REQUEST_LOCATION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -98,13 +103,14 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         if (bundle != null) {
             if (bundle.size() > 0) {
                 setTitle(R.string.title_EditTaskActivity);
-                populateFields((Task) bundle.get("EXISTING_TASK"));
+                existingTask = (Task) bundle.get("EXISTING_TASK");
+                populateFields();
             }
         }
     }
 
     // If an existing task object was passed in, populate fields for editing the task with existing data
-    private void populateFields(final Task existingTask) {
+    private void populateFields() {
         if (existingTask.getStatus() == TaskStatus.BIDDED) {
             Toast.makeText(this, "Bidded tasks cannot be edited.\n" +
             "You can delete the task from the tasks menu to cancel the contract but you can no longer change task details. Returning...", Toast.LENGTH_LONG);
@@ -113,14 +119,43 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         EditText titleField = (EditText) findViewById(R.id.etxt_Title);
         EditText descrField = (EditText) findViewById(R.id.etxt_Description);
         TextView locField = (TextView) findViewById(R.id.txt_location_set);
-        // TODO populate images from loaded task
-        // TODO populate location from task
         titleField.setText(existingTask.getTitle());
         descrField.setText(existingTask.getDescription());
-        TaskParameters.put(KEYS.ID, existingTask.getElasticId());
+        String locString = "Location Set\n(" + String.valueOf(existingTask.getLoc().latitude) + ", " +
+                String.valueOf(existingTask.getLoc().longitude) + ")";
+        locField.setText(locString);
+        ArrayList<String> images = existingTask.getImages();
+        for (int i = 0; i < images.size(); i ++) {
+            add_image(new BitmapManager(images.get(i)));
+        }
+
 
 
     }
+@Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.i("Permissions Listener", "RequestCode:" + String.valueOf(requestCode));
+        switch (requestCode) {
+            case PERMISSION_REQUEST_READ_STORAGE:
+                if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent photoPickerIntent = new Intent();
+                    photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
+                    photoPickerIntent.setType("image/*");
+                    startActivityForResult(photoPickerIntent, PICK_IMAGES);
+                }
+                break;
+            case PERMISSION_REQUEST_LOCATION:
+                if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    SetMapLocationDialog setLocation = new SetMapLocationDialog(CreateModifyTaskActivity.this);
+                    setLocation.showDialog();
+                }
+                break;
+
+        }
+
+    }
+
 
 //region Character Limit Event Handler
     private void taskTitleField_onCharLimitReached() {
@@ -178,12 +213,8 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
     private void startImageSelection(){
         boolean canContinue = false; // Allows one button press to call permissions and proceed to code
         if (!(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
-            // Request location permissions
-            int PERMISSION_LOCATION_REQUEST_CODE = 0;
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_LOCATION_REQUEST_CODE);
-            canContinue = PERMISSION_LOCATION_REQUEST_CODE == PackageManager.PERMISSION_GRANTED;
-        } else { canContinue = true; }
-        if (canContinue) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_READ_STORAGE);
+        } else {
             Intent photoPickerIntent = new Intent();
             photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
             photoPickerIntent.setType("image/*");
@@ -335,15 +366,7 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
                 if (!(ContextCompat.checkSelfPermission(
                         CreateModifyTaskActivity.this,
                         Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-                    // Request location permissions
-                    int PERMISSION_LOCATION_REQUEST_CODE = 0;
-                    ActivityCompat.requestPermissions(CreateModifyTaskActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION_REQUEST_CODE);
-                    return;
-//                    if (PERMISSION_LOCATION_REQUEST_CODE == PackageManager.PERMISSION_DENIED) {
-//                        Toast.makeText(CreateModifyTaskActivity.this, "You must enable locations access. You will not be able to set a location without this.", Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        return;
-//                    }
+                    ActivityCompat.requestPermissions(CreateModifyTaskActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_LOCATION);
                 } else {
                     SetMapLocationDialog setLocation = new SetMapLocationDialog(CreateModifyTaskActivity.this);
                     setLocation.showDialog();
@@ -381,20 +404,23 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Task buildTask
+                if (validateAllFields() != true) { return; }
                 EditText title = (EditText) findViewById(R.id.etxt_Title);
                 EditText descr = (EditText) findViewById(R.id.etxt_Description);
                 ArrayList<String> images = new ArrayList<String>();
-                TaskParameters.put(KEYS.TITLE, title.getText().toString());
-                TaskParameters.put(KEYS.DESCR, descr.getText().toString());
+
+
 
                 for (int i = 0; i < filmstrip.getChildCount(); i ++) {
                     ImageView preview = (ImageView) filmstrip.getChildAt(i);
                     BitmapManager tag = (BitmapManager) preview.getTag();
                     images.add(tag.getBase64Bitmap());
                 }
+                existingTask.setImages((ArrayList<String>) TaskParameters.get(KEYS.IMAGES));
+                DSM.addTask(existingTask);
+                finish();
 
-                TaskParameters.put(KEYS.IMAGES, images);
-                buildTask();
             }
         });
 
@@ -410,26 +436,21 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
     }
 
     private void buildTask() {
-        //TODO Once Tasks is able to take photos + location, add these parameters
-        Task buildTask;
-        String userID = DSM.getCurrentUser().getUsername();
-        if (TaskParameters.get(KEYS.ID) == null) {
-            buildTask = new Task(
-                    userID,
-                    (String) TaskParameters.get(KEYS.TITLE),
-                    (String) TaskParameters.get(KEYS.DESCR)
-            );
-        } else {
-           buildTask = new Task(
-                    userID,
-                    (String) TaskParameters.get(KEYS.TITLE),
-                    (String) TaskParameters.get(KEYS.DESCR)
-                    );
-        }
-        DSM.addTask(buildTask);
-        finish();
-    }
 
+        //TODO Once Tasks is able to take photos + location, add these parameters
+
+    }
+    private boolean validateAllFields() {
+        EditText titleField = (EditText) findViewById(R.id.etxt_Title);
+        EditText descrField = (EditText) findViewById(R.id.etxt_Description);
+        if (titleField.getText().length() == 0) {
+            titleField.setError("You must enter a title for your task.");
+        }
+        if (descrField.getText().length() == 0) {
+            descrField.setError("You must enter a description for your task.");
+        }
+        return (titleField.getText().length() != 0 && descrField.getText().length() != 0);
+    }
     private int dpToPixels(int dp) {
         return (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
     }
