@@ -44,6 +44,9 @@
             android:name=".view.TaskDetailActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:name=".view.BidDetailActivity"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name=".view.CreateModifyTaskActivity"
             android:theme="@style/AppTheme" />
         <activity android:name=".view.testActivity" />

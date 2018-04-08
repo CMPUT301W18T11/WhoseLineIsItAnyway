@@ -19,6 +19,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.BidDetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserProfileActivity;
 
@@ -30,6 +31,11 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserProfileActivity;
  */
 public final class Bid implements Detailed, Elastic, Serializable
 {
+    /**
+     * Used to put the Task into an intent
+     */
+    public static final String BID_KEY = "BID_OBJECT";
+
     /**
      * An auto-generated, unique ID to support class versioning for Serializable.
      *
@@ -164,7 +170,7 @@ public final class Bid implements Detailed, Elastic, Serializable
     public final <T extends DetailActivity> void showDetails(
             @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
     {
-        context.startActivity(getDetailsIntent(detailActivityClass, context));
+        context.startActivity(getDetailsIntent(BidDetailActivity.class, context));
     }
 
     /**
@@ -186,6 +192,7 @@ public final class Bid implements Detailed, Elastic, Serializable
                 new Detail("taskId", this.getTaskId(), null),//buildTaskDetailIntent(context)),
                 new Detail("value", this.getValue().toString(), null))));
         intent.putExtra(Detailed.TITLE_KEY, "Bid");
+        intent.putExtra(Bid.BID_KEY, this);
         return intent;
     }
 
