@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
@@ -21,6 +22,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailedListActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.TaskDetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserLoginActivity;
 
@@ -81,6 +83,16 @@ public class TaskDetailActivityTest
             DSM.removeTask(otherTask);
         }
 
+        ArrayList<Task> myTasks;
+        Task[] tasks = DSM.getTasks();
+        for (Task task : tasks)
+        {
+            if (task.getRequesterUsername().equals(myUsername))
+            {
+                DSM.removeTask(task);
+            }
+        }
+
         user = DSM.getUser(myUsername);
         if (user == null)
         {
@@ -94,9 +106,14 @@ public class TaskDetailActivityTest
     public void release()
     {
         DSM = new DataSourceManager(loginActivity);
-        if (DSM.getTask(myUsername, myTitle) != null)
+        ArrayList<Task> myTasks;
+        Task[] tasks = DSM.getTasks();
+        for (Task task : tasks)
         {
-            DSM.removeTask(myTask);
+            if (task.getRequesterUsername().equals(myUsername))
+            {
+                DSM.removeTask(task);
+            }
         }
         if (DSM.getTask(otherUsername, otherTitle) != null)
         {
@@ -115,13 +132,11 @@ public class TaskDetailActivityTest
 
         if (DSM.getTask(myUsername, "Req") == null)
         {
-//            DSM.removeTask(myTask);
             DSM.addTask(myTask);
         }
 
         if (DSM.getCurrentUser() == null)
         {
-            // Login and navigate to 'my tasks'
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(myUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
@@ -166,7 +181,6 @@ public class TaskDetailActivityTest
 
         if (DSM.getCurrentUser() == null)
         {
-            // Login and navigate to 'my tasks'
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(myUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
@@ -200,6 +214,7 @@ public class TaskDetailActivityTest
     {
         // Bid on my task
         myTask = new Task(myUsername, "Assigned", myDescription);
+        DSM.removeTask(myTask);
         myTask.setElasticId("12345");
         myTask = myTask.submitBid(
                 new Bid(otherUsername,
@@ -207,13 +222,11 @@ public class TaskDetailActivityTest
                         new BigDecimal(999.99)
                 )
         );
-        myTask.assignProvider(otherUsername);
-        DSM.removeTask(myTask);
+        myTask = myTask.assignProvider(otherUsername);
         DSM.addTask(myTask);
 
         if (DSM.getCurrentUser() == null)
         {
-            // Login and navigate to 'my tasks'
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(myUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
@@ -246,6 +259,7 @@ public class TaskDetailActivityTest
     public void testMyDoneTask()
     {
         myTask = new Task(myUsername, "Done", myDescription);
+        DSM.removeTask(myTask);
         // Bid on my task
         myTask.setElasticId("12345");
         myTask = myTask.submitBid(
@@ -256,12 +270,10 @@ public class TaskDetailActivityTest
         );
         myTask = myTask.assignProvider(otherUsername);
         myTask = myTask.markDone();
-        DSM.removeTask(myTask);
         DSM.addTask(myTask);
 
         if (DSM.getCurrentUser() == null)
         {
-            // Login and navigate to 'my tasks'
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(myUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
@@ -284,5 +296,43 @@ public class TaskDetailActivityTest
         onView(withText(R.string.button_delete_task)).check(matches(isDisplayed()));
 
         DSM.removeTask(myTask);
+    }
+
+    /**
+     * Tests the deletion of a task
+     */
+    @Test
+    public void testDeleteTask()
+    {
+        myTask = new Task(myUsername, "Req", myDescription);
+
+        if (DSM.getTask(myUsername, "Req") == null)
+        {
+            DSM.addTask(myTask);
+        }
+
+        if (DSM.getCurrentUser() == null)
+        {
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(myUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+        }
+
+        onView(withId(R.id.drawer_layout))
+                .check(matches(isClosed(Gravity.LEFT)))
+                .perform(DrawerActions.open());
+        onView(withId(R.id.nav_view))
+                .perform(NavigationViewActions.navigateTo(R.id.my_tasks));
+
+        onData(hasToString(startsWith("test: Req")))
+                .inAdapterView(withId(R.id.detail_LV))
+                .perform(click());
+        intended(hasComponent(TaskDetailActivity.class.getName()));
+
+        onView(withText(R.string.button_delete_task)).check(matches(isDisplayed()));
+        onView(withText(R.string.button_delete_task))
+                .perform(click());
+        intended(hasComponent(DetailedListActivity.class.getName()));
     }
 }
