@@ -398,6 +398,14 @@ final class LocalDataSource implements DataSource
     @Override
     public final boolean removeTask(@NonNull final Task task)
     {
+        if(task.getBids() != null)
+        {
+            for(Bid bid: task.getBids())
+            {
+                removeBid(bid);
+            }
+        }
+
         return this.remove(FileType.TASKS, task);
     }
 

@@ -327,6 +327,14 @@ public class RemoteDataSource implements DataSource
     @Override
     public boolean removeTask(@NonNull Task task)
     {
+        if(task.getBids() != null)
+        {
+            for(Bid bid: task.getBids())
+            {
+                removeBid(bid);
+            }
+        }
+
         ElasticsearchTaskController.RemoveTaskTask removeTaskTask =
                 new ElasticsearchTaskController.RemoveTaskTask();
         removeTaskTask.execute(task);
