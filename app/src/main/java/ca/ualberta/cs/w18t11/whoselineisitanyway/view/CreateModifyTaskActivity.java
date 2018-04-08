@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
@@ -44,49 +45,31 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.TaskStatus;
  * @author Lucas
  * @see Task
  */
-public class CreateModifyTaskActivity extends AppCompatActivity
-        implements SetMapLocationDialog.MapDialogReturnListener,
-        ActivityCompat.OnRequestPermissionsResultCallback
-{
-    final int MAX_CHARLIMIT_TITLE = 30; // Maximum length of Task Title
-
-    final int MAX_CHARLIMIT_DESCRIPTION = 300; // Maximum length of Task Description
-
-    final int PERMISSION_REQUEST_READ_STORAGE = 0;
-
-    final int PERMISSION_REQUEST_LOCATION = 1;
-
+//TODO Pre-initialize existingtask or use filter - as it's calling on a void thing in location setting
+public class CreateModifyTaskActivity extends AppCompatActivity implements SetMapLocationDialog.MapDialogReturnListener, ActivityCompat.OnRequestPermissionsResultCallback  {
     private DataSourceManager DSM = new DataSourceManager(this);
-
     private LinearLayout filmstrip; // Hold the container for the objects
-
+    final int MAX_CHARLIMIT_TITLE = 30; // Maximum length of Task Title
+    final int MAX_CHARLIMIT_DESCRIPTION = 300; // Maximum length of Task Description
     private int PICK_IMAGES = 1256;
-    // Hold parameters of a task for easy Access during Creation
-
     private Task existingTask;
-
-    private HashMap<KEYS, Object> TaskParameters = new HashMap<KEYS, Object>();
+    private Task resultTask;
+    private ArrayList<String> image = new ArrayList<String>();
+    private Location tempLoc = null;
+    private final int PERMISSION_REQUEST_READ_STORAGE = 0;
+    private final int PERMISSION_REQUEST_LOCATION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_modify);
-        if (true)
-        {
-            conditionalSetup(getIntent().getExtras());
-        }
+
+        conditionalSetup(getIntent().getExtras());
         setTitle(R.string.title_CreateTaskActivity);
         filmstrip = findViewById(R.id.filmstrip_panel);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        TaskParameters.put(KEYS.TITLE, null);
-        TaskParameters.put(KEYS.DESCR, null);
-        TaskParameters.put(KEYS.LOCATION, null);
-        TaskParameters.put(KEYS.IMAGES, new ArrayList<String>());
-        TaskParameters.put(KEYS.STATUS, null);
-        TaskParameters.put(KEYS.ID, null);
 
         // EVENTHANDLERS
         taskTitleField_onCharLimitReached(); // Set warning flag when Title is == MAX_CHARLIMIT_TITLE
@@ -127,27 +110,19 @@ public class CreateModifyTaskActivity extends AppCompatActivity
         }
 
         EditText titleField = findViewById(R.id.etxt_Title);
-        EditText descriptionField = findViewById(R.id.etxt_Description);
-        TextView locationField = findViewById(R.id.txt_location_set);
+        EditText descrField = findViewById(R.id.etxt_Description);
+        TextView locField = findViewById(R.id.txt_location_set);
         titleField.setText(existingTask.getTitle());
-        descriptionField.setText(existingTask.getDescription());
+        descrField.setText(existingTask.getDescription());
+        String locString = "Location Set\n(" + String.valueOf(existingTask.getLocation().getLatitude()) + ", " +
+                String.valueOf(existingTask.getLocation().getLongitude()) + ")";
+        locField.setText(locString);
 
-        final Location location = existingTask.getLocation();
-
-        if (location != null)
-        {
-            String locString = "Location Set\n(" + String.valueOf(location.getLatitude()) + ", "
-                    + String.valueOf(location.getLongitude()) + ")";
-            locationField.setText(locString);
-        }
-
-        String[] images = existingTask.getImages();
-
-        if (images != null)
-        {
-            for (String image : images)
-            {
-                add_image(new BitmapManager(image));
+        // Check to ensure that images are in the task, if not don't bother changing anything
+        if (existingTask.getImages().length > 0) {
+            ArrayList<String> images = new ArrayList<>(Arrays.asList(existingTask.getImages()));
+            for (int i = 0; i < images.size(); i ++) {
+                add_image(new BitmapManager(images.get(i)));
             }
         }
     }
@@ -474,14 +449,13 @@ public class CreateModifyTaskActivity extends AppCompatActivity
     }
 
     @Override
-    public void MapSetDialog_PosResult(LatLng result)
-    {
-        if (result != null)
-        {
-            TaskParameters.put(KEYS.LOCATION, result);
-            TextView locField = findViewById(R.id.txt_location_set);
+    public void MapSetDialog_PosResult(LatLng result) {
+        if (result != null) {
+
+            TextView locField = (TextView) findViewById(R.id.txt_location_set);
             String locString = "Location Set\n(" + String.valueOf(result.latitude) + ", " +
                     String.valueOf(result.longitude) + ")";
+            tempLoc = new Location(result);
             locField.setText(locString);
         }
     }
@@ -492,10 +466,9 @@ public class CreateModifyTaskActivity extends AppCompatActivity
         button.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v)
-            {
-                TaskParameters.put(KEYS.LOCATION, null);
-                TextView locField = findViewById(R.id.txt_location_set);
+            public void onClick(View v) {
+                existingTask.setLocation(null);
+                TextView locField = (TextView) findViewById(R.id.txt_location_set);
                 String locString = "(Location not set)";
                 locField.setText(locString);
             }
@@ -509,24 +482,12 @@ public class CreateModifyTaskActivity extends AppCompatActivity
         button.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v)
-            {
-                if (validateAllFields() != true)
-                {
-                    return;
-                }
-                EditText title = findViewById(R.id.etxt_Title);
-                EditText descr = findViewById(R.id.etxt_Description);
-                ArrayList<String> images = new ArrayList<String>();
+            public void onClick(View v) {
+                if (validateAllFields() != true) { return; }
+                EditText title = (EditText) findViewById(R.id.etxt_Title);
+                EditText descr = (EditText) findViewById(R.id.etxt_Description);
 
 
-                for (int i = 0; i < filmstrip.getChildCount(); i++)
-                {
-                    ImageView preview = (ImageView) filmstrip.getChildAt(i);
-                    BitmapManager tag = (BitmapManager) preview.getTag();
-                    images.add(tag.getBase64Bitmap());
-                }
-                existingTask.setImages((String[]) TaskParameters.get(KEYS.IMAGES));
                 DSM.addTask(existingTask);
                 finish();
 
@@ -548,19 +509,10 @@ public class CreateModifyTaskActivity extends AppCompatActivity
         });
     }
 
-    private void buildTask()
-    {
-
-        //TODO Once Tasks is able to take photos + location, add these parameters
-
-    }
-
-    private boolean validateAllFields()
-    {
-        EditText titleField = findViewById(R.id.etxt_Title);
-        EditText descrField = findViewById(R.id.etxt_Description);
-        if (titleField.getText().length() == 0)
-        {
+    private boolean validateAllFields() {
+        EditText titleField = (EditText) findViewById(R.id.etxt_Title);
+        EditText descrField = (EditText) findViewById(R.id.etxt_Description);
+        if (titleField.getText().length() == 0) {
             titleField.setError("You must enter a title for your task.");
         }
         if (descrField.getText().length() == 0)
@@ -574,23 +526,6 @@ public class CreateModifyTaskActivity extends AppCompatActivity
     {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 getResources().getDisplayMetrics());
-    }
-
-    private enum KEYS
-    {
-        TITLE("TITLE"),
-        DESCR("DESCRIPTION"),
-        LOCATION("LOCATION"),
-        IMAGES("IMAGES"),
-        STATUS("STATUS"),
-        ID("ID");
-
-        private String value;
-
-        KEYS(String val)
-        {
-            this.value = val;
-        }
     }
 
 }
