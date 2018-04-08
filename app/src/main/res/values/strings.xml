@@ -68,6 +68,7 @@
 
     <!-- Strings related to DetailActivity -->
     <string name="button_placeholder">Button</string>
+    <string name="button_all_bids_task">Show All Bids</string>
     <string name="button_place_bid">Place Bid</string>
     <string name="button_accept_bid">Accept Bid</string>
     <string name="button_decline_bid">Decline Bid</string>
