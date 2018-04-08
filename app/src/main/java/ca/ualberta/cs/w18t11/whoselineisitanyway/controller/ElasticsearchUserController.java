@@ -49,65 +49,73 @@ public class ElasticsearchUserController
         @Override
         protected Boolean doInBackground(User... users)
         {
+            DocumentResult result;
+
             verifyConfig();
 
             for (User user : users)
             {
-                // First, we try to see if it already exists in the database
-                Index index = new Index.Builder(user)
-                        .index(Constants.ELASTICSEARCH_INDEX)
-                        .type(typeStr)
-                        .id(user.getElasticId())
-                        .build();
-
-                try
+                if (user.getElasticId() != null)
                 {
-                    DocumentResult result = client.execute(index);
-                    if (result.isSucceeded())
+                    // First, we try to see if it already exists in the database
+                    Index index = new Index.Builder(user)
+                            .index(Constants.ELASTICSEARCH_INDEX)
+                            .type(typeStr)
+                            .id(user.getElasticId())
+                            .build();
+                    try
                     {
-                        Log.i("Elasticsearch Success", "updated user: " +
-                                user.getUsername());
-                        return Boolean.TRUE;
+                        result = client.execute(index);
+                        if (result.isSucceeded())
+                        {
+                            Log.i("Elasticsearch Success", "updated user: " +
+                                    user.getUsername());
+                            return Boolean.TRUE;
+                        }
+                        else
+                        {
+                            Log.i("Elasticsearch Error",
+                                    "index missing or could not connect:" +
+                                            Integer.toString(result.getResponseCode()));
+                            return Boolean.FALSE;
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        Log.i("Elasticsearch Error",
-                                "index missing or could not connect:" +
-                                        Integer.toString(result.getResponseCode()));
-
-                        // If we couldn't find the object with the index, we add it to the databse
-                        Index idx = new Index.Builder(user).index(Constants.ELASTICSEARCH_INDEX).type(typeStr).build();
-
-                        try
-                        {
-                            result = client.execute(idx);
-                            if (result.isSucceeded())
-                            {
-                                // Elasticsearch was successful
-                                Log.i("Elasticsearch Success", "Added new user to db!");
-                                user.setElasticId(result.getId());
-                                return Boolean.TRUE;
-                            }
-                            else
-                            {
-                                Log.i("Elasticsearch Error",
-                                        "index missing or could not connect:" +
-                                                Integer.toString(result.getResponseCode()));
-                                return Boolean.FALSE;
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            // Probably disconnected
-                            Log.i("Elasticsearch Error", "Unexpected exception: " +
-                                    e.toString());
-                        }
+                        Log.i("Elasticsearch Error", "Unexpected exception: " +
+                                e.toString());
                     }
                 }
-                catch (Exception e)
+                else
                 {
-                    Log.i("Elasticsearch Error", "Unexpected exception: " +
-                            e.toString());
+                    Index idx = new Index.Builder(user)
+                            .index(Constants.ELASTICSEARCH_INDEX)
+                            .type(typeStr)
+                            .build();
+                    try
+                    {
+                        result = client.execute(idx);
+                        if (result.isSucceeded())
+                        {
+                            Log.i("Elasticsearch Success", "Added new user to db!");
+
+                            user.setElasticId(result.getId());
+                            return Boolean.TRUE;
+                        }
+                        else
+                        {
+                            Log.i("Elasticsearch Error",
+                                    "index missing or could not connect:" +
+                                            Integer.toString(result.getResponseCode()));
+                            return Boolean.FALSE;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // Probably disconnected
+                        Log.i("Elasticsearch Error", "Unexpected exception: " +
+                                e.toString());
+                    }
                 }
             }
             return Boolean.FALSE;

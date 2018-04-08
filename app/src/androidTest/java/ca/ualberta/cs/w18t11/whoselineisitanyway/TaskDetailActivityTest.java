@@ -174,7 +174,8 @@ public class TaskDetailActivityTest
                 new Bid(otherUsername,
                         myTask.getElasticId(),
                         new BigDecimal(999.99)
-                )
+                ),
+                DSM
         );
         DSM.removeTask(myTask);
         DSM.addTask(myTask);
@@ -220,7 +221,8 @@ public class TaskDetailActivityTest
                 new Bid(otherUsername,
                         myTask.getElasticId(),
                         new BigDecimal(999.99)
-                )
+                ),
+                DSM
         );
         myTask = myTask.assignProvider(otherUsername);
         DSM.addTask(myTask);
@@ -266,7 +268,8 @@ public class TaskDetailActivityTest
                 new Bid(otherUsername,
                         myTask.getElasticId(),
                         new BigDecimal(999.99)
-                )
+                ),
+                DSM
         );
         myTask = myTask.assignProvider(otherUsername);
         myTask = myTask.markDone();
