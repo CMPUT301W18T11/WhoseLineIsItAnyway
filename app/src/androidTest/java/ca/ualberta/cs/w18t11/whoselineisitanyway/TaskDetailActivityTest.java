@@ -1,5 +1,6 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
+import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.NavigationViewActions;
 import android.support.test.espresso.intent.Intents;
@@ -35,11 +36,14 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerMatchers.isClosed;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.hasToString;
+import static org.hamcrest.core.IsNot.not;
 
 /**
  * Intent tests for the TaskDetailActivity
@@ -70,24 +74,17 @@ public class TaskDetailActivityTest
         Intents.init();
         loginActivity = activityRule.getActivity();
 
-//        myTask = new Task(myUsername, myTitle, myDescription);
-//        otherTask = new Task(otherUsername, otherTitle, otherDescription);
-
         DSM = new DataSourceManager(loginActivity);
-        if (DSM.getTask(myUsername, myTitle) != null)
-        {
-            DSM.removeTask(myTask);
-        }
-        if (DSM.getTask(otherUsername, otherTitle) != null)
-        {
-            DSM.removeTask(otherTask);
-        }
 
         ArrayList<Task> myTasks;
         Task[] tasks = DSM.getTasks();
         for (Task task : tasks)
         {
             if (task.getRequesterUsername().equals(myUsername))
+            {
+                DSM.removeTask(task);
+            }
+            if (task.getRequesterUsername().equals(otherUsername))
             {
                 DSM.removeTask(task);
             }
@@ -114,10 +111,10 @@ public class TaskDetailActivityTest
             {
                 DSM.removeTask(task);
             }
-        }
-        if (DSM.getTask(otherUsername, otherTitle) != null)
-        {
-            DSM.removeTask(otherTask);
+            if (task.getRequesterUsername().equals(otherUsername))
+            {
+                DSM.removeTask(task);
+            }
         }
         Intents.release();
     }
@@ -199,10 +196,8 @@ public class TaskDetailActivityTest
                 .perform(click());
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
-        // My bidded tasks should have edit, delete, and accept buttons
-        onView(withText(R.string.button_edit_task)).check(matches(isDisplayed()));
+        // My bidded tasks should only have a delete button
         onView(withText(R.string.button_delete_task)).check(matches(isDisplayed()));
-        onView(withText(R.string.button_accept_bid)).check(matches(isDisplayed()));
 
         DSM.removeTask(myTask);
     }
@@ -302,6 +297,121 @@ public class TaskDetailActivityTest
     }
 
     /**
+     * Tests the rendering of another user's assigned task
+     */
+    @Test
+    public void testOtherAssignedTask()
+    {
+        // Create task to bid on
+        otherTask = new Task(otherUsername, "I'm Assigned!", otherDescription);
+        DSM.removeTask(otherTask);
+        otherTask.setElasticId("6789");
+        otherTask = otherTask.submitBid(
+                new Bid(myUsername,
+                        otherTask.getElasticId(),
+                        new BigDecimal(999.99)
+                ),
+                DSM
+        );
+        otherTask = otherTask.assignProvider(myUsername);
+        DSM.addTask(otherTask);
+
+        if (DSM.getCurrentUser() == null)
+        {
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(otherUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+        }
+
+        onView(withId(R.id.drawer_layout))
+                .check(matches(isClosed(Gravity.LEFT)))
+                .perform(DrawerActions.open());
+        onView(withId(R.id.nav_view))
+                .perform(NavigationViewActions.navigateTo(R.id.all_tasks));
+
+        onData(hasToString(startsWith("nottest: I")))
+                .inAdapterView(withId(R.id.detail_LV))
+                .perform(click());
+        intended(hasComponent(TaskDetailActivity.class.getName()));
+
+        // Other assigned tasks should have no buttons
+        try
+        {
+            onView(withText(R.string.button_complete_task)).check(matches(isDisplayed()));
+            onView(withText(R.string.button_delete_task)).check(matches(isDisplayed()));
+            onView(withText(R.string.button_unassign_task)).check(matches(isDisplayed()));
+            onView(withText(R.string.button_edit_task)).check(matches(isDisplayed()));
+            onView(withText(R.string.button_place_bid)).check(matches(isDisplayed()));
+            fail("No Buttons Should Be Present");
+        }
+        catch (NoMatchingViewException e)
+        {
+
+        }
+
+        DSM.removeTask(otherTask);
+    }
+
+    /**
+     * Tests the rendering of another user's done task
+     */
+    @Test
+    public void testOtherDoneTask()
+    {
+        // Create task to bid on
+        otherTask = new Task(otherUsername, "Me Done!", otherDescription);
+        DSM.removeTask(otherTask);
+        otherTask.setElasticId("6789");
+        otherTask = otherTask.submitBid(
+                new Bid(myUsername,
+                        otherTask.getElasticId(),
+                        new BigDecimal(999.99)
+                ),
+                DSM
+        );
+        otherTask = otherTask.assignProvider(myUsername);
+        otherTask = otherTask.markDone();
+        DSM.addTask(otherTask);
+
+        if (DSM.getCurrentUser() == null)
+        {
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(otherUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+        }
+
+        onView(withId(R.id.drawer_layout))
+                .check(matches(isClosed(Gravity.LEFT)))
+                .perform(DrawerActions.open());
+        onView(withId(R.id.nav_view))
+                .perform(NavigationViewActions.navigateTo(R.id.all_tasks));
+
+        onData(hasToString(startsWith("nottest: M")))
+                .inAdapterView(withId(R.id.detail_LV))
+                .perform(click());
+        intended(hasComponent(TaskDetailActivity.class.getName()));
+
+        // Other assigned tasks should have no buttons
+        try
+        {
+            onView(withText(R.string.button_complete_task)).check(matches(isDisplayed()));
+            onView(withText(R.string.button_delete_task)).check(matches(isDisplayed()));
+            onView(withText(R.string.button_unassign_task)).check(matches(isDisplayed()));
+            onView(withText(R.string.button_edit_task)).check(matches(isDisplayed()));
+            onView(withText(R.string.button_place_bid)).check(matches(isDisplayed()));
+            fail("No Buttons Should Be Present");
+        }
+        catch (NoMatchingViewException e)
+        {
+
+        }
+
+        DSM.removeTask(otherTask);
+    }
+
+    /**
      * Tests the deletion of a task
      */
     @Test
@@ -337,5 +447,101 @@ public class TaskDetailActivityTest
         onView(withText(R.string.button_delete_task))
                 .perform(click());
         intended(hasComponent(DetailedListActivity.class.getName()));
+
+        onView(withId(R.id.drawer_layout))
+                .check(matches(isClosed(Gravity.LEFT)))
+                .perform(DrawerActions.open());
+        onView(withId(R.id.nav_view))
+                .perform(NavigationViewActions.navigateTo(R.id.my_tasks));
+
+        onView(withId(R.id.detail_LV))
+                .check(matches(not(hasDescendant(withText("test: Req")))));
+    }
+
+    /**
+     * Tests placing a bid on another user's requested task
+     */
+    @Test
+    public void testBidOnRequestedTask()
+    {
+        // Create task to bid on
+        otherTask = new Task(otherUsername, "Bid On Me!", otherDescription);
+        DSM.removeTask(otherTask);
+        otherTask.setElasticId("6789");
+        DSM.addTask(otherTask);
+
+        if (DSM.getCurrentUser() == null)
+        {
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(myUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+        }
+
+        onView(withId(R.id.drawer_layout))
+                .check(matches(isClosed(Gravity.LEFT)))
+                .perform(DrawerActions.open());
+        onView(withId(R.id.nav_view))
+                .perform(NavigationViewActions.navigateTo(R.id.all_tasks));
+
+        onData(hasToString(startsWith("nottest: B")))
+                .inAdapterView(withId(R.id.detail_LV))
+                .perform(click());
+        intended(hasComponent(TaskDetailActivity.class.getName()));
+
+        // Other requested tasks should only have a bid button
+        onView(withText(R.string.button_place_bid)).check(matches(isDisplayed()));
+        onView(withText(R.string.button_place_bid)).perform(click());
+
+        // TODO place bid on task
+
+        DSM.removeTask(otherTask);
+    }
+
+    /**
+     * Tests placing a bid on another user's bidded task
+     */
+    @Test
+    public void testBidOnBiddedTask()
+    {
+        // Create task to bid on
+        otherTask = new Task(otherUsername, "Bid On Me!", otherDescription);
+        DSM.removeTask(otherTask);
+        otherTask.setElasticId("6789");
+        otherTask = otherTask.submitBid(
+                new Bid(myUsername,
+                        otherTask.getElasticId(),
+                        new BigDecimal(999.99)
+                ),
+                DSM
+        );
+        DSM.addTask(otherTask);
+
+        if (DSM.getCurrentUser() == null)
+        {
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(myUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+        }
+
+        onView(withId(R.id.drawer_layout))
+                .check(matches(isClosed(Gravity.LEFT)))
+                .perform(DrawerActions.open());
+        onView(withId(R.id.nav_view))
+                .perform(NavigationViewActions.navigateTo(R.id.all_tasks));
+
+        onData(hasToString(startsWith("nottest: B")))
+                .inAdapterView(withId(R.id.detail_LV))
+                .perform(click());
+        intended(hasComponent(TaskDetailActivity.class.getName()));
+
+        // Other bidded tasks should only have a bid button
+        onView(withText(R.string.button_place_bid)).check(matches(isDisplayed()));
+        onView(withText(R.string.button_place_bid)).perform(click());
+
+        // TODO place bid on task
+
+        DSM.removeTask(otherTask);
     }
 }
