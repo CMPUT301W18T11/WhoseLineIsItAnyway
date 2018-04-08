@@ -196,8 +196,10 @@ public class TaskDetailActivityTest
                 .perform(click());
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
-        // My bidded tasks should only have a delete button
+        // My bidded tasks should have a delete and Show Bids button
         onView(withText(R.string.button_delete_task)).check(matches(isDisplayed()));
+        // TODO
+//        onView(withText(R.string.button_all_bids_task)).check(matches(isDisplayed()));
 
         DSM.removeTask(myTask);
     }
@@ -544,4 +546,6 @@ public class TaskDetailActivityTest
 
         DSM.removeTask(otherTask);
     }
+
+
 }
