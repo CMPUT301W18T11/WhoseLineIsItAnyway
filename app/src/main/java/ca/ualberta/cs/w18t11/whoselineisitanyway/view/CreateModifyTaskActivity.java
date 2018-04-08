@@ -453,17 +453,18 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
                 }
                 ArrayList<String> imagesArrList = new ArrayList<>();
                 for (int i = 0; i < filmstrip.getChildCount(); i ++) {
+                    Log.i("GenTask - Get Tags", "Try getting a tag from the imageView: " + String.valueOf(i+1));
                     BitmapManager tempBMP = (BitmapManager) filmstrip.getChildAt(i).getTag();
-                    Log.i("GenTask - Get Tags", "Tried getting a tag from the imageView: " + String.valueOf(i+1));
+                    Log.i("GenTask - B64 Str", "Try getting the base-64 rep of image: " + String.valueOf(i + 1));
                     imagesArrList.add(tempBMP.getBase64Bitmap());
-                    Log.i("GenTask - B64 Str", "Tried getting the base-64 rep of image: " + String.valueOf(i + 1));
+
                 }
-                if (imagesArrList.size() > 0 ) {
-                    String[] attachments = imagesArrList.toArray(new String[imagesArrList.size()]);
-                    if (attachments.length > 0) {
-                        resultTask.setImages(attachments);
-                    }
+                String[] attachments = imagesArrList.toArray(new String[imagesArrList.size()]);
+                if (attachments.length > 0) {
+                    Log.i("GenTask - SetImg", "Try attaching images to the task object");
+                    resultTask.setImages(attachments);
                 }
+
                 if (tempLoc != null ) {
                     Log.i("GenTask - Loc", "Setting Task location: (" +
                             String.valueOf(tempLoc.getLatitude()) + ", " +
@@ -473,9 +474,9 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
                 Log.i("GenTask - Task","Generated Task:\n" +
                         "    Title: " + resultTask.getTitle() + "\n" +
                         "    Descr: " + String.valueOf(resultTask.getDescription().length()) + "\n" +
-                        "    ES ID: " + String.valueOf(resultTask.getElasticId() == null) + "\n" +
-                        "    Pics: " + String.valueOf(resultTask.getImages().length) + "\n" +
-                        "    Loc: " + resultTask.getLocation().toString()
+                        "    ES ID: " + String.valueOf(resultTask.getElasticId() != null) + "\n" +
+                        "    Pics #: " + String.valueOf(resultTask.getImages().length) + "\n" +
+                        "    Loc: " + String.valueOf(resultTask.getLocation() != null)
 
                 );
                 boolean res = DSM.addTask(resultTask);
