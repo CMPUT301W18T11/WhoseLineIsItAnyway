@@ -255,9 +255,9 @@ public final class DataSourceManager implements DataSource
     @Override
     public final boolean addUser(@NonNull final User user)
     {
+        final boolean remoteResult = this.remoteDataSource.addUser(user);
         this.synchronizeUsers();
         final boolean localResult = this.localDataSource.addUser(user);
-        final boolean remoteResult = this.remoteDataSource.addUser(user);
 
         return localResult && remoteResult;
     }
@@ -354,9 +354,9 @@ public final class DataSourceManager implements DataSource
     @Override
     public final boolean addTask(@NonNull final Task task)
     {
+        final boolean remoteResult = this.remoteDataSource.addTask(task);
         this.synchronizeTasks();
         final boolean localResult = this.localDataSource.addTask(task);
-        final boolean remoteResult = this.remoteDataSource.addTask(task);
 
         return localResult && remoteResult;
     }
@@ -431,9 +431,9 @@ public final class DataSourceManager implements DataSource
     @Override
     public final boolean addBid(@NonNull final Bid bid)
     {
+        final boolean remoteResult = this.remoteDataSource.addBid(bid);
         this.synchronizeBids();
         final boolean localResult = this.localDataSource.addBid(bid);
-        final boolean remoteResult = this.remoteDataSource.addBid(bid);
 
         return localResult && remoteResult;
     }
