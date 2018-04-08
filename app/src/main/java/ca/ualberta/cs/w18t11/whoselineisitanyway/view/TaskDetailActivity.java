@@ -318,7 +318,11 @@ public class TaskDetailActivity extends DetailActivity {
         bidButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Add complete task button functionality
+                DataSourceManager dataSourceManager = new DataSourceManager(view.getContext());
+                Task completedTask = task.markDone();
+                dataSourceManager.addTask(completedTask);
+                finish();
+                completedTask.showDetails(TaskDetailActivity.class, view.getContext());
             }
         });
 
@@ -336,7 +340,6 @@ public class TaskDetailActivity extends DetailActivity {
         bidButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Add unassign task button functionality
                 DataSourceManager dataSourceManager = new DataSourceManager(view.getContext());
                 Task unassignedTask = task.unassignProvider();
                 dataSourceManager.addTask(unassignedTask);
