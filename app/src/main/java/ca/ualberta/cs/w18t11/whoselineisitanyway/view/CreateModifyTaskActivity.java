@@ -32,51 +32,54 @@ import java.util.HashMap;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bitmap.BitmapManager;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.location.Location;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.TaskStatus;
-import io.searchbox.client.JestClient;
 
 /**
  * <h1>CreateModifyTaskActivity</h1>
  * This activity is designed for creating new tasks, or editing existing tasks
  * INPUT: Bundle containing a Task object, if for editing; SET TAG AS EXISTING_TASK
+ *
  * @author Lucas
  * @see Task
  */
-public class CreateModifyTaskActivity extends AppCompatActivity implements SetMapLocationDialog.MapDialogReturnListener, ActivityCompat.OnRequestPermissionsResultCallback  {
-    private DataSourceManager DSM = new DataSourceManager(this);
-    private LinearLayout filmstrip; // Hold the container for the objects
+public class CreateModifyTaskActivity extends AppCompatActivity
+        implements SetMapLocationDialog.MapDialogReturnListener,
+        ActivityCompat.OnRequestPermissionsResultCallback
+{
     final int MAX_CHARLIMIT_TITLE = 30; // Maximum length of Task Title
+
     final int MAX_CHARLIMIT_DESCRIPTION = 300; // Maximum length of Task Description
-    private int PICK_IMAGES = 1256;
-    private Task existingTask;
-    private HashMap<KEYS, Object> TaskParameters = new HashMap<KEYS, Object>();  // Hold parameters of a task for easy Access during Creation
-    private enum KEYS {
-        TITLE("TITLE"),
-        DESCR("DESCRIPTION"),
-        LOCATION("LOCATION"),
-        IMAGES("IMAGES"),
-        STATUS("STATUS"),
-        ID("ID");
-
-        private String value;
-        KEYS(String val) {
-            this.value = val;
-        }
-    }
-
 
     final int PERMISSION_REQUEST_READ_STORAGE = 0;
+
     final int PERMISSION_REQUEST_LOCATION = 1;
+
+    private DataSourceManager DSM = new DataSourceManager(this);
+
+    private LinearLayout filmstrip; // Hold the container for the objects
+
+    private int PICK_IMAGES = 1256;
+    // Hold parameters of a task for easy Access during Creation
+
+    private Task existingTask;
+
+    private HashMap<KEYS, Object> TaskParameters = new HashMap<KEYS, Object>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_modify);
-        if (true) { conditionalSetup(getIntent().getExtras()); }
+        if (true)
+        {
+            conditionalSetup(getIntent().getExtras());
+        }
         setTitle(R.string.title_CreateTaskActivity);
-        filmstrip = (LinearLayout) findViewById(R.id.filmstrip_panel);
+        filmstrip = findViewById(R.id.filmstrip_panel);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         TaskParameters.put(KEYS.TITLE, null);
         TaskParameters.put(KEYS.DESCR, null);
@@ -99,9 +102,12 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
     }
 
     // Check if fields need to be prepopulated or if the task is a new task and can be started empty
-    private void conditionalSetup(final Bundle bundle) {
-        if (bundle != null) {
-            if (bundle.size() > 0) {
+    private void conditionalSetup(final Bundle bundle)
+    {
+        if (bundle != null)
+        {
+            if (bundle.size() > 0)
+            {
                 setTitle(R.string.title_EditTaskActivity);
                 existingTask = (Task) bundle.get("EXISTING_TASK");
                 populateFields();
@@ -110,35 +116,54 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
     }
 
     // If an existing task object was passed in, populate fields for editing the task with existing data
-    private void populateFields() {
-        if (existingTask.getStatus() == TaskStatus.BIDDED) {
+    private void populateFields()
+    {
+        if (existingTask.getStatus() == TaskStatus.BIDDED)
+        {
             Toast.makeText(this, "Bidded tasks cannot be edited.\n" +
-            "You can delete the task from the tasks menu to cancel the contract but you can no longer change task details. Returning...", Toast.LENGTH_LONG);
+                            "You can delete the task from the tasks menu to cancel the contract but you can no longer change task details. Returning...",
+                    Toast.LENGTH_LONG);
             finish();
         }
-        EditText titleField = (EditText) findViewById(R.id.etxt_Title);
-        EditText descrField = (EditText) findViewById(R.id.etxt_Description);
-        TextView locField = (TextView) findViewById(R.id.txt_location_set);
+
+        EditText titleField = findViewById(R.id.etxt_Title);
+        EditText descriptionField = findViewById(R.id.etxt_Description);
+        TextView locationField = findViewById(R.id.txt_location_set);
         titleField.setText(existingTask.getTitle());
-        descrField.setText(existingTask.getDescription());
-        String locString = "Location Set\n(" + String.valueOf(existingTask.getLoc().latitude) + ", " +
-                String.valueOf(existingTask.getLoc().longitude) + ")";
-        locField.setText(locString);
-        ArrayList<String> images = existingTask.getImages();
-        for (int i = 0; i < images.size(); i ++) {
-            add_image(new BitmapManager(images.get(i)));
+        descriptionField.setText(existingTask.getDescription());
+
+        final Location location = existingTask.getLocation();
+
+        if (location != null)
+        {
+            String locString = "Location Set\n(" + String.valueOf(location.getLatitude()) + ", "
+                    + String.valueOf(location.getLongitude()) + ")";
+            locationField.setText(locString);
         }
 
+        String[] images = existingTask.getImages();
 
-
+        if (images != null)
+        {
+            for (String image : images)
+            {
+                add_image(new BitmapManager(image));
+            }
+        }
     }
-@Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults)
+    {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Log.i("Permissions Listener", "RequestCode:" + String.valueOf(requestCode));
-        switch (requestCode) {
+        switch (requestCode)
+        {
             case PERMISSION_REQUEST_READ_STORAGE:
-                if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length == 1
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
                     Intent photoPickerIntent = new Intent();
                     photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
                     photoPickerIntent.setType("image/*");
@@ -146,8 +171,11 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
                 }
                 break;
             case PERMISSION_REQUEST_LOCATION:
-                if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    SetMapLocationDialog setLocation = new SetMapLocationDialog(CreateModifyTaskActivity.this);
+                if (grantResults.length == 1
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
+                    SetMapLocationDialog setLocation = new SetMapLocationDialog(
+                            CreateModifyTaskActivity.this);
                     setLocation.showDialog();
                 }
                 break;
@@ -156,65 +184,92 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
 
     }
 
-
-//region Character Limit Event Handler
-    private void taskTitleField_onCharLimitReached() {
-        EditText textField = (EditText) findViewById(R.id.etxt_Title);
+    //region Character Limit Event Handler
+    private void taskTitleField_onCharLimitReached()
+    {
+        EditText textField = findViewById(R.id.etxt_Title);
         charLimitHandler(MAX_CHARLIMIT_TITLE, textField);
     }
-    private void taskDescriptionField_onCharLimitReached() {
-        EditText textField = (EditText) findViewById(R.id.etxt_Description);
+
+    private void taskDescriptionField_onCharLimitReached()
+    {
+        EditText textField = findViewById(R.id.etxt_Description);
         charLimitHandler(MAX_CHARLIMIT_DESCRIPTION, textField);
     }
-    private void charLimitHandler(final int charlimit, final EditText controlReference) {
-        final EditText editField = controlReference;
-        editField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
+    private void charLimitHandler(final int charlimit, final EditText controlReference)
+    {
+        final EditText editField = controlReference;
+        editField.addTextChangedListener(new TextWatcher()
+        {
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (editField.getText().length() == charlimit) {
-                    editField.setError("This field has a limit of " + String.valueOf(charlimit) +
-                    " character(s).");
-                } else { editField.setError(null); }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                if (editField.getText().length() == charlimit)
+                {
+                    editField.setError("This field has a limit of " + String.valueOf(charlimit) +
+                            " character(s).");
+                }
+                else
+                {
+                    editField.setError(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+            }
         });
 
     }
-    //endregion
 
     // Reset recorded location status if the field is cleared via btnClearLocation
-    private void taskLocationField_onEmpty() {
-        final TextView locationField = (TextView) findViewById(R.id.txt_location_set);
-        locationField.addTextChangedListener(new TextWatcher() {
+    private void taskLocationField_onEmpty()
+    {
+        final TextView locationField = findViewById(R.id.txt_location_set);
+        locationField.addTextChangedListener(new TextWatcher()
+        {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (locationField.getText().length() == 0) {
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                if (locationField.getText().length() == 0)
+                {
                     locationField.setText("(No location selected.)");
                 }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s)
+            {
+            }
         });
     }
+    //endregion
 
-    //region Image Modification
-
-//region ImageSelection
-
-    private void startImageSelection(){
-        boolean canContinue = false; // Allows one button press to call permissions and proceed to code
-        if (!(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_READ_STORAGE);
-        } else {
+    private void startImageSelection()
+    {
+        boolean canContinue
+                = false; // Allows one button press to call permissions and proceed to code
+        if (!(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED))
+        {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_READ_STORAGE);
+        }
+        else
+        {
             Intent photoPickerIntent = new Intent();
             photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
             photoPickerIntent.setType("image/*");
@@ -223,35 +278,45 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
 
 
     }
+
+    //region Image Modification
+
+//region ImageSelection
+
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PICK_IMAGES && resultCode == Activity.RESULT_OK) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == PICK_IMAGES && resultCode == Activity.RESULT_OK)
+        {
             Uri selectedImage = data.getData();
 
-            Log.i("TaskCreate_ImageSelect",selectedImage.toString());
+            Log.i("TaskCreate_ImageSelect", selectedImage.toString());
             continueImageAdding(selectedImage);
         }
     }
 
-
-
-//endregion
+    //endregion
 //region Image Management
-    private void btnAddImg_onClick(){
+    private void btnAddImg_onClick()
+    {
         final LinearLayout filmstrip = this.filmstrip;
 
-        Button button = (Button) findViewById(R.id.btn_UploadImage);
-        button.setOnClickListener(new View.OnClickListener() {
+        Button button = findViewById(R.id.btn_UploadImage);
+        button.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 startImageSelection();
             }
         });
     }
 
     // DO NOT CALL ELSEWHERE
-    private void continueImageAdding(Uri imgUri) {
-        if (! (imgUri == null)) {
+    private void continueImageAdding(Uri imgUri)
+    {
+        if (!(imgUri == null))
+        {
             Log.i("CreateTask_Image", imgUri.getPath());
             BitmapManager newItem = new BitmapManager(imgUri, this);
             add_image(newItem);
@@ -259,42 +324,54 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         }
     }
 
-    private void add_image(BitmapManager img) {
+    private void add_image(BitmapManager img)
+    {
         boolean isDupe = false;
-        if (! (filmstrip.getChildCount() == 0)) {
-            for (int i = 0; i < filmstrip.getChildCount(); i ++) {
+        if (!(filmstrip.getChildCount() == 0))
+        {
+            for (int i = 0; i < filmstrip.getChildCount(); i++)
+            {
                 ImageView imviewOther = (ImageView) filmstrip.getChildAt(i);
                 BitmapManager other = (BitmapManager) imviewOther.getTag();
 
                 isDupe = img.getSame(other);
-                if (isDupe) {
+                if (isDupe)
+                {
                     Toast.makeText(this, "The image is a duplicate.", Toast.LENGTH_SHORT).show();
                     break;
                 }
             }
         }
-        if (! isDupe) { filmstrip.addView(generateImgView(img)); }
+        if (!isDupe)
+        {
+            filmstrip.addView(generateImgView(img));
+        }
 
     }
 
-    private ImageView generateImgView(final BitmapManager bitmap) {
+    private ImageView generateImgView(final BitmapManager bitmap)
+    {
 
         final int MARGIN_SIZE = dpToPixels(3);
         final int WIDTH_DP = 120;
 
 
-        LinearLayout.LayoutParams layout = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        layout.setMargins(MARGIN_SIZE,0, MARGIN_SIZE, 0);
+        LinearLayout.LayoutParams layout = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        layout.setMargins(MARGIN_SIZE, 0, MARGIN_SIZE, 0);
         layout.width = dpToPixels(WIDTH_DP);
         final ImageView img = new ImageView(this);
         img.setLayoutParams(layout);
-        img.setPadding(3,3,3,3);
+        img.setPadding(3, 3, 3, 3);
         img.setScaleType(ImageView.ScaleType.FIT_XY);
         img.setTag(bitmap);
 
-        if (bitmap.getStatus()) {
+        if (bitmap.getStatus())
+        {
             setImgViewBorder(img);
-        } else {
+        }
+        else
+        {
             setImgViewBorder(img);
         }
 
@@ -303,18 +380,22 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
 
         img.setClickable(true);
         img.setLongClickable(true);
-        img.setOnClickListener(new View.OnClickListener() {
+        img.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 ImageView imgview = (ImageView) v;
                 ImageBlowupDialog bigImgView = new ImageBlowupDialog();
                 BitmapManager imData = (BitmapManager) v.getTag();
                 bigImgView.showDialog(CreateModifyTaskActivity.this, imData);
             }
         });
-        img.setOnLongClickListener(new View.OnLongClickListener() {
+        img.setOnLongClickListener(new View.OnLongClickListener()
+        {
             @Override
-            public boolean onLongClick(View v) {
+            public boolean onLongClick(View v)
+            {
                 filmstrip.removeView(v);
                 return true;
             }
@@ -324,8 +405,8 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         return img;
     }
 
-
-    private void setImgViewBorder(final ImageView img) {
+    private void setImgViewBorder(final ImageView img)
+    {
         BitmapManager imgData = (BitmapManager) img.getTag();
 
         final int GREEN = 0xFF00C10C;
@@ -335,9 +416,12 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         border.getPaint().setStrokeWidth(6);
         border.getPaint().setStyle(Paint.Style.STROKE);
 
-        if (imgData.getStatus()) {
+        if (imgData.getStatus())
+        {
             border.getPaint().setColor(GREEN);
-        } else {
+        }
+        else
+        {
             border.getPaint().setColor(RED);
         }
 
@@ -345,30 +429,44 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
 
     }
 
-    private void btnClearImg_onClick(){
+    private void btnClearImg_onClick()
+    {
         final LinearLayout filmstrip = this.filmstrip;
-        Button button = (Button) findViewById(R.id.btn_ClearAllUploadImages);
-        button.setOnClickListener(new View.OnClickListener() {
+        Button button = findViewById(R.id.btn_ClearAllUploadImages);
+        button.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 filmstrip.removeAllViews();
             }
         });
 
     }
+
     //endregion
-    private void btnSetLocation_onClick(){
+    private void btnSetLocation_onClick()
+    {
         Button button = findViewById(R.id.btn_callLocationDiag);
-        button.setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 // First check if the user has given permission to access location
                 if (!(ContextCompat.checkSelfPermission(
                         CreateModifyTaskActivity.this,
-                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-                    ActivityCompat.requestPermissions(CreateModifyTaskActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_LOCATION);
-                } else {
-                    SetMapLocationDialog setLocation = new SetMapLocationDialog(CreateModifyTaskActivity.this);
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED))
+                {
+                    ActivityCompat.requestPermissions(CreateModifyTaskActivity.this,
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            PERMISSION_REQUEST_LOCATION);
+                }
+                else
+                {
+                    SetMapLocationDialog setLocation = new SetMapLocationDialog(
+                            CreateModifyTaskActivity.this);
                     setLocation.showDialog();
                 }
             }
@@ -376,48 +474,59 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
     }
 
     @Override
-    public void MapSetDialog_PosResult(LatLng result) {
-        if (result != null) {
+    public void MapSetDialog_PosResult(LatLng result)
+    {
+        if (result != null)
+        {
             TaskParameters.put(KEYS.LOCATION, result);
-            TextView locField = (TextView) findViewById(R.id.txt_location_set);
+            TextView locField = findViewById(R.id.txt_location_set);
             String locString = "Location Set\n(" + String.valueOf(result.latitude) + ", " +
                     String.valueOf(result.longitude) + ")";
             locField.setText(locString);
         }
     }
 
-    private void btnClearLocation_onClick(){
-        Button button = (Button) findViewById(R.id.btn_ClearLocation);
-        button.setOnClickListener(new View.OnClickListener() {
+    private void btnClearLocation_onClick()
+    {
+        Button button = findViewById(R.id.btn_ClearLocation);
+        button.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 TaskParameters.put(KEYS.LOCATION, null);
-                TextView locField = (TextView) findViewById(R.id.txt_location_set);
+                TextView locField = findViewById(R.id.txt_location_set);
                 String locString = "(Location not set)";
                 locField.setText(locString);
             }
         });
 
     }
-    private void btnSubmit_onClick(){
-        Button button = (Button) findViewById(R.id.btn_Submit);
-        button.setOnClickListener(new View.OnClickListener() {
+
+    private void btnSubmit_onClick()
+    {
+        Button button = findViewById(R.id.btn_Submit);
+        button.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                Task buildTask
-                if (validateAllFields() != true) { return; }
-                EditText title = (EditText) findViewById(R.id.etxt_Title);
-                EditText descr = (EditText) findViewById(R.id.etxt_Description);
+            public void onClick(View v)
+            {
+                if (validateAllFields() != true)
+                {
+                    return;
+                }
+                EditText title = findViewById(R.id.etxt_Title);
+                EditText descr = findViewById(R.id.etxt_Description);
                 ArrayList<String> images = new ArrayList<String>();
 
 
-
-                for (int i = 0; i < filmstrip.getChildCount(); i ++) {
+                for (int i = 0; i < filmstrip.getChildCount(); i++)
+                {
                     ImageView preview = (ImageView) filmstrip.getChildAt(i);
                     BitmapManager tag = (BitmapManager) preview.getTag();
                     images.add(tag.getBase64Bitmap());
                 }
-                existingTask.setImages((ArrayList<String>) TaskParameters.get(KEYS.IMAGES));
+                existingTask.setImages((String[]) TaskParameters.get(KEYS.IMAGES));
                 DSM.addTask(existingTask);
                 finish();
 
@@ -425,34 +534,63 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         });
 
     }
-    private void btnCancel_onClick(){
-        Button button = (Button) findViewById(R.id.btn_Cancel);
-        button.setOnClickListener(new View.OnClickListener() {
+
+    private void btnCancel_onClick()
+    {
+        Button button = findViewById(R.id.btn_Cancel);
+        button.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 finish();
             }
         });
     }
 
-    private void buildTask() {
+    private void buildTask()
+    {
 
         //TODO Once Tasks is able to take photos + location, add these parameters
 
     }
-    private boolean validateAllFields() {
-        EditText titleField = (EditText) findViewById(R.id.etxt_Title);
-        EditText descrField = (EditText) findViewById(R.id.etxt_Description);
-        if (titleField.getText().length() == 0) {
+
+    private boolean validateAllFields()
+    {
+        EditText titleField = findViewById(R.id.etxt_Title);
+        EditText descrField = findViewById(R.id.etxt_Description);
+        if (titleField.getText().length() == 0)
+        {
             titleField.setError("You must enter a title for your task.");
         }
-        if (descrField.getText().length() == 0) {
+        if (descrField.getText().length() == 0)
+        {
             descrField.setError("You must enter a description for your task.");
         }
         return (titleField.getText().length() != 0 && descrField.getText().length() != 0);
     }
-    private int dpToPixels(int dp) {
-        return (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
+
+    private int dpToPixels(int dp)
+    {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                getResources().getDisplayMetrics());
+    }
+
+    private enum KEYS
+    {
+        TITLE("TITLE"),
+        DESCR("DESCRIPTION"),
+        LOCATION("LOCATION"),
+        IMAGES("IMAGES"),
+        STATUS("STATUS"),
+        ID("ID");
+
+        private String value;
+
+        KEYS(String val)
+        {
+            this.value = val;
+        }
     }
 
 }
