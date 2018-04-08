@@ -125,7 +125,7 @@ public class NavigatorActivity extends AppCompatActivity
             // TODO Handle
             return true;
         }
-        if (id == R.id.logout)
+        if (id == R.id.signOut)
         {
             Log.i("OPTIONS: ", "Logout Option Selected. Attempting to logout...");
             DSM.unsetCurrentUser();
