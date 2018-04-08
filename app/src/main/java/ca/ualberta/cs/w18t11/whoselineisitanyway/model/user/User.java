@@ -250,6 +250,11 @@ public final class User implements Detailed, Elastic, Serializable
 
         final User user = (User) object;
 
+        if (this.getElasticId() != null && user.getElasticId() != null)
+        {
+            return this.getElasticId().equals(user.getElasticId());
+        }
+
         return this.getUsername().equals(user.getUsername());
     }
 }

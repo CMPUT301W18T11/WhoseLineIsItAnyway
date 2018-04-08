@@ -247,6 +247,11 @@ public final class Bid implements Detailed, Elastic, Serializable
 
         final Bid bid = (Bid) object;
 
+        if (this.getElasticId() != null && bid.getElasticId() != null)
+        {
+            return this.getElasticId().equals(bid.getElasticId());
+        }
+
         return new EqualsBuilder().append(this.getProviderUsername(), bid.getProviderUsername())
                 .append(this.getTaskId(), bid.getTaskId()).append(this.getValue(), bid.getValue())
                 .isEquals();

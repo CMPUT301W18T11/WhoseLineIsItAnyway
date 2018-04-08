@@ -640,6 +640,11 @@ public final class Task implements Detailed, Elastic, Serializable
 
         final Task task = (Task) object;
 
+        if (this.getElasticId() != null && task.getElasticId() != null)
+        {
+            return this.getElasticId().equals(task.getElasticId());
+        }
+
         return new EqualsBuilder().append(this.getRequesterUsername(), task.getRequesterUsername())
                 .append(this.getProviderUsername(), task.getProviderUsername())
                 .append(this.getTitle(), task.getTitle())
