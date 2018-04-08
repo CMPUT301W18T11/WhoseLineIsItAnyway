@@ -115,8 +115,8 @@ public class TaskDetailActivity extends DetailActivity {
     private void renderMyRequestedTask(Task task, ViewGroup viewGroup)
     {
 
-        addEditTaskButton(task, viewGroup, 0);
-        addDeleteTaskButton(task, viewGroup, 1);
+        addEditTaskButton(task, viewGroup);
+        addDeleteTaskButton(task, viewGroup);
     }
 
     /**
@@ -126,9 +126,8 @@ public class TaskDetailActivity extends DetailActivity {
      */
     private void renderMyBiddedTask(Task task, ViewGroup viewGroup)
     {
-        addEditTaskButton(task, viewGroup, 0);
-        addDeleteTaskButton(task, viewGroup, 1);
-        addAcceptBidButton(task, viewGroup, 2);
+        addDeleteTaskButton(task, viewGroup);
+        addAcceptBidButton(task, viewGroup);
     }
 
     /**
@@ -138,8 +137,8 @@ public class TaskDetailActivity extends DetailActivity {
      */
     private void renderMyAssignedTask(Task task, ViewGroup viewGroup)
     {
-        addCompleteTaskButton(task, viewGroup, 0);
-        addUnassignTaskButton(task, viewGroup, 1);
+        addCompleteTaskButton(task, viewGroup);
+        addUnassignTaskButton(task, viewGroup);
     }
 
     /**
@@ -149,7 +148,7 @@ public class TaskDetailActivity extends DetailActivity {
      */
     private void renderMyDoneTask(Task task, ViewGroup viewGroup)
     {
-        addDeleteTaskButton(task, viewGroup, 0);
+        addDeleteTaskButton(task, viewGroup);
     }
 
     /**
@@ -160,7 +159,7 @@ public class TaskDetailActivity extends DetailActivity {
     private void renderOtherRequestedTask(Task task, ViewGroup viewGroup)
     {
         //  * task is requested: show add bid
-        addBidButton(task, viewGroup, 0);
+        addBidButton(task, viewGroup);
     }
 
     /**
@@ -172,7 +171,7 @@ public class TaskDetailActivity extends DetailActivity {
     {
         //  * task is bidded && current user has not bid: show bid
         //  * task is bidded && current user has bid: show change bid, remove bid
-        addBidButton(task, viewGroup, 0);
+        addBidButton(task, viewGroup);
     }
 
     /**
@@ -226,7 +225,7 @@ public class TaskDetailActivity extends DetailActivity {
         // TODO: Add the images from the task.
     }
 
-    private void addBidButton(final Task task, ViewGroup viewGroup, int index)
+    private void addBidButton(final Task task, ViewGroup viewGroup)
     {
         // Make a view for the button
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -242,10 +241,10 @@ public class TaskDetailActivity extends DetailActivity {
 
         ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
 
-        insertPoint.addView(view, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    private void addAcceptBidButton(final Task task, ViewGroup viewGroup, int index)
+    private void addAcceptBidButton(final Task task, ViewGroup viewGroup)
     {
         // Make a view for the button
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -260,10 +259,10 @@ public class TaskDetailActivity extends DetailActivity {
         });
 
         ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
-        insertPoint.addView(view, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    private void addEditTaskButton(final Task task, ViewGroup viewGroup, int index)
+    private void addEditTaskButton(final Task task, ViewGroup viewGroup)
     {
         // Make a view for the button
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -278,15 +277,17 @@ public class TaskDetailActivity extends DetailActivity {
                 Intent outgoingIntent = new Intent(view.getContext(), CreateModifyTaskActivity.class);
                 bundle.putSerializable("EXISTING_TASK", task);
                 outgoingIntent.putExtras(bundle);
+                finish();
                 startActivity(outgoingIntent);
+
             }
         });
 
         ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
-        insertPoint.addView(view, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    private void addDeleteTaskButton(final Task task, ViewGroup viewGroup, int index)
+    private void addDeleteTaskButton(final Task task, ViewGroup viewGroup)
     {
         // Make a view for the button
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -304,10 +305,10 @@ public class TaskDetailActivity extends DetailActivity {
         });
 
         ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
-        insertPoint.addView(view, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    private void addCompleteTaskButton(final Task task, ViewGroup viewGroup, int index)
+    private void addCompleteTaskButton(final Task task, ViewGroup viewGroup)
     {
         // Make a view for the button
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -322,10 +323,10 @@ public class TaskDetailActivity extends DetailActivity {
         });
 
         ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
-        insertPoint.addView(view, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    private void addUnassignTaskButton(final Task task, ViewGroup viewGroup, int index)
+    private void addUnassignTaskButton(final Task task, ViewGroup viewGroup)
     {
         // Make a view for the button
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -343,7 +344,7 @@ public class TaskDetailActivity extends DetailActivity {
         });
 
         ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
-        insertPoint.addView(view, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     private Task getTaskFromIntent() throws NullPointerException
