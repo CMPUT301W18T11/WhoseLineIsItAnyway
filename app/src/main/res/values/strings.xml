@@ -70,6 +70,7 @@
     <string name="button_placeholder">Button</string>
     <string name="button_place_bid">Place Bid</string>
     <string name="button_accept_bid">Accept Bid</string>
+    <string name="button_decline_bid">Decline Bid</string>
     <string name="button_delete_task">Delete Task</string>
     <string name="button_edit_task">Edit Task</string>
     <string name="button_complete_task">Mark Done</string>
