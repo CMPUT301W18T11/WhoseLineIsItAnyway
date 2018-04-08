@@ -10,8 +10,12 @@ import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
+
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
@@ -127,6 +131,7 @@ public class TaskDetailActivity extends DetailActivity {
     private void renderMyBiddedTask(Task task, ViewGroup viewGroup)
     {
         addDeleteTaskButton(task, viewGroup);
+        addAllBidsButton(task, viewGroup);
     }
 
     /**
@@ -157,7 +162,6 @@ public class TaskDetailActivity extends DetailActivity {
      */
     private void renderOtherRequestedTask(Task task, ViewGroup viewGroup)
     {
-        //  * task is requested: show add bid
         addBidButton(task, viewGroup);
     }
 
@@ -168,9 +172,8 @@ public class TaskDetailActivity extends DetailActivity {
      */
     private void renderOtherBiddedTask(Task task, ViewGroup viewGroup)
     {
-        //  * task is bidded && current user has not bid: show bid
-        //  * task is bidded && current user has bid: show change bid, remove bid
         addBidButton(task, viewGroup);
+        addAllBidsButton(task, viewGroup);
     }
 
     /**
@@ -180,8 +183,7 @@ public class TaskDetailActivity extends DetailActivity {
      */
     private void renderOtherAssignedTask(Task task, ViewGroup viewGroup)
     {
-        //  * task is assigned, but not to current user: show nothing
-        //  * task is assigned to the current user: show ??
+        // Show no additional UI elements
     }
 
     /**
@@ -235,6 +237,37 @@ public class TaskDetailActivity extends DetailActivity {
             @Override
             public void onClick(View view) {
                 // TODO: Add bid button functionality
+            }
+        });
+
+        ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
+
+        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    private void addAllBidsButton(final Task task, ViewGroup viewGroup)
+    {
+        // Make a view for the button
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.activity_detail_button, viewGroup);
+        Button bidButton = (Button) view.findViewById(R.id.detail_button);
+        bidButton.setText(R.string.button_all_bids_task);
+        bidButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent outgoingIntent = new Intent(view.getContext(), DetailedListActivity.class);
+                String outgoingTitle = "Bids";
+                ArrayList<Detailed> bidsArrayList = new ArrayList<>();
+                if (task.getBids() != null)
+                {
+                    for (Bid bid : task.getBids())
+                    {
+                        bidsArrayList.add(bid);
+                    }
+                }
+                outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
+                outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, bidsArrayList);
+                startActivity(outgoingIntent);
             }
         });
 
