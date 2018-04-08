@@ -36,7 +36,8 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasCom
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.CoreMatchers.anything;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.Matchers.hasToString;
 
 /**
  * Intent tests for the TaskDetailActivity
@@ -53,7 +54,8 @@ public class TaskDetailActivityTest
     String myDescription = "This task is for intent testing";
     String otherDescription = "This task is also for intent testing";
     Task myTask = new Task(myUsername, myTitle, myDescription);
-    Task otherTask = new Task(otherUsername , otherTitle, otherDescription);
+    Task otherTask = new Task(otherUsername, otherTitle, otherDescription);
+    User user;
     DataSourceManager DSM;
     @Rule
     public ActivityTestRule<UserLoginActivity> activityRule = new ActivityTestRule<>(
@@ -63,11 +65,13 @@ public class TaskDetailActivityTest
     @Before
     public void init()
     {
+        Intents.init();
         loginActivity = activityRule.getActivity();
 
+//        myTask = new Task(myUsername, myTitle, myDescription);
+//        otherTask = new Task(otherUsername, otherTitle, otherDescription);
+
         DSM = new DataSourceManager(loginActivity);
-        myTask = new Task(myUsername, myTitle, myDescription);
-        otherTask = new Task(otherUsername , otherTitle, otherDescription);
         if (DSM.getTask(myUsername, myTitle) != null)
         {
             DSM.removeTask(myTask);
@@ -76,26 +80,28 @@ public class TaskDetailActivityTest
         {
             DSM.removeTask(otherTask);
         }
-//
-//        DSM.addTask(myTask);
-//        DSM.addTask(otherTask);
 
-        User user = DSM.getUser(myUsername);
+        user = DSM.getUser(myUsername);
         if (user == null)
         {
             user = new User(myUsername, new EmailAddress("test", "intent.com"),
                     new PhoneNumber(0, 123, 456, 7890));
             DSM.addUser(user);
         }
-        Intents.init();
     }
 
     @After
     public void release()
     {
         DSM = new DataSourceManager(loginActivity);
-        if (DSM.getTask(myUsername, myTitle) != null) { DSM.removeTask(myTask); }
-        if (DSM.getTask(otherUsername, otherTitle) != null) { DSM.removeTask(otherTask); }
+        if (DSM.getTask(myUsername, myTitle) != null)
+        {
+            DSM.removeTask(myTask);
+        }
+        if (DSM.getTask(otherUsername, otherTitle) != null)
+        {
+            DSM.removeTask(otherTask);
+        }
         Intents.release();
     }
 
@@ -105,25 +111,32 @@ public class TaskDetailActivityTest
     @Test
     public void testMyTaskRequested()
     {
-        if (DSM.getTask(myUsername, myTitle) == null)
+        myTask = new Task(myUsername, "Req", myDescription);
+
+        if (DSM.getTask(myUsername, "Req") == null)
         {
 //            DSM.removeTask(myTask);
             DSM.addTask(myTask);
         }
 
-        // Login and navigate to 'my tasks'
-        onView(withId(R.id.etxt_Username))
-                .perform(typeText(myUsername), closeSoftKeyboard());
-        onView(withId(R.id.btn_Login))
-                .perform(click());
+        if (DSM.getCurrentUser() == null)
+        {
+            // Login and navigate to 'my tasks'
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(myUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+        }
+
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
         onView(withId(R.id.nav_view))
                 .perform(NavigationViewActions.navigateTo(R.id.my_tasks));
 
-        // Click on my task
-        onData(anything()).inAdapterView(withId(R.id.detail_LV)).atPosition(0).perform(click());
+        onData(hasToString(startsWith("test: Req")))
+                .inAdapterView(withId(R.id.detail_LV))
+                .perform(click());
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
         // My Requested tasks should have edit and delete buttons
@@ -139,11 +152,7 @@ public class TaskDetailActivityTest
     @Test
     public void testMyBiddedTask()
     {
-        if (DSM.getTask(myUsername, myTitle) == null)
-        {
-//            DSM.removeTask(myTask);
-            DSM.addTask(myTask);
-        }
+        myTask = new Task(myUsername, "Bidded", myDescription);
         // Bid on my task
         myTask.setElasticId("12345");
         myTask = myTask.submitBid(
@@ -152,21 +161,27 @@ public class TaskDetailActivityTest
                         new BigDecimal(999.99)
                 )
         );
+        DSM.removeTask(myTask);
         DSM.addTask(myTask);
 
-        // Login and navigate to 'my tasks'
-        onView(withId(R.id.etxt_Username))
-                .perform(typeText(myUsername), closeSoftKeyboard());
-        onView(withId(R.id.btn_Login))
-                .perform(click());
+        if (DSM.getCurrentUser() == null)
+        {
+            // Login and navigate to 'my tasks'
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(myUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+        }
+
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
         onView(withId(R.id.nav_view))
                 .perform(NavigationViewActions.navigateTo(R.id.my_tasks));
 
-        // Click on my task
-        onData(anything()).inAdapterView(withId(R.id.detail_LV)).atPosition(0).perform(click());
+        onData(hasToString(startsWith("test: Bid")))
+                .inAdapterView(withId(R.id.detail_LV))
+                .perform(click());
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
         // My bidded tasks should have edit, delete, and accept buttons
@@ -183,13 +198,8 @@ public class TaskDetailActivityTest
     @Test
     public void testMyAssignedTask()
     {
-        if (DSM.getTask(myUsername, myTitle) == null)
-        {
-//            DSM.removeTask(myTask);
-            DSM.addTask(myTask);
-        }
-
         // Bid on my task
+        myTask = new Task(myUsername, "Assigned", myDescription);
         myTask.setElasticId("12345");
         myTask = myTask.submitBid(
                 new Bid(otherUsername,
@@ -197,14 +207,19 @@ public class TaskDetailActivityTest
                         new BigDecimal(999.99)
                 )
         );
-        myTask = myTask.assignProvider(otherUsername);
+        myTask.assignProvider(otherUsername);
+        DSM.removeTask(myTask);
         DSM.addTask(myTask);
 
-        // Login and navigate to 'my tasks'
-        onView(withId(R.id.etxt_Username))
-                .perform(typeText(myUsername), closeSoftKeyboard());
-        onView(withId(R.id.btn_Login))
-                .perform(click());
+        if (DSM.getCurrentUser() == null)
+        {
+            // Login and navigate to 'my tasks'
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(myUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+        }
+
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
@@ -212,7 +227,9 @@ public class TaskDetailActivityTest
                 .perform(NavigationViewActions.navigateTo(R.id.my_tasks));
 
         // Click on my task
-        onData(anything()).inAdapterView(withId(R.id.detail_LV)).atPosition(0).perform(click());
+        onData(hasToString(startsWith("test: Ass")))
+                .inAdapterView(withId(R.id.detail_LV))
+                .perform(click());
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
         // My assigned tasks should have complete and unassign buttons
@@ -228,12 +245,7 @@ public class TaskDetailActivityTest
     @Test
     public void testMyDoneTask()
     {
-        if (DSM.getTask(myUsername, myTitle) == null)
-        {
-//            DSM.removeTask(myTask);
-            DSM.addTask(myTask);
-        }
-
+        myTask = new Task(myUsername, "Done", myDescription);
         // Bid on my task
         myTask.setElasticId("12345");
         myTask = myTask.submitBid(
@@ -244,13 +256,18 @@ public class TaskDetailActivityTest
         );
         myTask = myTask.assignProvider(otherUsername);
         myTask = myTask.markDone();
+        DSM.removeTask(myTask);
         DSM.addTask(myTask);
 
-        // Login and navigate to 'my tasks'
-        onView(withId(R.id.etxt_Username))
-                .perform(typeText(myUsername), closeSoftKeyboard());
-        onView(withId(R.id.btn_Login))
-                .perform(click());
+        if (DSM.getCurrentUser() == null)
+        {
+            // Login and navigate to 'my tasks'
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(myUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+        }
+
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
@@ -258,7 +275,9 @@ public class TaskDetailActivityTest
                 .perform(NavigationViewActions.navigateTo(R.id.my_tasks));
 
         // Click on my task
-        onData(anything()).inAdapterView(withId(R.id.detail_LV)).atPosition(0).perform(click());
+        onData(hasToString(startsWith("test: Don")))
+                .inAdapterView(withId(R.id.detail_LV))
+                .perform(click());
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
         // My done done task should have

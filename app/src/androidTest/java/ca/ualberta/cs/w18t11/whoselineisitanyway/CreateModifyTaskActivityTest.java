@@ -26,7 +26,6 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.CreateModifyTaskActivity;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailedListActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserLoginActivity;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
@@ -52,11 +51,12 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 @RunWith(AndroidJUnit4.class)
 public class CreateModifyTaskActivityTest
 {
-    String testUsername;
-    String taskTitle;
-    String taskDescription;
-    LatLng taskLocation;
+    String testUsername = "test";
+    String taskTitle = "My Intent Task";
+    String taskDescription = "This task is for intent testing";
+    LatLng taskLocation = new LatLng(53.5232, 113.5263);
     Task testTask;
+    User user;
     DataSourceManager DSM;
     @Rule
     public ActivityTestRule<UserLoginActivity> activityRule = new ActivityTestRule<>(
@@ -69,14 +69,10 @@ public class CreateModifyTaskActivityTest
         Intents.init();
         loginActivity = activityRule.getActivity();
 
-        testUsername = "test";
-        taskTitle = "My Intent Task";
-        taskDescription = "This task is for intent testing";
-        taskLocation = new LatLng(53.5232, 113.5263);
         testTask = new Task(testUsername, taskTitle, taskDescription);
 
         DSM = new DataSourceManager(loginActivity);
-        User user = DSM.getUser(testUsername);
+        user = DSM.getUser(testUsername);
         if (user == null)
         {
             user = new User(testUsername, new EmailAddress("test", "intent.com"),
@@ -99,11 +95,15 @@ public class CreateModifyTaskActivityTest
     @Test
     public void testCreateTaskBasic()
     {
-        // Login and get to CreateModifyTaskActivity
-        onView(withId(R.id.etxt_Username))
-                .perform(typeText(testUsername), closeSoftKeyboard());
-        onView(withId(R.id.btn_Login))
-                .perform(click());
+        if (DSM.getCurrentUser() == null)
+        {
+            // Login and navigate to 'my tasks'
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(testUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+        }
+
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
@@ -122,7 +122,6 @@ public class CreateModifyTaskActivityTest
 
         onView(withId(R.id.btn_Submit))
                 .perform(click());
-        intended(hasComponent(DetailedListActivity.class.getName()));
     }
 
     /**
@@ -131,11 +130,15 @@ public class CreateModifyTaskActivityTest
     @Test
     public void testCancelTaskCreation()
     {
-        // Login and get to CreateModifyTaskActivity
-        onView(withId(R.id.etxt_Username))
-                .perform(typeText(testUsername), closeSoftKeyboard());
-        onView(withId(R.id.btn_Login))
-                .perform(click());
+        if (DSM.getCurrentUser() == null)
+        {
+            // Login and navigate to 'my tasks'
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(testUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+        }
+
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
@@ -154,7 +157,6 @@ public class CreateModifyTaskActivityTest
 
         onView(withId(R.id.btn_Cancel))
                 .perform(click());
-        intended(hasComponent(DetailedListActivity.class.getName()));
     }
 
     /**
@@ -163,11 +165,15 @@ public class CreateModifyTaskActivityTest
     @Test
     public void testClickSelectPhotosButton()
     {
-        // Login and get to CreateModifyTaskActivity
-        onView(withId(R.id.etxt_Username))
-                .perform(typeText(testUsername), closeSoftKeyboard());
-        onView(withId(R.id.btn_Login))
-                .perform(click());
+        if (DSM.getCurrentUser() == null)
+        {
+            // Login and navigate to 'my tasks'
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(testUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+        }
+
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
@@ -197,7 +203,6 @@ public class CreateModifyTaskActivityTest
             e.printStackTrace();
         }
         mDevice.pressBack();
-        intended(hasComponent(CreateModifyTaskActivity.class.getName()));
     }
 
     /**
@@ -206,11 +211,15 @@ public class CreateModifyTaskActivityTest
     @Test
     public void testCreateTaskWithLocation()
     {
-        // Login and get to CreateModifyTaskActivity
-        onView(withId(R.id.etxt_Username))
-                .perform(typeText(testUsername), closeSoftKeyboard());
-        onView(withId(R.id.btn_Login))
-                .perform(click());
+        if (DSM.getCurrentUser() == null)
+        {
+            // Login and navigate to 'my tasks'
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(testUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+        }
+
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
@@ -239,7 +248,6 @@ public class CreateModifyTaskActivityTest
 
         onView(withId(R.id.btn_Submit))
                 .perform(click());
-        intended(hasComponent(DetailedListActivity.class.getName()));
     }
 
     /**
@@ -248,11 +256,15 @@ public class CreateModifyTaskActivityTest
     @Test
     public void testClearPhotoAndLocation()
     {
-        // Login and get to CreateModifyTaskActivity
-        onView(withId(R.id.etxt_Username))
-                .perform(typeText(testUsername), closeSoftKeyboard());
-        onView(withId(R.id.btn_Login))
-                .perform(click());
+        if (DSM.getCurrentUser() == null)
+        {
+            // Login and navigate to 'my tasks'
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(testUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+        }
+
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
@@ -286,6 +298,5 @@ public class CreateModifyTaskActivityTest
 
         onView(withId(R.id.btn_Cancel))
                 .perform(click());
-        intended(hasComponent(DetailedListActivity.class.getName()));
     }
 }

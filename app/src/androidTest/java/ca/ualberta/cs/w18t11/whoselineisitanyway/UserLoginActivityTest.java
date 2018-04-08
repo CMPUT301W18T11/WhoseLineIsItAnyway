@@ -1,8 +1,11 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
+import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.test.uiautomator.UiDevice;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -12,7 +15,9 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserLoginActivity;
 
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
@@ -44,7 +49,16 @@ public class UserLoginActivityTest
         DSM = new DataSourceManager(loginActivity);
         User user;
         if ((user = DSM.getUser(testUsername)) != null)
+        {
             DSM.removeUser(user);
+            DSM.unsetCurrentUser();
+        }
+    }
+
+    @After
+    public void cleanup()
+    {
+        DSM.unsetCurrentUser();
     }
 
     /**
@@ -53,6 +67,12 @@ public class UserLoginActivityTest
     @Test
     public void testUsernameInput()
     {
+        if (DSM.getCurrentUser() != null)
+        {
+            UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+            openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+            onView(withText("Logout")).perform(click());
+        }
         // Input text
         onView(withId(R.id.etxt_Username))
                 .perform(typeText(testUsername), closeSoftKeyboard());
@@ -68,6 +88,12 @@ public class UserLoginActivityTest
     @Test
     public void testBlankLogin()
     {
+        if (DSM.getCurrentUser() != null)
+        {
+            UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+            openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+            onView(withText("Logout")).perform(click());
+        }
         // Click the sign in button
         onView(withId(R.id.btn_Login))
                 .perform(click());
@@ -82,6 +108,12 @@ public class UserLoginActivityTest
     @Test
     public void testRegisterUser()
     {
+        if (DSM.getCurrentUser() != null)
+        {
+            UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+            openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+            onView(withText("Logout")).perform(click());
+        }
         // Input text
         onView(withId(R.id.etxt_Username))
                 .perform(typeText(testUsername), closeSoftKeyboard());
@@ -112,6 +144,11 @@ public class UserLoginActivityTest
 
         onView(withId(R.id.btn_OK))
                 .perform(click());
+
+
+        UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        onView(withText("Logout")).perform(click());
     }
 
     /**
@@ -120,6 +157,12 @@ public class UserLoginActivityTest
     @Test
     public void testBlankRegisterUser()
     {
+        if (DSM.getCurrentUser() != null)
+        {
+            UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+            openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+            onView(withText("Logout")).perform(click());
+        }
         // Input text
         onView(withId(R.id.etxt_Username))
                 .perform(typeText(testUsername), closeSoftKeyboard());
@@ -143,6 +186,12 @@ public class UserLoginActivityTest
     @Test
     public void testBlankEmailRegisterUser()
     {
+        if (DSM.getCurrentUser() != null)
+        {
+            UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+            openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+            onView(withText("Logout")).perform(click());
+        }
         // Input text
         onView(withId(R.id.etxt_Username))
                 .perform(typeText(testUsername), closeSoftKeyboard());
@@ -174,6 +223,12 @@ public class UserLoginActivityTest
     @Test
     public void testRegisterUserCancel()
     {
+        if (DSM.getCurrentUser() != null)
+        {
+            UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+            openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+            onView(withText("Logout")).perform(click());
+        }
         // Input text
         onView(withId(R.id.etxt_Username))
                 .perform(typeText(testUsername), closeSoftKeyboard());
