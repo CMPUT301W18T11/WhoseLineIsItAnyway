@@ -20,6 +20,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.location.Location;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailedListActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.TaskDetailActivity;
@@ -29,13 +30,18 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserProfileActivity;
  * Represents a task.
  *
  * @author Samuel Dolha
- * @version 3.3
+ * @version 4.0
  */
 public final class Task implements Detailed, Elastic, Serializable
 {
 
     //TODO Implement location value
     //TODO implement photo storage
+
+    /**
+     * Used to put the Task into an intent
+     */
+    public static final String TASK_KEY = "TASK_OBJECT";
 
     /**
      * An auto-generated, unique ID to support class versioning for Serializable.
@@ -53,11 +59,6 @@ public final class Task implements Detailed, Elastic, Serializable
      * The maximum description length allowed.
      */
     private static final int MAXIMUM_DESCRIPTION_LENGTH = 300;
-
-    /**
-     * Used to put the Task into an intent
-     */
-    public static final String TASK_KEY = "TASK_OBJECT";
 
     /**
      * The associated requester's username.
@@ -104,6 +105,18 @@ public final class Task implements Detailed, Elastic, Serializable
      */
     @Nullable
     private String elasticId;
+
+    /**
+     * The task's images.
+     */
+    @Nullable
+    private String[] images;
+
+    /**
+     * The task's location.
+     */
+    @Nullable
+    private Location location;
 
     /**
      * Creates a task.
@@ -346,6 +359,44 @@ public final class Task implements Detailed, Elastic, Serializable
     }
 
     /**
+     * @return The task's images.
+     */
+    @Nullable
+    public final String[] getImages()
+    {
+        return this.images;
+    }
+
+    /**
+     * Set the task's images.
+     *
+     * @param images The task's images.
+     */
+    public final void setImages(@NonNull final String[] images)
+    {
+        this.images = images;
+    }
+
+    /**
+     * @return The task's location.
+     */
+    @Nullable
+    public final Location getLocation()
+    {
+        return this.location;
+    }
+
+    /**
+     * Set the task's location.
+     *
+     * @param location The task's location.
+     */
+    public final void setLocation(@NonNull final Location location)
+    {
+        this.location = location;
+    }
+
+    /**
      * @return A copy of the task with the given bid on it, replacing any bid previously made by the
      * same provider.
      * @throws IllegalArgumentException For a bid with a taskId different from the task's Id.
@@ -387,13 +438,6 @@ public final class Task implements Detailed, Elastic, Serializable
         }
     }
 
-    @Override
-    @NonNull
-    public final String toString()
-    {
-        return this.getRequesterUsername() + ": " + this.getTitle();
-    }
-
     /**
      * @return A copy of the task without an assigned provider.
      * @throws IllegalStateException For a non-assigned task.
@@ -433,15 +477,16 @@ public final class Task implements Detailed, Elastic, Serializable
     }
 
     /**
+     * @param providerUsername The provider's username.
      * @return A copy of the task assigned to the provider.
      * @throws IllegalArgumentException For an empty providerUsername.
      * @throws IllegalStateException    For a non-bidded task.
      */
     @NonNull
-    public final Task assignProvider(@NonNull final String providerId)
+    public final Task assignProvider(@NonNull final String providerUsername)
             throws IllegalArgumentException, IllegalStateException
     {
-        if (providerId.isEmpty())
+        if (providerUsername.isEmpty())
         {
             throw new IllegalArgumentException("providerUsername cannot be empty");
         }
@@ -451,7 +496,7 @@ public final class Task implements Detailed, Elastic, Serializable
             throw new IllegalStateException("Cannot assign a non-bidded task");
         }
 
-        return new Task(this.getElasticId(), this.getRequesterUsername(), providerId,
+        return new Task(this.getElasticId(), this.getRequesterUsername(), providerUsername,
                 this.getBids(),
                 this.getTitle(), this.getDescription(), TaskStatus.ASSIGNED);
     }
@@ -500,6 +545,13 @@ public final class Task implements Detailed, Elastic, Serializable
         }
 
         this.elasticId = id;
+    }
+
+    @Override
+    @NonNull
+    public final String toString()
+    {
+        return this.getRequesterUsername() + ": " + this.getTitle();
     }
 
     /**
