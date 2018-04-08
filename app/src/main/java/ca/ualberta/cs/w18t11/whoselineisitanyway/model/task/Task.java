@@ -680,12 +680,18 @@ public final class Task implements Detailed, Elastic, Serializable
                         buildUserLinkIntent(context, this.getRequesterUsername())),
                 new Detail(context.getString(R.string.detail_label_empty), "Bids",
                         this.buildBidsListLinkIntent(context))));
-
         if (this.getProviderUsername() != null)
         {
             details.add(new Detail(context.getString(R.string.detail_label_provider),
                     this.getProviderUsername(),
                     buildUserLinkIntent(context, this.getProviderUsername())));
+        }
+        if (this.getStatus().equals(TaskStatus.BIDDED))
+        {
+            Bid lowestBid = this.getLowestBid();
+            details.add(new Detail(context.getString(R.string.detail_label_lowest_bid),
+                    lowestBid.getValue().toString(),
+                    lowestBid.getDetailsIntent(DetailActivity.class, context)));
         }
 
         final Intent intent = new Intent(context, detailActivityClass);

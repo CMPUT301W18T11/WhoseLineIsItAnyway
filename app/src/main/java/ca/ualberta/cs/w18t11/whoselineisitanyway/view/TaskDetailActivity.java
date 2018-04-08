@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
@@ -23,7 +24,10 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
  * A custom DetailActivity for a task.
  */
 
-public class TaskDetailActivity extends DetailActivity {
+public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBid.PlaceBidReturnListener
+{
+
+    private Task globalTask = null;
 
     /**
      * Alter the appearance of the UI to better suit a task.
@@ -237,6 +241,9 @@ public class TaskDetailActivity extends DetailActivity {
             @Override
             public void onClick(View view) {
                 // TODO: Add bid button functionality
+                globalTask = task;
+                DIALOG_PlaceBid bidDialog = new DIALOG_PlaceBid(TaskDetailActivity.this);
+                bidDialog.showDialog();
             }
         });
 
@@ -370,5 +377,12 @@ public class TaskDetailActivity extends DetailActivity {
     {
         Intent detailIntent = getIntent();
         return (Task) detailIntent.getSerializableExtra(Task.TASK_KEY);
+    }
+
+    @Override
+    public void PlaceBidDialog_PosResult(BigDecimal result) {
+        DataSourceManager dataSourceManager = new DataSourceManager(this);
+        Bid newBid = new Bid(dataSourceManager.getCurrentUser().getUsername(), globalTask.getElasticId(), result);
+        globalTask.submitBid(newBid, dataSourceManager);
     }
 }

@@ -64,6 +64,7 @@
     <string name="detail_label_requester">Requester Username</string>
     <string name="detail_label_provider">Provider Username</string>
     <string name="detail_label_amount">Amount</string>
+    <string name="detail_label_lowest_bid">Lowest Bid</string>
     <string name="detail_label_empty"> </string>
 
     <!-- Strings related to DetailActivity -->
