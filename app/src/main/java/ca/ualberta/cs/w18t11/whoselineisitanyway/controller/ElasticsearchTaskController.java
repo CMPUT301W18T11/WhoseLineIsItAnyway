@@ -158,7 +158,7 @@ public class ElasticsearchTaskController
     /**
      * Async task for getting tasks from the database
      */
-    public static class GetTaskssTask extends AsyncTask<String, Void, ArrayList<Task>>
+    public static class GetTasksTask extends AsyncTask<String, Void, ArrayList<Task>>
     {
         /**
          * Gets a list of tasks in the database matching a search query

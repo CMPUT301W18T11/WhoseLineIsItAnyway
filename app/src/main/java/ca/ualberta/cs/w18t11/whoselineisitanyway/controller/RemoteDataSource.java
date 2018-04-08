@@ -20,14 +20,6 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 public class RemoteDataSource implements DataSource
 {
     /**
-     * Constructor
-     */
-    public RemoteDataSource()
-    {
-        // Do nothing here.
-    }
-
-    /**
      * Gets a user from the database by their elastic id
      *
      * @param elasticId User's elasticId
@@ -45,50 +37,11 @@ public class RemoteDataSource implements DataSource
         }
         catch (InterruptedException e)
         {
-            Log.i("RemoteDataSource.getUserById", "interrupted:" + e.toString());
+            Log.i("RemoteDataSource", "interrupted:" + e.toString());
         }
         catch (ExecutionException e)
         {
-            Log.i("RemoteDataSource.getUserById", "execution exception:" + e.toString());
-        }
-        return null;
-    }
-
-    /**
-     * Gets a user from the database
-     *
-     * @param username User's username
-     * @return User if found. null if not found
-     */
-    public User getUserByUsername(String username)
-    {
-        String query = "{" +
-                "  \"query\": {" +
-                "    \"match\": {" +
-                "      \"username\": \"" + username + "\"" +
-                "    }" +
-                "  }" +
-                "}";
-
-        ElasticsearchUserController.GetUsersTask getUsersTask =
-                new ElasticsearchUserController.GetUsersTask();
-        getUsersTask.execute(query);
-
-        try
-        {
-            ArrayList<User> users = getUsersTask.get();
-            if (users != null && users.size() == 1)
-            {
-                return users.get(0);
-            }
-        }
-        catch (InterruptedException e)
-        {
-            Log.i("RemoteDataSource.getUser", "interrupted:" + e.toString());
-        }
-        catch (ExecutionException e)
-        {
-            Log.i("RemoteDataSource.getUser", "execution exception:" + e.toString());
+            Log.i("RemoteDataSource", "execution exception:" + e.toString());
         }
         return null;
     }
@@ -127,24 +80,53 @@ public class RemoteDataSource implements DataSource
         }
         catch (InterruptedException e)
         {
-            Log.i("RemoteDataSource.getUsers", "interrupted:" + e.toString());
+            Log.i("RemoteDataSource", "interrupted:" + e.toString());
         }
         catch (ExecutionException e)
         {
-            Log.i("RemoteDataSource.getUsers", "execution exception:" + e.toString());
+            Log.i("RemoteDataSource", "execution exception:" + e.toString());
         }
-
-        // TODO signal dataSourceManager to get offline users
-        // If get() fails to return an array, that means we are not connected
-        // to the network. This needs to be somehow handled.
         return null;
     }
 
+    /**
+     * Gets a user from the database
+     *
+     * @param username User's username
+     * @return User if found. null if not found
+     */
     @Nullable
     @Override
     public User getUser(@NonNull final String username) throws IllegalArgumentException
     {
-        // TODO implement
+        String query = "{" +
+                "  \"query\": {" +
+                "    \"match\": {" +
+                "      \"username\": \"" + username + "\"" +
+                "    }" +
+                "  }" +
+                "}";
+
+        ElasticsearchUserController.GetUsersTask getUsersTask =
+                new ElasticsearchUserController.GetUsersTask();
+        getUsersTask.execute(query);
+
+        try
+        {
+            ArrayList<User> users = getUsersTask.get();
+            if (users != null && users.size() == 1)
+            {
+                return users.get(0);
+            }
+        }
+        catch (InterruptedException e)
+        {
+            Log.i("RemoteDataSource", "interrupted:" + e.toString());
+        }
+        catch (ExecutionException e)
+        {
+            Log.i("RemoteDataSource", "execution exception:" + e.toString());
+        }
         return null;
     }
 
@@ -170,11 +152,11 @@ public class RemoteDataSource implements DataSource
         }
         catch (InterruptedException e)
         {
-            Log.i("RemoteDataSource.addUser", "interrupted:" + e.toString());
+            Log.i("RemoteDataSource", "interrupted:" + e.toString());
         }
         catch (ExecutionException e)
         {
-            Log.i("UserLogin.addUser", "execution exception:" + e.toString());
+            Log.i("UserLogin", "execution exception:" + e.toString());
         }
         return false;
     }
@@ -199,7 +181,7 @@ public class RemoteDataSource implements DataSource
         }
         catch (InterruptedException e)
         {
-            Log.i("RemoteDataSource.addUser", "interrupted:" + e.toString());
+            Log.i("RemoteDataSource", "interrupted:" + e.toString());
         }
         catch (ExecutionException e)
         {
@@ -217,7 +199,6 @@ public class RemoteDataSource implements DataSource
     @Override
     public Task[] getTasks()
     {
-        // TODO test this
         String query = "{" +
                 "  \"from\" :0, \"size\" : 5000," +
                 "  \"query\": {" +
@@ -225,8 +206,8 @@ public class RemoteDataSource implements DataSource
                 "    }" +
                 "}";
 
-        ElasticsearchTaskController.GetTaskssTask getAllTasksTask
-                = new ElasticsearchTaskController.GetTaskssTask();
+        ElasticsearchTaskController.GetTasksTask getAllTasksTask
+                = new ElasticsearchTaskController.GetTasksTask();
         getAllTasksTask.execute(query);
 
         try
@@ -242,16 +223,12 @@ public class RemoteDataSource implements DataSource
         }
         catch (InterruptedException e)
         {
-            Log.i("RemoteDataSource.getTasks", "interrupted:" + e.toString());
+            Log.i("RemoteDataSource", "interrupted:" + e.toString());
         }
         catch (ExecutionException e)
         {
-            Log.i("RemoteDataSource.getTasks", "execution exception:" + e.toString());
+            Log.i("RemoteDataSource", "execution exception:" + e.toString());
         }
-
-        // TODO signal dataSourceManager to get offline tasks
-        // If get() fails to return an array, that means we are not connected
-        // to the network. This needs to be somehow handled.
         return null;
     }
 
@@ -260,7 +237,35 @@ public class RemoteDataSource implements DataSource
     public Task getTask(@NonNull final String requesterUsername, @NonNull final String title)
             throws IllegalArgumentException
     {
-        // TODO: Implement
+        String query = "{" +
+                "  \"query\": {" +
+                "    \"match\": {" +
+                "      \"requesterUsername\": \"" + requesterUsername + "\"" +
+                "      \"title\": \"" + title + "\"" +
+                "    }" +
+                "  }" +
+                "}";
+
+        ElasticsearchTaskController.GetTasksTask getTasksTask =
+                new ElasticsearchTaskController.GetTasksTask();
+        getTasksTask.execute(query);
+
+        try
+        {
+            ArrayList<Task> task = getTasksTask.get();
+            if (task != null && task.size() == 1)
+            {
+                return task.get(0);
+            }
+        }
+        catch (InterruptedException e)
+        {
+            Log.i("RemoteDataSource", "interrupted:" + e.toString());
+        }
+        catch (ExecutionException e)
+        {
+            Log.i("RemoteDataSource", "execution exception:" + e.toString());
+        }
         return null;
     }
 
@@ -269,7 +274,22 @@ public class RemoteDataSource implements DataSource
     public Task getTask(@NonNull final String taskId)
             throws IllegalArgumentException
     {
-        // TODO: Implement
+        ElasticsearchTaskController.GetTaskByIdTask getTaskTask =
+                new ElasticsearchTaskController.GetTaskByIdTask();
+        getTaskTask.execute(taskId);
+
+        try
+        {
+            return getTaskTask.get();
+        }
+        catch (InterruptedException e)
+        {
+            Log.i("RemoteDataSource", "interrupted:" + e.toString());
+        }
+        catch (ExecutionException e)
+        {
+            Log.i("RemoteDataSource", "execution exception:" + e.toString());
+        }
         return null;
     }
 
@@ -295,7 +315,7 @@ public class RemoteDataSource implements DataSource
         }
         catch (InterruptedException e)
         {
-            Log.i("RemoteDataSource.addUser", "interrupted:" + e.toString());
+            Log.i("RemoteDataSource", "interrupted:" + e.toString());
         }
         catch (ExecutionException e)
         {
@@ -307,7 +327,23 @@ public class RemoteDataSource implements DataSource
     @Override
     public boolean removeTask(@NonNull Task task)
     {
-        // TODO implement
+        ElasticsearchTaskController.RemoveTaskTask removeTaskTask =
+                new ElasticsearchTaskController.RemoveTaskTask();
+        removeTaskTask.execute(task);
+
+        try
+        {
+            removeTaskTask.get();
+            return true;
+        }
+        catch (InterruptedException e)
+        {
+            Log.i("RemoteDataSource", "interrupted:" + e.toString());
+        }
+        catch (ExecutionException e)
+        {
+            Log.i("UserLogin", "execution exception:" + e.toString());
+        }
         return false;
     }
 
@@ -345,16 +381,12 @@ public class RemoteDataSource implements DataSource
         }
         catch (InterruptedException e)
         {
-            Log.i("RemoteDataSource.getBids", "interrupted:" + e.toString());
+            Log.i("RemoteDataSource", "interrupted:" + e.toString());
         }
         catch (ExecutionException e)
         {
-            Log.i("RemoteDataSource.getBids", "execution exception:" + e.toString());
+            Log.i("RemoteDataSource", "execution exception:" + e.toString());
         }
-
-        // TODO signal dataSourceManager to get offline bids
-        // If get() fails to return an array, that means we are not connected
-        // to the network. This needs to be somehow handled.
         return null;
     }
 
@@ -363,7 +395,35 @@ public class RemoteDataSource implements DataSource
     public Bid getBid(@NonNull final String providerUsername, @NonNull final String taskId)
             throws IllegalArgumentException
     {
-        // TODO implement
+        String query = "{" +
+                "  \"query\": {" +
+                "    \"match\": {" +
+                "      \"providerUsername\": \"" + providerUsername + "\"" +
+                "      \"taskId\": \"" + taskId + "\"" +
+                "    }" +
+                "  }" +
+                "}";
+
+        ElasticsearchBidController.GetBidsTask getBidsTask =
+                new ElasticsearchBidController.GetBidsTask();
+        getBidsTask.execute(query);
+
+        try
+        {
+            ArrayList<Bid> bid = getBidsTask.get();
+            if (bid != null && bid.size() == 1)
+            {
+                return bid.get(0);
+            }
+        }
+        catch (InterruptedException e)
+        {
+            Log.i("RemoteDataSource", "interrupted:" + e.toString());
+        }
+        catch (ExecutionException e)
+        {
+            Log.i("RemoteDataSource", "execution exception:" + e.toString());
+        }
         return null;
     }
 
@@ -389,11 +449,11 @@ public class RemoteDataSource implements DataSource
         }
         catch (InterruptedException e)
         {
-            Log.i("RemoteDataSource.addUser", "interrupted:" + e.toString());
+            Log.i("RemoteDataSource", "interrupted:" + e.toString());
         }
         catch (ExecutionException e)
         {
-            Log.i("UserLogin.addUser", "execution exception:" + e.toString());
+            Log.i("UserLogin", "execution exception:" + e.toString());
         }
         return false;
     }
@@ -401,7 +461,23 @@ public class RemoteDataSource implements DataSource
     @Override
     public boolean removeBid(@NonNull Bid bid)
     {
-        // TODO implement
+        ElasticsearchBidController.RemoveBidTask removeBidTask =
+                new ElasticsearchBidController.RemoveBidTask();
+        removeBidTask.execute(bid);
+
+        try
+        {
+            removeBidTask.get();
+            return true;
+        }
+        catch (InterruptedException e)
+        {
+            Log.i("RemoteDataSource", "interrupted:" + e.toString());
+        }
+        catch (ExecutionException e)
+        {
+            Log.i("UserLogin", "execution exception:" + e.toString());
+        }
         return false;
     }
 }
