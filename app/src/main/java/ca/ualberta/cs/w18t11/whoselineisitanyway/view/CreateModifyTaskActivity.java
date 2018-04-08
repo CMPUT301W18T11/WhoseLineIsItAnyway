@@ -28,7 +28,6 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
@@ -45,17 +44,18 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.TaskStatus;
  * @author Lucas
  * @see Task
  */
-//TODO Pre-initialize existingtask or use filter - as it's calling on a void thing in location setting
 public class CreateModifyTaskActivity extends AppCompatActivity implements SetMapLocationDialog.MapDialogReturnListener, ActivityCompat.OnRequestPermissionsResultCallback  {
-    private DataSourceManager DSM = new DataSourceManager(this);
+    private final DataSourceManager DSM = new DataSourceManager(this);
     private LinearLayout filmstrip; // Hold the container for the objects
-    final int MAX_CHARLIMIT_TITLE = 30; // Maximum length of Task Title
-    final int MAX_CHARLIMIT_DESCRIPTION = 300; // Maximum length of Task Description
-    private int PICK_IMAGES = 1256;
+
+    private final int PICK_IMAGES = 1256;
+
+    // Holders for task details until one can be finalized
     private Task existingTask;
     private Task resultTask;
-    private ArrayList<String> image = new ArrayList<String>();
     private Location tempLoc = null;
+
+    // Permissions request identification codes
     private final int PERMISSION_REQUEST_READ_STORAGE = 0;
     private final int PERMISSION_REQUEST_LOCATION = 1;
 
@@ -72,8 +72,6 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // EVENTHANDLERS
-        taskTitleField_onCharLimitReached(); // Set warning flag when Title is == MAX_CHARLIMIT_TITLE
-        taskDescriptionField_onCharLimitReached(); // set warning flag when Descr == MAX_CHARLIMIT_DESCRIPTION
         taskLocationField_onEmpty(); // Reset status warning on the field if the text is deleted
         btnAddImg_onClick(); // Handle functions for adding image(s) to the filmstrip/task
         btnClearImg_onClick(); // Remove all images from filmstrip
@@ -105,7 +103,8 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         {
             Toast.makeText(this, "Bidded tasks cannot be edited.\n" +
                             "You can delete the task from the tasks menu to cancel the contract but you can no longer change task details. Returning...",
-                    Toast.LENGTH_LONG);
+                    Toast.LENGTH_LONG).show();
+
             finish();
         }
 
@@ -156,51 +155,6 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
                 break;
 
         }
-
-    }
-
-    //region Character Limit Event Handler
-    private void taskTitleField_onCharLimitReached()
-    {
-        EditText textField = findViewById(R.id.etxt_Title);
-        charLimitHandler(MAX_CHARLIMIT_TITLE, textField);
-    }
-
-    private void taskDescriptionField_onCharLimitReached()
-    {
-        EditText textField = findViewById(R.id.etxt_Description);
-        charLimitHandler(MAX_CHARLIMIT_DESCRIPTION, textField);
-    }
-
-    private void charLimitHandler(final int charlimit, final EditText controlReference)
-    {
-        final EditText editField = controlReference;
-        editField.addTextChangedListener(new TextWatcher()
-        {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after)
-            {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count)
-            {
-                if (editField.getText().length() == charlimit)
-                {
-                    editField.setError("This field has a limit of " + String.valueOf(charlimit) +
-                            " character(s).");
-                }
-                else
-                {
-                    editField.setError(null);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s)
-            {
-            }
-        });
 
     }
 
@@ -274,8 +228,6 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
 //region Image Management
     private void btnAddImg_onClick()
     {
-        final LinearLayout filmstrip = this.filmstrip;
-
         Button button = findViewById(R.id.btn_UploadImage);
         button.setOnClickListener(new View.OnClickListener()
         {
@@ -360,7 +312,6 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
             @Override
             public void onClick(View v)
             {
-                ImageView imgview = (ImageView) v;
                 ImageBlowupDialog bigImgView = new ImageBlowupDialog();
                 BitmapManager imData = (BitmapManager) v.getTag();
                 bigImgView.showDialog(CreateModifyTaskActivity.this, imData);
@@ -452,7 +403,7 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
     public void MapSetDialog_PosResult(LatLng result) {
         if (result != null) {
 
-            TextView locField = (TextView) findViewById(R.id.txt_location_set);
+            TextView locField = findViewById(R.id.txt_location_set);
             String locString = "Location Set\n(" + String.valueOf(result.latitude) + ", " +
                     String.valueOf(result.longitude) + ")";
             tempLoc = new Location(result);
@@ -468,7 +419,7 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
             @Override
             public void onClick(View v) {
                 existingTask.setLocation(null);
-                TextView locField = (TextView) findViewById(R.id.txt_location_set);
+                TextView locField = findViewById(R.id.txt_location_set);
                 String locString = "(Location not set)";
                 locField.setText(locString);
             }
@@ -483,12 +434,52 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         {
             @Override
             public void onClick(View v) {
-                if (validateAllFields() != true) { return; }
-                EditText title = (EditText) findViewById(R.id.etxt_Title);
-                EditText descr = (EditText) findViewById(R.id.etxt_Description);
+                if (!validateAllFields()) { return; }
+                EditText title = findViewById(R.id.etxt_Title);
+                EditText descr = findViewById(R.id.etxt_Description);
+                if (existingTask != null) {
+                    resultTask = new Task(
+                            existingTask.getElasticId(),
+                            DSM.getCurrentUser().getUsername(),
+                            title.getText().toString(),
+                            descr.getText().toString()
+                    );
+                } else {
+                    resultTask = new Task(
+                            DSM.getCurrentUser().getUsername(),
+                            title.getText().toString(),
+                            descr.getText().toString()
+                    );
+                }
+                ArrayList<String> imagesArrList = new ArrayList<>();
+                for (int i = 0; i < filmstrip.getChildCount(); i ++) {
+                    BitmapManager tempBMP = (BitmapManager) filmstrip.getChildAt(i).getTag();
+                    Log.i("GenTask - Get Tags", "Tried getting a tag from the imageView: " + String.valueOf(i+1));
+                    imagesArrList.add(tempBMP.getBase64Bitmap());
+                    Log.i("GenTask - B64 Str", "Tried getting the base-64 rep of image: " + String.valueOf(i + 1));
+                }
+                if (imagesArrList.size() > 0 ) {
+                    String[] attachments = imagesArrList.toArray(new String[imagesArrList.size()]);
+                    if (attachments.length > 0) {
+                        resultTask.setImages(attachments);
+                    }
+                }
+                if (tempLoc != null ) {
+                    Log.i("GenTask - Loc", "Setting Task location: (" +
+                            String.valueOf(tempLoc.getLatitude()) + ", " +
+                            String.valueOf(tempLoc.getLongitude()) + ")");
+                    resultTask.setLocation(tempLoc);
+                }
+                Log.i("GenTask - Task","Generated Task:\n" +
+                        "    Title: " + resultTask.getTitle() + "\n" +
+                        "    Descr: " + String.valueOf(resultTask.getDescription().length()) + "\n" +
+                        "    ES ID: " + String.valueOf(resultTask.getElasticId() == null) + "\n" +
+                        "    Pics: " + String.valueOf(resultTask.getImages().length) + "\n" +
+                        "    Loc: " + resultTask.getLocation().toString()
 
-
-                DSM.addTask(existingTask);
+                );
+                boolean res = DSM.addTask(resultTask);
+                Log.i("GenTask - Saved", String.valueOf(res));
                 finish();
 
             }
@@ -510,8 +501,8 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
     }
 
     private boolean validateAllFields() {
-        EditText titleField = (EditText) findViewById(R.id.etxt_Title);
-        EditText descrField = (EditText) findViewById(R.id.etxt_Description);
+        EditText titleField = findViewById(R.id.etxt_Title);
+        EditText descrField = findViewById(R.id.etxt_Description);
         if (titleField.getText().length() == 0) {
             titleField.setError("You must enter a title for your task.");
         }

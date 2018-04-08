@@ -41,4 +41,8 @@ public final class Location implements Serializable
     {
         return this.longitude;
     }
+
+    public final String toString() {
+        return "(" + String.valueOf(latitude) + ", " + String.valueOf(longitude) + ")";
+    }
 }
