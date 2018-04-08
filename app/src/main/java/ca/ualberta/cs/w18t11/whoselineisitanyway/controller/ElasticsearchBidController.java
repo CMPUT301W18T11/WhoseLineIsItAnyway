@@ -53,6 +53,9 @@ public class ElasticsearchBidController
 
             for (Bid bid: bids)
             {
+                if (bid == null)
+                    return Boolean.FALSE;
+
                 if (bid.getElasticId() != null)
                 {
                     Index index = new Index.Builder(bid)

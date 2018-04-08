@@ -53,6 +53,9 @@ public class ElasticsearchTaskController
 
             for (Task task : tasks)
             {
+                if (task == null)
+                    return Boolean.FALSE;
+
                 if (task.getElasticId() != null)
                 {
                     Index index = new Index.Builder(task)

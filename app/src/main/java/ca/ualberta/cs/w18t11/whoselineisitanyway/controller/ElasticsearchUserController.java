@@ -55,6 +55,9 @@ public class ElasticsearchUserController
 
             for (User user : users)
             {
+                if (user == null)
+                    return Boolean.FALSE;
+                
                 if (user.getElasticId() != null)
                 {
                     // First, we try to see if it already exists in the database
