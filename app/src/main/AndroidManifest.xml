@@ -49,7 +49,7 @@
         <activity
             android:name=".view.CreateModifyTaskActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".view.testActivity" />
+        <activity android:name=".view.testActivity"/>
         <activity
             android:name=".view.UserProfileActivity"
             android:theme="@style/AppTheme" />

@@ -1,33 +1,21 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 
-import android.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import org.w3c.dom.Text;
+import java.math.BigDecimal;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.rating.Rating;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
-
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidator;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidatorResult;
 
 /*
  * This is just a generic activity for implementing parts of code; it is not intended to run as part of the app
@@ -38,7 +26,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidatorRe
  *
  * @author Lucas Thalen
  */
-public class testActivity extends AppCompatActivity implements SetMapLocationDialog.MapDialogReturnListener, UserRegisterDialog.diagUserRegistrationListener
+public class testActivity extends AppCompatActivity implements DIALOG_PlaceBid.PlaceBidReturnListener, SetMapLocationDialog.MapDialogReturnListener, UserRegisterDialog.diagUserRegistrationListener
 {
     private LatLng location;
     private boolean res = false;
@@ -86,6 +74,8 @@ public class testActivity extends AppCompatActivity implements SetMapLocationDia
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DIALOG_PlaceBid bidDialog = new DIALOG_PlaceBid(testActivity.this);
+                bidDialog.showDialog();
             }
         });
 
@@ -113,5 +103,10 @@ public class testActivity extends AppCompatActivity implements SetMapLocationDia
     @Override
     public void RegisterDiag_NegResultListener() {
 
+    }
+
+    @Override
+    public void PlaceBidDialog_PosResult(BigDecimal result) {
+        Toast.makeText(this, "Bid Value:" + String.valueOf(result), Toast.LENGTH_LONG).show();
     }
 }
