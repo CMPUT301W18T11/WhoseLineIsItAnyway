@@ -177,13 +177,17 @@ public class NavigatorActivity extends AppCompatActivity
             outgoingTitle = "Nearby Tasks";
             detailedArrayList = buildNearbyTasksList();
         }
+        else if (id == R.id.my_bids_tasks)
+        {
+            Log.i("NAVBAR: ", "Tasks I've Bidded on Selected");
+            outgoingTitle = "Tasks I've Bidded on";
+            detailedArrayList = buildMyBidTaskList();
+        }
         else if (id == R.id.my_bids)
         {
             Log.i("NAVBAR: ", "My Bids Selected");
             outgoingTitle = "My Bids";
             detailedArrayList = buildMyBidsList();
-
-
         }
         else if (id == R.id.create_task)
         {
@@ -330,6 +334,33 @@ public class NavigatorActivity extends AppCompatActivity
         Detailed[] allTasks = new DataSourceManager(this).getTasks();
 
         // TODO: Add tasks based on distance (and status?)
+
+        return detailedArrayList;
+    }
+
+    /**
+     * Build a list of all bids posted by the current user.
+     * @return ArrayList of the details representing those tasks.
+     */
+    private ArrayList<Detailed> buildMyBidTaskList()
+    {
+        // TODO: Extract filtering to the DataSourceManager
+        // TODO: Check if we should only display bids on tasks that are currently unassigned?
+        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
+        DataSourceManager dataSourceManager = new DataSourceManager(this);
+        Bid[] allBids = dataSourceManager.getBids();
+        User currentUser = new DataSourceManager(this).getCurrentUser();
+
+        if (allBids != null)
+        {
+            for (Bid bid : allBids)
+            {
+                if (bid.getProviderUsername().equals(currentUser.getUsername()))
+                {
+                    detailedArrayList.add(dataSourceManager.getTask(bid.getTaskId()));
+                }
+            }
+        }
 
         return detailedArrayList;
     }
