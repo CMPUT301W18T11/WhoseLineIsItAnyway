@@ -70,7 +70,7 @@ public class BidDetailActivity extends DetailActivity {
         {
             View view = inflater.inflate(R.layout.activity_detail_button, viewGroup);
             Button bidButton = view.findViewById(R.id.detail_button);
-            bidButton.setText(R.string.button_decline_bid);
+            bidButton.setText(R.string.button_accept_bid);
             bidButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -93,7 +93,7 @@ public class BidDetailActivity extends DetailActivity {
         {
             View view = inflater.inflate(R.layout.activity_detail_button, viewGroup);
             Button bidButton = view.findViewById(R.id.detail_button);
-            bidButton.setText(R.string.button_accept_bid);
+            bidButton.setText(R.string.button_decline_bid);
             bidButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
