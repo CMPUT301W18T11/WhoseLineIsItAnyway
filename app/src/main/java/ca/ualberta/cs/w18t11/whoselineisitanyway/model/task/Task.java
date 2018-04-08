@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSource;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
@@ -114,6 +115,8 @@ public final class Task implements Detailed, Elastic, Serializable
 
     /**
      * The task's location.
+     *
+     * @see Location
      */
     @Nullable
     private Location location;
@@ -128,10 +131,10 @@ public final class Task implements Detailed, Elastic, Serializable
      * @param title             The task's title.
      * @param description       The task's description.
      * @param status            The task's status.
-     * @throws IllegalArgumentException For an empty requesterUsername; a non-null, empty providerUsername; an
-     *                                  assigned or done task without a bid associated with the
-     *                                  providerUsername; or a title or description exceeding their
-     *                                  respective maximum lengths.
+     * @throws IllegalArgumentException For an empty requesterUsername; a non-null, empty
+     *                                  providerUsername; an assigned or done task without a bid
+     *                                  associated with the providerUsername; or a title or
+     *                                  description exceeding their respective maximum lengths.
      * @see Bid
      * @see TaskStatus
      */
@@ -302,6 +305,17 @@ public final class Task implements Detailed, Elastic, Serializable
                 done ? TaskStatus.DONE : TaskStatus.ASSIGNED);
     }
 
+    private Task addExtras(@Nullable final String[] images, @Nullable final Location location)
+    {
+        final Task task = new Task(this.getElasticId(), this.getRequesterUsername(),
+                this.getProviderUsername(), this.getBids(), this.getTitle(), this.getDescription(),
+                this.getStatus());
+        task.setImages(images);
+        task.setLocation(location);
+
+        return task;
+    }
+
     /**
      * @return The associated requester's ID.
      */
@@ -372,13 +386,14 @@ public final class Task implements Detailed, Elastic, Serializable
      *
      * @param images The task's images.
      */
-    public final void setImages(@NonNull final String[] images)
+    public final void setImages(@Nullable final String[] images)
     {
         this.images = images;
     }
 
     /**
      * @return The task's location.
+     * @see Location
      */
     @Nullable
     public final Location getLocation()
@@ -390,13 +405,46 @@ public final class Task implements Detailed, Elastic, Serializable
      * Set the task's location.
      *
      * @param location The task's location.
+     * @see Location
      */
-    public final void setLocation(@NonNull final Location location)
+    public final void setLocation(@Nullable final Location location)
     {
         this.location = location;
     }
 
     /**
+     * @param bid        The bid to decline.
+     * @param dataSource The data source from which
+     * @return A copy of the task without the bid.
+     * @see Bid
+     * @see DataSource
+     */
+    @NonNull
+    public final Task declineBid(@NonNull final Bid bid, @NonNull final DataSource dataSource)
+    {
+        dataSource.removeBid(bid);
+
+        switch (this.getStatus())
+        {
+            case BIDDED:
+                final Bid[] oldBids = this.getBids();
+                assert oldBids != null;
+                final ArrayList<Bid> bids = new ArrayList<>(Arrays.asList(oldBids));
+
+                bids.remove(bid);
+
+                return new Task(this.getElasticId(), this.getRequesterUsername(), null,
+                        bids.toArray(new Bid[0]), this.getTitle(), this.getDescription(),
+                        TaskStatus.BIDDED).addExtras(this.images, this.location);
+
+            default:
+                throw new IllegalStateException("Cannot decline a bid on a non-bidded task");
+        }
+    }
+
+    /**
+     * @param bid        The bid to submit.
+     * @param dataSource The data source to which to add the bid.
      * @return A copy of the task with the given bid on it, replacing any bid previously made by the
      * same provider.
      * @throws IllegalArgumentException For a bid with a taskId different from the task's Id.
@@ -404,14 +452,16 @@ public final class Task implements Detailed, Elastic, Serializable
      * @see Bid
      */
     @NonNull
-    public final Task submitBid(@NonNull final Bid bid)
+    public final Task submitBid(@NonNull final Bid bid, @NonNull final DataSource dataSource)
     {
+        dataSource.addBid(bid);
+
         switch (this.getStatus())
         {
             case REQUESTED:
                 return new Task(this.getElasticId(), this.getRequesterUsername(), null,
-                        new Bid[]{bid},
-                        this.getTitle(), this.getDescription(), TaskStatus.BIDDED);
+                        new Bid[]{bid}, this.getTitle(), this.getDescription(), TaskStatus.BIDDED)
+                        .addExtras(this.images, this.location);
 
             case BIDDED:
                 final Bid[] oldBids = this.getBids();
@@ -420,7 +470,7 @@ public final class Task implements Detailed, Elastic, Serializable
 
                 for (Bid oldBid : oldBids)
                 {
-                    // If a bid from the same provider already exists for the task, replace it.
+                    // If a bid from the same provider already exists for the task, don't keep it.
                     if (!oldBid.getProviderUsername().equals(bid.getProviderUsername()))
                     {
                         bids.add(oldBid);
@@ -431,7 +481,7 @@ public final class Task implements Detailed, Elastic, Serializable
 
                 return new Task(this.getElasticId(), this.getRequesterUsername(), null,
                         bids.toArray(new Bid[0]), this.getTitle(), this.getDescription(),
-                        TaskStatus.BIDDED);
+                        TaskStatus.BIDDED).addExtras(this.images, this.location);
 
             default:
                 throw new IllegalStateException("Cannot bid on a non-requested, non-bidded task");
@@ -469,11 +519,12 @@ public final class Task implements Detailed, Elastic, Serializable
         {
             return new Task(this.getElasticId(), this.getRequesterUsername(), null,
                     bids.toArray(new Bid[bids.size()]), this.getTitle(), this.getDescription(),
-                    TaskStatus.BIDDED);
+                    TaskStatus.BIDDED).addExtras(this.images, this.location);
         }
 
         return new Task(this.getElasticId(), this.getRequesterUsername(), null, null,
-                this.getTitle(), this.getDescription(), TaskStatus.REQUESTED);
+                this.getTitle(), this.getDescription(), TaskStatus.REQUESTED)
+                .addExtras(images, location);
     }
 
     /**
@@ -497,8 +548,8 @@ public final class Task implements Detailed, Elastic, Serializable
         }
 
         return new Task(this.getElasticId(), this.getRequesterUsername(), providerUsername,
-                this.getBids(),
-                this.getTitle(), this.getDescription(), TaskStatus.ASSIGNED);
+                this.getBids(), this.getTitle(), this.getDescription(), TaskStatus.ASSIGNED)
+                .addExtras(this.images, this.location);
     }
 
     /**
@@ -514,8 +565,8 @@ public final class Task implements Detailed, Elastic, Serializable
         }
 
         return new Task(this.getElasticId(), this.getRequesterUsername(),
-                this.getProviderUsername(),
-                this.getBids(), this.getTitle(), this.getDescription(), TaskStatus.DONE);
+                this.getProviderUsername(), this.getBids(), this.getTitle(), this.getDescription(),
+                TaskStatus.DONE).addExtras(this.images, this.location);
     }
 
     /**
