@@ -421,6 +421,7 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
                 dataSourceManager.addTask(completedTask);
                 finish();
                 completedTask.showDetails(TaskDetailActivity.class, view.getContext());
+                new DIALOG_WriteReview(TaskDetailActivity.this, dataSourceManager.getUser(task.getProviderUsername()));
             }
         });
 
