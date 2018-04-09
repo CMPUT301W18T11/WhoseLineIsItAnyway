@@ -31,7 +31,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
  * A custom DetailActivity for a task.
  */
 
-public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBid.PlaceBidReturnListener
+public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBid.PlaceBidReturnListener, DIALOG_WriteReview.OnReviewListener
 {
 
     private Task globalTask = null;
@@ -427,11 +427,9 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
             @Override
             public void onClick(View view) {
                 DataSourceManager dataSourceManager = new DataSourceManager(view.getContext());
-                Task completedTask = task.markDone();
-                dataSourceManager.addTask(completedTask);
-                finish();
-                completedTask.showDetails(TaskDetailActivity.class, view.getContext());
-                new DIALOG_WriteReview(TaskDetailActivity.this, dataSourceManager.getUser(task.getProviderUsername())).showDialog();
+                globalTask = task.markDone();
+                dataSourceManager.addTask(globalTask);
+                new DIALOG_WriteReview(TaskDetailActivity.this, dataSourceManager.getUser(globalTask.getProviderUsername())).showDialog();
             }
         });
 
@@ -501,5 +499,19 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
     {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 getResources().getDisplayMetrics());
+    }
+
+    @Override
+    public void onReviewSubmitted()
+    {
+        finish();
+        globalTask.showDetails(TaskDetailActivity.class, this);
+    }
+
+    @Override
+    public void onReviewCanceled()
+    {
+        finish();
+        globalTask.showDetails(TaskDetailActivity.class, this);
     }
 }

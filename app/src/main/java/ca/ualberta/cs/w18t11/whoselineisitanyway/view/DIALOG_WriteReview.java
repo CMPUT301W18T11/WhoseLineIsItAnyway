@@ -36,6 +36,7 @@ public class DIALOG_WriteReview {
     private DataSourceManager DSM;
     private Activity caller;
     private Context context;
+    private OnReviewListener returnListener;
 
     // Dialog components and creation
     private AlertDialog diag;
@@ -52,6 +53,10 @@ public class DIALOG_WriteReview {
         this.caller = caller;
         context = (Context) caller;
         DSM = new DataSourceManager(context);
+
+        if (context instanceof OnReviewListener) {
+            returnListener = (OnReviewListener) context;
+        } else { throw new RuntimeException("Calling class must contain interface methods!"); }
 
         log("Assign a provider user for the Review Dialog");
         provider = providerUSerObject;
@@ -109,6 +114,7 @@ public class DIALOG_WriteReview {
                 log("Saving REVIEW to PROVIDER:\n    " + "Status: " + String.valueOf(addUserRes) +
                         "\n    Provider: " + provider.getUsername() +
                         "\n    ESID:" + provider.getElasticId());
+                returnListener.onReviewSubmitted();
 
             }
         });
@@ -120,6 +126,7 @@ public class DIALOG_WriteReview {
             @Override
             public void onClick(View v) {
                 diag.dismiss();
+                returnListener.onReviewCanceled();
             }
         });
 
@@ -158,6 +165,13 @@ public class DIALOG_WriteReview {
 
     private void log(String message) {
         Log.i("DIALOG_WREVIEW", message);
+    }
+
+    public interface OnReviewListener
+    {
+        void onReviewSubmitted();
+
+        void onReviewCanceled();
     }
 
 }
