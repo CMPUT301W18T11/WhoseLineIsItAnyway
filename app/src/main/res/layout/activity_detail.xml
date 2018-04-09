@@ -31,7 +31,7 @@
         <ListView
             android:id="@+id/listview_activity_detail_list"
             android:layout_width="match_parent"
-            android:layout_height="437dp" />
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
