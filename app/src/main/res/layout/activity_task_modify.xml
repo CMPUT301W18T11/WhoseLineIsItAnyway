@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:theme="@style/AppTheme">
+
+    <EditText
+        android:id="@+id/etxt_Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:ems="10"
+        android:hint="@string/create_task_titleHint"
+        android:inputType="text"
+        android:maxLength="30"
+        android:padding="5dp" />
+
+    <EditText
+        android:id="@+id/etxt_Description"
+        android:layout_width="match_parent"
+        android:layout_height="191dp"
+        android:ems="10"
+        android:gravity="top|left"
+        android:hint="@string/create_task_DescriptionHint"
+        android:inputType="textMultiLine"
+        android:maxLength="300"
+        android:padding="5dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Attached Images:"
+        android:textAlignment="center"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="93dp"
+        android:orientation="vertical">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="113dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/filmstrip_panel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:minHeight="30dp"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_UploadImage"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="309dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:text="@string/create_task_btnUploadImage" />
+
+        <Button
+            android:id="@+id/btn_ClearAllUploadImages"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/GENERIC_CLEAR" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="91dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_callLocationDiag"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="310dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/activity_task_modify_btn_CallLocationDiag" />
+
+            <Button
+                android:id="@+id/btn_ClearLocation"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/GENERIC_CLEAR" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_location_set"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="(Location not Set)"
+            android:textAlignment="center"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_Submit"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="302dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/GENERIC_SUBMIT" />
+
+            <Button
+                android:id="@+id/btn_Cancel"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/GENERIC_CANCEL" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_taskmodify_instructions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:text="@string/create_task_instructions"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+</LinearLayout>

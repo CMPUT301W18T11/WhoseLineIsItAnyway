@@ -211,11 +211,11 @@ public final class Rating
         {
             if (sentenceLen - 30 <= 6)
             {
-                reviewConstruct.append(comment.substring(0, comment.indexOf(".")));
+                reviewConstruct.append(comment.substring(0, comment.indexOf(".")) + "...");
             }
             else
             {
-                reviewConstruct.append(comment.substring(0, 30));
+                reviewConstruct.append(comment.substring(0, 30) + "...");
             }
         }
         else
@@ -229,21 +229,27 @@ public final class Rating
 
     public final String fullReview()
     {
+        int JUSTIFY_LEN = 18;
         StringBuilder strCreate = new StringBuilder();
         strCreate.append(
-                justifyText("Quality:", 18) +
+                justifyText("Overall:", JUSTIFY_LEN) +
+                        new String(new char[getAggRating()]).replace("\0", "*") +
+                        "\n-----------------------------\n"
+        );
+        strCreate.append(
+                justifyText("Quality:", JUSTIFY_LEN) +
                         new String(new char[qualityRating]).replace("\0", "*") +
                         "\n"
         );
         strCreate.append(
-                justifyText("Speed:", 18) +
+                justifyText("Speed:", JUSTIFY_LEN) +
                         new String(new char[ttcRating]).replace("\0", "*") +
                         "\n"
         );
         strCreate.append(
-                justifyText("Professionalism:", 18) +
+                justifyText("Professionalism:", JUSTIFY_LEN) +
                         new String(new char[profRating]).replace("\0", "*") +
-                        "\n"
+                        "\n\n"
         );
         strCreate.append(comment);
 

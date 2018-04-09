@@ -2,26 +2,51 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.model.task;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Locale;
+import java.util.Objects;
 
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detail;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detailable;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSource;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.TaskBidsListBuilder;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.location.Location;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.AdapterType;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.BidDetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailedListActivity;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.TaskDetailActivity;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserProfileActivity;
 
 /**
  * Represents a task.
  *
  * @author Samuel Dolha
- * @version 2.0
+ * @version 4.0
  */
-public final class Task implements Detailable, Serializable
+public final class Task implements Detailed, Elastic, Serializable
 {
+
+    //TODO Implement location value
+    //TODO implement photo storage
+
+    /**
+     * Used to put the Task into an intent
+     */
+    public static final String TASK_KEY = "TASK_OBJECT";
+
     /**
      * An auto-generated, unique ID to support class versioning for Serializable.
      *
@@ -40,22 +65,16 @@ public final class Task implements Detailable, Serializable
     private static final int MAXIMUM_DESCRIPTION_LENGTH = 300;
 
     /**
-     * The task's ID.
+     * The associated requester's username.
      */
     @NonNull
-    private final String id;
+    private final String requesterUsername;
 
     /**
-     * The associated requester's ID.
-     */
-    @NonNull
-    private final String requesterId;
-
-    /**
-     * The associated provider's ID.
+     * The associated provider's username.
      */
     @Nullable
-    private final String providerId;
+    private final String providerUsername;
 
     /**
      * The associated bids.
@@ -86,35 +105,60 @@ public final class Task implements Detailable, Serializable
     private final TaskStatus status;
 
     /**
+     * The task's elastic ID.
+     */
+    @Nullable
+    private String elasticId;
+
+    /**
+     * The task's images.
+     */
+    @Nullable
+    private String[] images;
+
+    /**
+     * The task's location.
+     *
+     * @see Location
+     */
+    @Nullable
+    private Location location;
+
+    /**
      * Creates a task.
      *
-     * @param id          The task's id.
-     * @param requesterId The associated requester's ID.
-     * @param providerId  The associated provider's ID.
-     * @param bids        The associated bids.
-     * @param title       The task's title.
-     * @param description The task's description.
-     * @param status      The task's status.
-     * @throws IllegalArgumentException For an empty requesterId; a non-null, empty providerId; an
-     *                                  assigned or done task without a bid associated with the
-     *                                  providerId; or a title or description exceeding their
-     *                                  respective maximum lengths.
+     * @param elasticId         The task's elastic ID.
+     * @param requesterUsername The associated requester's ID.
+     * @param providerUsername  The associated provider's ID.
+     * @param bids              The associated bids.
+     * @param title             The task's title.
+     * @param description       The task's description.
+     * @param status            The task's status.
+     * @throws IllegalArgumentException For an empty requesterUsername; a non-null, empty
+     *                                  providerUsername; an assigned or done task without a bid
+     *                                  associated with the providerUsername; or a title or
+     *                                  description exceeding their respective maximum lengths.
      * @see Bid
      * @see TaskStatus
      */
-    private Task(@NonNull final String id, @NonNull final String requesterId,
-                 @Nullable final String providerId, @Nullable final Bid[] bids,
+    private Task(@Nullable final String elasticId, @NonNull final String requesterUsername,
+                 @Nullable final String providerUsername, @Nullable final Bid[] bids,
                  @NonNull final String title, @NonNull final String description,
-                 @NonNull final TaskStatus status)
+                 @NonNull final TaskStatus status) throws IllegalArgumentException
     {
-        if (requesterId.isEmpty())
+        if (elasticId != null && elasticId.isEmpty())
         {
-            throw new IllegalArgumentException("requesterId cannot be empty");
+            throw new IllegalArgumentException("elasticId cannot be empty");
         }
 
-        if (providerId != null && providerId.isEmpty())
+        if (requesterUsername.isEmpty())
         {
-            throw new IllegalArgumentException("providerId must be null or non-empty");
+            throw new IllegalArgumentException("requesterUsername cannot be empty");
+        }
+
+        if (providerUsername != null && providerUsername.isEmpty())
+        {
+            throw new IllegalArgumentException("providerUsername must be null or non-empty");
         }
 
         if (status == TaskStatus.REQUESTED && bids != null)
@@ -122,33 +166,58 @@ public final class Task implements Detailable, Serializable
             throw new IllegalArgumentException("a requested task cannot have bids");
         }
 
-        if (status == TaskStatus.ASSIGNED || status == TaskStatus.DONE)
+        if (status == TaskStatus.BIDDED || status == TaskStatus.ASSIGNED
+                || status == TaskStatus.DONE)
         {
-            if (providerId == null)
+            if (elasticId == null)
+            {
+                throw new IllegalArgumentException("a task with bids must have an ID");
+            }
+
+            if (status != TaskStatus.BIDDED && providerUsername == null)
             {
                 throw new IllegalArgumentException(
-                        "an assigned or done task must have a providerId");
+                        "an assigned or done task must have a providerUsername");
             }
 
-            if (bids == null)
+            if (bids == null || bids.length < 1)
             {
-                throw new IllegalArgumentException("an assigned or done task must have bids");
+                throw new IllegalArgumentException("a non-requested task must be at least one bid");
             }
 
-            boolean providerIdValid = false;
+            final Collection<String> seenProviderUsernames = new ArrayList<>(bids.length);
+            boolean providerUsernameValid = false;
 
             for (Bid bid : bids)
             {
-                if (bid.getProviderId().equals(providerId))
+                if (!bid.getTaskId().equals(elasticId))
                 {
-                    providerIdValid = true;
+                    throw new IllegalArgumentException("a task's bids must have its ID");
+                }
+
+                for (String seenProviderUsername : seenProviderUsernames)
+                {
+                    if (bid.getProviderUsername().equals(seenProviderUsername))
+                    {
+                        throw new IllegalArgumentException(
+                                "cannot have multiple bids from the same provider");
+                    }
+                }
+
+                seenProviderUsernames.add(bid.getProviderUsername());
+
+                {
+                    if (bid.getProviderUsername().equals(providerUsername))
+                    {
+                        providerUsernameValid = true;
+                    }
                 }
             }
 
-            if (!providerIdValid)
+            if (status != TaskStatus.BIDDED && !providerUsernameValid)
             {
                 throw new IllegalArgumentException(
-                        "an assigned or done task must have a bid associated with the providerId");
+                        "an assigned or done task must have a bid associated with the providerUsername");
             }
         }
 
@@ -166,9 +235,9 @@ public final class Task implements Detailable, Serializable
                             Task.MAXIMUM_DESCRIPTION_LENGTH));
         }
 
-        this.id = id;
-        this.requesterId = requesterId;
-        this.providerId = providerId;
+        this.elasticId = elasticId;
+        this.requesterUsername = requesterUsername;
+        this.providerUsername = providerUsername;
         this.bids = bids;
         this.title = title;
         this.description = description;
@@ -176,81 +245,96 @@ public final class Task implements Detailable, Serializable
     }
 
     /**
-     * Creates a requested task.
+     * Creates a requested task without an elastic ID.
      *
-     * @param id          The task's id.
-     * @param requesterId The associated requester's ID.
-     * @param title       The task's title.
-     * @param description The task's description.
+     * @param requesterUsername The associated requester's ID.
+     * @param title             The task's title.
+     * @param description       The task's description.
      */
-    public Task(@NonNull final String id, @NonNull final String requesterId,
+    public Task(@NonNull final String requesterUsername, @NonNull final String title,
+                @NonNull final String description)
+    {
+        this(null, requesterUsername, null, null, title, description, TaskStatus.REQUESTED);
+    }
+
+    /**
+     * Creates a requested task with an elastic ID.
+     *
+     * @param elasticId         The task's elastic ID.
+     * @param requesterUsername The associated requester's ID.
+     * @param title             The task's title.
+     * @param description       The task's description.
+     */
+    public Task(@NonNull final String elasticId, @NonNull final String requesterUsername,
                 @NonNull final String title, @NonNull final String description)
     {
-        this(id, requesterId, null, null, title, description, TaskStatus.REQUESTED);
+        this(elasticId, requesterUsername, null, null, title, description, TaskStatus.REQUESTED);
     }
 
     /**
      * Creates a bidded task.
      *
-     * @param id          The task's id.
-     * @param requesterId The associated requester's ID.
-     * @param bids        The associated bids.
-     * @param title       The task's title.
-     * @param description The task's description.
+     * @param elasticId         The task's elastic ID.
+     * @param requesterUsername The associated requester's ID.
+     * @param bids              The associated bids.
+     * @param title             The task's title.
+     * @param description       The task's description.
      * @see Bid
      */
-    public Task(@NonNull final String id, @NonNull final String requesterId,
+    public Task(@NonNull final String elasticId, @NonNull final String requesterUsername,
                 @NonNull final Bid[] bids, @NonNull final String title,
                 @NonNull final String description)
     {
-        this(id, requesterId, null, bids, title, description, TaskStatus.BIDDED);
+        this(elasticId, requesterUsername, null, bids, title, description, TaskStatus.BIDDED);
     }
 
     /**
-     * Creates an assigned task.
+     * Creates an assigned or done task.
      *
-     * @param id          The task's id.
-     * @param requesterId The associated requester's ID.
-     * @param providerId  The associated provider's ID.
-     * @param bids        The associated bids.
-     * @param title       The task's title.
-     * @param description The task's description.
-     * @param done        Whether the task has been completed.
+     * @param elasticId         The task's elastic ID.
+     * @param requesterUsername The associated requester's ID.
+     * @param providerUsername  The associated provider's ID.
+     * @param bids              The associated bids.
+     * @param title             The task's title.
+     * @param description       The task's description.
+     * @param done              Whether the task has been completed.
      * @see Bid
      */
-    public Task(@NonNull final String id, @NonNull final String requesterId,
-                @NonNull final String providerId, @NonNull final Bid[] bids,
+    public Task(@NonNull final String elasticId, @NonNull final String requesterUsername,
+                @NonNull final String providerUsername, @NonNull final Bid[] bids,
                 @NonNull final String title, @NonNull final String description, final boolean done)
     {
-        this(id, requesterId, providerId, bids, title, description,
+        this(elasticId, requesterUsername, providerUsername, bids, title, description,
                 done ? TaskStatus.DONE : TaskStatus.ASSIGNED);
     }
 
-    /**
-     * @return The task's ID.
-     */
-    @NonNull
-    public final String getId()
+    private Task addExtras(@Nullable final String[] images, @Nullable final Location location)
     {
-        return this.id;
+        final Task task = new Task(this.getElasticId(), this.getRequesterUsername(),
+                this.getProviderUsername(), this.getBids(), this.getTitle(), this.getDescription(),
+                this.getStatus());
+        task.setImages(images);
+        task.setLocation(location);
+
+        return task;
     }
 
     /**
      * @return The associated requester's ID.
      */
     @NonNull
-    public final String getRequesterId()
+    public final String getRequesterUsername()
     {
-        return this.requesterId;
+        return this.requesterUsername;
     }
 
     /**
      * @return The associated provider's ID, if applicable.
      */
     @Nullable
-    public final String getProviderId()
+    public final String getProviderUsername()
     {
-        return this.providerId;
+        return this.providerUsername;
     }
 
     /**
@@ -261,6 +345,35 @@ public final class Task implements Detailable, Serializable
     public final Bid[] getBids()
     {
         return this.bids;
+    }
+
+    /**
+     * @return The bid with the lowest value.
+     * @see Bid
+     */
+    @NonNull
+    public final Bid getLowestBid()
+    {
+        if (this.getStatus() == TaskStatus.REQUESTED)
+        {
+            throw new IllegalStateException("Cannot get the lowest bid of a requested task");
+        }
+
+        final Bid[] bids = this.getBids();
+        assert bids != null;
+        Bid lowestBid = bids[0];
+
+        for (int index = 1; index < bids.length; index += 1)
+        {
+            final Bid bid = bids[index];
+
+            if (bid.getValue().compareTo(lowestBid.getValue()) < 0)
+            {
+                lowestBid = bid;
+            }
+        }
+
+        return lowestBid;
     }
 
     /**
@@ -282,7 +395,7 @@ public final class Task implements Detailable, Serializable
     }
 
     /**
-     * @return The task's status
+     * @return The task's status.
      * @see TaskStatus
      */
     @NonNull
@@ -292,24 +405,96 @@ public final class Task implements Detailable, Serializable
     }
 
     /**
-     * @return A copy of the task with the given bid on it.
+     * @return The task's images.
+     */
+    @Nullable
+    public final String[] getImages()
+    {
+        return this.images;
+    }
+
+    /**
+     * Set the task's images.
+     *
+     * @param images The task's images.
+     */
+    public final void setImages(@Nullable final String[] images)
+    {
+        this.images = images;
+    }
+
+    /**
+     * @return The task's location.
+     * @see Location
+     */
+    @Nullable
+    public final Location getLocation()
+    {
+        return this.location;
+    }
+
+    /**
+     * Set the task's location.
+     *
+     * @param location The task's location.
+     * @see Location
+     */
+    public final void setLocation(@Nullable final Location location)
+    {
+        this.location = location;
+    }
+
+    /**
+     * @param bid The bid to decline.
+     * @return A copy of the task without the bid.
+     * @see Bid
+     * @see DataSource
+     */
+    @NonNull
+    public final Task declineBid(@NonNull final Bid bid)
+    {
+        switch (this.getStatus())
+        {
+            case BIDDED:
+                final Bid[] oldBids = this.getBids();
+                assert oldBids != null;
+                final ArrayList<Bid> bids = new ArrayList<>(Arrays.asList(oldBids));
+
+                bids.remove(bid);
+
+                if (bids.size() > 0)
+                {
+                    return new Task(this.getElasticId(), this.getRequesterUsername(), null,
+                            bids.toArray(new Bid[0]), this.getTitle(), this.getDescription(),
+                            TaskStatus.BIDDED).addExtras(this.images, this.location);
+                }
+
+                return new Task(this.getElasticId(), this.getRequesterUsername(), null,
+                        null, this.getTitle(), this.getDescription(),
+                        TaskStatus.REQUESTED).addExtras(this.images, this.location);
+
+            default:
+                throw new IllegalStateException("Cannot decline a bid on a non-bidded task");
+        }
+    }
+
+    /**
+     * @param bid The bid to submit.
+     * @return A copy of the task with the given bid on it, replacing any bid previously made by the
+     * same provider.
      * @throws IllegalArgumentException For a bid with a taskId different from the task's Id.
      * @throws IllegalStateException    For a non-requested, non-bidded task.
      * @see Bid
      */
     @NonNull
-    public final Task submitBid(@NonNull Bid bid)
+    public final Task submitBid(@NonNull final Bid bid)
     {
-        if (!bid.getTaskId().equals(this.getId()))
-        {
-            throw new IllegalArgumentException("bid's taskId must be identical to the task's ID");
-        }
-
         switch (this.getStatus())
         {
             case REQUESTED:
-                return new Task(this.getId(), this.getRequesterId(), new Bid[]{bid},
-                        this.getTitle(), this.getDescription());
+                return new Task(this.getElasticId(), this.getRequesterUsername(), null,
+                        new Bid[]{bid}, this.getTitle(), this.getDescription(), TaskStatus.BIDDED)
+                        .addExtras(this.images, this.location);
 
             case BIDDED:
                 final Bid[] oldBids = this.getBids();
@@ -318,8 +503,8 @@ public final class Task implements Detailable, Serializable
 
                 for (Bid oldBid : oldBids)
                 {
-                    // If a bid from the same provider already exists for the task, replace it.
-                    if (!oldBid.getProviderId().equals(bid.getProviderId()))
+                    // If a bid from the same provider already exists for the task, don't keep it.
+                    if (!oldBid.getProviderUsername().equals(bid.getProviderUsername()))
                     {
                         bids.add(oldBid);
                     }
@@ -327,8 +512,9 @@ public final class Task implements Detailable, Serializable
 
                 bids.add(bid);
 
-                return new Task(this.getId(), this.getRequesterId(), bids.toArray(new Bid[0]),
-                        this.getTitle(), this.getDescription());
+                return new Task(this.getElasticId(), this.getRequesterUsername(), null,
+                        bids.toArray(new Bid[0]), this.getTitle(), this.getDescription(),
+                        TaskStatus.BIDDED).addExtras(this.images, this.location);
 
             default:
                 throw new IllegalStateException("Cannot bid on a non-requested, non-bidded task");
@@ -336,16 +522,57 @@ public final class Task implements Detailable, Serializable
     }
 
     /**
+     * @return A copy of the task without an assigned provider.
+     * @throws IllegalStateException For a non-assigned task.
+     */
+    @NonNull
+    public final Task unassignProvider() throws IllegalStateException
+    {
+        if (this.getStatus() != TaskStatus.ASSIGNED)
+        {
+            throw new IllegalStateException("Cannot unassign a non-assigned task");
+        }
+
+        assert this.getBids() != null;
+        final ArrayList<Bid> bids = new ArrayList<>(Arrays.asList(this.getBids()));
+        Bid bidToRemove = null;
+
+        for (Bid bid : bids)
+        {
+            if (bid.getProviderUsername().equals(this.getProviderUsername()))
+            {
+                bidToRemove = bid;
+            }
+        }
+
+        assert bidToRemove != null;
+        bids.remove(bidToRemove);
+
+        if (bids.size() > 0)
+        {
+            return new Task(this.getElasticId(), this.getRequesterUsername(), null,
+                    bids.toArray(new Bid[bids.size()]), this.getTitle(), this.getDescription(),
+                    TaskStatus.BIDDED).addExtras(this.images, this.location);
+        }
+
+        return new Task(this.getElasticId(), this.getRequesterUsername(), null, null,
+                this.getTitle(), this.getDescription(), TaskStatus.REQUESTED)
+                .addExtras(images, location);
+    }
+
+    /**
+     * @param providerUsername The provider's username.
      * @return A copy of the task assigned to the provider.
-     * @throws IllegalArgumentException For an empty providerId.
+     * @throws IllegalArgumentException For an empty providerUsername.
      * @throws IllegalStateException    For a non-bidded task.
      */
     @NonNull
-    public final Task assignProvider(@NonNull String providerId)
+    public final Task assignProvider(@NonNull final String providerUsername)
+            throws IllegalArgumentException, IllegalStateException
     {
-        if (providerId.isEmpty())
+        if (providerUsername.isEmpty())
         {
-            throw new IllegalArgumentException("providerId cannot be empty");
+            throw new IllegalArgumentException("providerUsername cannot be empty");
         }
 
         if (this.getStatus() != TaskStatus.BIDDED)
@@ -353,10 +580,9 @@ public final class Task implements Detailable, Serializable
             throw new IllegalStateException("Cannot assign a non-bidded task");
         }
 
-        assert this.getBids() != null;
-
-        return new Task(this.getId(), this.getRequesterId(), providerId, this.getBids(),
-                this.getTitle(), this.getDescription(), false);
+        return new Task(this.getElasticId(), this.getRequesterUsername(), providerUsername,
+                this.getBids(), this.getTitle(), this.getDescription(), TaskStatus.ASSIGNED)
+                .addExtras(this.images, this.location);
     }
 
     /**
@@ -364,56 +590,197 @@ public final class Task implements Detailable, Serializable
      * @throws IllegalStateException For a non-assigned task.
      */
     @NonNull
-    public final Task markDone()
+    public final Task markDone() throws IllegalStateException
     {
         if (this.getStatus() != TaskStatus.ASSIGNED)
         {
             throw new IllegalStateException("Cannot mark a non-assigned task as done");
         }
 
-        final Bid[] bids = this.getBids();
-        final String providerId = this.getProviderId();
-        assert bids != null;
-        assert providerId != null;
-
-        return new Task(this.getId(), this.getRequesterId(), providerId, bids, this.getTitle(),
-                this.getDescription(), TaskStatus.DONE);
-    }
-
-    @Override
-    public final <T extends DetailActivity> void showDetail(
-            @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
-    {
-        ArrayList<Detail> detailList = new ArrayList<>();
-        detailList.add(new Detail("Title", getTitle()));
-        detailList.add(new Detail("Description", getDescription()));
-        detailList.add(new Detail("Requester", getRequesterId()));
-        detailList.add(new Detail("Status", getStatus().name()));
-        if (getProviderId() != null)
-        {
-            detailList.add(new Detail("Provider", getProviderId()));
-        }
-        else
-        {
-            detailList.add(new Detail("Provider", "N/A"));
-        }
-
-        Intent intent = new Intent(context, detailActivityClass);
-        intent.putExtra(Detailable.DATA_DETAIL_LIST, detailList);
-        intent.putExtra(Detailable.DATA_DETAIL_TITLE, "Task");
-
-        context.startActivity(intent);
+        return new Task(this.getElasticId(), this.getRequesterUsername(),
+                this.getProviderUsername(), this.getBids(), this.getTitle(), this.getDescription(),
+                TaskStatus.DONE).addExtras(this.images, this.location);
     }
 
     /**
-     * Provide a string to describe a bid
-     *
-     * @return String representing the bid
+     * @return The task's elastic ID.
+     * @see Elastic
      */
-    @NonNull
+    @Nullable
     @Override
+    public final String getElasticId()
+    {
+        return this.elasticId;
+    }
+
+    /**
+     * Sets the task's elastic ID.
+     *
+     * @param id The task's new ID.
+     * @throws IllegalArgumentException For an empty task.
+     * @see Elastic
+     */
+    @Override
+    public final void setElasticId(@NonNull final String id) throws IllegalArgumentException
+    {
+        if (id.isEmpty())
+        {
+            throw new IllegalArgumentException("id cannot be empty");
+        }
+
+        this.elasticId = id;
+    }
+
+    @Override
+    @NonNull
     public final String toString()
     {
-        return this.getTitle();
+        return this.getRequesterUsername() + ": " + this.getTitle();
+    }
+
+    /**
+     * Shows the task's details.
+     *
+     * @param detailActivityClass The activity in which to display the details.
+     * @param context             The context in which to start the activity.
+     * @param <T>                 The type of DetailActivity.
+     * @see Detailed
+     */
+    @Override
+    public final <T extends DetailActivity> void showDetails(
+            @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
+    {
+        context.startActivity(getDetailsIntent(TaskDetailActivity.class, context));
+    }
+
+    /**
+     * Get an intent to show the details of the Task.
+     *
+     * @param detailActivityClass The activity in which to display the details.
+     * @param context             The context in which to start the activity.
+     * @param <T>                 The type of DetailActivity.
+     * @see Detailed
+     */
+    @Override
+    public final <T extends DetailActivity> Intent getDetailsIntent(
+            @NonNull final Class<T> detailActivityClass, @NonNull final Context context)
+    {
+        final ArrayList<Detail> details = new ArrayList<>(Arrays.asList(
+                new Detail(context.getString(R.string.detail_label_title), this.getTitle(), null),
+                new Detail(context.getString(R.string.detail_label_description),
+                        this.getDescription(), null),
+                new Detail(context.getString(R.string.detail_label_status),
+                        this.getStatus().toString(), null),
+                new Detail(context.getString(R.string.detail_label_requester),
+                        this.getRequesterUsername(),
+                        buildUserLinkIntent(context, this.getRequesterUsername()))));
+        if (this.getProviderUsername() != null)
+        {
+            details.add(new Detail(context.getString(R.string.detail_label_provider),
+                    this.getProviderUsername(),
+                    buildUserLinkIntent(context, this.getProviderUsername())));
+        }
+        if (!this.getStatus().equals(TaskStatus.REQUESTED))
+        {
+            Bid lowestBid = this.getLowestBid();
+            details.add(new Detail(context.getString(R.string.detail_label_lowest_bid),
+                    lowestBid.getValue().toString(),
+                    lowestBid.getDetailsIntent(BidDetailActivity.class, context)));
+        }
+
+        final Intent intent = new Intent(context, detailActivityClass);
+        intent.putExtra(Detailed.DETAILS_KEY, details);
+        intent.putExtra(Detailed.TITLE_KEY, "Task");
+
+        intent.putExtra(Task.TASK_KEY, this);
+        return intent;
+    }
+
+    /**
+     * @return A hashcode of the task.
+     * @see Object
+     */
+    @Override
+    public final int hashCode()
+    {
+        return Objects
+                .hash(this.getElasticId(), this.getRequesterUsername(), this.getProviderUsername(),
+                        this.getBids(), this.getTitle(), this.getDescription(), this.getStatus());
+    }
+
+    /**
+     * @param object The object with which to compare the task.
+     * @return Whether the object represents the same task.
+     * @see Object
+     */
+    @Override
+    public final boolean equals(@Nullable final Object object)
+    {
+        if (!(object instanceof Task))
+        {
+            return false;
+        }
+
+        if (object == this)
+        {
+            return true;
+        }
+
+        final Task task = (Task) object;
+
+        if (this.getElasticId() != null && task.getElasticId() != null)
+        {
+            return this.getElasticId().equals(task.getElasticId());
+        }
+
+        return new EqualsBuilder().append(this.getRequesterUsername(), task.getRequesterUsername())
+                .append(this.getProviderUsername(), task.getProviderUsername())
+                .append(this.getTitle(), task.getTitle())
+                .append(this.getDescription(), task.getDescription())
+                .append(this.getStatus(), task.getStatus()).isEquals();
+    }
+
+    /**
+     * Make an intent for displaying the tasks bids
+     *
+     * @param context to show from
+     * @return Intent used to show the list of bids.
+     */
+    private Intent buildBidsListLinkIntent(Context context)
+    {
+        Intent outgoingIntent = new Intent(context, DetailedListActivity.class);
+        String outgoingTitle = "Bids";
+//        ArrayList<Detailed> bidsArrayList = new ArrayList<>();
+//        if (this.getBids() != null)
+//        {
+//            for (Bid bid : this.getBids())
+//            {
+//                bidsArrayList.add(bid);
+//            }
+//        }
+        outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
+//        outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, bidsArrayList);
+        outgoingIntent
+                .putExtra(DetailedListActivity.DATA_LIST_BUILDER, new TaskBidsListBuilder(this));
+        outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE, AdapterType.BID);
+        return outgoingIntent;
+    }
+
+    /**
+     * Make an intent for displaying related users.
+     *
+     * @param context  to show from.
+     * @param username of the user to show.
+     * @return Intent used to show the user profile.
+     */
+    private Intent buildUserLinkIntent(Context context, String username)
+    {
+        Bundle bundle = new Bundle();
+        Intent outgoingIntent = new Intent(context, UserProfileActivity.class);
+        bundle.putString(UserProfileActivity.DATA_EXISTING_USERNAME, username);
+
+        outgoingIntent.putExtras(bundle);
+
+        return outgoingIntent;
     }
 }

@@ -1,49 +1,42 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
+import android.widget.EditText;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.datasource.DataSourceManager;
-
+import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.AllTasksListBuilder;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login via username.
+ *
+ * @author Lucas Thalen, Samuel Dolha
+ * @version 2.0
  */
-public class UserLoginActivity extends AppCompatActivity
+public final class UserLoginActivity extends AppCompatActivity
+        implements UserRegisterDialog.diagUserRegistrationListener
 {
-    // A dummy authentication store containing known user names
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "bob", "alice", "eve"
-    };
+    private final DataSourceManager dataSourceManager = new DataSourceManager(this);
 
-    // Keep track of the login task to ensure we can cancel it if requested
-    private UserLoginTask authTask = null;
-
-    private AutoCompleteTextView usernameView;
-    private View progressView;
-    private View loginFormView;
+    private EditText usernameField;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    protected final void onCreate(@Nullable final Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_login);
+        this.setContentView(R.layout.activity_user_login);
 
-        Button UserLoginButton = (Button) findViewById(R.id.email_sign_in_button);
-        UserLoginButton.setOnClickListener(new OnClickListener()
+        this.setTitle(R.string.title_UserLoginActivity);
+        this.findViewById(R.id.btn_Login).setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View view)
@@ -51,10 +44,14 @@ public class UserLoginActivity extends AppCompatActivity
                 attemptLogin();
             }
         });
+        this.usernameField = findViewById(R.id.etxt_Username);
 
-        usernameView = findViewById(R.id.username);
-        loginFormView = findViewById(R.id.login_form);
-        progressView = findViewById(R.id.login_progress);
+        final User user = this.dataSourceManager.getCurrentUser();
+
+        if (user != null)
+        {
+            this.loginUser(user);
+        }
     }
 
     /**
@@ -64,31 +61,20 @@ public class UserLoginActivity extends AppCompatActivity
      */
     private void attemptLogin()
     {
-        if (authTask != null)
-        {
-            return;
-        }
-
         // Reset errors.
-        usernameView.setError(null);
+        this.usernameField.setError(null);
 
         // Store values at the time of the login attempt.
-        String username = usernameView.getText().toString();
+        final String username = this.usernameField.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(username))
+        if (username.isEmpty())
         {
-            usernameView.setError(getString(R.string.error_field_required));
-            focusView = usernameView;
-            cancel = true;
-        }
-        else if (!isUsernameValid(username))
-        {
-            usernameView.setError(getString(R.string.error_invalid_username));
-            focusView = usernameView;
+            usernameField.setError(getString(R.string.error_field_required));
+            focusView = usernameField;
             cancel = true;
         }
 
@@ -100,137 +86,58 @@ public class UserLoginActivity extends AppCompatActivity
         }
         else
         {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            authTask = new UserLoginTask(this, username);
-            authTask.execute((Void) null);
-        }
-    }
+            // attempt authentication against a network
+            final User user = dataSourceManager.getUser(username);
 
-    private boolean isUsernameValid(String username)
-    {
-        //TODO: Replace this with actual logic
-        return !username.contains("A Bad Word");
-    }
-
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show)
-    {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2)
-        {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            loginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter()
+            if (user != null)
             {
-                @Override
-                public void onAnimationEnd(Animator animation)
-                {
-                    loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            progressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter()
-            {
-                @Override
-                public void onAnimationEnd(Animator animation)
-                {
-                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        }
-        else
-        {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean>
-    {
-
-        private final String username;
-        private final Context context;
-
-        UserLoginTask(Context context, String username)
-        {
-            this.context = context;
-            this.username = username;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params)
-        {
-            // TODO: attempt authentication against a network service
-
-            try
-            {
-                // Simulate network access
-                Thread.sleep(2000);
-            }
-            catch (InterruptedException e)
-            {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS)
-            {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(username))
-                {
-                    // Account exists, return true if the password matches.
-                    DataSourceManager.getInstance().setCurrentUser(username);
-                    Intent intent = new Intent(context, NavigatorActivity.class);
-                    context.startActivity(intent);
-                    return true;
-                }
-            }
-
-            // TODO: register the new account here.
-
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success)
-        {
-            authTask = null;
-            showProgress(false);
-
-            if (success)
-            {
-                finish();
+                loginUser(user);
             }
             else
             {
-                usernameView.setError(getString(R.string.error_invalid_username));
-                usernameView.requestFocus();
+                registerUser(username);
             }
         }
+    }
 
-        @Override
-        protected void onCancelled()
+    private void loginUser(@NonNull final User user)
+    {
+        Log.i("UserLogin", "Registered user. Logging in...");
+
+        String outgoingTitle = "All Tasks";
+        Intent outgoingIntent = new Intent(this, DetailedListActivity.class);
+        Task[] tasks = this.dataSourceManager.getTasks();
+        this.dataSourceManager.setCurrentUser(user);
+
+        outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
+        outgoingIntent
+                .putExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE, AdapterType.TASK);
+        outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, tasks);
+        outgoingIntent.putExtra(DetailedListActivity.DATA_LIST_BUILDER, new AllTasksListBuilder());
+        startActivity(outgoingIntent);
+        finish();
+    }
+
+    private void registerUser(@NonNull final String username)
+    {
+        Log.i("UserLogin", "Registering new user...");
+        UserRegisterDialog registerDiag = new UserRegisterDialog();
+        registerDiag.showDialog(this, username);
+
+    }
+
+    @Override
+    public void RegisterDiag_PosResultListener(final User user)
+    {
+        if (dataSourceManager.addUser(user))
         {
-            authTask = null;
-            showProgress(false);
+            loginUser(user);
         }
+    }
 
+    @Override
+    public void RegisterDiag_NegResultListener()
+    {
     }
 }
 

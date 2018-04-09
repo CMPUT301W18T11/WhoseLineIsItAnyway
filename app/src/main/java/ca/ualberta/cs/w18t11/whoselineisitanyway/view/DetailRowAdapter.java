@@ -10,12 +10,16 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.Detail;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 
+/**
+ * Custom ArrayAdapter for Bid objects
+ */
 public class DetailRowAdapter extends ArrayAdapter<Detail>
 {
 
     private final Context context;
+
     private final ArrayList<Detail> details;
 
     /**
@@ -54,7 +58,13 @@ public class DetailRowAdapter extends ArrayAdapter<Detail>
 
         // Set the values of the TextViews
         rowTitle.setText(details.get(position).getTitle());
-        rowInfo.setText(details.get(position).getInfo());
+        rowInfo.setText(details.get(position).getInformation());
+
+        // Render clickable links
+        if (details.get(position).isLinked())
+        {
+            rowInfo.setTextColor(parent.getResources().getColor(R.color.link));
+        }
 
         return detailRow;
     }

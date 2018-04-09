@@ -2,17 +2,27 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.model.user;
 
 import android.support.annotation.NonNull;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
 import java.io.Serializable;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Represents an email address.
  *
  * @author Samuel Dolha
- * @version 2.0
+ * @version 3.0
  */
 public final class EmailAddress implements Serializable
 {
+    /**
+     * A string representation of the expected format of an email address.
+     */
+    public static final String FORMAT = "user@domain";
+
     /**
      * Auto-generated, unique ID to support class versioning for Serializable.
      *
@@ -51,6 +61,25 @@ public final class EmailAddress implements Serializable
 
         this.localPart = localPart;
         this.domain = domain;
+    }
+
+    /**
+     * @param emailAddress The string representation.
+     * @return An email address corresponding to the string representation.
+     * @throws IllegalArgumentException For a malformed string representation.
+     */
+    public static EmailAddress fromString(@NonNull final String emailAddress)
+    {
+        final Matcher matcher = Pattern.compile("^([^@]+)@([^@]+)$").matcher(emailAddress);
+
+        if (!matcher.matches())
+        {
+            throw new IllegalArgumentException(
+                    String.format(Locale.getDefault(), "emailAddress must have the form %s",
+                            EmailAddress.FORMAT));
+        }
+
+        return new EmailAddress(matcher.group(1), matcher.group(2));
     }
 
     /**
@@ -105,9 +134,14 @@ public final class EmailAddress implements Serializable
             return false;
         }
 
+        if (object == this)
+        {
+            return true;
+        }
+
         final EmailAddress emailAddress = (EmailAddress) object;
 
-        return this.localPart.equals(emailAddress.getLocalPart())
-                && this.domain.equals(emailAddress.getDomain());
+        return new EqualsBuilder().append(this.localPart, emailAddress.getLocalPart())
+                .append(this.domain, emailAddress.getDomain()).isEquals();
     }
 }

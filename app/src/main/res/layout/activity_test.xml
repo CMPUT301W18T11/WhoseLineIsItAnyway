@@ -1,17 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="ca.ualberta.cs.w18t11.whoselineisitanyway.view.testActivity">
 
     <Button
         android:id="@+id/btnTest"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="CLICK TO TEST SOMETHING"
+        android:text="User Register Dialog"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         tools:layout_editor_absoluteY="128dp" />
-</android.support.constraint.ConstraintLayout>
+
+    <Button
+        android:id="@+id/btn_mapdiag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Map Dialog" />
+
+    <Button
+        android:id="@+id/debug_Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button" />
+
+    <TextView
+        android:id="@+id/debug_textview"
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:fontFamily="monospace"
+        android:text="TextView" />
+
+    <ImageView
+        android:id="@+id/debug_imgview"
+        android:layout_width="match_parent"
+        android:layout_height="461dp"
+        app:srcCompat="@android:drawable/btn_star" />
+</LinearLayout>

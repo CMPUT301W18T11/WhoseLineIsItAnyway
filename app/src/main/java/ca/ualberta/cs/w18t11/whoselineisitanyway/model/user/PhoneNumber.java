@@ -1,16 +1,28 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.model.user;
 
+import android.support.annotation.NonNull;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
 import java.io.Serializable;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Represents a phone number.
  *
  * @author Samuel Dolha
- * @version 2.0
+ * @version 3.0
  */
 public final class PhoneNumber implements Serializable
 {
+    /**
+     * A string representation of the expected format of a phone number.
+     */
+    public static final String FORMAT = "+### (###) ###-####";
+
     /**
      * An auto-generated, unique ID to support class versioning for Serializable.
      *
@@ -53,6 +65,28 @@ public final class PhoneNumber implements Serializable
         this.areaCode = areaCode;
         this.exchangeCode = exchangeCode;
         this.lineNumber = lineNumber;
+    }
+
+    /**
+     * @param phoneNumber The string representation.
+     * @return A phone number corresponding to the string representation.
+     * @throws IllegalArgumentException For a malformed string representation.
+     */
+    public static PhoneNumber fromString(@NonNull final String phoneNumber)
+    {
+        final Matcher matcher = Pattern.compile("^\\+(\\d{1,3}) \\((\\d{3})\\) (\\d{3})-(\\d{4})$")
+                .matcher(phoneNumber);
+
+        if (!matcher.matches())
+        {
+            throw new IllegalArgumentException(
+                    String.format(Locale.getDefault(), "phoneNumber must have the form %s",
+                            PhoneNumber.FORMAT));
+        }
+
+        return new PhoneNumber(Integer.parseInt(matcher.group(1)),
+                Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3)),
+                Integer.parseInt(matcher.group(4)));
     }
 
     /**
@@ -121,11 +155,16 @@ public final class PhoneNumber implements Serializable
             return false;
         }
 
+        if (object == this)
+        {
+            return true;
+        }
+
         PhoneNumber phoneNumber = (PhoneNumber) object;
 
-        return this.countryCode == phoneNumber.getCountryCode()
-                && this.areaCode == phoneNumber.getAreaCode()
-                && this.exchangeCode == phoneNumber.getExchangeCode()
-                && this.lineNumber == phoneNumber.getLineNumber();
+        return new EqualsBuilder().append(this.countryCode, phoneNumber.getCountryCode())
+                .append(this.areaCode, phoneNumber.getAreaCode())
+                .append(this.exchangeCode, phoneNumber.getExchangeCode())
+                .append(this.lineNumber, phoneNumber.getLineNumber()).isEquals();
     }
 }

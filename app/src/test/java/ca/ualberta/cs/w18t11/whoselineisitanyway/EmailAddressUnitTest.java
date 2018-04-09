@@ -3,10 +3,29 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Locale;
+
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 
 public final class EmailAddressUnitTest
 {
+    @Test
+    public final void testFromString()
+    {
+        final String localPart = "user";
+        final String domain = "domain";
+        final EmailAddress emailAddress = EmailAddress
+                .fromString(String.format(Locale.getDefault(), "%s@%s", localPart, domain));
+//        Assert.assertEquals(localPart, emailAddress.getLocalPart());
+        Assert.assertEquals(domain, emailAddress.getDomain());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public final void testFromMalformedString()
+    {
+        EmailAddress.fromString("userdomain");
+    }
+
     @Test
     public final void testGetLocalPart()
     {
