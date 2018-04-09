@@ -2,6 +2,7 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.NavigationViewActions;
 import android.support.test.espresso.intent.Intents;
@@ -95,14 +96,14 @@ public class CreateModifyTaskActivityTest
     @Test
     public void testCreateTaskBasic()
     {
-        if (DSM.getCurrentUser() == null)
+        try
         {
-            // Login and navigate to 'my tasks'
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(testUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
                     .perform(click());
         }
+        catch (NoMatchingViewException e) {}
 
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
@@ -130,14 +131,14 @@ public class CreateModifyTaskActivityTest
     @Test
     public void testCancelTaskCreation()
     {
-        if (DSM.getCurrentUser() == null)
+        try
         {
-            // Login and navigate to 'my tasks'
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(testUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
                     .perform(click());
         }
+        catch (NoMatchingViewException e) {}
 
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
@@ -165,14 +166,14 @@ public class CreateModifyTaskActivityTest
     @Test
     public void testClickSelectPhotosButton()
     {
-        if (DSM.getCurrentUser() == null)
+        try
         {
-            // Login and navigate to 'my tasks'
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(testUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
                     .perform(click());
         }
+        catch (NoMatchingViewException e) {}
 
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
@@ -211,14 +212,14 @@ public class CreateModifyTaskActivityTest
     @Test
     public void testCreateTaskWithLocation()
     {
-        if (DSM.getCurrentUser() == null)
+        try
         {
-            // Login and navigate to 'my tasks'
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(testUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
                     .perform(click());
         }
+        catch (NoMatchingViewException e) {}
 
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
@@ -256,14 +257,14 @@ public class CreateModifyTaskActivityTest
     @Test
     public void testClearPhotoAndLocation()
     {
-        if (DSM.getCurrentUser() == null)
+        try
         {
-            // Login and navigate to 'my tasks'
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(testUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
                     .perform(click());
         }
+        catch (NoMatchingViewException e) {}
 
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
