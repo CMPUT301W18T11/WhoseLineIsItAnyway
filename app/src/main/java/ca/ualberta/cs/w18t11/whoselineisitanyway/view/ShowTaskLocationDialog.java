@@ -40,8 +40,12 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 
 /**
  * <h1>SetMapLocationDialog</h1>
+ * Type: Dialog
  * This class is designed to create a dialog with a map (and potentially address location entry) for
  * a user to select a location to mark a task with.
+ * In: None
+ * Out: None
+ * @author Lucas Thalen
  */
 /*
  * Very important: IMPLEMENT THE CALLBACK METHODS IN THE CALLING CLASS
