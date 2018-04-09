@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -68,6 +70,11 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
         else
         {
             renderOtherTask(task, viewGroup);
+        }
+        // Show location button whenever the task has a location
+        if(task.getLocation() != null)
+        {
+            addLocationButton(task, viewGroup);
         }
     }
 
@@ -421,7 +428,7 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
                 dataSourceManager.addTask(completedTask);
                 finish();
                 completedTask.showDetails(TaskDetailActivity.class, view.getContext());
-                new DIALOG_WriteReview(TaskDetailActivity.this, dataSourceManager.getUser(task.getProviderUsername()));
+                new DIALOG_WriteReview(TaskDetailActivity.this, dataSourceManager.getUser(task.getProviderUsername())).showDialog();
             }
         });
 
@@ -444,6 +451,25 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
                 dataSourceManager.addTask(unassignedTask);
                 finish();
                 unassignedTask.showDetails(TaskDetailActivity.class, view.getContext());
+            }
+        });
+
+        ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
+        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    private void addLocationButton(final Task task, ViewGroup viewGroup)
+    {
+        // Make a view for the button
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.activity_detail_button, viewGroup);
+        Button bidButton = (Button) view.findViewById(R.id.detail_button);
+        bidButton.setText(R.string.button_task_location);
+        bidButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LatLng point = new LatLng(task.getLocation().getLatitude(), task.getLocation().getLongitude());
+                new ShowTaskLocationDialog(TaskDetailActivity.this).showDialog(point);
             }
         });
 
