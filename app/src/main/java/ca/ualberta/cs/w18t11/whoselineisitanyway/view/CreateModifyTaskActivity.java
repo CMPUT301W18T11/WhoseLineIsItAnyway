@@ -113,9 +113,15 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         TextView locField = findViewById(R.id.txt_location_set);
         titleField.setText(existingTask.getTitle());
         descrField.setText(existingTask.getDescription());
-        String locString = "Location Set\n(" + String.valueOf(existingTask.getLocation().getLatitude()) + ", " +
-                String.valueOf(existingTask.getLocation().getLongitude()) + ")";
-        locField.setText(locString);
+        if (existingTask.getLocation() != null) {
+            String locString = "Location Set\n(" + String.valueOf(existingTask.getLocation().getLatitude()) + ", " +
+                    String.valueOf(existingTask.getLocation().getLongitude()) + ")";
+            locField.setText(locString);
+        } else {
+            String locString = "(Location not Set)";
+            locField.setText(locString);
+        }
+
 
         // Check to ensure that images are in the task, if not don't bother changing anything
         if (existingTask.getImages().length > 0) {
