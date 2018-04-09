@@ -464,7 +464,7 @@ public final class Task implements Detailed, Elastic, Serializable
 
                 bids.remove(bid);
 
-                if(bids.size() > 0)
+                if (bids.size() > 0)
                 {
                     return new Task(this.getElasticId(), this.getRequesterUsername(), null,
                             bids.toArray(new Bid[0]), this.getTitle(), this.getDescription(),
@@ -678,16 +678,14 @@ public final class Task implements Detailed, Elastic, Serializable
                         this.getStatus().toString(), null),
                 new Detail(context.getString(R.string.detail_label_requester),
                         this.getRequesterUsername(),
-                        buildUserLinkIntent(context, this.getRequesterUsername())),
-                new Detail(context.getString(R.string.detail_label_empty), "Bids",
-                        this.buildBidsListLinkIntent(context))));
+                        buildUserLinkIntent(context, this.getRequesterUsername()))));
         if (this.getProviderUsername() != null)
         {
             details.add(new Detail(context.getString(R.string.detail_label_provider),
                     this.getProviderUsername(),
                     buildUserLinkIntent(context, this.getProviderUsername())));
         }
-        if (this.getStatus().equals(TaskStatus.BIDDED))
+        if (!this.getStatus().equals(TaskStatus.REQUESTED))
         {
             Bid lowestBid = this.getLowestBid();
             details.add(new Detail(context.getString(R.string.detail_label_lowest_bid),
@@ -767,7 +765,8 @@ public final class Task implements Detailed, Elastic, Serializable
 //        }
         outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
 //        outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, bidsArrayList);
-        outgoingIntent.putExtra(DetailedListActivity.DATA_LIST_BUILDER, new TaskBidsListBuilder(this));
+        outgoingIntent
+                .putExtra(DetailedListActivity.DATA_LIST_BUILDER, new TaskBidsListBuilder(this));
         outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE, AdapterType.BID);
         return outgoingIntent;
     }
