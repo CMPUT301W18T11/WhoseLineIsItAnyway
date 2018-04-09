@@ -13,6 +13,7 @@ import java.util.Objects;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.rating.Rating;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.rating.RatingCollector;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
@@ -184,6 +185,9 @@ public final class User implements Detailed, Elastic, Serializable
         this.elasticId = id;
     }
 
+    public final void addUserReview(@NonNull Rating rev) {
+        ratingCollector.addRating(rev);
+    }
     /**
      * Shows the user's details.
      *

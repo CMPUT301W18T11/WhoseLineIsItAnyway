@@ -122,5 +122,6 @@
     <string name="label_requester">Requested by</string>
     <string name="label_myBid">My bid:</string>
     <string name="label_acceptedBid">Accepted Bid:</string>
+    <string name="writereview_header">How did your provider do?</string>
 
 </resources>
