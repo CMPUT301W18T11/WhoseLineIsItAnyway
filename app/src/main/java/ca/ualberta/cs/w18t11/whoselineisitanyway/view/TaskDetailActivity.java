@@ -214,6 +214,8 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
         LinearLayout linearLayout = new LinearLayout(this);
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(this);
         LinearLayout filmStrip = new LinearLayout(this);
+
+        linearLayout.setMinimumHeight(dpToPixels(113)); // adjust this to try and find a good height for the linear layout
         filmStrip.setId(R.id.filmstrip_panel);
 
         horizontalScrollView.addView(filmStrip);
