@@ -20,7 +20,7 @@
             android:id="@+id/my_bids"
             android:title="My bids" />
         <item
-            android:id="@+id/my_bids_tasks"
+            android:id="@+id/tasks_bidded"
             android:title="Tasks I've Bidded On" />
         <item
             android:id="@+id/create_task"

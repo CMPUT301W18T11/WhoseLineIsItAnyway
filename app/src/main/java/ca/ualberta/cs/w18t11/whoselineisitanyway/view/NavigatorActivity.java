@@ -2,28 +2,29 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Locale;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.TaskStatus;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 /**
@@ -33,361 +34,302 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 public class NavigatorActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
 {
-    private DrawerLayout drawerLayout;
+    @NonNull
+    private final DataSourceManager dataSourceManager = new DataSourceManager(this);
+
+    @Nullable
     private ActionBarDrawerToggle toggle;
-    /*Taken From: https://gist.github.com/anandbose/7d6efb35c900eaba3b26*/
-    private FrameLayout viewStub; //This is the framelayout to keep your content view
-    private DataSourceManager DSM = new DataSourceManager(this);
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    protected void onCreate(@Nullable final Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_list);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        toggle = new ActionBarDrawerToggle(this, drawerLayout,
+        final DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        this.toggle = new ActionBarDrawerToggle(this, drawerLayout,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        this.toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        ((NavigationView) findViewById(R.id.nav_view)).setNavigationItemSelectedListener(this);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        final ActionBar actionBar = this.getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
-    public void onBackPressed()
+    public final void onBackPressed()
     {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
         if (drawer.isDrawerOpen(GravityCompat.START))
         {
             drawer.closeDrawer(GravityCompat.START);
         }
-        else
-        {
-            super.onBackPressed();
-        }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
+    public final boolean onCreateOptionsMenu(@NonNull final Menu menu)
     {
-        if (DSM.getCurrentUser() != null)
-        {
-            // Set the user field text in the navbar
-            ((TextView) findViewById(R.id.drawer_username))
-                    .setText(DSM.getCurrentUser().getUsername());
-            ((TextView) findViewById(R.id.drawer_email))
-                    .setText(DSM.getCurrentUser().getEmailAddress().toString());
-        }
-        else
-        {
-            ((TextView) findViewById(R.id.drawer_username))
-                    .setText("");
-            ((TextView) findViewById(R.id.drawer_email))
-                    .setText("");
-        }
+        final User currentUser = this.dataSourceManager.getCurrentUser();
+        assert currentUser != null;
+        ((TextView) findViewById(R.id.drawer_title)).setText(
+                String.format(Locale.getDefault(), "Welcome, %s!", currentUser.getUsername()));
+        this.getMenuInflater().inflate(R.menu.list, menu);
 
-        // Adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.list, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
+    public final boolean onOptionsItemSelected(@NonNull final MenuItem item)
     {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        assert this.toggle != null;
+
         if (toggle.onOptionsItemSelected(item))
         {
             Log.i("OPTIONS: ", "Nav Bar Option Selected");
+
             return true;
         }
 
-        int id = item.getItemId();
-        if (id == R.id.profile)
+        switch (item.getItemId())
         {
-            Log.i("OPTIONS: ", "Profile Option Selected");
-            Bundle bundle = new Bundle();
-            Intent outgoingIntent = new Intent(this, UserProfileActivity.class);
-            bundle.putString(UserProfileActivity.DATA_EXISTING_USERNAME, DSM.getCurrentUser().getUsername());
-            outgoingIntent.putExtras(bundle);
-            startActivity(outgoingIntent);
-            return true;
-        }
-        if (id == R.id.search)
-        {
-            Log.i("OPTIONS: ", "Search Option Selected");
-            // TODO Handle
-            return true;
-        }
-        if (id == R.id.signOut)
-        {
-            Log.i("OPTIONS: ", "Logout Option Selected. Attempting to logout...");
-            DSM.unsetCurrentUser();
-            Intent outgoingIntent = new Intent(this, UserLoginActivity.class);
-            startActivity(outgoingIntent);
-            finish();
-            return true;
-        }
+            case R.id.profile:
+                Log.i("OPTIONS: ", "Profile Option Selected");
+                final User currentUser = this.dataSourceManager.getCurrentUser();
+                assert currentUser != null;
+                final Intent intent = new Intent(this, UserProfileActivity.class);
+                final Bundle bundle = new Bundle();
+                bundle.putString(UserProfileActivity.DATA_EXISTING_USERNAME,
+                        currentUser.getUsername());
+                intent.putExtras(bundle);
+                this.startActivity(intent);
 
-        return super.onOptionsItemSelected(item);
+                return true;
+            case R.id.search:
+                Log.i("OPTIONS: ", "Search Option Selected");
+                // TODO
+                return true;
+            case R.id.signOut:
+                Log.i("OPTIONS: ", "Logout Option Selected. Attempting to logout...");
+                this.dataSourceManager.unsetCurrentUser();
+                this.startActivity(new Intent(this, UserLoginActivity.class));
+                this.finish();
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item)
+    public final boolean onNavigationItemSelected(@NonNull final MenuItem item)
     {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        String outgoingTitle = "List";
-        Intent outgoingIntent = new Intent(this, DetailedListActivity.class);
-        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
-        User currentUser = DSM.getCurrentUser();
+        Intent intent;
 
-        Task[] allTasks = DSM.getTasks();
-        Bid[] allBids = DSM.getBids();
-
-
-        if (id == R.id.all_tasks)
+        if (item.getItemId() != R.id.create_task)
         {
-            Log.i("NAVBAR: ", "All Tasks Selected");
-            outgoingTitle = "All Tasks";
-            detailedArrayList = buildAllTasksList();
+            Task[] tasks = null;
+            Bid[] bids = null;
+            String title = null;
+
+            switch (item.getItemId())
+            {
+                case R.id.all_tasks:
+                    tasks = this.getAllTasks();
+                    title = "All Tasks";
+
+                    break;
+
+                case R.id.my_tasks:
+                    tasks = this.getMyTasks();
+                    title = "My Tasks";
+
+                    break;
+
+                case R.id.assigned_tasks:
+                    tasks = this.getAssignedTasks();
+                    title = "Assigned Tasks";
+
+                    break;
+
+                case R.id.nearby_tasks:
+                    tasks = this.getNearbyTasks();
+                    title = "Nearby Tasks";
+
+                    break;
+
+                case R.id.tasks_bidded:
+                    tasks = this.getTasksBidded();
+                    title = "Tasks I've Bidded On";
+
+                    break;
+
+                case R.id.my_bids:
+                    bids = this.getMyBids();
+                    title = "My Bids";
+
+                    break;
+
+                default:
+                    break;
+            }
+
+            assert title != null;
+            intent = new Intent(this, DetailedListActivity.class);
+            intent.putExtra(DetailedListActivity.DATA_TITLE, title);
+
+            if (tasks != null)
+            {
+                intent.putExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE, AdapterType.TASK);
+                intent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, tasks);
+            }
+            else
+            {
+                intent.putExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE, AdapterType.BID);
+                intent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, bids);
+            }
         }
-        else if (id == R.id.my_tasks)
+        else
         {
-            Log.i("NAVBAR: ", "My Tasks Selected");
-            outgoingTitle = "My Tasks";
-            detailedArrayList = buildMyTasksList();
-        }
-        else if (id == R.id.assigned_tasks)
-        {
-            Log.i("NAVBAR: ", "Assigned Tasks Selected");
-            outgoingTitle = "Assigned Tasks";
-            detailedArrayList = buildAssignedTasksList();
-        }
-        else if (id == R.id.nearby_tasks)
-        {
-            Log.i("NAVBAR: ", "Nearby Tasks Selected");
-            outgoingTitle = "Nearby Tasks";
-            detailedArrayList = buildNearbyTasksList();
-        }
-        else if (id == R.id.my_bids_tasks)
-        {
-            Log.i("NAVBAR: ", "Tasks I've Bidded on Selected");
-            outgoingTitle = "Tasks I've Bidded on";
-            detailedArrayList = buildMyBidTaskList();
-        }
-        else if (id == R.id.my_bids)
-        {
-            Log.i("NAVBAR: ", "My Bids Selected");
-            outgoingTitle = "My Bids";
-            detailedArrayList = buildMyBidsList();
-        }
-        else if (id == R.id.create_task)
-        {
-
-            DrawerLayout drawer = findViewById(R.id.drawer_layout);
-            drawer.closeDrawer(GravityCompat.START);
-
-            Log.i("NAVBAR: ", "Create Task Selected");
-
-            // TODO fix return-to-login screen error
-            // TODO make inheritance compatible?
-
-            outgoingTitle= "Create Task";
-            outgoingIntent = new Intent(this, CreateModifyTaskActivity.class);
-            startActivity(outgoingIntent);
-            return true;
+            intent = new Intent(this, CreateModifyTaskActivity.class);
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawer(GravityCompat.START);
+        this.startActivity(intent);
 
-        outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
-        outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, detailedArrayList);
-
-        startActivity(outgoingIntent);
         return true;
     }
 
-    /* Override all setContentView methods to put the content view to the FrameLayout view_stub
-     * so that, we can make other activity implementations looks like normal activity subclasses.
-     * Taken From: https://gist.github.com/anandbose/7d6efb35c900eaba3b26
-     */
+    // Override all setContentView methods to put the content view to the FrameLayout view_stub
+    // so that, we can make other activity implementations looks like normal activity subclasses.
+    // Taken From: https://gist.github.com/anandbose/7d6efb35c900eaba3b26
     @Override
-    public void setContentView(int layoutResID)
+    public final void setContentView(final int layoutResID)
     {
-        if (viewStub != null)
-        {
-            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
-            View stubView = inflater.inflate(layoutResID, viewStub, false);
-            viewStub.addView(stubView, lp);
-        }
+        // Do nothing here.
     }
 
     @Override
-    public void setContentView(View view)
+    public final void setContentView(@NonNull final View view)
     {
-        if (viewStub != null)
-        {
-            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
-            viewStub.addView(view, lp);
-        }
+        // Do nothing here.
     }
 
     @Override
-    public void setContentView(View view, ViewGroup.LayoutParams params)
+    public final void setContentView(@NonNull final View view,
+                                     @NonNull final ViewGroup.LayoutParams params)
     {
-        if (viewStub != null)
-        {
-            viewStub.addView(view, params);
-        }
+        // Do nothing here.
     }
 
-    /**
-     * Build a list containing all tasks.
-     * @return ArrayList of the details representing those tasks.
-     */
-    private ArrayList<Detailed> buildAllTasksList()
+    @NonNull
+    private Task[] getAllTasks()
     {
-        // TODO: Extract filtering to the DataSourceManager
-        Task[] allTasks = new DataSourceManager(this).getTasks();
+        final Task[] tasks = this.dataSourceManager.getTasks();
 
-        if (allTasks == null)
+        if (tasks == null)
         {
-            return new ArrayList<>();
+            return new Task[0];
         }
 
-        return new ArrayList<Detailed>(Arrays.asList(allTasks));
+        return tasks;
     }
 
-    /**
-     * Build a list of all tasks requested by the current user.
-     * @return ArrayList of the details representing those tasks.
-     */
-    private ArrayList<Detailed> buildMyTasksList()
+    @NonNull
+    private Task[] getMyTasks()
     {
-        // TODO: Extract filtering to the DataSourceManager
-        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
-        Task[] allTasks = new DataSourceManager(this).getTasks();
-        User currentUser = new DataSourceManager(this).getCurrentUser();
+        final Task[] tasks = this.dataSourceManager.getTasks();
+        final User currentUser = new DataSourceManager(this).getCurrentUser();
+        assert tasks != null && currentUser != null;
+        final ArrayList<Task> myTasks = new ArrayList<>(tasks.length);
 
-        if (allTasks != null)
+        for (Task task : tasks)
         {
-            for (Task task : allTasks)
+            if (task.getRequesterUsername().equals(currentUser.getUsername()))
             {
-                if (task.getRequesterUsername().equals(currentUser.getUsername()))
+                myTasks.add(task);
+            }
+        }
+
+        return myTasks.toArray(new Task[myTasks.size()]);
+    }
+
+    @NonNull
+    private Task[] getAssignedTasks()
+    {
+        final Task[] tasks = this.dataSourceManager.getTasks();
+        final User currentUser = new DataSourceManager(this).getCurrentUser();
+        assert tasks != null && currentUser != null;
+        final ArrayList<Task> assignedTasks = new ArrayList<>(tasks.length);
+
+        for (Task task : tasks)
+        {
+            if (task.getStatus() == TaskStatus.ASSIGNED || task.getStatus() == TaskStatus.DONE)
+            {
+                final String provider = task.getProviderUsername();
+                assert provider != null;
+
+                if (provider.equals(task.getProviderUsername()))
                 {
-                    detailedArrayList.add(task);
+                    assignedTasks.add(task);
                 }
             }
         }
 
-        return detailedArrayList;
+        return assignedTasks.toArray(new Task[assignedTasks.size()]);
     }
 
-    /**
-     * Build a list of all tasks assigned to the current user.
-     * @return ArrayList of the details representing those tasks.
-     */
-    private ArrayList<Detailed> buildAssignedTasksList()
+    @NonNull
+    private Task[] getNearbyTasks()
     {
-        // TODO: Extract filtering to the DataSourceManager
-        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
-        Task[] allTasks = new DataSourceManager(this).getTasks();
-        User currentUser = new DataSourceManager(this).getCurrentUser();
-
-        if (allTasks != null)
-        {
-            for (Task task : allTasks)
-            {
-                if (task.getProviderUsername() != null && task.getProviderUsername()
-                        .equals(currentUser.getUsername()))
-                {
-                    detailedArrayList.add(task);
-                }
-            }
-        }
-
-        return detailedArrayList;
+        // TODO
+        return new Task[0];
     }
 
-    /**
-     * Build a list of all tasks nearby the current user.
-     * @return ArrayList of the details representing those tasks.
-     */
-    private ArrayList<Detailed> buildNearbyTasksList()
+    @NonNull
+    private Task[] getTasksBidded()
     {
-        // TODO: Extract filtering to the DataSourceManager
-        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
-        Detailed[] allTasks = new DataSourceManager(this).getTasks();
-
-        // TODO: Add tasks based on distance (and status?)
-
-        return detailedArrayList;
-    }
-
-    /**
-     * Build a list of all bids posted by the current user.
-     * @return ArrayList of the details representing those tasks.
-     */
-    private ArrayList<Detailed> buildMyBidTaskList()
-    {
-        // TODO: Extract filtering to the DataSourceManager
         // TODO: Check if we should only display bids on tasks that are currently unassigned?
-        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
-        DataSourceManager dataSourceManager = new DataSourceManager(this);
-        Bid[] allBids = dataSourceManager.getBids();
-        User currentUser = new DataSourceManager(this).getCurrentUser();
+        final Bid[] bids = this.dataSourceManager.getBids();
+        final User currentUser = new DataSourceManager(this).getCurrentUser();
+        assert bids != null && currentUser != null;
+        final ArrayList<Task> tasksBidded = new ArrayList<>(bids.length);
 
-        if (allBids != null)
+        for (Bid bid : bids)
         {
-            for (Bid bid : allBids)
+            if (bid.getProviderUsername().equals(currentUser.getUsername()))
             {
-                if (bid.getProviderUsername().equals(currentUser.getUsername()))
-                {
-                    detailedArrayList.add(dataSourceManager.getTask(bid.getTaskId()));
-                }
+                tasksBidded.add(this.dataSourceManager.getTask(bid.getTaskId()));
             }
         }
 
-        return detailedArrayList;
+        return tasksBidded.toArray(new Task[tasksBidded.size()]);
     }
 
-    /**
-     * Build a list of all bids posted by the current user.
-     * @return ArrayList of the details representing those tasks.
-     */
-    private ArrayList<Detailed> buildMyBidsList()
+    @NonNull
+    private Bid[] getMyBids()
     {
-        // TODO: Extract filtering to the DataSourceManager
         // TODO: Check if we should only display bids on tasks that are currently unassigned?
-        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
-        Bid[] allBids = new DataSourceManager(this).getBids();
-        User currentUser = new DataSourceManager(this).getCurrentUser();
+        final Bid[] bids = this.dataSourceManager.getBids();
+        final User currentUser = new DataSourceManager(this).getCurrentUser();
+        assert bids != null && currentUser != null;
+        final ArrayList<Bid> myBids = new ArrayList<>(bids.length);
 
-        if (allBids != null)
+        for (Bid bid : bids)
         {
-            for (Bid bid : allBids)
+            if (bid.getProviderUsername().equals(currentUser.getUsername()))
             {
-                if (bid.getProviderUsername().equals(currentUser.getUsername()))
-                {
-                    detailedArrayList.add(bid);
-                }
+                myBids.add(bid);
             }
         }
 
-        return detailedArrayList;
+        return myBids.toArray(new Bid[myBids.size()]);
     }
 }

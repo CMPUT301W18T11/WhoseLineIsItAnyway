@@ -115,5 +115,12 @@
     <string name="sign_out">Sign out</string>
     <string name="profile">Profile</string>
     <string name="search">Search</string>
+    <string name="label_lowestBid">Lowest bid:</string>
+    <string name="value_currentUser">me</string>
+    <string name="label_doneProvider">Completed by</string>
+    <string name="label_assignedProvider">Assigned to</string>
+    <string name="label_requester">Requested by</string>
+    <string name="label_myBid">My bid:</string>
+    <string name="label_acceptedBid">Accepted Bid:</string>
 
 </resources>

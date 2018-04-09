@@ -110,20 +110,11 @@ public final class UserLoginActivity extends AppCompatActivity
 
         String outgoingTitle = "All Tasks";
         Intent outgoingIntent = new Intent(this, DetailedListActivity.class);
-        Task[] allTasks = dataSourceManager.getTasks();
-        ArrayList<Detailed> tasks;
-        if(allTasks != null)
-        {
-            tasks = new ArrayList<Detailed>(Arrays.asList(allTasks));
-        }
-        else
-        {
-            tasks = new ArrayList<>();
-        }
-
-        dataSourceManager.setCurrentUser(user);
+        Task[] tasks = this.dataSourceManager.getTasks();
+        this.dataSourceManager.setCurrentUser(user);
 
         outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
+        outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE, AdapterType.TASK);
         outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, tasks);
         startActivity(outgoingIntent);
         finish();
