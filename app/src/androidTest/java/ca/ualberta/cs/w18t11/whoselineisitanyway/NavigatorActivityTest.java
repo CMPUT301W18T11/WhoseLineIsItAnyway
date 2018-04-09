@@ -1,6 +1,7 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.NavigationViewActions;
 import android.support.test.espresso.intent.Intents;
@@ -15,15 +16,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.view.NavigatorActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserLoginActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserProfileActivity;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerMatchers.isClosed;
 import static android.support.test.espresso.intent.Intents.intended;
@@ -38,24 +37,52 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 @RunWith(AndroidJUnit4.class)
 public class NavigatorActivityTest
 {
+    String myUsername = "test";
     @Rule
-    public ActivityTestRule<NavigatorActivity> activityRule = new ActivityTestRule<>(
-            NavigatorActivity.class);
-    private NavigatorActivity navActivity;
+    public ActivityTestRule<UserLoginActivity> activityRule = new ActivityTestRule<>(
+            UserLoginActivity.class);
+    private UserLoginActivity loginActivity;
     private DataSourceManager DSM;
-    private User testUser;
 
     @Before
     public void init()
     {
-        navActivity = activityRule.getActivity();
+        loginActivity = activityRule.getActivity();
 
-        DSM = new DataSourceManager(navActivity);
-        testUser = new User("bob", new EmailAddress("bob", "gmail.com"),
-                new PhoneNumber(0, 123, 456, 7890));
-        DSM.removeUser(testUser);
-        DSM.addUser(testUser);
-        DSM.setCurrentUser(testUser);
+        DSM = new DataSourceManager(loginActivity);
+
+        try
+        {
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(myUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+
+            onView(withId(R.id.etxtPhoneNum))
+                    .perform(typeText("+1 (111) 111-1111"));
+            try
+            {
+                Thread.sleep(700);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+            onView(withId(R.id.etxtEmail))
+                    .perform(typeText("intent@test.com"));
+            try
+            {
+                Thread.sleep(700);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+
+            onView(withId(R.id.btn_OK))
+                    .perform(click());
+        }
+        catch (NoMatchingViewException e) {}
     }
 
     /**

@@ -1,6 +1,5 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
-import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.contrib.DrawerActions;
@@ -10,6 +9,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
+import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 import android.view.Gravity;
 
@@ -38,11 +38,11 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerMatchers.isClosed;
 import static android.support.test.espresso.intent.Intents.intended;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static junit.framework.Assert.fail;
 
 /**
  * Intent tests for the CreateModifyTaskActivity
@@ -52,11 +52,11 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 @RunWith(AndroidJUnit4.class)
 public class CreateModifyTaskActivityTest
 {
-    String testUsername = "test";
-    String taskTitle = "My Intent Task";
-    String taskDescription = "This task is for intent testing";
+    String myUsername = "test";
+    String myTitle = "My Intent Task";
+    String myDescription = "This task is for intent testing";
     LatLng taskLocation = new LatLng(53.5232, 113.5263);
-    Task testTask;
+    Task myTask;
     User user;
     DataSourceManager DSM;
     @Rule
@@ -70,24 +70,74 @@ public class CreateModifyTaskActivityTest
         Intents.init();
         loginActivity = activityRule.getActivity();
 
-        testTask = new Task(testUsername, taskTitle, taskDescription);
+        myTask = new Task(myUsername, myTitle, myDescription);
 
         DSM = new DataSourceManager(loginActivity);
-        user = DSM.getUser(testUsername);
+
+        user = DSM.getUser(myUsername);
         if (user == null)
         {
-            user = new User(testUsername, new EmailAddress("test", "intent.com"),
+            user = new User(myUsername, new EmailAddress("test", "intent.com"),
                     new PhoneNumber(0, 123, 456, 7890));
             DSM.addUser(user);
         }
-        if (DSM.getTask(testUsername, taskTitle) != null) { DSM.removeTask(testTask); }
+
+        Task[] tasks = DSM.getTasks();
+        if (tasks != null)
+        {
+            for (Task task : tasks)
+            {
+                if (task.getRequesterUsername().equals(myUsername))
+                    DSM.removeTask(task);
+            }
+        }
+
+        try
+        {
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(myUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+
+            onView(withId(R.id.etxtPhoneNum))
+                    .perform(typeText("+1 (111) 111-1111"));
+            try
+            {
+                Thread.sleep(700);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+            onView(withId(R.id.etxtEmail))
+                    .perform(typeText("intent@test.com"));
+            try
+            {
+                Thread.sleep(700);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+
+            onView(withId(R.id.btn_OK))
+                    .perform(click());
+        }
+        catch (NoMatchingViewException e) {}
     }
 
     @After
     public void release()
     {
-        if (DSM.getTask(testUsername, taskTitle) != null) { DSM.removeTask(testTask); }
-        Intents.release();
+        Task[] tasks = DSM.getTasks();
+        if (tasks != null)
+        {
+            for (Task task : tasks)
+            {
+                if (task.getRequesterUsername().equals(myUsername))
+                    DSM.removeTask(task);
+            }
+        }        Intents.release();
     }
 
     /**
@@ -96,15 +146,6 @@ public class CreateModifyTaskActivityTest
     @Test
     public void testCreateTaskBasic()
     {
-        try
-        {
-            onView(withId(R.id.etxt_Username))
-                    .perform(typeText(testUsername), closeSoftKeyboard());
-            onView(withId(R.id.btn_Login))
-                    .perform(click());
-        }
-        catch (NoMatchingViewException e) {}
-
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
@@ -112,14 +153,14 @@ public class CreateModifyTaskActivityTest
                 .perform(NavigationViewActions.navigateTo(R.id.create_task));
 
         onView(withId(R.id.etxt_Title))
-                .perform(replaceText(taskTitle), closeSoftKeyboard());
+                .perform(replaceText(myTitle), closeSoftKeyboard());
         intended(hasComponent(CreateModifyTaskActivity.class.getName()));
-        onView(withId(R.id.etxt_Title)).check(matches(withText(taskTitle)));
+        onView(withId(R.id.etxt_Title)).check(matches(withText(myTitle)));
 
         onView(withId(R.id.etxt_Description))
-                .perform(replaceText(taskDescription), closeSoftKeyboard());
+                .perform(replaceText(myDescription), closeSoftKeyboard());
         intended(hasComponent(CreateModifyTaskActivity.class.getName()));
-        onView(withId(R.id.etxt_Description)).check(matches(withText(taskDescription)));
+        onView(withId(R.id.etxt_Description)).check(matches(withText(myDescription)));
 
         onView(withId(R.id.btn_Submit))
                 .perform(click());
@@ -131,15 +172,6 @@ public class CreateModifyTaskActivityTest
     @Test
     public void testCancelTaskCreation()
     {
-        try
-        {
-            onView(withId(R.id.etxt_Username))
-                    .perform(typeText(testUsername), closeSoftKeyboard());
-            onView(withId(R.id.btn_Login))
-                    .perform(click());
-        }
-        catch (NoMatchingViewException e) {}
-
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
@@ -147,14 +179,14 @@ public class CreateModifyTaskActivityTest
                 .perform(NavigationViewActions.navigateTo(R.id.create_task));
 
         onView(withId(R.id.etxt_Title))
-                .perform(replaceText(taskTitle), closeSoftKeyboard());
+                .perform(replaceText(myTitle), closeSoftKeyboard());
         intended(hasComponent(CreateModifyTaskActivity.class.getName()));
-        onView(withId(R.id.etxt_Title)).check(matches(withText(taskTitle)));
+        onView(withId(R.id.etxt_Title)).check(matches(withText(myTitle)));
 
         onView(withId(R.id.etxt_Description))
-                .perform(replaceText(taskDescription), closeSoftKeyboard());
+                .perform(replaceText(myDescription), closeSoftKeyboard());
         intended(hasComponent(CreateModifyTaskActivity.class.getName()));
-        onView(withId(R.id.etxt_Description)).check(matches(withText(taskDescription)));
+        onView(withId(R.id.etxt_Description)).check(matches(withText(myDescription)));
 
         onView(withId(R.id.btn_Cancel))
                 .perform(click());
@@ -166,15 +198,6 @@ public class CreateModifyTaskActivityTest
     @Test
     public void testClickSelectPhotosButton()
     {
-        try
-        {
-            onView(withId(R.id.etxt_Username))
-                    .perform(typeText(testUsername), closeSoftKeyboard());
-            onView(withId(R.id.btn_Login))
-                    .perform(click());
-        }
-        catch (NoMatchingViewException e) {}
-
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
@@ -182,19 +205,40 @@ public class CreateModifyTaskActivityTest
                 .perform(NavigationViewActions.navigateTo(R.id.create_task));
 
         onView(withId(R.id.etxt_Title))
-                .perform(replaceText(taskTitle), closeSoftKeyboard());
+                .perform(replaceText(myTitle), closeSoftKeyboard());
         intended(hasComponent(CreateModifyTaskActivity.class.getName()));
-        onView(withId(R.id.etxt_Title)).check(matches(withText(taskTitle)));
+        onView(withId(R.id.etxt_Title)).check(matches(withText(myTitle)));
 
         onView(withId(R.id.etxt_Description))
-                .perform(replaceText(taskDescription), closeSoftKeyboard());
+                .perform(replaceText(myDescription), closeSoftKeyboard());
         intended(hasComponent(CreateModifyTaskActivity.class.getName()));
-        onView(withId(R.id.etxt_Description)).check(matches(withText(taskDescription)));
+        onView(withId(R.id.etxt_Description)).check(matches(withText(myDescription)));
 
         UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         onView(withId(R.id.btn_UploadImage))
                 .perform(click());
-        intended(hasAction(Intent.ACTION_GET_CONTENT));
+        try
+        {
+            Thread.sleep(700);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        try
+        {
+            UiDevice device = UiDevice.getInstance(getInstrumentation());
+            UiObject allowPermissions = device.findObject(new UiSelector()
+                    .clickable(true)
+                    .checkable(false)
+                    .index(1));
+            if (allowPermissions.exists())
+            {
+                allowPermissions.click();
+            }
+        }
+        catch (UiObjectNotFoundException ex) { fail("Failed to create UiObject"); }
+
         try
         {
             Thread.sleep(700);
@@ -212,15 +256,6 @@ public class CreateModifyTaskActivityTest
     @Test
     public void testCreateTaskWithLocation()
     {
-        try
-        {
-            onView(withId(R.id.etxt_Username))
-                    .perform(typeText(testUsername), closeSoftKeyboard());
-            onView(withId(R.id.btn_Login))
-                    .perform(click());
-        }
-        catch (NoMatchingViewException e) {}
-
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
@@ -228,18 +263,32 @@ public class CreateModifyTaskActivityTest
                 .perform(NavigationViewActions.navigateTo(R.id.create_task));
 
         onView(withId(R.id.etxt_Title))
-                .perform(replaceText(taskTitle), closeSoftKeyboard());
+                .perform(replaceText(myTitle), closeSoftKeyboard());
         intended(hasComponent(CreateModifyTaskActivity.class.getName()));
-        onView(withId(R.id.etxt_Title)).check(matches(withText(taskTitle)));
+        onView(withId(R.id.etxt_Title)).check(matches(withText(myTitle)));
 
         onView(withId(R.id.etxt_Description))
-                .perform(replaceText(taskDescription), closeSoftKeyboard());
+                .perform(replaceText(myDescription), closeSoftKeyboard());
         intended(hasComponent(CreateModifyTaskActivity.class.getName()));
-        onView(withId(R.id.etxt_Description)).check(matches(withText(taskDescription)));
+        onView(withId(R.id.etxt_Description)).check(matches(withText(myDescription)));
 
         // Select a location
         onView(withId(R.id.btn_callLocationDiag))
                 .perform(click());
+        try
+        {
+            UiDevice device = UiDevice.getInstance(getInstrumentation());
+            UiObject allowPermissions = device.findObject(new UiSelector()
+                    .clickable(true)
+                    .checkable(false)
+                    .index(1));
+            if (allowPermissions.exists())
+            {
+                allowPermissions.click();
+            }
+        }
+        catch (UiObjectNotFoundException ex) { fail("Failed to create UiObject"); }
+
         UiDevice device = UiDevice.getInstance(getInstrumentation());
         UiObject marker = device.findObject(new UiSelector().descriptionContains("Google Maps"));
         onView(withContentDescription("Google Map")).perform(click());
@@ -257,15 +306,6 @@ public class CreateModifyTaskActivityTest
     @Test
     public void testClearPhotoAndLocation()
     {
-        try
-        {
-            onView(withId(R.id.etxt_Username))
-                    .perform(typeText(testUsername), closeSoftKeyboard());
-            onView(withId(R.id.btn_Login))
-                    .perform(click());
-        }
-        catch (NoMatchingViewException e) {}
-
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
@@ -280,6 +320,20 @@ public class CreateModifyTaskActivityTest
 
         onView(withId(R.id.btn_callLocationDiag))
                 .perform(click());
+        try
+        {
+            UiDevice device = UiDevice.getInstance(getInstrumentation());
+            UiObject allowPermissions = device.findObject(new UiSelector()
+                    .clickable(true)
+                    .checkable(false)
+                    .index(1));
+            if (allowPermissions.exists())
+            {
+                allowPermissions.click();
+            }
+        }
+        catch (UiObjectNotFoundException ex) { fail("Failed to create UiObject"); }
+
         UiDevice device = UiDevice.getInstance(getInstrumentation());
         UiObject marker = device.findObject(new UiSelector().descriptionContains("Google Maps"));
         onView(withContentDescription("Google Map")).perform(click());

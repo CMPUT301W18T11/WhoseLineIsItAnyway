@@ -128,7 +128,38 @@ public class BidDetailActivityTest
             DSM.addUser(otherUser);
         }
 
-        DSM.unsetCurrentUser();
+        try
+        {
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(myUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+
+            onView(withId(R.id.etxtPhoneNum))
+                    .perform(typeText("+1 (111) 111-1111"));
+            try
+            {
+                Thread.sleep(700);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+            onView(withId(R.id.etxtEmail))
+                    .perform(typeText("intent@test.com"));
+            try
+            {
+                Thread.sleep(700);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+
+            onView(withId(R.id.btn_OK))
+                    .perform(click());
+        }
+        catch (NoMatchingViewException e) {}
     }
 
     @After
@@ -182,15 +213,6 @@ public class BidDetailActivityTest
         );
         DSM.addTask(otherTask);
 
-        try
-        {
-            onView(withId(R.id.etxt_Username))
-                    .perform(typeText(myUsername), closeSoftKeyboard());
-            onView(withId(R.id.btn_Login))
-                    .perform(click());
-        }
-        catch (NoMatchingViewException e) {}
-
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
@@ -233,15 +255,6 @@ public class BidDetailActivityTest
                 DSM
         );
         DSM.addTask(otherTask);
-
-        try
-        {
-            onView(withId(R.id.etxt_Username))
-                    .perform(typeText(myUsername), closeSoftKeyboard());
-            onView(withId(R.id.btn_Login))
-                    .perform(click());
-        }
-        catch (NoMatchingViewException e) {}
 
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
@@ -296,15 +309,6 @@ public class BidDetailActivityTest
                 DSM
         );
         DSM.addTask(myTask);
-
-        try
-        {
-            onView(withId(R.id.etxt_Username))
-                    .perform(typeText(myUsername), closeSoftKeyboard());
-            onView(withId(R.id.btn_Login))
-                    .perform(click());
-        }
-        catch (NoMatchingViewException e) {}
 
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
