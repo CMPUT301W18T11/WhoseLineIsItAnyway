@@ -34,15 +34,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 
-
-// TODO Remove toasts used in debugging
-// TODO Write Javadoc UML
-// TODO Allow finding loc by an address? See: GeoLoc
-
 /**
  * <h1>SetMapLocationDialog</h1>
+ * Type: Dialog
  * This class is designed to create a dialog with a map (and potentially address location entry) for
  * a user to select a location to mark a task with.
+ * In: None
+ * Out: Location (Via callback)
+ * @Author Lucas Thalen
  */
 /*
  * Very important: IMPLEMENT THE CALLBACK METHODS IN THE CALLING CLASS

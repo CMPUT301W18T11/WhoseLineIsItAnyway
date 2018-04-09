@@ -23,9 +23,11 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidatorRe
 
 /**
  * <h1>UserRegisterDialog</h1>
+ * Type: Dialog
  * This class is designed to create a dialog supporting the fields for a user registration for a new
  * user of the application. It will validate them and most importantly enforces thread-safe methods
  * to prevent a race condition while awaiting the result.
+ * @author Lucas Thalen
  */
 /*
  * Very important: IMPLEMENT THE CALLBACK METHODS IN THE CALLING CLASS
