@@ -29,19 +29,13 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidatorRe
  * Collects a review on task marked completed and updates the provider user profile
  * @author Lucas Thalen
  * IN: Provider user object
- * OUT: Rating via Interface Callback
+ * OUT: None (DSM is used to update the provider USer)
  */
 public class DIALOG_WriteReview {
-    public interface WriteReviewReturnListener {
-        void WriteReviewDialog_PosResult(Rating result);
-    }
-
     // General Context and Interface
     private DataSourceManager DSM;
     private Activity caller;
     private Context context;
-    private WriteReviewReturnListener returnListener;
-   // private WriteReviewReturnListener returnListener;
 
     // Dialog components and creation
     private AlertDialog diag;
@@ -58,9 +52,6 @@ public class DIALOG_WriteReview {
         this.caller = caller;
         context = (Context) caller;
         DSM = new DataSourceManager(context);
-        if (context instanceof WriteReviewReturnListener) {
-            returnListener = (WriteReviewReturnListener) context;
-        } else { throw new RuntimeException("Calling class must contain interface methods!"); }
 
         log("Assign a provider user for the Review Dialog");
         provider = providerUSerObject;
@@ -118,7 +109,6 @@ public class DIALOG_WriteReview {
                 log("Saving REVIEW to PROVIDER:\n    " + "Status: " + String.valueOf(addUserRes) +
                         "\n    Provider: " + provider.getUsername() +
                         "\n    ESID:" + provider.getElasticId());
-                returnListener.WriteReviewDialog_PosResult(result);
 
             }
         });
