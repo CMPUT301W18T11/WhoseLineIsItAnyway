@@ -23,8 +23,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bitmap.BitmapManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.DetailedListBuilder;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.TaskBidsList;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.TaskBidsListBuilder;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
@@ -358,7 +357,7 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
                         bidsArrayList.add(bid);
                     }
                 }
-                outgoingIntent.putExtra(DetailedListActivity.DATA_LIST_BUILDER, new TaskBidsList(task));
+                outgoingIntent.putExtra(DetailedListActivity.DATA_LIST_BUILDER, new TaskBidsListBuilder(task));
                 outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
                 outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, bidsArrayList);
                 outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE, AdapterType.BID);

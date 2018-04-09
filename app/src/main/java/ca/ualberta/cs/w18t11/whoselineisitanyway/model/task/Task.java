@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,6 +20,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSource;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.TaskBidsListBuilder;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.location.Location;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.AdapterType;
@@ -757,16 +757,17 @@ public final class Task implements Detailed, Elastic, Serializable
     {
         Intent outgoingIntent = new Intent(context, DetailedListActivity.class);
         String outgoingTitle = "Bids";
-        ArrayList<Detailed> bidsArrayList = new ArrayList<>();
-        if (this.getBids() != null)
-        {
-            for (Bid bid : this.getBids())
-            {
-                bidsArrayList.add(bid);
-            }
-        }
+//        ArrayList<Detailed> bidsArrayList = new ArrayList<>();
+//        if (this.getBids() != null)
+//        {
+//            for (Bid bid : this.getBids())
+//            {
+//                bidsArrayList.add(bid);
+//            }
+//        }
         outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
-        outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, bidsArrayList);
+//        outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, bidsArrayList);
+        outgoingIntent.putExtra(DetailedListActivity.DATA_LIST_BUILDER, new TaskBidsListBuilder(this));
         outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE, AdapterType.BID);
         return outgoingIntent;
     }

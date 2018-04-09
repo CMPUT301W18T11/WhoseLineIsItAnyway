@@ -16,10 +16,10 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
  * @see Detailed
  */
 
-public class TaskBidsList extends DetailedListBuilder {
+public class TaskBidsListBuilder extends DetailedListBuilder {
 
     Task taskToBuildFor = null;
-    public TaskBidsList(@NonNull final Task task)
+    public TaskBidsListBuilder(@NonNull final Task task)
     {
         taskToBuildFor = task;
     }
