@@ -79,7 +79,8 @@ public class ElasticsearchBidController
                             e.toString());
                     return Boolean.FALSE;
                 }
-            } else
+            }
+            else
             {
                 Index idx = new Index.Builder(bid)
                         .index(Constants.ELASTICSEARCH_INDEX)
@@ -95,8 +96,36 @@ public class ElasticsearchBidController
                                 + bid.getValue());
 
                         bid.setElasticId(result.getId());
-                        return Boolean.TRUE;
-                    } else
+
+                        Index newIndex = new Index.Builder(bid)
+                                .index(Constants.ELASTICSEARCH_INDEX)
+                                .type(typeStr)
+                                .id(bid.getElasticId())
+                                .build();
+
+                        try
+                        {
+                            result = client.execute(newIndex);
+                            if(result.isSucceeded())
+                            {
+                                return Boolean.TRUE;
+                            }
+                            else
+                            {
+                                Log.i("Elasticsearch Error",
+                                        "index missing or could not connect:" +
+                                                Integer.toString(result.getResponseCode()));
+                                return Boolean.FALSE;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            // Probably disconnected
+                            Log.i("Elasticsearch Error", "Unexpected exception: " +
+                                    e.toString());
+                        }
+                    }
+                    else
                     {
                         Log.i("Elasticsearch Error",
                                 "index missing or could not connect:" +

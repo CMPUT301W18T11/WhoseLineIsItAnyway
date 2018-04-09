@@ -103,7 +103,33 @@ public class ElasticsearchUserController
                                 user.getUsername());
 
                         user.setElasticId(result.getId());
-                        return Boolean.TRUE;
+
+                        Index newIndex = new Index.Builder(user)
+                                .index(Constants.ELASTICSEARCH_INDEX)
+                                .type(typeStr)
+                                .id(user.getElasticId())
+                                .build();
+
+                        try
+                        {
+                            result = client.execute(newIndex);
+                            if (result.isSucceeded())
+                            {
+                                return Boolean.TRUE;
+                            } else
+                            {
+                                Log.i("Elasticsearch Error",
+                                        "index missing or could not connect:" +
+                                                Integer.toString(result.getResponseCode()));
+                                return Boolean.FALSE;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            // Probably disconnected
+                            Log.i("Elasticsearch Error", "Unexpected exception: " +
+                                    e.toString());
+                        }
                     }
                     else
                     {
