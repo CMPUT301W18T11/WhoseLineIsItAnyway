@@ -155,7 +155,6 @@ public final class DataSourceManager implements DataSource
         }
 
         this.tasksToRemove.removeAll(committedTasks);
-
         final Task[] remoteTasks = this.remoteDataSource.getTasks();
 
         if (remoteTasks != null)
@@ -444,7 +443,7 @@ public final class DataSourceManager implements DataSource
         this.tasksToAdd.add(task);
         this.synchronizeTasks();
 
-        return this.tasksToAdd.contains(task);
+        return !this.tasksToAdd.contains(task);
     }
 
     /**
@@ -461,7 +460,7 @@ public final class DataSourceManager implements DataSource
         this.tasksToRemove.add(task);
         this.synchronizeTasks();
 
-        return this.tasksToRemove.contains(task);
+        return !this.tasksToRemove.contains(task);
     }
 
     @Override
@@ -525,7 +524,7 @@ public final class DataSourceManager implements DataSource
         this.bidsToAdd.add(bid);
         this.synchronizeBids();
 
-        return this.bidsToAdd.contains(bid);
+        return !this.bidsToAdd.contains(bid);
     }
 
     /**
@@ -542,7 +541,7 @@ public final class DataSourceManager implements DataSource
         this.bidsToRemove.add(bid);
         this.synchronizeBids();
 
-        return this.bidsToRemove.contains(bid);
+        return !this.bidsToRemove.contains(bid);
     }
 
     @Override
