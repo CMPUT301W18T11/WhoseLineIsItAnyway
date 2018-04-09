@@ -249,9 +249,7 @@ public class TaskDetailActivityTest
                 new Bid(otherUsername,
                         myTask.getElasticId(),
                         new BigDecimal(1)
-                ),
-                DSM
-        );
+                ));
         DSM.addTask(myTask);
 
         onView(withId(R.id.drawer_layout))
@@ -286,9 +284,7 @@ public class TaskDetailActivityTest
                 new Bid(otherUsername,
                         myTask.getElasticId(),
                         new BigDecimal(1)
-                ),
-                DSM
-        );
+                ));
         DSM.addTask(myTask);
         myTask = myTask.assignProvider(otherUsername);
         DSM.addTask(myTask);
@@ -325,9 +321,7 @@ public class TaskDetailActivityTest
                 new Bid(otherUsername,
                         myTask.getElasticId(),
                         new BigDecimal(1)
-                ),
-                DSM
-        );
+                ));
         DSM.addTask(myTask);
         myTask = myTask.assignProvider(otherUsername);
         DSM.addTask(myTask);
@@ -366,9 +360,7 @@ public class TaskDetailActivityTest
                 new Bid(myUsername,
                         otherTask.getElasticId(),
                         new BigDecimal(1)
-                ),
-                DSM
-        );
+                ));
         DSM.addTask(otherTask);
         otherTask = otherTask.assignProvider(myUsername);
         DSM.addTask(otherTask);
@@ -417,9 +409,7 @@ public class TaskDetailActivityTest
                 new Bid(myUsername,
                         otherTask.getElasticId(),
                         new BigDecimal(1)
-                ),
-                DSM
-        );
+                ));
         DSM.addTask(otherTask);
         otherTask = otherTask.assignProvider(myUsername);
         DSM.addTask(otherTask);

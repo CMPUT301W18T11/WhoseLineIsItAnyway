@@ -280,9 +280,7 @@ public class PlaceBidTest
                 new Bid(myUsername,
                         otherTask.getElasticId(),
                         new BigDecimal(1)
-                ),
-                DSM
-        );
+                ));
         DSM.addTask(otherTask);
 
         onView(withId(R.id.drawer_layout))

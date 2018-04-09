@@ -241,9 +241,7 @@ public class BidDetailActivityTest
                 new Bid(myUsername,
                         otherTask.getElasticId(),
                         new BigDecimal(1)
-                ),
-                DSM
-        );
+                ));
         DSM.addTask(otherTask);
 
         onView(withId(R.id.drawer_layout))
@@ -284,9 +282,7 @@ public class BidDetailActivityTest
                 new Bid("fish",
                         otherTask.getElasticId(),
                         new BigDecimal(1)
-                ),
-                DSM
-        );
+                ));
         DSM.addTask(otherTask);
 
         onView(withId(R.id.drawer_layout))
@@ -337,9 +333,7 @@ public class BidDetailActivityTest
                 new Bid(otherUsername,
                         myTask.getElasticId(),
                         new BigDecimal(1)
-                ),
-                DSM
-        );
+                ));
         DSM.addTask(myTask);
 
         onView(withId(R.id.drawer_layout))
