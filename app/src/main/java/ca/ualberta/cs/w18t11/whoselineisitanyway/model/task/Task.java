@@ -23,6 +23,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.location.Location;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.AdapterType;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailedListActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.TaskDetailActivity;
@@ -766,6 +767,7 @@ public final class Task implements Detailed, Elastic, Serializable
         }
         outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
         outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, bidsArrayList);
+        outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE, AdapterType.BID);
         return outgoingIntent;
     }
 
