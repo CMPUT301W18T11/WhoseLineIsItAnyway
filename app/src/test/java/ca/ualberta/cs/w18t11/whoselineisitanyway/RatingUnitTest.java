@@ -143,7 +143,6 @@ public final class RatingUnitTest
 
         assertEquals("Short Review LenTest", r.toString().length() <= 54, true);
         assertEquals("Short Review ContentTest", r.toString().contains(notContains), false);
-        System.out.print("\n\nShort Review Contents:\n" + r.toString());
     }
 
     @Test
@@ -154,7 +153,6 @@ public final class RatingUnitTest
         Rating r = new Rating(1, 4, 3);
         r.setReviewMSG(test);
         assertEquals("Long review ContentTest", r.fullReview().contains(test), true);
-        System.out.print("Long Review Contents:\n" + r.fullReview());
 
 
     }

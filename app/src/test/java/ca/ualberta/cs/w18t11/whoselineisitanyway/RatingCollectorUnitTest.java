@@ -35,7 +35,6 @@ public final class RatingCollectorUnitTest
 
         Assert.assertEquals("RatingColl ShortSummary Output Test", rtc.toString().replace("\n","")
                 .replace("\r", ""), expectedRes);
-        System.out.print(rtc.toString());
     }
     @Test
     // Test that the summary is not null output after ratings have been added
