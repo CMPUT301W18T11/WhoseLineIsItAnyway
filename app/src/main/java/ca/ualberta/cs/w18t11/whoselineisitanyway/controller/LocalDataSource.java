@@ -147,6 +147,11 @@ final class LocalDataSource implements DataSource
      */
     private <T> boolean add(@NonNull final FileType fileType, @NonNull final T item)
     {
+        if (item == null)
+        {
+            throw new RuntimeException("BLAH!");
+        }
+
         ArrayList<T> items = this.readFile(fileType);
 
         if (items == null)
@@ -294,6 +299,21 @@ final class LocalDataSource implements DataSource
         return this.remove(FileType.USERS, user);
     }
 
+    @Override
+    public boolean clearUsers()
+    {
+        try
+        {
+            this.writeFile(FileType.USERS, new ArrayList<User>());
+        }
+        catch (IOException exception)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * @return All tasks present in the filesystem, or null if an error occurs.
      * @see DataSource
@@ -409,6 +429,21 @@ final class LocalDataSource implements DataSource
         return this.remove(FileType.TASKS, task);
     }
 
+    @Override
+    public boolean clearTasks()
+    {
+        try
+        {
+            this.writeFile(FileType.TASKS, new ArrayList<Task>());
+        }
+        catch (IOException exception)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * @return All bids present in the filesystem, or null if an error occurs.
      * @see Bid
@@ -487,6 +522,21 @@ final class LocalDataSource implements DataSource
     public final boolean removeBid(@NonNull final Bid bid)
     {
         return this.remove(FileType.BIDS, bid);
+    }
+
+    @Override
+    public boolean clearBids()
+    {
+        try
+        {
+            this.writeFile(FileType.BIDS, new ArrayList<Bid>());
+        }
+        catch (IOException exception)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     /**

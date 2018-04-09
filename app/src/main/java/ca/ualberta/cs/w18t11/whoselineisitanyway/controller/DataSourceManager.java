@@ -5,12 +5,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.common.collect.ImmutableCollection;
-import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
@@ -20,7 +15,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
  * Manages offline and online data synchronization.
  *
  * @author Brad Ofrim, Samuel Dolha, Mark Griffith
- * @version 3.0
+ * @version 3.1
  */
 public final class DataSourceManager implements DataSource
 {
@@ -60,6 +55,18 @@ public final class DataSourceManager implements DataSource
     @NonNull
     private final Context context;
 
+    private final ArrayList<User> usersToAdd;
+
+    private final ArrayList<User> usersToRemove;
+
+    private final ArrayList<Task> tasksToAdd;
+
+    private final ArrayList<Task> tasksToRemove;
+
+    private final ArrayList<Bid> bidsToAdd;
+
+    private final ArrayList<Bid> bidsToRemove;
+
     /**
      * @param context The application environment context.
      * @see Context
@@ -69,62 +76,138 @@ public final class DataSourceManager implements DataSource
         this.remoteDataSource = new RemoteDataSource();
         this.localDataSource = new LocalDataSource(context);
         this.context = context;
+
+        this.usersToAdd = new ArrayList<>();
+        this.usersToRemove = new ArrayList<>();
+        this.tasksToAdd = new ArrayList<>();
+        this.tasksToRemove = new ArrayList<>();
+        this.bidsToAdd = new ArrayList<>();
+        this.bidsToRemove = new ArrayList<>();
     }
 
     /**
-     * Synchronizes the users present in the local and remote data sources.
+     * Attempts to push any pending users to the remote data source and then pull changes from the
+     * remote data source.
      */
     private void synchronizeUsers()
     {
-        final ArrayDiff<User> usersDiff = new ArrayDiff<>(this.localDataSource.getUsers(),
-                this.remoteDataSource.getUsers());
+        final ArrayList<User> committedUsers = new ArrayList<>();
 
-        for (User user : usersDiff.getFirstItems())
+        for (User user : this.usersToAdd)
         {
-            this.remoteDataSource.addUser(user);
+            if (this.remoteDataSource.addUser(user))
+            {
+                committedUsers.add(user);
+            }
         }
 
-        for (User user : usersDiff.getSecondItems())
+        this.usersToAdd.removeAll(committedUsers);
+        committedUsers.clear();
+
+        for (User user : this.usersToRemove)
         {
-            this.localDataSource.addUser(user);
+            if (this.remoteDataSource.removeUser(user))
+            {
+                committedUsers.add(user);
+            }
+        }
+
+        this.usersToRemove.removeAll(committedUsers);
+
+        final User[] remoteUsers = this.remoteDataSource.getUsers();
+
+        if (remoteUsers != null)
+        {
+            this.localDataSource.clearUsers();
+
+            for (User user : remoteUsers)
+            {
+                this.localDataSource.addUser(user);
+            }
         }
     }
 
     /**
-     * Synchronizes the tasks present in the local and remote data sources.
+     * Attempts to push any pending tasks to the remote data source and then pull changes from the
+     * remote data source.
      */
     private void synchronizeTasks()
     {
-        final ArrayDiff<Task> tasksDiff = new ArrayDiff<>(this.localDataSource.getTasks(),
-                this.remoteDataSource.getTasks());
+        final ArrayList<Task> committedTasks = new ArrayList<>();
 
-        for (Task task : tasksDiff.getFirstItems())
+        for (Task task : this.tasksToAdd)
         {
-            this.remoteDataSource.addTask(task);
+            if (this.remoteDataSource.addTask(task))
+            {
+                committedTasks.add(task);
+            }
         }
 
-        for (Task task : tasksDiff.getSecondItems())
+        this.tasksToAdd.removeAll(committedTasks);
+        committedTasks.clear();
+
+        for (Task task : this.tasksToRemove)
         {
-            this.localDataSource.addTask(task);
+            if (this.remoteDataSource.removeTask(task))
+            {
+                committedTasks.add(task);
+            }
+        }
+
+        this.tasksToRemove.removeAll(committedTasks);
+
+        final Task[] remoteTasks = this.remoteDataSource.getTasks();
+
+        if (remoteTasks != null)
+        {
+            this.localDataSource.clearTasks();
+
+            for (Task task : remoteTasks)
+            {
+                this.localDataSource.addTask(task);
+            }
         }
     }
 
     /**
-     * Synchronizes the bids present in the local and remote data sources.
+     * Attempts to push any pending bids to the remote data source and then pull changes from the
+     * remote data source.
      */
     private void synchronizeBids()
     {
-        final ArrayDiff<Bid> bidsDiff = new ArrayDiff<>(this.localDataSource.getBids(),
-                this.remoteDataSource.getBids());
+        final ArrayList<Bid> committedBids = new ArrayList<>();
 
-        for (Bid bid : bidsDiff.getFirstItems())
+        for (Bid bid : this.bidsToAdd)
         {
-            this.remoteDataSource.addBid(bid);
+            if (this.remoteDataSource.addBid(bid))
+            {
+                committedBids.add(bid);
+            }
         }
 
-        for (Bid bid : bidsDiff.getSecondItems())
+        this.bidsToAdd.removeAll(committedBids);
+        committedBids.clear();
+
+        for (Bid bid : this.bidsToRemove)
         {
-            this.localDataSource.addBid(bid);
+            if (this.remoteDataSource.removeBid(bid))
+            {
+                committedBids.add(bid);
+            }
+        }
+
+        this.bidsToRemove.removeAll(committedBids);
+
+        final Bid[] remoteBids = this.remoteDataSource.getBids();
+
+        if (remoteBids != null)
+        {
+            this.localDataSource.clearBids();
+
+            for (Bid bid : remoteBids)
+            {
+                this.localDataSource.addBid(bid);
+            }
         }
     }
 
@@ -255,11 +338,10 @@ public final class DataSourceManager implements DataSource
     @Override
     public final boolean addUser(@NonNull final User user)
     {
-        final boolean remoteResult = this.remoteDataSource.addUser(user);
+        this.usersToAdd.add(user);
         this.synchronizeUsers();
-        final boolean localResult = this.localDataSource.addUser(user);
 
-        return localResult && remoteResult;
+        return this.usersToAdd.contains(user);
     }
 
     /**
@@ -273,11 +355,16 @@ public final class DataSourceManager implements DataSource
     @Override
     public final boolean removeUser(@NonNull final User user)
     {
+        this.usersToRemove.add(user);
         this.synchronizeUsers();
-        final boolean localResult = this.localDataSource.removeUser(user);
-        final boolean remoteResult = this.remoteDataSource.removeUser(user);
 
-        return localResult && remoteResult;
+        return this.usersToRemove.contains(user);
+    }
+
+    @Override
+    public boolean clearUsers()
+    {
+        return false;
     }
 
     /**
@@ -354,11 +441,10 @@ public final class DataSourceManager implements DataSource
     @Override
     public final boolean addTask(@NonNull final Task task)
     {
-        final boolean remoteResult = this.remoteDataSource.addTask(task);
+        this.tasksToAdd.add(task);
         this.synchronizeTasks();
-        final boolean localResult = this.localDataSource.addTask(task);
 
-        return localResult && remoteResult;
+        return this.tasksToAdd.contains(task);
     }
 
     /**
@@ -372,11 +458,16 @@ public final class DataSourceManager implements DataSource
     @Override
     public final boolean removeTask(@NonNull final Task task)
     {
+        this.tasksToRemove.add(task);
         this.synchronizeTasks();
-        final boolean localResult = this.localDataSource.removeTask(task);
-        final boolean remoteResult = this.remoteDataSource.removeTask(task);
 
-        return localResult && remoteResult;
+        return this.tasksToRemove.contains(task);
+    }
+
+    @Override
+    public boolean clearTasks()
+    {
+        return false;
     }
 
     /**
@@ -431,11 +522,10 @@ public final class DataSourceManager implements DataSource
     @Override
     public final boolean addBid(@NonNull final Bid bid)
     {
-        final boolean remoteResult = this.remoteDataSource.addBid(bid);
+        this.bidsToAdd.add(bid);
         this.synchronizeBids();
-        final boolean localResult = this.localDataSource.addBid(bid);
 
-        return localResult && remoteResult;
+        return this.bidsToAdd.contains(bid);
     }
 
     /**
@@ -449,88 +539,15 @@ public final class DataSourceManager implements DataSource
     @Override
     public final boolean removeBid(@NonNull final Bid bid)
     {
+        this.bidsToRemove.add(bid);
         this.synchronizeBids();
-        final boolean localResult = this.localDataSource.removeBid(bid);
-        final boolean remoteResult = this.remoteDataSource.removeBid(bid);
 
-        return localResult && remoteResult;
+        return this.bidsToRemove.contains(bid);
     }
 
-    /**
-     * Represents two lists consisting of items unique to each array, respectively.
-     *
-     * @param <T> The expected type of item
-     */
-    private static final class ArrayDiff<T>
+    @Override
+    public boolean clearBids()
     {
-        /**
-         * The items unique to the first array.
-         *
-         * @see ImmutableCollection
-         * @see T
-         */
-        private final ImmutableCollection<T> firstItems;
-
-        /**
-         * The items unique to the second array.
-         *
-         * @see ImmutableCollection
-         * @see T
-         */
-        private final ImmutableCollection<T> secondItems;
-
-        /**
-         * @param firstArray  The first array.
-         * @param secondArray The second array.
-         * @see T
-         */
-        ArrayDiff(@Nullable final T[] firstArray, @Nullable final T[] secondArray)
-        {
-            final Collection<T> firstCollection = new ArrayList<>();
-            final Collection<T> secondCollection = new ArrayList<>();
-
-            if (secondArray != null)
-            {
-                secondCollection.addAll(Arrays.asList(secondArray));
-            }
-
-            if (firstArray != null)
-            {
-                for (T firstItem : firstArray)
-                {
-                    if (secondCollection.contains(firstItem))
-                    {
-                        secondCollection.remove(firstItem);
-                    }
-                    else
-                    {
-                        firstCollection.add(firstItem);
-                    }
-                }
-            }
-
-            this.firstItems = new ImmutableList.Builder<T>().addAll(firstCollection).build();
-            this.secondItems = new ImmutableList.Builder<T>().addAll(secondCollection).build();
-        }
-
-        /**
-         * @return The items unique to the first array.
-         * @see ImmutableCollection
-         * @see T
-         */
-        ImmutableCollection<T> getFirstItems()
-        {
-            return this.firstItems;
-        }
-
-        /**
-         * @return The items unique to the second array.
-         * @see ImmutableCollection
-         * @see T
-         */
-        ImmutableCollection<T> getSecondItems()
-        {
-            return this.secondItems;
-        }
+        return false;
     }
 }

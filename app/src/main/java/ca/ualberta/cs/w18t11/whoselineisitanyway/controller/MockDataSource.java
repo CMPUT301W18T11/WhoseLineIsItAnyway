@@ -3,8 +3,6 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.controller;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -184,6 +182,14 @@ final class MockDataSource implements DataSource
         return true;
     }
 
+    @Override
+    public boolean clearUsers()
+    {
+        this.users.clear();
+
+        return true;
+    }
+
     /**
      * @return All tasks present in the data source.
      * @see DataSource
@@ -275,6 +281,14 @@ final class MockDataSource implements DataSource
         return true;
     }
 
+    @Override
+    public boolean clearTasks()
+    {
+        this.tasks.clear();
+
+        return true;
+    }
+
     /**
      * @return All bids present in the data source.
      * @see Bid
@@ -339,6 +353,14 @@ final class MockDataSource implements DataSource
     public final boolean removeBid(@NonNull final Bid bid)
     {
         this.bids.remove(bid);
+
+        return true;
+    }
+
+    @Override
+    public boolean clearBids()
+    {
+        this.bids.clear();
 
         return true;
     }
