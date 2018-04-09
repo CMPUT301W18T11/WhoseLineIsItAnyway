@@ -6,6 +6,9 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
 
+/**
+ * Custom implementation of Location to hold a position.
+ */
 public final class Location implements Serializable
 {
     private static final long serialVersionUID = 2838946884503347862L;
