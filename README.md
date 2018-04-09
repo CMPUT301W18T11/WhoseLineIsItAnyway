@@ -1,4 +1,4 @@
-# CMPUT 301 Team Project (Release 2.1)
+# CMPUT 301 Team Project (Release 3.0)
 
 ## Course Information
 **Section**: Winter 2018, Lab H01  
