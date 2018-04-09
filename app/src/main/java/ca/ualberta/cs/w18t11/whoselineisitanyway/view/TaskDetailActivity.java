@@ -488,7 +488,7 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
     public void PlaceBidDialog_PosResult(BigDecimal result) {
         DataSourceManager dataSourceManager = new DataSourceManager(this);
         Bid newBid = new Bid(dataSourceManager.getCurrentUser().getUsername(), globalTask.getElasticId(), result);
-        Task biddedTask = globalTask.submitBid(newBid, dataSourceManager);
+        Task biddedTask = globalTask.submitBid(newBid);
         dataSourceManager.addTask(biddedTask);
         finish();
         biddedTask.showDetails(TaskDetailActivity.class, this);

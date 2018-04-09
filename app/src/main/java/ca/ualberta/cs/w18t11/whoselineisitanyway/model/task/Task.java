@@ -446,16 +446,13 @@ public final class Task implements Detailed, Elastic, Serializable
 
     /**
      * @param bid        The bid to decline.
-     * @param dataSource The data source from which
      * @return A copy of the task without the bid.
      * @see Bid
      * @see DataSource
      */
     @NonNull
-    public final Task declineBid(@NonNull final Bid bid, @NonNull final DataSource dataSource)
+    public final Task declineBid(@NonNull final Bid bid)
     {
-        dataSource.removeBid(bid);
-
         switch (this.getStatus())
         {
             case BIDDED:
@@ -483,7 +480,6 @@ public final class Task implements Detailed, Elastic, Serializable
 
     /**
      * @param bid        The bid to submit.
-     * @param dataSource The data source to which to add the bid.
      * @return A copy of the task with the given bid on it, replacing any bid previously made by the
      * same provider.
      * @throws IllegalArgumentException For a bid with a taskId different from the task's Id.
@@ -491,10 +487,8 @@ public final class Task implements Detailed, Elastic, Serializable
      * @see Bid
      */
     @NonNull
-    public final Task submitBid(@NonNull final Bid bid, @NonNull final DataSource dataSource)
+    public final Task submitBid(@NonNull final Bid bid)
     {
-        dataSource.addBid(bid);
-
         switch (this.getStatus())
         {
             case REQUESTED:

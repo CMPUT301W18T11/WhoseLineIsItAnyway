@@ -97,8 +97,7 @@ public class BidDetailActivity extends DetailActivity {
             bidButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    DataSourceManager dataSourceManager = new DataSourceManager(view.getContext());
-                    Task declinedBidTask = task.declineBid(bid, dataSourceManager);
+                    Task declinedBidTask = task.declineBid(bid);
                     finish();
                     declinedBidTask.showDetails(TaskDetailActivity.class, view.getContext());
                 }
