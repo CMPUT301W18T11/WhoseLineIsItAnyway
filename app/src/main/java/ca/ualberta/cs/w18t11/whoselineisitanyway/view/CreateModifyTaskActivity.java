@@ -69,8 +69,6 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         setTitle(R.string.title_CreateTaskActivity);
         filmstrip = findViewById(R.id.filmstrip_panel);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         // EVENTHANDLERS
         taskLocationField_onEmpty(); // Reset status warning on the field if the text is deleted
         btnAddImg_onClick(); // Handle functions for adding image(s) to the filmstrip/task
