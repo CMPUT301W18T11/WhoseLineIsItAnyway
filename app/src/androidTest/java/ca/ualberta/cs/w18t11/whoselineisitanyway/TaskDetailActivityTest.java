@@ -187,7 +187,7 @@ public class TaskDetailActivityTest
         myTask = myTask.submitBid(
                 new Bid(otherUsername,
                         myTask.getElasticId(),
-                        new BigDecimal(999.99)
+                        new BigDecimal(1)
                 ),
                 DSM
         );
@@ -232,7 +232,7 @@ public class TaskDetailActivityTest
         myTask = myTask.submitBid(
                 new Bid(otherUsername,
                         myTask.getElasticId(),
-                        new BigDecimal(999.99)
+                        new BigDecimal(1)
                 ),
                 DSM
         );
@@ -279,7 +279,7 @@ public class TaskDetailActivityTest
         myTask = myTask.submitBid(
                 new Bid(otherUsername,
                         myTask.getElasticId(),
-                        new BigDecimal(999.99)
+                        new BigDecimal(1)
                 ),
                 DSM
         );
@@ -328,7 +328,7 @@ public class TaskDetailActivityTest
         otherTask = otherTask.submitBid(
                 new Bid(myUsername,
                         otherTask.getElasticId(),
-                        new BigDecimal(999.99)
+                        new BigDecimal(1)
                 ),
                 DSM
         );
@@ -352,6 +352,7 @@ public class TaskDetailActivityTest
 
         onData(hasToString(startsWith("nottest: I")))
                 .inAdapterView(withId(R.id.detail_LV))
+                .atPosition(0)
                 .perform(click());
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
@@ -386,7 +387,7 @@ public class TaskDetailActivityTest
         otherTask = otherTask.submitBid(
                 new Bid(myUsername,
                         otherTask.getElasticId(),
-                        new BigDecimal(999.99)
+                        new BigDecimal(1)
                 ),
                 DSM
         );
@@ -412,6 +413,7 @@ public class TaskDetailActivityTest
 
         onData(hasToString(startsWith("nottest: M")))
                 .inAdapterView(withId(R.id.detail_LV))
+                .atPosition(0)
                 .perform(click());
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
@@ -462,6 +464,7 @@ public class TaskDetailActivityTest
 
         onData(hasToString(startsWith("test: Req")))
                 .inAdapterView(withId(R.id.detail_LV))
+                .atPosition(0)
                 .perform(click());
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
@@ -507,6 +510,7 @@ public class TaskDetailActivityTest
 
         onData(hasToString(startsWith("nottest: B")))
                 .inAdapterView(withId(R.id.detail_LV))
+                .atPosition(0)
                 .perform(click());
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
@@ -532,7 +536,7 @@ public class TaskDetailActivityTest
         otherTask = otherTask.submitBid(
                 new Bid(myUsername,
                         otherTask.getElasticId(),
-                        new BigDecimal(999.99)
+                        new BigDecimal(1)
                 ),
                 DSM
         );
