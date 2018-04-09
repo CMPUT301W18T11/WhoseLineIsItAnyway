@@ -3,12 +3,15 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bitmap.BitmapManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
@@ -218,16 +222,88 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
         ViewGroup insertPoint = findViewById(R.id.activity_detail_group);
         insertPoint.addView(linearLayout, insertPoint.getChildCount());
 
-        insertImagesFromTask(task);
+        insertImagesFromTask(task, filmStrip);
     }
 
     /**
      * Insert images from the task
      * @param task to insert images from
      */
-    private void insertImagesFromTask(Task task)
+    // TODO confirm working image addition
+    private void insertImagesFromTask(Task task, LinearLayout filmstrip)
     {
-        // TODO: Add the images from the task.
+       if (task.getImages() == null) {
+           return;
+       }
+       String[] images = task.getImages();
+
+       for(String img : images) {
+           BitmapManager temp = new BitmapManager(img);
+           add_image(temp, filmstrip);
+       }
+
+    }
+
+
+    private void add_image(BitmapManager img, LinearLayout filmstrip)
+    {
+        boolean isDupe = false;
+        if (!(filmstrip.getChildCount() == 0))
+        {
+            for (int i = 0; i < filmstrip.getChildCount(); i++)
+            {
+                ImageView imviewOther = (ImageView) filmstrip.getChildAt(i);
+                BitmapManager other = (BitmapManager) imviewOther.getTag();
+
+                isDupe = img.getSame(other);
+                if (isDupe)
+                {
+                    Toast.makeText(this, "The image is a duplicate.", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+            }
+        }
+        if (!isDupe)
+        {
+            filmstrip.addView(generateImgView(img));
+        }
+
+    }
+
+    private ImageView generateImgView(final BitmapManager bitmap)
+    {
+
+        final int MARGIN_SIZE = dpToPixels(3);
+        final int WIDTH_DP = 120;
+
+        LinearLayout.LayoutParams layout = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        layout.setMargins(MARGIN_SIZE, 0, MARGIN_SIZE, 0);
+        layout.width = dpToPixels(WIDTH_DP);
+        final ImageView img = new ImageView(this);
+        img.setLayoutParams(layout);
+        img.setPadding(3, 3, 3, 3);
+        img.setScaleType(ImageView.ScaleType.FIT_XY);
+        img.setTag(bitmap);
+
+        img.setImageBitmap(bitmap.getScaledBitmap());
+
+
+        img.setClickable(true);
+        img.setLongClickable(false);
+        img.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                ImageBlowupDialog bigImgView = new ImageBlowupDialog();
+                BitmapManager imData = (BitmapManager) v.getTag();
+                bigImgView.showDialog(TaskDetailActivity.this, imData);
+            }
+        });
+
+
+        return img;
     }
 
     private void addBidButton(final Task task, ViewGroup viewGroup)
@@ -384,5 +460,12 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
         DataSourceManager dataSourceManager = new DataSourceManager(this);
         Bid newBid = new Bid(dataSourceManager.getCurrentUser().getUsername(), globalTask.getElasticId(), result);
         globalTask.submitBid(newBid, dataSourceManager);
+    }
+
+    // Get the dp -> pixel conversion
+    private int dpToPixels(int dp)
+    {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                getResources().getDisplayMetrics());
     }
 }
