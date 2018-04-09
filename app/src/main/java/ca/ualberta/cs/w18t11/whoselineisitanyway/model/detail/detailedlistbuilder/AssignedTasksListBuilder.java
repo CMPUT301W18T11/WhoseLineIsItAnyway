@@ -24,8 +24,8 @@ public class AssignedTasksListBuilder extends DetailedListBuilder {
      */
     @NonNull
     @Override
-    ArrayList<Detailed> buildDetailedList(Context context) {
-        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
+    public Detailed[] buildDetailedList(Context context) {
+        ArrayList<Task> taskArrayList = new ArrayList<>();
         Task[] allTasks = new DataSourceManager(context).getTasks();
         User currentUser = new DataSourceManager(context).getCurrentUser();
 
@@ -36,11 +36,11 @@ public class AssignedTasksListBuilder extends DetailedListBuilder {
                 if (task.getProviderUsername() != null && task.getProviderUsername()
                         .equals(currentUser.getUsername()))
                 {
-                    detailedArrayList.add(task);
+                    taskArrayList.add(task);
                 }
             }
         }
 
-        return detailedArrayList;
+        return taskArrayList.toArray(new Task[0]);
     }
 }

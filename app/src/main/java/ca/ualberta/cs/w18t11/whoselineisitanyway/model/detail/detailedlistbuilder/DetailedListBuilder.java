@@ -3,6 +3,7 @@ package ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuild
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
@@ -13,12 +14,12 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
  * @see Detailed
  */
 
-public abstract class DetailedListBuilder {
+public abstract class DetailedListBuilder implements Serializable {
 
     /**
      * Build a list of 'Detailed' objects
      * @return ArrayList<Detailed> of 'Detailed' objects
      */
     @NonNull
-    abstract ArrayList<Detailed> buildDetailedList(Context context);
+    abstract Detailed[] buildDetailedList(Context context);
 }

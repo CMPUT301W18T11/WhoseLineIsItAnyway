@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 /**
@@ -23,8 +24,8 @@ public class MyBidTasksListBuilder extends DetailedListBuilder {
      */
     @NonNull
     @Override
-    ArrayList<Detailed> buildDetailedList(Context context) {
-        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
+    public Detailed[] buildDetailedList(Context context) {
+        ArrayList<Task> taskArrayList = new ArrayList<>();
         DataSourceManager dataSourceManager = new DataSourceManager(context);
         Bid[] allBids = dataSourceManager.getBids();
         User currentUser = new DataSourceManager(context).getCurrentUser();
@@ -35,11 +36,11 @@ public class MyBidTasksListBuilder extends DetailedListBuilder {
             {
                 if (bid.getProviderUsername().equals(currentUser.getUsername()))
                 {
-                    detailedArrayList.add(dataSourceManager.getTask(bid.getTaskId()));
+                    taskArrayList.add(dataSourceManager.getTask(bid.getTaskId()));
                 }
             }
         }
 
-        return detailedArrayList;
+        return taskArrayList.toArray(new Task[0]);
     }
 }

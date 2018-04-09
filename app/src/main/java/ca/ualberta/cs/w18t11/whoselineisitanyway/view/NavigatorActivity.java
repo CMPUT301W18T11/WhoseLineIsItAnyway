@@ -23,6 +23,13 @@ import java.util.Locale;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.AllTasksListBuilder;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.AssignedTasksListBuilder;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.MyBidTasksListBuilder;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.MyBidsListBuilder;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.MyTasksListBuilder;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.NearbyTasksListBuilder;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.TaskStatus;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
@@ -135,44 +142,45 @@ public class NavigatorActivity extends AppCompatActivity
 
         if (item.getItemId() != R.id.create_task)
         {
-            Task[] tasks = null;
-            Bid[] bids = null;
+            Detailed[] tasks = null;
+            Detailed[] bids = null;
+            Detailed[] list = null;
             String title = null;
 
             switch (item.getItemId())
             {
                 case R.id.all_tasks:
-                    tasks = this.getAllTasks();
+                    tasks = new AllTasksListBuilder().buildDetailedList(this);
                     title = "All Tasks";
 
                     break;
 
                 case R.id.my_tasks:
-                    tasks = this.getMyTasks();
+                    tasks = new MyTasksListBuilder().buildDetailedList(this);
                     title = "My Tasks";
 
                     break;
 
                 case R.id.assigned_tasks:
-                    tasks = this.getAssignedTasks();
+                    tasks = new AssignedTasksListBuilder().buildDetailedList(this);
                     title = "Assigned Tasks";
 
                     break;
 
                 case R.id.nearby_tasks:
-                    tasks = this.getNearbyTasks();
+                    tasks = new NearbyTasksListBuilder().buildDetailedList(this);
                     title = "Nearby Tasks";
 
                     break;
 
                 case R.id.tasks_bidded:
-                    tasks = this.getTasksBidded();
+                    tasks = new MyBidTasksListBuilder().buildDetailedList(this);
                     title = "Tasks I've Bidded On";
 
                     break;
 
                 case R.id.my_bids:
-                    bids = this.getMyBids();
+                    bids = new MyBidsListBuilder().buildDetailedList(this);
                     title = "My Bids";
 
                     break;

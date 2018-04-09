@@ -9,6 +9,7 @@ import android.widget.ListView;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.DetailedListBuilder;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 
 /**
@@ -22,12 +23,16 @@ public final class DetailedListActivity extends NavigatorActivity
 
     public static final String DATA_TITLE = "NavigatorActivity_title";
 
+    public static final String DATA_LIST_BUILDER = "NavigatorActivity_listBuilder";
+
     public static final String DATA_DETAILABLE_ADAPTER_TYPE
             = "NavigatorActivity_adapter";
 
-//    private Detailed[] detaileds;
+    private Detailed[] detaileds;
 
-//    private ArrayAdapter adapter;
+    private ArrayAdapter adapter;
+
+    private DetailedListBuilder detailedListBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -36,7 +41,8 @@ public final class DetailedListActivity extends NavigatorActivity
         this.setContentView(R.layout.activity_list);
 //        this.loadState();
 
-        final Detailed[] detaileds = (Detailed[]) getIntent().getSerializableExtra(DATA_DETAILABLE_LIST);
+        //detailedListBuilder = this.getIntent().getSerializableExtra(DATA_LIST_BUILDER);
+        detaileds = (Detailed[]) getIntent().getSerializableExtra(DATA_DETAILABLE_LIST);
         final ActionBar actionBar = this.getSupportActionBar();
         assert actionBar != null;
         actionBar.setTitle(this.getIntent().getStringExtra(DetailedListActivity.DATA_TITLE));
@@ -47,13 +53,16 @@ public final class DetailedListActivity extends NavigatorActivity
                 .getSerializableExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE))
         {
             case TASK:
-                listView.setAdapter(new TaskAdapter(this, R.layout.row_task, (Task[]) detaileds));
+                adapter = new TaskAdapter(this, R.layout.row_task, (Task[]) detaileds);
                 break;
             case BID:
                 // TODO: Replace with BidAdapter.
-                listView.setAdapter(new ArrayAdapter<>(this, R.layout.list_object, detaileds));
+                adapter = new ArrayAdapter<>(this, R.layout.list_object, detaileds);
                 break;
         }
+
+        listView.setAdapter(adapter);
+
 
 //        adapter.notifyDataSetChanged();
 

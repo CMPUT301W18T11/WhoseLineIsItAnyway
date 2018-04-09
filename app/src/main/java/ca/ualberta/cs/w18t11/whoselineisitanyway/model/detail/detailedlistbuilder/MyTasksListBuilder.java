@@ -24,8 +24,8 @@ public class MyTasksListBuilder extends DetailedListBuilder {
      */
     @NonNull
     @Override
-    ArrayList<Detailed> buildDetailedList(Context context) {
-        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
+    public Detailed[] buildDetailedList(Context context) {
+        ArrayList<Task> detailedArrayList = new ArrayList<>();
         Task[] allTasks = new DataSourceManager(context).getTasks();
         User currentUser = new DataSourceManager(context).getCurrentUser();
 
@@ -40,6 +40,6 @@ public class MyTasksListBuilder extends DetailedListBuilder {
             }
         }
 
-        return detailedArrayList;
+        return detailedArrayList.toArray(new Task[0]);
     }
 }

@@ -24,14 +24,14 @@ public class AllTasksListBuilder extends DetailedListBuilder {
      */
     @NonNull
     @Override
-    public ArrayList<Detailed> buildDetailedList(Context context) {
+    public Detailed[] buildDetailedList(Context context) {
         Task[] allTasks = new DataSourceManager(context).getTasks();
 
         if (allTasks == null)
         {
-            return new ArrayList<>();
+            return new Task[0];
         }
 
-        return new ArrayList<Detailed>(Arrays.asList(allTasks));
+        return allTasks;
     }
 }

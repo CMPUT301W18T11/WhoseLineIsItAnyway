@@ -23,8 +23,8 @@ public class MyBidsListBuilder extends DetailedListBuilder {
      */
     @NonNull
     @Override
-    ArrayList<Detailed> buildDetailedList(Context context) {
-        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
+    public Detailed[] buildDetailedList(Context context) {
+        ArrayList<Bid> bidArrayList = new ArrayList<>();
         Bid[] allBids = new DataSourceManager(context).getBids();
         User currentUser = new DataSourceManager(context).getCurrentUser();
 
@@ -34,11 +34,11 @@ public class MyBidsListBuilder extends DetailedListBuilder {
             {
                 if (bid.getProviderUsername().equals(currentUser.getUsername()))
                 {
-                    detailedArrayList.add(bid);
+                    bidArrayList.add(bid);
                 }
             }
         }
 
-        return detailedArrayList;
+        return bidArrayList.toArray(new Bid[0]);
     }
 }

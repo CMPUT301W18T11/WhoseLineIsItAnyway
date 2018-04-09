@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 
 /**
  * A class to construct a list of nearby tasks.
@@ -22,14 +23,14 @@ public class NearbyTasksListBuilder extends DetailedListBuilder {
      */
     @NonNull
     @Override
-    ArrayList<Detailed> buildDetailedList(Context context) {
+    public Detailed[] buildDetailedList(Context context) {
         // TODO: Extract filtering to the DataSourceManager
-        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
+        ArrayList<Task> detailedArrayList = new ArrayList<>();
         Detailed[] allTasks = new DataSourceManager(context).getTasks();
 
         // TODO: Add tasks based on distance (and status?)
 
-        return detailedArrayList;
+        return detailedArrayList.toArray(new Task[0]);
     }
 }
 
