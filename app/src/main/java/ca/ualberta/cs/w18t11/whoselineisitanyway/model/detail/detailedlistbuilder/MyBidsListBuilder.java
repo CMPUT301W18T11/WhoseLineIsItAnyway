@@ -1,10 +1,14 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 
+import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 /**
  * A class to construct a list of all of the current user's bids.
@@ -19,7 +23,22 @@ public class MyBidsListBuilder extends DetailedListBuilder {
      */
     @NonNull
     @Override
-    ArrayList<Detailed> buildDetailedList() {
-        return null;
+    ArrayList<Detailed> buildDetailedList(Context context) {
+        ArrayList<Detailed> detailedArrayList = new ArrayList<>();
+        Bid[] allBids = new DataSourceManager(context).getBids();
+        User currentUser = new DataSourceManager(context).getCurrentUser();
+
+        if (allBids != null)
+        {
+            for (Bid bid : allBids)
+            {
+                if (bid.getProviderUsername().equals(currentUser.getUsername()))
+                {
+                    detailedArrayList.add(bid);
+                }
+            }
+        }
+
+        return detailedArrayList;
     }
 }

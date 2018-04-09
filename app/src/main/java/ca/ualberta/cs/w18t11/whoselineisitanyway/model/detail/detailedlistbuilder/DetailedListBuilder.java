@@ -1,5 +1,6 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -19,5 +20,5 @@ public abstract class DetailedListBuilder {
      * @return ArrayList<Detailed> of 'Detailed' objects
      */
     @NonNull
-    abstract ArrayList<Detailed> buildDetailedList();
+    abstract ArrayList<Detailed> buildDetailedList(Context context);
 }
