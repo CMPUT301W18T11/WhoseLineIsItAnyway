@@ -259,6 +259,7 @@ public class SetMapLocationDialog implements OnMapReadyCallback, GoogleApiClient
 		save.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if (locResult == null) { return; }
 				mapDiag.dismiss();
 				returnListener.MapSetDialog_PosResult(locResult);
 
