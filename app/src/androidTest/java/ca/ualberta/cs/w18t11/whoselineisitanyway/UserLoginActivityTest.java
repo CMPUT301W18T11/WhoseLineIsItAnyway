@@ -1,5 +1,6 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
+import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -49,6 +50,7 @@ public class UserLoginActivityTest
             DSM.removeUser(user);
             DSM.unsetCurrentUser();
         }
+        DSM.unsetCurrentUser();
     }
 
     @After
@@ -65,10 +67,12 @@ public class UserLoginActivityTest
     @Test
     public void testUsernameInput()
     {
-        if (DSM.getCurrentUser() != null)
+        try
         {
             onView(withId(R.id.signOut)).perform(click());
         }
+        catch (NoMatchingViewException e) {}
+
         // Input text
         onView(withId(R.id.etxt_Username))
                 .perform(typeText(testUsername), closeSoftKeyboard());
@@ -84,10 +88,12 @@ public class UserLoginActivityTest
     @Test
     public void testBlankLogin()
     {
-        if (DSM.getCurrentUser() != null)
+        try
         {
             onView(withId(R.id.signOut)).perform(click());
         }
+        catch (NoMatchingViewException e) {}
+
         // Click the sign in button
         onView(withId(R.id.btn_Login))
                 .perform(click());
@@ -102,10 +108,12 @@ public class UserLoginActivityTest
     @Test
     public void testRegisterUser()
     {
-        if (DSM.getCurrentUser() != null)
+        try
         {
             onView(withId(R.id.signOut)).perform(click());
         }
+        catch (NoMatchingViewException e) {}
+
         // Input text
         onView(withId(R.id.etxt_Username))
                 .perform(typeText(testUsername), closeSoftKeyboard());
@@ -146,10 +154,12 @@ public class UserLoginActivityTest
     @Test
     public void testBlankRegisterUser()
     {
-        if (DSM.getCurrentUser() != null)
+        try
         {
             onView(withId(R.id.signOut)).perform(click());
         }
+        catch (NoMatchingViewException e) {}
+
         // Input text
         onView(withId(R.id.etxt_Username))
                 .perform(typeText(testUsername), closeSoftKeyboard());
@@ -173,10 +183,12 @@ public class UserLoginActivityTest
     @Test
     public void testBlankEmailRegisterUser()
     {
-        if (DSM.getCurrentUser() != null)
+        try
         {
             onView(withId(R.id.signOut)).perform(click());
         }
+        catch (NoMatchingViewException e) {}
+
         // Input text
         onView(withId(R.id.etxt_Username))
                 .perform(typeText(testUsername), closeSoftKeyboard());
@@ -208,10 +220,12 @@ public class UserLoginActivityTest
     @Test
     public void testRegisterUserCancel()
     {
-        if (DSM.getCurrentUser() != null)
+        try
         {
             onView(withId(R.id.signOut)).perform(click());
         }
+        catch (NoMatchingViewException e) {}
+
         // Input text
         onView(withId(R.id.etxt_Username))
                 .perform(typeText(testUsername), closeSoftKeyboard());

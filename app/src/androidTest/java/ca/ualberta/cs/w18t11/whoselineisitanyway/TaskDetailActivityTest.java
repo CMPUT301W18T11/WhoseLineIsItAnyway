@@ -149,13 +149,14 @@ public class TaskDetailActivityTest
             DSM.addTask(myTask);
         }
 
-        if (DSM.getCurrentUser() == null)
+        try
         {
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(myUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
                     .perform(click());
         }
+        catch (NoMatchingViewException e) {}
 
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
@@ -193,13 +194,14 @@ public class TaskDetailActivityTest
         );
         DSM.addTask(myTask);
 
-        if (DSM.getCurrentUser() == null)
+        try
         {
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(myUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
                     .perform(click());
         }
+        catch (NoMatchingViewException e) {}
 
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
@@ -240,13 +242,14 @@ public class TaskDetailActivityTest
         myTask = myTask.assignProvider(otherUsername);
         DSM.addTask(myTask);
 
-        if (DSM.getCurrentUser() == null)
+        try
         {
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(myUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
                     .perform(click());
         }
+        catch (NoMatchingViewException e) {}
 
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
@@ -289,13 +292,14 @@ public class TaskDetailActivityTest
         myTask = myTask.markDone();
         DSM.addTask(myTask);
 
-        if (DSM.getCurrentUser() == null)
+        try
         {
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(myUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
                     .perform(click());
         }
+        catch (NoMatchingViewException e) {}
 
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
@@ -336,13 +340,14 @@ public class TaskDetailActivityTest
         otherTask = otherTask.assignProvider(myUsername);
         DSM.addTask(otherTask);
 
-        if (DSM.getCurrentUser() == null)
+        try
         {
             onView(withId(R.id.etxt_Username))
-                    .perform(typeText(otherUsername), closeSoftKeyboard());
+                    .perform(typeText(myUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
                     .perform(click());
         }
+        catch (NoMatchingViewException e) {}
 
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
@@ -397,13 +402,14 @@ public class TaskDetailActivityTest
         otherTask = otherTask.markDone();
         DSM.addTask(otherTask);
 
-        if (DSM.getCurrentUser() == null)
+        try
         {
             onView(withId(R.id.etxt_Username))
-                    .perform(typeText(otherUsername), closeSoftKeyboard());
+                    .perform(typeText(myUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
                     .perform(click());
         }
+        catch (NoMatchingViewException e) {}
 
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
@@ -448,13 +454,14 @@ public class TaskDetailActivityTest
             DSM.addTask(myTask);
         }
 
-        if (DSM.getCurrentUser() == null)
+        try
         {
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(myUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
                     .perform(click());
         }
+        catch (NoMatchingViewException e) {}
 
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
@@ -481,92 +488,5 @@ public class TaskDetailActivityTest
 
         onView(withId(R.id.detail_LV))
                 .check(matches(not(hasDescendant(withText("test: Req")))));
-    }
-
-    /**
-     * Tests placing a bid on another user's requested task
-     */
-    @Test
-    public void testBidOnRequestedTask()
-    {
-        // Create task to bid on
-        otherTask = new Task(otherUsername, "Bid On Me!", otherDescription);
-        DSM.removeTask(otherTask);
-        DSM.addTask(otherTask);
-
-        if (DSM.getCurrentUser() == null)
-        {
-            onView(withId(R.id.etxt_Username))
-                    .perform(typeText(myUsername), closeSoftKeyboard());
-            onView(withId(R.id.btn_Login))
-                    .perform(click());
-        }
-
-        onView(withId(R.id.drawer_layout))
-                .check(matches(isClosed(Gravity.LEFT)))
-                .perform(DrawerActions.open());
-        onView(withId(R.id.nav_view))
-                .perform(NavigationViewActions.navigateTo(R.id.all_tasks));
-
-        onData(hasToString(startsWith("nottest: B")))
-                .inAdapterView(withId(R.id.detail_LV))
-                .atPosition(0)
-                .perform(click());
-        intended(hasComponent(TaskDetailActivity.class.getName()));
-
-        // Other requested tasks should only have a bid button
-        onView(withText(R.string.button_place_bid)).check(matches(isDisplayed()));
-        onView(withText(R.string.button_place_bid)).perform(click());
-
-        // TODO place bid on task
-
-        DSM.removeTask(otherTask);
-    }
-
-    /**
-     * Tests placing a bid on another user's bidded task
-     */
-    @Test
-    public void testBidOnBiddedTask()
-    {
-        // Create task to bid on
-        otherTask = new Task(otherUsername, "Bid On Me!", otherDescription);
-        DSM.removeTask(otherTask);
-        DSM.addTask(otherTask);
-        otherTask = otherTask.submitBid(
-                new Bid(myUsername,
-                        otherTask.getElasticId(),
-                        new BigDecimal(1)
-                ),
-                DSM
-        );
-        DSM.addTask(otherTask);
-
-        if (DSM.getCurrentUser() == null)
-        {
-            onView(withId(R.id.etxt_Username))
-                    .perform(typeText(myUsername), closeSoftKeyboard());
-            onView(withId(R.id.btn_Login))
-                    .perform(click());
-        }
-
-        onView(withId(R.id.drawer_layout))
-                .check(matches(isClosed(Gravity.LEFT)))
-                .perform(DrawerActions.open());
-        onView(withId(R.id.nav_view))
-                .perform(NavigationViewActions.navigateTo(R.id.all_tasks));
-
-        onData(hasToString(startsWith("nottest: B")))
-                .inAdapterView(withId(R.id.detail_LV))
-                .perform(click());
-        intended(hasComponent(TaskDetailActivity.class.getName()));
-
-        // Other bidded tasks should only have a bid button
-        onView(withText(R.string.button_place_bid)).check(matches(isDisplayed()));
-        onView(withText(R.string.button_place_bid)).perform(click());
-
-        // TODO place bid on task
-
-        DSM.removeTask(otherTask);
     }
 }

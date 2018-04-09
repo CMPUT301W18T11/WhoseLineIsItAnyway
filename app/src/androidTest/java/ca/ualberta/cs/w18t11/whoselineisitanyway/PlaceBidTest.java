@@ -1,6 +1,5 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
-
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.NavigationViewActions;
@@ -24,8 +23,6 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.view.BidDetailActivity;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailedListActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.TaskDetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserLoginActivity;
 
@@ -37,23 +34,20 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerMatchers.isClosed;
 import static android.support.test.espresso.intent.Intents.intended;
-import static android.support.test.espresso.intent.VerificationModes.times;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static junit.framework.Assert.fail;
-import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.hasToString;
 
 /**
- * Intent tests for the TaskDetailActivity
+ * Intent tests for placing bids
  *
  * @author Mark Griffith
  */
 @RunWith(AndroidJUnit4.class)
-public class BidDetailActivityTest
+public class PlaceBidTest
 {
     String myUsername = "test";
     String otherUsername = "nottest";
@@ -127,8 +121,6 @@ public class BidDetailActivityTest
         {
             DSM.addUser(otherUser);
         }
-
-        DSM.unsetCurrentUser();
     }
 
     @After
@@ -164,13 +156,57 @@ public class BidDetailActivityTest
     }
 
     /**
-     * Tests the rendering of a user's bid
+     * Tests placing a bid on another user's requested task
      */
     @Test
-    public void testClickOnMyBid()
+    public void testPlaceBidOnRequested()
     {
-        // Make task to bid on
-        otherTask = new Task(otherUsername, "Bid on Me", otherDescription);
+        // Create task to bid on
+        otherTask = new Task(otherUsername, "Bid On Me!", otherDescription);
+        DSM.removeTask(otherTask);
+        DSM.addTask(otherTask);
+
+        try
+        {
+            onView(withId(R.id.etxt_Username))
+                    .perform(typeText(myUsername), closeSoftKeyboard());
+            onView(withId(R.id.btn_Login))
+                    .perform(click());
+        }
+        catch (NoMatchingViewException e) {}
+
+        onView(withId(R.id.drawer_layout))
+                .check(matches(isClosed(Gravity.LEFT)))
+                .perform(DrawerActions.open());
+        onView(withId(R.id.nav_view))
+                .perform(NavigationViewActions.navigateTo(R.id.all_tasks));
+
+        onData(hasToString(startsWith("nottest: B")))
+                .inAdapterView(withId(R.id.detail_LV))
+                .atPosition(0)
+                .perform(click());
+        intended(hasComponent(TaskDetailActivity.class.getName()));
+
+        // Other requested tasks should only have a bid button
+        onView(withText(R.string.button_place_bid)).check(matches(isDisplayed()));
+        onView(withText(R.string.button_place_bid)).perform(click());
+
+        // Place bid
+        onView(withId(R.id.etxt_BidAmount))
+                .perform(typeText("1.00"), closeSoftKeyboard());
+        onView(withId(R.id.btn_save)).perform(click());
+
+        DSM.removeTask(otherTask);
+    }
+
+    /**
+     * Tests placing a bid on another user's bidded task
+     */
+    @Test
+    public void testBidOnBiddedTask()
+    {
+        // Create task to bid on
+        otherTask = new Task(otherUsername, "Bid On Me!", otherDescription);
         DSM.removeTask(otherTask);
         DSM.addTask(otherTask);
         otherTask = otherTask.submitBid(
@@ -195,43 +231,34 @@ public class BidDetailActivityTest
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
         onView(withId(R.id.nav_view))
-                .perform(NavigationViewActions.navigateTo(R.id.my_bids));
+                .perform(NavigationViewActions.navigateTo(R.id.all_tasks));
 
-        onData(anything())
+        onData(hasToString(startsWith("nottest: B")))
                 .inAdapterView(withId(R.id.detail_LV))
-                .atPosition(0)
                 .perform(click());
-        intended(hasComponent(BidDetailActivity.class.getName()));
+        intended(hasComponent(TaskDetailActivity.class.getName()));
 
-        // My bids should have no buttons
-        try
-        {
-            onView(withText(R.string.button_accept_bid)).check(matches(isDisplayed()));
-            onView(withText(R.string.button_decline_bid)).check(matches(isDisplayed()));
-            fail("No Buttons Should Be Present");
-        }
-        catch (NoMatchingViewException e)
-        {
+        // Other bidded tasks should only have a bid button
+        onView(withText(R.string.button_place_bid)).check(matches(isDisplayed()));
+        onView(withText(R.string.button_place_bid)).perform(click());
 
-        }
+        // Place bid
+        onView(withId(R.id.etxt_BidAmount))
+                .perform(typeText("1.00"), closeSoftKeyboard());
+        onView(withId(R.id.btn_save)).perform(click());
+
+        DSM.removeTask(otherTask);
     }
 
     /**
-     * Tests the rendering of another user's bid on another user's task
+     * Tests clicking the cancel button in the place bid dialog
      */
     @Test
-    public void testClickOnOtherBid()
+    public void testCancelPlaceBid()
     {
-        otherTask = new Task(otherUsername, "U didn't bid on me", otherDescription);
+        // Create task to bid on
+        otherTask = new Task(otherUsername, "Bid On Me!", otherDescription);
         DSM.removeTask(otherTask);
-        DSM.addTask(otherTask);
-        otherTask = otherTask.submitBid(
-                new Bid("fish",
-                        otherTask.getElasticId(),
-                        new BigDecimal(1)
-                ),
-                DSM
-        );
         DSM.addTask(otherTask);
 
         try
@@ -249,86 +276,20 @@ public class BidDetailActivityTest
         onView(withId(R.id.nav_view))
                 .perform(NavigationViewActions.navigateTo(R.id.all_tasks));
 
-        onData(hasToString(startsWith("nottest: U")))
+        onData(hasToString(startsWith("nottest: B")))
                 .inAdapterView(withId(R.id.detail_LV))
                 .atPosition(0)
                 .perform(click());
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
-        onView(withText(R.string.button_all_bids_task)).perform(click());
-        intended(hasComponent(DetailedListActivity.class.getName()), times(2));
+        // Other requested tasks should only have a bid button
+        onView(withText(R.string.button_place_bid)).check(matches(isDisplayed()));
+        onView(withText(R.string.button_place_bid)).perform(click());
 
-        onData(hasToString(startsWith("fish")))
-                .inAdapterView(withId(R.id.detail_LV))
-                .atPosition(0)
-                .perform(click());
-        intended(hasComponent(BidDetailActivity.class.getName()));
-
-        // Other bids should have no buttons
-        try
-        {
-            onView(withText(R.string.button_accept_bid)).check(matches(isDisplayed()));
-            onView(withText(R.string.button_decline_bid)).check(matches(isDisplayed()));
-            fail("No Buttons Should Be Present");
-        }
-        catch (NoMatchingViewException e)
-        {
-
-        }
-
-        DSM.removeTask(otherTask);
-    }
-
-    /**
-     * Tests the rendering of another user's bid on the user's task
-     */
-    @Test
-    public void testClickABidOnMyTask()
-    {
-        myTask = new Task(myUsername, "Your Task", myDescription);
-        DSM.removeTask(myTask);
-        DSM.addTask(myTask);
-        myTask = myTask.submitBid(
-                new Bid(otherUsername,
-                        myTask.getElasticId(),
-                        new BigDecimal(1)
-                ),
-                DSM
-        );
-        DSM.addTask(myTask);
-
-        try
-        {
-            onView(withId(R.id.etxt_Username))
-                    .perform(typeText(myUsername), closeSoftKeyboard());
-            onView(withId(R.id.btn_Login))
-                    .perform(click());
-        }
-        catch (NoMatchingViewException e) {}
-
-        onView(withId(R.id.drawer_layout))
-                .check(matches(isClosed(Gravity.LEFT)))
-                .perform(DrawerActions.open());
-        onView(withId(R.id.nav_view))
-                .perform(NavigationViewActions.navigateTo(R.id.my_tasks));
-
-        onData(hasToString(startsWith("test: Y")))
-                .inAdapterView(withId(R.id.detail_LV))
-                .perform(click());
-        intended(hasComponent(TaskDetailActivity.class.getName()));
-
-        onView(withText(R.string.button_all_bids_task)).perform(click());
-        intended(hasComponent(DetailedListActivity.class.getName()), times(2));
-
-        onData(hasToString(startsWith("nottest")))
-                .inAdapterView(withId(R.id.detail_LV))
-                .atPosition(0)
-                .perform(click());
-//        intended(hasComponent(BidDetailActivity.class.getName()));
-
-        // Bids on my tasks should have an accept and decline button
-        onView(withText(R.string.button_accept_bid)).check(matches(isDisplayed()));
-        onView(withText(R.string.button_decline_bid)).check(matches(isDisplayed()));
+        // Place bid
+        onView(withId(R.id.etxt_BidAmount))
+                .perform(typeText("1.00"), closeSoftKeyboard());
+        onView(withId(R.id.btn_cancel)).perform(click());
 
         DSM.removeTask(otherTask);
     }
