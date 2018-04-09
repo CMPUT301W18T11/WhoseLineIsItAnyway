@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
@@ -76,17 +75,26 @@ public class TaskDetailActivityTest
 
         DSM = new DataSourceManager(loginActivity);
 
-        ArrayList<Task> myTasks;
         Task[] tasks = DSM.getTasks();
-        for (Task task : tasks)
+        if (tasks != null)
         {
-            if (task.getRequesterUsername().equals(myUsername))
+            for (Task task : tasks)
             {
-                DSM.removeTask(task);
+                if (task.getRequesterUsername().equals(myUsername))
+                    DSM.removeTask(task);
+                if (task.getRequesterUsername().equals(otherUsername))
+                    DSM.removeTask(task);
             }
-            if (task.getRequesterUsername().equals(otherUsername))
+        }
+        Bid[] bids = DSM.getBids();
+        if (bids != null)
+        {
+            for (Bid bid : bids)
             {
-                DSM.removeTask(task);
+                if (bid.getProviderUsername().equals(myUsername))
+                    DSM.removeBid(bid);
+                if (bid.getProviderUsername().equals(otherUsername))
+                    DSM.removeBid(bid);
             }
         }
 
@@ -103,17 +111,26 @@ public class TaskDetailActivityTest
     public void release()
     {
         DSM = new DataSourceManager(loginActivity);
-        ArrayList<Task> myTasks;
         Task[] tasks = DSM.getTasks();
-        for (Task task : tasks)
+        if (tasks != null)
         {
-            if (task.getRequesterUsername().equals(myUsername))
+            for (Task task : tasks)
             {
-                DSM.removeTask(task);
+                if (task.getRequesterUsername().equals(myUsername))
+                    DSM.removeTask(task);
+                if (task.getRequesterUsername().equals(otherUsername))
+                    DSM.removeTask(task);
             }
-            if (task.getRequesterUsername().equals(otherUsername))
+        }
+        Bid[] bids = DSM.getBids();
+        if (bids != null)
+        {
+            for (Bid bid : bids)
             {
-                DSM.removeTask(task);
+                if (bid.getProviderUsername().equals(myUsername))
+                    DSM.removeBid(bid);
+                if (bid.getProviderUsername().equals(otherUsername))
+                    DSM.removeBid(bid);
             }
         }
         Intents.release();
@@ -165,16 +182,15 @@ public class TaskDetailActivityTest
     public void testMyBiddedTask()
     {
         myTask = new Task(myUsername, "Bidded", myDescription);
-        // Bid on my task
-        myTask.setElasticId("12345");
+        DSM.removeTask(myTask);
+        DSM.addTask(myTask);
         myTask = myTask.submitBid(
                 new Bid(otherUsername,
                         myTask.getElasticId(),
-                        new BigDecimal(999.99)
+                        new BigDecimal(1)
                 ),
                 DSM
         );
-        DSM.removeTask(myTask);
         DSM.addTask(myTask);
 
         if (DSM.getCurrentUser() == null)
@@ -196,8 +212,9 @@ public class TaskDetailActivityTest
                 .perform(click());
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
-        // My bidded tasks should only have a delete button
+        // My bidded tasks should have a delete and Show Bids button
         onView(withText(R.string.button_delete_task)).check(matches(isDisplayed()));
+        onView(withText(R.string.button_all_bids_task)).check(matches(isDisplayed()));
 
         DSM.removeTask(myTask);
     }
@@ -211,14 +228,15 @@ public class TaskDetailActivityTest
         // Bid on my task
         myTask = new Task(myUsername, "Assigned", myDescription);
         DSM.removeTask(myTask);
-        myTask.setElasticId("12345");
+        DSM.addTask(myTask);
         myTask = myTask.submitBid(
                 new Bid(otherUsername,
                         myTask.getElasticId(),
-                        new BigDecimal(999.99)
+                        new BigDecimal(1)
                 ),
                 DSM
         );
+        DSM.addTask(myTask);
         myTask = myTask.assignProvider(otherUsername);
         DSM.addTask(myTask);
 
@@ -257,16 +275,17 @@ public class TaskDetailActivityTest
     {
         myTask = new Task(myUsername, "Done", myDescription);
         DSM.removeTask(myTask);
-        // Bid on my task
-        myTask.setElasticId("12345");
+        DSM.addTask(myTask);
         myTask = myTask.submitBid(
                 new Bid(otherUsername,
                         myTask.getElasticId(),
-                        new BigDecimal(999.99)
+                        new BigDecimal(1)
                 ),
                 DSM
         );
+        DSM.addTask(myTask);
         myTask = myTask.assignProvider(otherUsername);
+        DSM.addTask(myTask);
         myTask = myTask.markDone();
         DSM.addTask(myTask);
 
@@ -305,14 +324,15 @@ public class TaskDetailActivityTest
         // Create task to bid on
         otherTask = new Task(otherUsername, "I'm Assigned!", otherDescription);
         DSM.removeTask(otherTask);
-        otherTask.setElasticId("6789");
+        DSM.addTask(otherTask);
         otherTask = otherTask.submitBid(
                 new Bid(myUsername,
                         otherTask.getElasticId(),
-                        new BigDecimal(999.99)
+                        new BigDecimal(1)
                 ),
                 DSM
         );
+        DSM.addTask(otherTask);
         otherTask = otherTask.assignProvider(myUsername);
         DSM.addTask(otherTask);
 
@@ -332,6 +352,7 @@ public class TaskDetailActivityTest
 
         onData(hasToString(startsWith("nottest: I")))
                 .inAdapterView(withId(R.id.detail_LV))
+                .atPosition(0)
                 .perform(click());
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
@@ -362,15 +383,17 @@ public class TaskDetailActivityTest
         // Create task to bid on
         otherTask = new Task(otherUsername, "Me Done!", otherDescription);
         DSM.removeTask(otherTask);
-        otherTask.setElasticId("6789");
+        DSM.addTask(otherTask);
         otherTask = otherTask.submitBid(
                 new Bid(myUsername,
                         otherTask.getElasticId(),
-                        new BigDecimal(999.99)
+                        new BigDecimal(1)
                 ),
                 DSM
         );
+        DSM.addTask(otherTask);
         otherTask = otherTask.assignProvider(myUsername);
+        DSM.addTask(otherTask);
         otherTask = otherTask.markDone();
         DSM.addTask(otherTask);
 
@@ -390,6 +413,7 @@ public class TaskDetailActivityTest
 
         onData(hasToString(startsWith("nottest: M")))
                 .inAdapterView(withId(R.id.detail_LV))
+                .atPosition(0)
                 .perform(click());
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
@@ -440,6 +464,7 @@ public class TaskDetailActivityTest
 
         onData(hasToString(startsWith("test: Req")))
                 .inAdapterView(withId(R.id.detail_LV))
+                .atPosition(0)
                 .perform(click());
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
@@ -467,7 +492,6 @@ public class TaskDetailActivityTest
         // Create task to bid on
         otherTask = new Task(otherUsername, "Bid On Me!", otherDescription);
         DSM.removeTask(otherTask);
-        otherTask.setElasticId("6789");
         DSM.addTask(otherTask);
 
         if (DSM.getCurrentUser() == null)
@@ -486,6 +510,7 @@ public class TaskDetailActivityTest
 
         onData(hasToString(startsWith("nottest: B")))
                 .inAdapterView(withId(R.id.detail_LV))
+                .atPosition(0)
                 .perform(click());
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
@@ -507,11 +532,11 @@ public class TaskDetailActivityTest
         // Create task to bid on
         otherTask = new Task(otherUsername, "Bid On Me!", otherDescription);
         DSM.removeTask(otherTask);
-        otherTask.setElasticId("6789");
+        DSM.addTask(otherTask);
         otherTask = otherTask.submitBid(
                 new Bid(myUsername,
                         otherTask.getElasticId(),
-                        new BigDecimal(999.99)
+                        new BigDecimal(1)
                 ),
                 DSM
         );

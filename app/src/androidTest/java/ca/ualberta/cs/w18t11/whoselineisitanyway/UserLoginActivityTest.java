@@ -1,9 +1,7 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway;
 
-import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.test.uiautomator.UiDevice;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,9 +13,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserLoginActivity;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
@@ -40,6 +36,7 @@ public class UserLoginActivityTest
     private UserLoginActivity loginActivity;
     private String testUsername;
     private DataSourceManager DSM;
+    User user;
 
     @Before
     public void init()
@@ -47,7 +44,6 @@ public class UserLoginActivityTest
         testUsername = "test";
         loginActivity = activityRule.getActivity();
         DSM = new DataSourceManager(loginActivity);
-        User user;
         if ((user = DSM.getUser(testUsername)) != null)
         {
             DSM.removeUser(user);
@@ -58,6 +54,8 @@ public class UserLoginActivityTest
     @After
     public void cleanup()
     {
+        if ((user = DSM.getUser(testUsername)) != null)
+            DSM.removeUser(user);
         DSM.unsetCurrentUser();
     }
 
@@ -69,9 +67,7 @@ public class UserLoginActivityTest
     {
         if (DSM.getCurrentUser() != null)
         {
-            UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-            openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-            onView(withText("Logout")).perform(click());
+            onView(withId(R.id.signOut)).perform(click());
         }
         // Input text
         onView(withId(R.id.etxt_Username))
@@ -90,9 +86,7 @@ public class UserLoginActivityTest
     {
         if (DSM.getCurrentUser() != null)
         {
-            UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-            openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-            onView(withText("Logout")).perform(click());
+            onView(withId(R.id.signOut)).perform(click());
         }
         // Click the sign in button
         onView(withId(R.id.btn_Login))
@@ -110,9 +104,7 @@ public class UserLoginActivityTest
     {
         if (DSM.getCurrentUser() != null)
         {
-            UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-            openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-            onView(withText("Logout")).perform(click());
+            onView(withId(R.id.signOut)).perform(click());
         }
         // Input text
         onView(withId(R.id.etxt_Username))
@@ -145,10 +137,7 @@ public class UserLoginActivityTest
         onView(withId(R.id.btn_OK))
                 .perform(click());
 
-
-        UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-        onView(withText("Logout")).perform(click());
+        onView(withId(R.id.signOut)).perform(click());
     }
 
     /**
@@ -159,9 +148,7 @@ public class UserLoginActivityTest
     {
         if (DSM.getCurrentUser() != null)
         {
-            UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-            openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-            onView(withText("Logout")).perform(click());
+            onView(withId(R.id.signOut)).perform(click());
         }
         // Input text
         onView(withId(R.id.etxt_Username))
@@ -188,9 +175,7 @@ public class UserLoginActivityTest
     {
         if (DSM.getCurrentUser() != null)
         {
-            UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-            openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-            onView(withText("Logout")).perform(click());
+            onView(withId(R.id.signOut)).perform(click());
         }
         // Input text
         onView(withId(R.id.etxt_Username))
@@ -225,9 +210,7 @@ public class UserLoginActivityTest
     {
         if (DSM.getCurrentUser() != null)
         {
-            UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-            openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-            onView(withText("Logout")).perform(click());
+            onView(withId(R.id.signOut)).perform(click());
         }
         // Input text
         onView(withId(R.id.etxt_Username))
