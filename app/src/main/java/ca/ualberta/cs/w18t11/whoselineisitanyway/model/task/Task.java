@@ -24,6 +24,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilde
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.elastic.Elastic;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.location.Location;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.AdapterType;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.view.BidDetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailedListActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.TaskDetailActivity;
@@ -690,7 +691,7 @@ public final class Task implements Detailed, Elastic, Serializable
             Bid lowestBid = this.getLowestBid();
             details.add(new Detail(context.getString(R.string.detail_label_lowest_bid),
                     lowestBid.getValue().toString(),
-                    lowestBid.getDetailsIntent(DetailActivity.class, context)));
+                    lowestBid.getDetailsIntent(BidDetailActivity.class, context)));
         }
 
         final Intent intent = new Intent(context, detailActivityClass);
