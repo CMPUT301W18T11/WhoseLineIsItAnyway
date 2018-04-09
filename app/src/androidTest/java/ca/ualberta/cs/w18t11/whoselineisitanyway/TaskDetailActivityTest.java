@@ -22,7 +22,6 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailedListActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.TaskDetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserLoginActivity;
 
@@ -105,6 +104,12 @@ public class TaskDetailActivityTest
                     new PhoneNumber(0, 123, 456, 7890));
             DSM.addUser(user);
         }
+
+        try
+        {
+            onView(withId(R.id.signOut)).perform(click());
+        }
+        catch (NoMatchingViewException e) {}
 
         try
         {
@@ -448,7 +453,6 @@ public class TaskDetailActivityTest
         onView(withText(R.string.button_delete_task)).check(matches(isDisplayed()));
         onView(withText(R.string.button_delete_task))
                 .perform(click());
-        intended(hasComponent(DetailedListActivity.class.getName()));
 
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))

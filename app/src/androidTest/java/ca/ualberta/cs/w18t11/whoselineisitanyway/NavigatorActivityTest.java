@@ -53,6 +53,12 @@ public class NavigatorActivityTest
 
         try
         {
+            onView(withId(R.id.signOut)).perform(click());
+        }
+        catch (NoMatchingViewException e) {}
+
+        try
+        {
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(myUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
@@ -217,7 +223,6 @@ public class NavigatorActivityTest
         mDevice.pressBack();
 
         onView(withId(R.id.search)).perform(click());
-        // TODO need to handle the action taken by search
 
         onView(withId(R.id.signOut)).perform(click());
         intended(hasComponent(UserLoginActivity.class.getName()));

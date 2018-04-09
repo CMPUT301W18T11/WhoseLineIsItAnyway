@@ -25,7 +25,6 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.BidDetailActivity;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.view.DetailedListActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.TaskDetailActivity;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.view.UserLoginActivity;
 
@@ -37,7 +36,6 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerMatchers.isClosed;
 import static android.support.test.espresso.intent.Intents.intended;
-import static android.support.test.espresso.intent.VerificationModes.times;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -112,10 +110,6 @@ public class BidDetailActivityTest
                     new PhoneNumber(0, 123, 456, 7890));
             DSM.addUser(user);
         }
-        else
-        {
-            DSM.addUser(user);
-        }
         otherUser = DSM.getUser(myUsername);
         if (otherUser == null)
         {
@@ -123,10 +117,12 @@ public class BidDetailActivityTest
                     new PhoneNumber(2, 222, 222, 2222));
             DSM.addUser(otherUser);
         }
-        else
+
+        try
         {
-            DSM.addUser(otherUser);
+            onView(withId(R.id.signOut)).perform(click());
         }
+        catch (NoMatchingViewException e) {}
 
         try
         {
@@ -269,7 +265,6 @@ public class BidDetailActivityTest
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
         onView(withText(R.string.button_all_bids_task)).perform(click());
-        intended(hasComponent(DetailedListActivity.class.getName()), times(2));
 
         onData(hasToString(startsWith("fish")))
                 .inAdapterView(withId(R.id.detail_LV))
@@ -322,13 +317,11 @@ public class BidDetailActivityTest
         intended(hasComponent(TaskDetailActivity.class.getName()));
 
         onView(withText(R.string.button_all_bids_task)).perform(click());
-        intended(hasComponent(DetailedListActivity.class.getName()), times(2));
 
         onData(hasToString(startsWith("nottest")))
                 .inAdapterView(withId(R.id.detail_LV))
                 .atPosition(0)
                 .perform(click());
-//        intended(hasComponent(BidDetailActivity.class.getName()));
 
         // Bids on my tasks should have an accept and decline button
         onView(withText(R.string.button_accept_bid)).check(matches(isDisplayed()));

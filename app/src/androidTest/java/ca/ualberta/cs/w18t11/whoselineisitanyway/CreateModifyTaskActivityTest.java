@@ -94,6 +94,12 @@ public class CreateModifyTaskActivityTest
 
         try
         {
+            onView(withId(R.id.signOut)).perform(click());
+        }
+        catch (NoMatchingViewException e) {}
+
+        try
+        {
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(myUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
@@ -137,7 +143,8 @@ public class CreateModifyTaskActivityTest
                 if (task.getRequesterUsername().equals(myUsername))
                     DSM.removeTask(task);
             }
-        }        Intents.release();
+        }
+        Intents.release();
     }
 
     /**

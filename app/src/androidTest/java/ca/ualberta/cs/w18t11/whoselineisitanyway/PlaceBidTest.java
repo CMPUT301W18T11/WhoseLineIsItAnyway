@@ -124,6 +124,12 @@ public class PlaceBidTest
 
         try
         {
+            onView(withId(R.id.signOut)).perform(click());
+        }
+        catch (NoMatchingViewException e) {}
+
+        try
+        {
             onView(withId(R.id.etxt_Username))
                     .perform(typeText(myUsername), closeSoftKeyboard());
             onView(withId(R.id.btn_Login))
