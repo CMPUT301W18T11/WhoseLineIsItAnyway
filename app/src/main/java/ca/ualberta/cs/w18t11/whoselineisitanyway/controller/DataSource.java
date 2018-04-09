@@ -48,6 +48,8 @@ public interface DataSource
      */
     boolean removeUser(@NonNull final User user);
 
+    boolean clearUsers();
+
     /**
      * @return All tasks present in the data source, or null if an error occurs.
      * @see Task
@@ -93,6 +95,8 @@ public interface DataSource
      */
     boolean removeTask(@NonNull final Task task);
 
+    boolean clearTasks();
+
     /**
      * @return All bids present in the data source, or null if an error occurs.
      * @see Bid
@@ -127,4 +131,6 @@ public interface DataSource
      * @see Bid
      */
     boolean removeBid(@NonNull final Bid bid);
+
+    boolean clearBids();
 }

@@ -190,6 +190,12 @@ public class RemoteDataSource implements DataSource
         return false;
     }
 
+    @Override
+    public boolean clearUsers()
+    {
+        return false;
+    }
+
     /**
      * Gets all the tasks from the database if connected
      *
@@ -355,6 +361,12 @@ public class RemoteDataSource implements DataSource
         return false;
     }
 
+    @Override
+    public boolean clearTasks()
+    {
+        return false;
+    }
+
     /**
      * Gets all the bids from the database if connected
      *
@@ -486,6 +498,12 @@ public class RemoteDataSource implements DataSource
         {
             Log.i("UserLogin", "execution exception:" + e.toString());
         }
+        return false;
+    }
+
+    @Override
+    public boolean clearBids()
+    {
         return false;
     }
 }
