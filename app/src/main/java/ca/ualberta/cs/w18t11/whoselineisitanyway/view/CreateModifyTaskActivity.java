@@ -424,7 +424,8 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         {
             @Override
             public void onClick(View v) {
-                existingTask.setLocation(null);
+                if (existingTask != null)
+                    existingTask.setLocation(null);
                 TextView locField = findViewById(R.id.txt_location_set);
                 String locString = "(Location not set)";
                 locField.setText(locString);
