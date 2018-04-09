@@ -31,13 +31,15 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
  * A custom DetailActivity for a task.
  */
 
-public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBid.PlaceBidReturnListener, DIALOG_WriteReview.OnReviewListener
+public class TaskDetailActivity extends DetailActivity
+        implements DIALOG_PlaceBid.PlaceBidReturnListener, DIALOG_WriteReview.OnReviewListener
 {
 
     private Task globalTask = null;
 
     /**
      * Alter the appearance of the UI to better suit a task.
+     *
      * @param viewGroup Parent for adding interface elements.
      */
     public void customizeUserInterface(ViewGroup viewGroup)
@@ -49,7 +51,7 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
             //Task task = getTaskFromIntent();
             renderBasedOnTask(task, viewGroup);
         }
-        catch(NullPointerException E)
+        catch (NullPointerException E)
         {
             // Don't do anything. Only render basic version.
         }
@@ -57,14 +59,15 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
 
     /**
      * Change what buttons and other UI elements are presented based on who's task it is.
-     * @param task to be rendered.
+     *
+     * @param task      to be rendered.
      * @param viewGroup Parent for adding interface elements.
      */
     private void renderBasedOnTask(Task task, ViewGroup viewGroup)
     {
         DataSourceManager dataSourceManager = new DataSourceManager(this);
         User currentUser = dataSourceManager.getCurrentUser();
-        if(currentUser.getUsername().equals(task.getRequesterUsername()))
+        if (currentUser.getUsername().equals(task.getRequesterUsername()))
         {
             renderMyTask(task, viewGroup);
         }
@@ -73,7 +76,7 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
             renderOtherTask(task, viewGroup);
         }
         // Show location button whenever the task has a location
-        if(task.getLocation() != null)
+        if (task.getLocation() != null)
         {
             addLocationButton(task, viewGroup);
         }
@@ -81,7 +84,8 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
 
     /**
      * Render the task that belongs to the current user.
-     * @param task to be rendered.
+     *
+     * @param task      to be rendered.
      * @param viewGroup Parent for adding interface elements.
      */
     private void renderMyTask(Task task, ViewGroup viewGroup)
@@ -105,7 +109,8 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
 
     /**
      * Render the task that does not belongs to the current user
-     * @param task to be rendered.
+     *
+     * @param task      to be rendered.
      * @param viewGroup Parent for adding interface elements.
      */
     private void renderOtherTask(Task task, ViewGroup viewGroup)
@@ -130,6 +135,7 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
     /**
      * Render one of the current user's tasks that has a status of 'Requested'.
      * Show the edit and delete buttons.
+     *
      * @param viewGroup Parent for adding interface elements.
      */
     private void renderMyRequestedTask(Task task, ViewGroup viewGroup)
@@ -142,6 +148,7 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
     /**
      * Render one of the current user's tasks that has a status of 'Bidded'.
      * Show the edit, delete, and accept buttons.
+     *
      * @param viewGroup Parent for adding interface elements.
      */
     private void renderMyBiddedTask(Task task, ViewGroup viewGroup)
@@ -153,6 +160,7 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
     /**
      * Render one of the current user's tasks that has a status of 'Assigned'.
      * Show the complete button.
+     *
      * @param viewGroup Parent for adding interface elements.
      */
     private void renderMyAssignedTask(Task task, ViewGroup viewGroup)
@@ -174,6 +182,7 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
     /**
      * Render a task from a user that is not the current user with a status of 'Requested'.
      * Show the complete button.
+     *
      * @param viewGroup Parent for adding interface elements.
      */
     private void renderOtherRequestedTask(Task task, ViewGroup viewGroup)
@@ -184,6 +193,7 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
     /**
      * Render a task from a user that is not the current user with a status of 'Bidded'.
      * Show the complete button.
+     *
      * @param viewGroup Parent for adding interface elements.
      */
     private void renderOtherBiddedTask(Task task, ViewGroup viewGroup)
@@ -195,6 +205,7 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
     /**
      * Render a task from a user that is not the current user with a status of 'Assigned'.
      * Show the complete button.
+     *
      * @param viewGroup Parent for adding interface elements.
      */
     private void renderOtherAssignedTask(Task task, ViewGroup viewGroup)
@@ -205,6 +216,7 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
     /**
      * Render a task from a user that is not the current user with a status of 'Done'.
      * Show the complete button.
+     *
      * @param viewGroup Parent for adding interface elements.
      */
     private void renderOtherDoneTask(Task task, ViewGroup viewGroup)
@@ -214,7 +226,8 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
 
     /**
      * Add a section for viewing images to the UI
-     * @param task Task to add images for
+     *
+     * @param task      Task to add images for
      * @param viewGroup Parent for adding user interface elements
      */
     private void addTaskImages(Task task, ViewGroup viewGroup)
@@ -236,20 +249,23 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
 
     /**
      * Insert images from the task
+     *
      * @param task to insert images from
      */
     // TODO confirm working image addition
     private void insertImagesFromTask(Task task, LinearLayout filmstrip)
     {
-       if (task.getImages() == null) {
-           return;
-       }
-       String[] images = task.getImages();
+        if (task.getImages() == null)
+        {
+            return;
+        }
+        String[] images = task.getImages();
 
-       for(String img : images) {
-           BitmapManager temp = new BitmapManager(img);
-           add_image(temp, filmstrip);
-       }
+        for (String img : images)
+        {
+            BitmapManager temp = new BitmapManager(img);
+            add_image(temp, filmstrip);
+        }
 
     }
 
@@ -318,13 +334,16 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
     private void addBidButton(final Task task, ViewGroup viewGroup)
     {
         // Make a view for the button
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.activity_detail_button, viewGroup);
-        Button bidButton = (Button) view.findViewById(R.id.detail_button);
+        Button bidButton = view.findViewById(R.id.detail_button);
         bidButton.setText(R.string.button_place_bid);
-        bidButton.setOnClickListener(new View.OnClickListener() {
+        bidButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 // TODO: Add bid button functionality
                 globalTask = task;
                 DIALOG_PlaceBid bidDialog = new DIALOG_PlaceBid(TaskDetailActivity.this);
@@ -334,19 +353,23 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
 
         ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
 
-        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     private void addAllBidsButton(final Task task, ViewGroup viewGroup)
     {
         // Make a view for the button
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.activity_detail_button, viewGroup);
-        Button bidButton = (Button) view.findViewById(R.id.detail_button);
+        Button bidButton = view.findViewById(R.id.detail_button);
         bidButton.setText(R.string.button_all_bids_task);
-        bidButton.setOnClickListener(new View.OnClickListener() {
+        bidButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 Intent outgoingIntent = new Intent(view.getContext(), DetailedListActivity.class);
                 String outgoingTitle = "Bids";
                 ArrayList<Detailed> bidsArrayList = new ArrayList<>();
@@ -357,32 +380,39 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
                         bidsArrayList.add(bid);
                     }
                 }
-                outgoingIntent.putExtra(DetailedListActivity.DATA_LIST_BUILDER, new TaskBidsListBuilder(task));
+                outgoingIntent.putExtra(DetailedListActivity.DATA_LIST_BUILDER,
+                        new TaskBidsListBuilder(task));
                 outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
                 outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, bidsArrayList);
-                outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE, AdapterType.BID);
+                outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE,
+                        AdapterType.BID);
                 startActivity(outgoingIntent);
             }
         });
 
         ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
 
-        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     private void addEditTaskButton(final Task task, ViewGroup viewGroup)
     {
         // Make a view for the button
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.activity_detail_button, viewGroup);
-        Button bidButton = (Button) view.findViewById(R.id.detail_button);
+        Button bidButton = view.findViewById(R.id.detail_button);
         bidButton.setText(R.string.button_edit_task);
-        bidButton.setOnClickListener(new View.OnClickListener() {
+        bidButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 // TODO: Add edit task button functionality
                 Bundle bundle = new Bundle();
-                Intent outgoingIntent = new Intent(view.getContext(), CreateModifyTaskActivity.class);
+                Intent outgoingIntent = new Intent(view.getContext(),
+                        CreateModifyTaskActivity.class);
                 bundle.putSerializable("EXISTING_TASK", task);
                 outgoingIntent.putExtras(bundle);
                 finish();
@@ -392,19 +422,23 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
         });
 
         ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
-        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     private void addDeleteTaskButton(final Task task, ViewGroup viewGroup)
     {
         // Make a view for the button
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.activity_detail_button, viewGroup);
-        Button bidButton = (Button) view.findViewById(R.id.detail_button);
+        Button bidButton = view.findViewById(R.id.detail_button);
         bidButton.setText(R.string.button_delete_task);
-        bidButton.setOnClickListener(new View.OnClickListener() {
+        bidButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 // TODO: Prompt for confirmation
                 DataSourceManager dataSourceManager = new DataSourceManager(view.getContext());
                 dataSourceManager.removeTask(task);
@@ -413,40 +447,49 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
         });
 
         ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
-        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     private void addCompleteTaskButton(final Task task, ViewGroup viewGroup)
     {
         // Make a view for the button
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.activity_detail_button, viewGroup);
-        Button bidButton = (Button) view.findViewById(R.id.detail_button);
+        Button bidButton = view.findViewById(R.id.detail_button);
         bidButton.setText(R.string.button_complete_task);
-        bidButton.setOnClickListener(new View.OnClickListener() {
+        bidButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 DataSourceManager dataSourceManager = new DataSourceManager(view.getContext());
                 globalTask = task.markDone();
                 dataSourceManager.addTask(globalTask);
-                new DIALOG_WriteReview(TaskDetailActivity.this, dataSourceManager.getUser(globalTask.getProviderUsername())).showDialog();
+                new DIALOG_WriteReview(TaskDetailActivity.this,
+                        dataSourceManager.getUser(globalTask.getProviderUsername())).showDialog();
             }
         });
 
         ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
-        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     private void addUnassignTaskButton(final Task task, ViewGroup viewGroup)
     {
         // Make a view for the button
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.activity_detail_button, viewGroup);
-        Button bidButton = (Button) view.findViewById(R.id.detail_button);
+        Button bidButton = view.findViewById(R.id.detail_button);
         bidButton.setText(R.string.button_unassign_task);
-        bidButton.setOnClickListener(new View.OnClickListener() {
+        bidButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 DataSourceManager dataSourceManager = new DataSourceManager(view.getContext());
                 Task unassignedTask = task.unassignProvider();
                 dataSourceManager.addTask(unassignedTask);
@@ -456,26 +499,32 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
         });
 
         ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
-        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     private void addLocationButton(final Task task, ViewGroup viewGroup)
     {
         // Make a view for the button
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.activity_detail_button, viewGroup);
-        Button bidButton = (Button) view.findViewById(R.id.detail_button);
+        Button bidButton = view.findViewById(R.id.detail_button);
         bidButton.setText(R.string.button_task_location);
-        bidButton.setOnClickListener(new View.OnClickListener() {
+        bidButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                LatLng point = new LatLng(task.getLocation().getLatitude(), task.getLocation().getLongitude());
+            public void onClick(View view)
+            {
+                LatLng point = new LatLng(task.getLocation().getLatitude(),
+                        task.getLocation().getLongitude());
                 new ShowTaskLocationDialog(TaskDetailActivity.this).showDialog(point);
             }
         });
 
         ViewGroup insertPoint = findViewById(R.id.header_linear_layout);
-        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        insertPoint.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     private Task getTaskFromIntent() throws NullPointerException
@@ -485,9 +534,11 @@ public class TaskDetailActivity extends DetailActivity implements DIALOG_PlaceBi
     }
 
     @Override
-    public void PlaceBidDialog_PosResult(BigDecimal result) {
+    public void PlaceBidDialog_PosResult(BigDecimal result)
+    {
         DataSourceManager dataSourceManager = new DataSourceManager(this);
-        Bid newBid = new Bid(dataSourceManager.getCurrentUser().getUsername(), globalTask.getElasticId(), result);
+        Bid newBid = new Bid(dataSourceManager.getCurrentUser().getUsername(),
+                globalTask.getElasticId(), result);
         Task biddedTask = globalTask.submitBid(newBid);
         dataSourceManager.addTask(biddedTask);
         finish();

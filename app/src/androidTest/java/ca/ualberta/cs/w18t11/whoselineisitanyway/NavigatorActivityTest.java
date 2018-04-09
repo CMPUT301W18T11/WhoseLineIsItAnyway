@@ -37,11 +37,14 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 @RunWith(AndroidJUnit4.class)
 public class NavigatorActivityTest
 {
-    String myUsername = "test";
     @Rule
     public ActivityTestRule<UserLoginActivity> activityRule = new ActivityTestRule<>(
             UserLoginActivity.class);
+
+    String myUsername = "test";
+
     private UserLoginActivity loginActivity;
+
     private DataSourceManager DSM;
 
     @Before
@@ -55,7 +58,9 @@ public class NavigatorActivityTest
         {
             onView(withId(R.id.signOut)).perform(click());
         }
-        catch (NoMatchingViewException e) {}
+        catch (NoMatchingViewException e)
+        {
+        }
 
         try
         {
@@ -88,7 +93,9 @@ public class NavigatorActivityTest
             onView(withId(R.id.btn_OK))
                     .perform(click());
         }
-        catch (NoMatchingViewException e) {}
+        catch (NoMatchingViewException e)
+        {
+        }
     }
 
     /**

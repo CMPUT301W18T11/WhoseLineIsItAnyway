@@ -112,7 +112,7 @@ public final class RatingUnitTest
                 for (int p3 = 0; p3 < 6; p3++)
                 {
                     Rating rate = new Rating(p1, p2, p3);
-                    int aggTrueValue = (int) ((p1 + p2 + p3) / 3);
+                    int aggTrueValue = (p1 + p2 + p3) / 3;
                     assertTrue("test GetAggregateRating Q: " + p1 + " T:" + p2 + " P:" + p3,
                             rate.getAggRating() == aggTrueValue);
                 }
@@ -121,7 +121,8 @@ public final class RatingUnitTest
     }
 
     @Test
-    public final void testSetReview() {
+    public final void testSetReview()
+    {
         String test = "Terrible dogsitter! Now my dog just drools everywhere." +
                 " This is the full body of the review and should not show when the" +
                 " toString method is called, only when FullReview() is.";
@@ -133,11 +134,13 @@ public final class RatingUnitTest
     }
 
     @Test
-    public final void testShortReview() {
+    public final void testShortReview()
+    {
         String test = "Terrible dogsitter! Now my dog just drools everywhere." +
                 " This is the full body of the review and should not show when the" +
                 " toString method is called, only when FullReview() is.";
-        String notContains = "This is the full body of the review and should not show when the toString method is called, only when FullReview() is.";
+        String notContains
+                = "This is the full body of the review and should not show when the toString method is called, only when FullReview() is.";
         Rating r = new Rating(1, 1, 1);
         r.setReviewMSG(test);
 
@@ -146,7 +149,8 @@ public final class RatingUnitTest
     }
 
     @Test
-    public final void testLongReview() {
+    public final void testLongReview()
+    {
         String test = "Terrible dogsitter! Now my dog just drools everywhere." +
                 " This is the full body of the review and should not show when the" +
                 " toString method is called, only when FullReview() is.";

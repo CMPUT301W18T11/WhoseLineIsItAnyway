@@ -53,21 +53,34 @@ import static org.hamcrest.Matchers.hasToString;
 @RunWith(AndroidJUnit4.class)
 public class BidDetailActivityTest
 {
-    String myUsername = "test";
-    String otherUsername = "nottest";
-    String otherUsername2 = "fish";
-    String myTitle = "My Intent Task";
-    String otherTitle = "Other Intent Task";
-    String myDescription = "This task is for intent testing";
-    String otherDescription = "This task is also for intent testing";
-    Task myTask = new Task(myUsername, myTitle, myDescription);
-    Task otherTask = new Task(otherUsername, otherTitle, otherDescription);
-    User user;
-    User otherUser;
-    DataSourceManager DSM;
     @Rule
     public ActivityTestRule<UserLoginActivity> activityRule = new ActivityTestRule<>(
             UserLoginActivity.class);
+
+    String myUsername = "test";
+
+    String otherUsername = "nottest";
+
+    String otherUsername2 = "fish";
+
+    String myTitle = "My Intent Task";
+
+    String otherTitle = "Other Intent Task";
+
+    String myDescription = "This task is for intent testing";
+
+    String otherDescription = "This task is also for intent testing";
+
+    Task myTask = new Task(myUsername, myTitle, myDescription);
+
+    Task otherTask = new Task(otherUsername, otherTitle, otherDescription);
+
+    User user;
+
+    User otherUser;
+
+    DataSourceManager DSM;
+
     private UserLoginActivity loginActivity;
 
     @Before
@@ -84,9 +97,13 @@ public class BidDetailActivityTest
             for (Task task : tasks)
             {
                 if (task.getRequesterUsername().equals(myUsername))
+                {
                     DSM.removeTask(task);
+                }
                 if (task.getRequesterUsername().equals(otherUsername))
+                {
                     DSM.removeTask(task);
+                }
             }
         }
         Bid[] bids = DSM.getBids();
@@ -95,11 +112,17 @@ public class BidDetailActivityTest
             for (Bid bid : bids)
             {
                 if (bid.getProviderUsername().equals(myUsername))
+                {
                     DSM.removeBid(bid);
+                }
                 if (bid.getProviderUsername().equals(otherUsername))
+                {
                     DSM.removeBid(bid);
+                }
                 if (bid.getProviderUsername().equals(otherUsername2))
+                {
                     DSM.removeBid(bid);
+                }
             }
         }
 
@@ -122,7 +145,9 @@ public class BidDetailActivityTest
         {
             onView(withId(R.id.signOut)).perform(click());
         }
-        catch (NoMatchingViewException e) {}
+        catch (NoMatchingViewException e)
+        {
+        }
 
         try
         {
@@ -155,7 +180,9 @@ public class BidDetailActivityTest
             onView(withId(R.id.btn_OK))
                     .perform(click());
         }
-        catch (NoMatchingViewException e) {}
+        catch (NoMatchingViewException e)
+        {
+        }
     }
 
     @After
@@ -169,9 +196,13 @@ public class BidDetailActivityTest
             for (Task task : tasks)
             {
                 if (task.getRequesterUsername().equals(myUsername))
+                {
                     DSM.removeTask(task);
+                }
                 if (task.getRequesterUsername().equals(otherUsername))
+                {
                     DSM.removeTask(task);
+                }
             }
         }
         Bid[] bids = DSM.getBids();
@@ -180,11 +211,17 @@ public class BidDetailActivityTest
             for (Bid bid : bids)
             {
                 if (bid.getProviderUsername().equals(myUsername))
+                {
                     DSM.removeBid(bid);
+                }
                 if (bid.getProviderUsername().equals(otherUsername))
+                {
                     DSM.removeBid(bid);
+                }
                 if (bid.getProviderUsername().equals(otherUsername2))
+                {
                     DSM.removeBid(bid);
+                }
             }
         }
         Intents.release();

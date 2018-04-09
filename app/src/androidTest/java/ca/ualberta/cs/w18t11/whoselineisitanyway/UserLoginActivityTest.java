@@ -34,10 +34,14 @@ public class UserLoginActivityTest
     @Rule
     public ActivityTestRule<UserLoginActivity> activityRule = new ActivityTestRule<>(
             UserLoginActivity.class);
-    private UserLoginActivity loginActivity;
-    private String testUsername;
-    private DataSourceManager DSM;
+
     User user;
+
+    private UserLoginActivity loginActivity;
+
+    private String testUsername;
+
+    private DataSourceManager DSM;
 
     @Before
     public void init()
@@ -57,7 +61,9 @@ public class UserLoginActivityTest
     public void cleanup()
     {
         if ((user = DSM.getUser(testUsername)) != null)
+        {
             DSM.removeUser(user);
+        }
         DSM.unsetCurrentUser();
     }
 
@@ -71,7 +77,9 @@ public class UserLoginActivityTest
         {
             onView(withId(R.id.signOut)).perform(click());
         }
-        catch (NoMatchingViewException e) {}
+        catch (NoMatchingViewException e)
+        {
+        }
 
         // Input text
         onView(withId(R.id.etxt_Username))
@@ -92,7 +100,9 @@ public class UserLoginActivityTest
         {
             onView(withId(R.id.signOut)).perform(click());
         }
-        catch (NoMatchingViewException e) {}
+        catch (NoMatchingViewException e)
+        {
+        }
 
         // Click the sign in button
         onView(withId(R.id.btn_Login))
@@ -112,7 +122,9 @@ public class UserLoginActivityTest
         {
             onView(withId(R.id.signOut)).perform(click());
         }
-        catch (NoMatchingViewException e) {}
+        catch (NoMatchingViewException e)
+        {
+        }
 
         // Input text
         onView(withId(R.id.etxt_Username))
@@ -158,7 +170,9 @@ public class UserLoginActivityTest
         {
             onView(withId(R.id.signOut)).perform(click());
         }
-        catch (NoMatchingViewException e) {}
+        catch (NoMatchingViewException e)
+        {
+        }
 
         // Input text
         onView(withId(R.id.etxt_Username))
@@ -187,7 +201,9 @@ public class UserLoginActivityTest
         {
             onView(withId(R.id.signOut)).perform(click());
         }
-        catch (NoMatchingViewException e) {}
+        catch (NoMatchingViewException e)
+        {
+        }
 
         // Input text
         onView(withId(R.id.etxt_Username))
@@ -224,7 +240,9 @@ public class UserLoginActivityTest
         {
             onView(withId(R.id.signOut)).perform(click());
         }
-        catch (NoMatchingViewException e) {}
+        catch (NoMatchingViewException e)
+        {
+        }
 
         // Input text
         onView(withId(R.id.etxt_Username))

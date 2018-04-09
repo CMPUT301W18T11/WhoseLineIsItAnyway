@@ -11,19 +11,23 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 
 /**
  * A class to construct a list of nearby tasks.
+ *
  * @author Brad Ofrim
  * @see Detailed
  */
 
-public class NearbyTasksListBuilder extends DetailedListBuilder {
+public class NearbyTasksListBuilder extends DetailedListBuilder
+{
 
     /**
      * Build a list of tasks near to the current user.
+     *
      * @return ArrayList<Detailed> of all of all nearby tasks.
      */
     @NonNull
     @Override
-    public Detailed[] buildDetailedList(Context context) {
+    public Detailed[] buildDetailedList(Context context)
+    {
         // TODO: Extract filtering to the DataSourceManager
         ArrayList<Task> detailedArrayList = new ArrayList<>();
         Detailed[] allTasks = new DataSourceManager(context).getTasks();

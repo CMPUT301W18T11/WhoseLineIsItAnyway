@@ -7,8 +7,6 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.io.Serializable;
-
 /**
  * Represents a key-value pair of title and information.
  *
@@ -17,6 +15,25 @@ import java.io.Serializable;
  */
 public final class Detail implements Parcelable
 {
+    /**
+     * Implement for Parcelable
+     *
+     * @return
+     */
+    public static final Parcelable.Creator<Detail> CREATOR
+            = new Parcelable.Creator<Detail>()
+    {
+        public Detail createFromParcel(Parcel in)
+        {
+            return new Detail(in);
+        }
+
+        public Detail[] newArray(int size)
+        {
+            return new Detail[size];
+        }
+    };
+
     /**
      * An auto-generated, unique ID to support class versioning for Serializable.
      */
@@ -52,6 +69,18 @@ public final class Detail implements Parcelable
         this.title = title;
         this.information = information;
         this.linkingIntent = linkingIntent;
+    }
+
+    /**
+     * Implement for Parcelable
+     *
+     * @return
+     */
+    private Detail(Parcel in)
+    {
+        title = in.readString();
+        information = in.readString();
+        linkingIntent = in.readParcelable(Intent.class.getClassLoader());
     }
 
     /**
@@ -91,45 +120,24 @@ public final class Detail implements Parcelable
 
     /**
      * Implement for Parcelable
+     *
      * @return
      */
-    public int describeContents() {
+    public int describeContents()
+    {
         return 0;
     }
 
     /**
      * Implement for Parcelable
+     *
      * @return
      */
-    public void writeToParcel(Parcel out, int flags) {
+    public void writeToParcel(Parcel out, int flags)
+    {
         // Note: order matters
         out.writeString(title);
         out.writeString(information);
         out.writeParcelable(linkingIntent, 0);
-    }
-
-    /**
-     * Implement for Parcelable
-     * @return
-     */
-    public static final Parcelable.Creator<Detail> CREATOR
-            = new Parcelable.Creator<Detail>() {
-        public Detail createFromParcel(Parcel in) {
-            return new Detail(in);
-        }
-
-        public Detail[] newArray(int size) {
-            return new Detail[size];
-        }
-    };
-
-    /**
-     * Implement for Parcelable
-     * @return
-     */
-    private Detail(Parcel in) {
-        title = in.readString();
-        information = in.readString();
-        linkingIntent = in.readParcelable(Intent.class.getClassLoader());
     }
 }

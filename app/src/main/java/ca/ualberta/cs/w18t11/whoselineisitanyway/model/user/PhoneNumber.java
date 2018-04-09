@@ -1,7 +1,6 @@
 package ca.ualberta.cs.w18t11.whoselineisitanyway.model.user;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 

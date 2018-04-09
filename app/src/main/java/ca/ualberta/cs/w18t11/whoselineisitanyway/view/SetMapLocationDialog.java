@@ -41,6 +41,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
  * a user to select a location to mark a task with.
  * In: None
  * Out: Location (Via callback)
+ *
  * @Author Lucas Thalen
  */
 /*
@@ -51,240 +52,329 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
  * method. Anything else will result in a race condition where code progresses without the returned
  * result being properly assigned.
  */
-public class SetMapLocationDialog implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+public class SetMapLocationDialog
+        implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener
+{
 
-	// Allow passing data back to the calling activity using an event trigger to avoid async issues
-	public interface MapDialogReturnListener {
-		void MapSetDialog_PosResult(LatLng result);
-	}
+    // App Alerts
+    Toast appAlert;
 
+    // Initialization
+    private Activity caller;
 
-	// Initialization
-	private Activity caller;
-	private Context context;
-	private MapDialogReturnListener returnListener;
-	private boolean permissionsGranted = false;
+    private Context context;
 
-	// Dialog
-	private AlertDialog mapDiag;
-	private View diagView;
-	private MapView mapView;
-	private GoogleMap gMap;
+    private MapDialogReturnListener returnListener;
 
-	// Location
-	private GoogleApiClient mGoogleApiClient;
-	private LatLng locResult;
-	private Location userLocation;
-	private FusedLocationProviderClient mFusedLocationProvider;
-	private LocationCallback mLocationCallback;
-	private boolean foundLocation = false;
-	private boolean canMoveCam = true;
+    private boolean permissionsGranted = false;
 
-	// App Alerts
-	Toast appAlert;
-	/**
-	 * CONSTRUCTOR: Set context and activity references
-	 * Check that proper mandatory methods are implemented
-	 * Prompt for locations
-	 * @param caller Activity reference for the parent activity to the dialog
-	 */
-	public SetMapLocationDialog(final Activity caller) {
-		this.caller = caller;
-		context = (Context) caller;
-		appAlert = Toast.makeText(caller, "", Toast.LENGTH_SHORT);
-		if (context instanceof MapDialogReturnListener) {
-			returnListener = (MapDialogReturnListener) context;
-		} else { throw new RuntimeException("Calling class must contain interface methods!"); }
+    // Dialog
+    private AlertDialog mapDiag;
 
-		getLocation();
-		initGoogleApi();
-		createDialog();
-		initMap();
+    private View diagView;
 
-		// EVENTHANDLERS
-		btn_save_onClick();
-		btn_cancel_onClick();
+    private MapView mapView;
 
-	}
+    private GoogleMap gMap;
 
-	//region Google API
-	private void initGoogleApi() {
-		mGoogleApiClient = new GoogleApiClient.Builder(context)
-				.addConnectionCallbacks(this)
-				.addOnConnectionFailedListener(this)
-				.addApi(LocationServices.API).build();
+    // Location
+    private GoogleApiClient mGoogleApiClient;
 
-		mGoogleApiClient.connect();
-	}
+    private LatLng locResult;
 
-	@Override
-	public void onConnected(@Nullable Bundle bundle) {
-	}
+    private Location userLocation;
 
-	@Override
-	public void onConnectionSuspended(int i) {
-		mGoogleApiClient.connect();
-	}
+    private FusedLocationProviderClient mFusedLocationProvider;
 
-	@Override
-	public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-		Log.i("SetMapLocationDialog","Failed to establish a Google Api Connection: " + connectionResult.getErrorMessage());
-	}
-	//endregion
+    private LocationCallback mLocationCallback;
 
-	private void createDialog() {
-		final int LAYOUT_TEMPLATE = R.layout.dialog_setlocation; // Get the template for the dialog
+    private boolean foundLocation = false;
 
-		// CREATE DIALOG
-		AlertDialog.Builder diagBuilder = new AlertDialog.Builder(context);
-		diagView = View
-				.inflate(context, LAYOUT_TEMPLATE, null );
-		diagBuilder.setView(diagView);
+    private boolean canMoveCam = true;
 
-		mapDiag = diagBuilder.create();
-		mapDiag.setTitle("Set a Location for the Task");
+    /**
+     * CONSTRUCTOR: Set context and activity references
+     * Check that proper mandatory methods are implemented
+     * Prompt for locations
+     *
+     * @param caller Activity reference for the parent activity to the dialog
+     */
+    public SetMapLocationDialog(final Activity caller)
+    {
+        this.caller = caller;
+        context = caller;
+        appAlert = Toast.makeText(caller, "", Toast.LENGTH_SHORT);
+        if (context instanceof MapDialogReturnListener)
+        {
+            returnListener = (MapDialogReturnListener) context;
+        }
+        else
+        {
+            throw new RuntimeException("Calling class must contain interface methods!");
+        }
 
-		mapView = diagView.findViewById(R.id.map_mapdialog_setloc);
+        getLocation();
+        initGoogleApi();
+        createDialog();
+        initMap();
 
-	}
+        // EVENTHANDLERS
+        btn_save_onClick();
+        btn_cancel_onClick();
 
-	public void showDialog() {
-		// MAP CONTROL INITIALIZATION
-		mapView = (MapView) diagView.findViewById(R.id.map_mapdialog_setloc);
-		mapView.onCreate(mapDiag.onSaveInstanceState());
-		mapView.onResume();
-		mapDiag.show();
-	}
-	//region GetLocation GoodAccuracyButSlow
-	private void getLocation() {
-		mFusedLocationProvider = LocationServices.getFusedLocationProviderClient(caller);
-		final LocationRequest locReq = LocationRequest.create()
-				.setFastestInterval(1)
-				.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-				.setInterval(1)
-				.setNumUpdates(1);
+    }
 
-		mLocationCallback = new LocationCallback() {
-			@Override
-			public void onLocationResult(LocationResult locationResult) {
-				if (!foundLocation && canMoveCam) {
-					Location best = null;
-					if (locationResult == null) {
-						return;
-					}
-					for (Location location : locationResult.getLocations()) {
-						if (best == null) {
-							best = location;
-						} else {
-							if (best.hasAccuracy() && location.hasAccuracy()) {
-								if (location.getAccuracy() < best.getAccuracy()) {
-									best = location;
-								}
-							}
-						}
-					}
-					if (best != null) {
-						foundLocation = true;
-						mFusedLocationProvider.removeLocationUpdates(mLocationCallback);
-						setUserLoc(best);
-						gMap_CamMove();
-						appAlert.cancel();
-						appAlert.makeText(caller, "Location acquired.", Toast.LENGTH_SHORT).show();
-					}
-				}
-			}
+    //region Google API
+    private void initGoogleApi()
+    {
+        mGoogleApiClient = new GoogleApiClient.Builder(context)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
 
-		};
+        mGoogleApiClient.connect();
+    }
 
-		try {
-			mFusedLocationProvider.requestLocationUpdates(locReq,mLocationCallback, Looper.myLooper());
-		} catch (SecurityException ex) {}
+    @Override
+    public void onConnected(@Nullable Bundle bundle)
+    {
+    }
 
-	}
+    @Override
+    public void onConnectionSuspended(int i)
+    {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
+    {
+        Log.i("SetMapLocationDialog",
+                "Failed to establish a Google Api Connection: " + connectionResult
+                        .getErrorMessage());
+    }
+
+    private void createDialog()
+    {
+        final int LAYOUT_TEMPLATE = R.layout.dialog_setlocation; // Get the template for the dialog
+
+        // CREATE DIALOG
+        AlertDialog.Builder diagBuilder = new AlertDialog.Builder(context);
+        diagView = View
+                .inflate(context, LAYOUT_TEMPLATE, null);
+        diagBuilder.setView(diagView);
+
+        mapDiag = diagBuilder.create();
+        mapDiag.setTitle("Set a Location for the Task");
+
+        mapView = diagView.findViewById(R.id.map_mapdialog_setloc);
+
+    }
+    //endregion
+
+    public void showDialog()
+    {
+        // MAP CONTROL INITIALIZATION
+        mapView = diagView.findViewById(R.id.map_mapdialog_setloc);
+        mapView.onCreate(mapDiag.onSaveInstanceState());
+        mapView.onResume();
+        mapDiag.show();
+    }
+
+    //region GetLocation GoodAccuracyButSlow
+    private void getLocation()
+    {
+        mFusedLocationProvider = LocationServices.getFusedLocationProviderClient(caller);
+        final LocationRequest locReq = LocationRequest.create()
+                .setFastestInterval(1)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(1)
+                .setNumUpdates(1);
+
+        mLocationCallback = new LocationCallback()
+        {
+            @Override
+            public void onLocationResult(LocationResult locationResult)
+            {
+                if (!foundLocation && canMoveCam)
+                {
+                    Location best = null;
+                    if (locationResult == null)
+                    {
+                        return;
+                    }
+                    for (Location location : locationResult.getLocations())
+                    {
+                        if (best == null)
+                        {
+                            best = location;
+                        }
+                        else
+                        {
+                            if (best.hasAccuracy() && location.hasAccuracy())
+                            {
+                                if (location.getAccuracy() < best.getAccuracy())
+                                {
+                                    best = location;
+                                }
+                            }
+                        }
+                    }
+                    if (best != null)
+                    {
+                        foundLocation = true;
+                        mFusedLocationProvider.removeLocationUpdates(mLocationCallback);
+                        setUserLoc(best);
+                        gMap_CamMove();
+                        appAlert.cancel();
+                        Toast.makeText(caller, "Location acquired.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+        };
+
+        try
+        {
+            mFusedLocationProvider
+                    .requestLocationUpdates(locReq, mLocationCallback, Looper.myLooper());
+        }
+        catch (SecurityException ex)
+        {
+        }
+
+    }
+
+    private void initMap()
+    {
+        if (ContextCompat.checkSelfPermission(caller, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED)
+        {
+            Log.i("SetMapLocation", "Location permissions allowed.");
+            mapView.getMapAsync(new OnMapReadyCallback()
+            {
+                @Override
+                public void onMapReady(GoogleMap googleMap)
+                {
+                    appAlert.cancel();
+                    Toast.makeText(caller,
+                            "Acquiring location...\nIf you don't want to wait, you can move the map.",
+                            Toast.LENGTH_SHORT).show();
+                    gMap = googleMap;
+                    gMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener()
+                    {
+                        @Override
+                        public void onCameraMoveStarted(int i)
+                        {
+                            if (i == REASON_GESTURE)
+                            {
+                                setMoveAllowed(false);
+                            }
+                        }
+                    });
+                    try
+                    {
+                        gMap.setMyLocationEnabled(true);
+                    }
+                    catch (SecurityException ex)
+                    {
+                        Log.i("SetMapLocationDialog", "Permissions error.");
+                    }
+                    gMap_onClickTarget();
+                }
+            });
+        }
+    }
 //endregion
 
-	private void initMap() {
-		if (ContextCompat.checkSelfPermission(caller, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-			Log.i("SetMapLocation","Location permissions allowed.");
-			mapView.getMapAsync(new OnMapReadyCallback() {
-				@Override
-				public void onMapReady(GoogleMap googleMap) {
-					appAlert.cancel();
-					appAlert.makeText(caller, "Acquiring location...\nIf you don't want to wait, you can move the map.", Toast.LENGTH_SHORT).show();
-					gMap = googleMap;
-					gMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
-						@Override
-						public void onCameraMoveStarted(int i) {
-							if (i == REASON_GESTURE) { setMoveAllowed(false); }
-						}
-					});
-					try {
-						gMap.setMyLocationEnabled(true);
-					} catch (SecurityException ex) { Log.i("SetMapLocationDialog", "Permissions error."); }
-					gMap_onClickTarget();
-				}
-			});
-		}
-	}
-	private void setMoveAllowed(boolean allowed) {
-		canMoveCam = allowed;
-	}
-	private void gMap_CamMove() {
-		if (userLocation != null && gMap != null) {
-			LatLng usrPoint = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
-			CameraUpdate camChange = CameraUpdateFactory.newCameraPosition(
-					CameraPosition.builder()
-							.target(usrPoint)
-							.zoom(14)
-							.build()
-			);
-			gMap.moveCamera(camChange);
-		}
-	}
-	private void gMap_onClickTarget() {
-		gMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-			@Override
-			public void onMapClick(LatLng latLng) {
-				setResult(latLng);
-				gMap.clear();
-				gMap.addMarker(new MarkerOptions()
-						.position(latLng)
-						.title("Chosen Location"));
-			}
-		});
-	}
+    private void setMoveAllowed(boolean allowed)
+    {
+        canMoveCam = allowed;
+    }
 
-	private void btn_save_onClick() {
-		Button save = (Button) diagView.findViewById(R.id.btn_mapdialog_Save);
-		save.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (locResult == null) { return; }
-				mapDiag.dismiss();
-				returnListener.MapSetDialog_PosResult(locResult);
+    private void gMap_CamMove()
+    {
+        if (userLocation != null && gMap != null)
+        {
+            LatLng usrPoint = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+            CameraUpdate camChange = CameraUpdateFactory.newCameraPosition(
+                    CameraPosition.builder()
+                            .target(usrPoint)
+                            .zoom(14)
+                            .build()
+            );
+            gMap.moveCamera(camChange);
+        }
+    }
 
-			}
-		});
-	}
-	private void btn_cancel_onClick() {
-		Button cancel = (Button) diagView.findViewById(R.id.btn_mapdialog_Cancel);
-		cancel.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				returnListener.MapSetDialog_PosResult(null);
-				mapDiag.dismiss();
-			}
-		});
-	}
+    private void gMap_onClickTarget()
+    {
+        gMap.setOnMapClickListener(new GoogleMap.OnMapClickListener()
+        {
+            @Override
+            public void onMapClick(LatLng latLng)
+            {
+                setResult(latLng);
+                gMap.clear();
+                gMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title("Chosen Location"));
+            }
+        });
+    }
 
-	private void setResult(final LatLng res) {
-		locResult = res;
-	}
+    private void btn_save_onClick()
+    {
+        Button save = diagView.findViewById(R.id.btn_mapdialog_Save);
+        save.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (locResult == null)
+                {
+                    return;
+                }
+                mapDiag.dismiss();
+                returnListener.MapSetDialog_PosResult(locResult);
 
-	private void setUserLoc(final Location userLoc) {
-		userLocation = userLoc;
-	}
+            }
+        });
+    }
 
-	@Override
-	public void onMapReady(GoogleMap googleMap) {}
+    private void btn_cancel_onClick()
+    {
+        Button cancel = diagView.findViewById(R.id.btn_mapdialog_Cancel);
+        cancel.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                returnListener.MapSetDialog_PosResult(null);
+                mapDiag.dismiss();
+            }
+        });
+    }
+
+    private void setResult(final LatLng res)
+    {
+        locResult = res;
+    }
+
+    private void setUserLoc(final Location userLoc)
+    {
+        userLocation = userLoc;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap)
+    {
+    }
+
+    // Allow passing data back to the calling activity using an event trigger to avoid async issues
+    public interface MapDialogReturnListener
+    {
+        void MapSetDialog_PosResult(LatLng result);
+    }
 }

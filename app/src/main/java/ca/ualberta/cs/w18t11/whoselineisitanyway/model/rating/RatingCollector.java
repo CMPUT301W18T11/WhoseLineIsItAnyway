@@ -12,9 +12,13 @@ import java.util.ArrayList;
 public final class RatingCollector
 {
     private final ArrayList<Rating> ratings = new ArrayList<>();
+
     private int avgRating = 0;                              // Holds the overall average agg. rating
+
     private int avgQuality = 0;                             // Holds overall avg quality rating
+
     private int avgProf = 0;                                // Holds overall avg Professionalism
+
     private int avgTTC = 0;                                 // overall avg time-to-completion rating
 
     /**
@@ -150,7 +154,8 @@ public final class RatingCollector
     final public String toString()
     {
         int JUSTIFY_LEN = 18;
-        if (ratings.isEmpty() != true) {
+        if (ratings.isEmpty() != true)
+        {
             StringBuilder strCreate = new StringBuilder();
             strCreate.append(
                     "SUMMARY | (" + String.valueOf(getRatingCount()) + ") Reviews" + "\n" +
@@ -158,13 +163,15 @@ public final class RatingCollector
             );
             strCreate.append(
                     String.format("%-" + String.valueOf(JUSTIFY_LEN) + "s", "Overall:") +
-                            String.format("%-6s", new String(new char[avgRating]).replace("\0", "*")) +
+                            String.format("%-6s",
+                                    new String(new char[avgRating]).replace("\0", "*")) +
                             "(" + String.valueOf(avgRating) + ")" +
                             "\n"
             );
             strCreate.append(
                     String.format("%-" + String.valueOf(JUSTIFY_LEN) + "s", "Quality:") +
-                            String.format("%-6s", new String(new char[avgQuality]).replace("\0", "*")) +
+                            String.format("%-6s",
+                                    new String(new char[avgQuality]).replace("\0", "*")) +
                             "(" + String.valueOf(avgQuality) + ")" +
                             "\n"
             );
@@ -176,22 +183,28 @@ public final class RatingCollector
             );
             strCreate.append(
                     String.format("%-" + String.valueOf(JUSTIFY_LEN) + "s", "Professionalism:") +
-                            String.format("%-6s", new String(new char[avgProf]).replace("\0", "*")) +
+                            String.format("%-6s", new String(new char[avgProf]).replace("\0", "*"))
+                            +
                             "(" + String.valueOf(avgProf) + ")" +
                             "\n"
             );
 
             return strCreate.toString();
-        } else {
+        }
+        else
+        {
             return "SUMMARY (0 Reviews - Unrated User)";
         }
-            
+
     }
-    final public ArrayList<Rating> getRatingsList() {
+
+    final public ArrayList<Rating> getRatingsList()
+    {
         return ratings;
     }
 
-    final public boolean empty() {
+    final public boolean empty()
+    {
         return ratings.isEmpty();
     }
 

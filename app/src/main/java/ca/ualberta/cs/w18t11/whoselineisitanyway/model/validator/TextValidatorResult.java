@@ -15,7 +15,9 @@ import java.util.ArrayList;
 public final class TextValidatorResult
 {
     private int ERRORCODE;
+
     private ArrayList<String> MATCHGROUPS = new ArrayList<String>();
+
     private String ERRMSG;
 
     /**
@@ -45,9 +47,14 @@ public final class TextValidatorResult
 
     public String getErrorMSG()
     {
-        if (ERRMSG == null || ERRMSG.equals("")) {
+        if (ERRMSG == null || ERRMSG.equals(""))
+        {
             return null;
-        } else { return ERRMSG; }
+        }
+        else
+        {
+            return ERRMSG;
+        }
     }
 
     public ArrayList<String> getComponents()

@@ -5,12 +5,13 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.validator.TextValidator;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author Lucas Thalen
- *         Tests for the Validator model class
+ * Tests for the Validator model class
  */
 
 public final class TextValidatorUnitTest

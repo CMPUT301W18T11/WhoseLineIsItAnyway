@@ -44,20 +44,27 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.TaskStatus;
  * @author Lucas
  * @see Task
  */
-public class CreateModifyTaskActivity extends AppCompatActivity implements SetMapLocationDialog.MapDialogReturnListener, ActivityCompat.OnRequestPermissionsResultCallback  {
+public class CreateModifyTaskActivity extends AppCompatActivity
+        implements SetMapLocationDialog.MapDialogReturnListener,
+        ActivityCompat.OnRequestPermissionsResultCallback
+{
     private final DataSourceManager DSM = new DataSourceManager(this);
-    private LinearLayout filmstrip; // Hold the container for the objects
 
     private final int PICK_IMAGES = 1256;
 
-    // Holders for task details until one can be finalized
-    private Task existingTask;
-    private Task resultTask;
-    private Location tempLoc = null;
-
     // Permissions request identification codes
     private final int PERMISSION_REQUEST_READ_STORAGE = 0;
+
     private final int PERMISSION_REQUEST_LOCATION = 1;
+
+    private LinearLayout filmstrip; // Hold the container for the objects
+
+    // Holders for task details until one can be finalized
+    private Task existingTask;
+
+    private Task resultTask;
+
+    private Location tempLoc = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -111,20 +118,26 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         TextView locField = findViewById(R.id.txt_location_set);
         titleField.setText(existingTask.getTitle());
         descrField.setText(existingTask.getDescription());
-        if (existingTask.getLocation() != null) {
-            String locString = "Location Set\n(" + String.valueOf(existingTask.getLocation().getLatitude()) + ", " +
+        if (existingTask.getLocation() != null)
+        {
+            String locString = "Location Set\n(" + String
+                    .valueOf(existingTask.getLocation().getLatitude()) + ", " +
                     String.valueOf(existingTask.getLocation().getLongitude()) + ")";
             locField.setText(locString);
-        } else {
+        }
+        else
+        {
             String locString = "(Location not Set)";
             locField.setText(locString);
         }
 
 
         // Check to ensure that images are in the task, if not don't bother changing anything
-        if (existingTask.getImages().length > 0) {
+        if (existingTask.getImages().length > 0)
+        {
             ArrayList<String> images = new ArrayList<>(Arrays.asList(existingTask.getImages()));
-            for (int i = 0; i < images.size(); i ++) {
+            for (int i = 0; i < images.size(); i++)
+            {
                 add_image(new BitmapManager(images.get(i)));
             }
         }
@@ -404,8 +417,10 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
     }
 
     @Override
-    public void MapSetDialog_PosResult(LatLng result) {
-        if (result != null) {
+    public void MapSetDialog_PosResult(LatLng result)
+    {
+        if (result != null)
+        {
 
             TextView locField = findViewById(R.id.txt_location_set);
             String locString = "Location Set\n(" + String.valueOf(result.latitude) + ", " +
@@ -421,9 +436,12 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         button.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 if (existingTask != null)
+                {
                     existingTask.setLocation(null);
+                }
                 TextView locField = findViewById(R.id.txt_location_set);
                 String locString = "(Location not set)";
                 locField.setText(locString);
@@ -438,18 +456,25 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         button.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v) {
-                if (!validateAllFields()) { return; }
+            public void onClick(View v)
+            {
+                if (!validateAllFields())
+                {
+                    return;
+                }
                 EditText title = findViewById(R.id.etxt_Title);
                 EditText descr = findViewById(R.id.etxt_Description);
-                if (existingTask != null) {
+                if (existingTask != null)
+                {
                     resultTask = new Task(
                             existingTask.getElasticId(),
                             DSM.getCurrentUser().getUsername(),
                             title.getText().toString(),
                             descr.getText().toString()
                     );
-                } else {
+                }
+                else
+                {
                     resultTask = new Task(
                             DSM.getCurrentUser().getUsername(),
                             title.getText().toString(),
@@ -457,34 +482,43 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
                     );
                 }
                 ArrayList<String> imagesArrList = new ArrayList<>();
-                for (int i = 0; i < filmstrip.getChildCount(); i ++) {
-                    Log.i("GenTask - Get Tags", "Try getting a tag from the imageView: " + String.valueOf(i+1));
+                for (int i = 0; i < filmstrip.getChildCount(); i++)
+                {
+                    Log.i("GenTask - Get Tags",
+                            "Try getting a tag from the imageView: " + String.valueOf(i + 1));
                     BitmapManager tempBMP = (BitmapManager) filmstrip.getChildAt(i).getTag();
-                    Log.i("GenTask - B64 Str", "Try getting the base-64 rep of image: " + String.valueOf(i + 1));
+                    Log.i("GenTask - B64 Str",
+                            "Try getting the base-64 rep of image: " + String.valueOf(i + 1));
                     imagesArrList.add(tempBMP.getBase64Bitmap());
 
                 }
                 String[] attachments = imagesArrList.toArray(new String[imagesArrList.size()]);
-                if (attachments.length > 0) {
+                if (attachments.length > 0)
+                {
                     Log.i("GenTask - SetImg", "Try attaching images to the task object");
                     resultTask.setImages(attachments);
                 }
 
-                if (tempLoc != null ) {
+                if (tempLoc != null)
+                {
                     Log.i("GenTask - Loc", "Setting Task location: (" +
                             String.valueOf(tempLoc.getLatitude()) + ", " +
                             String.valueOf(tempLoc.getLongitude()) + ")");
                     resultTask.setLocation(tempLoc);
                 }
                 String image_data_for_log;
-                if (resultTask.getImages() == null) {
+                if (resultTask.getImages() == null)
+                {
                     image_data_for_log = "NULL";
-                } else {
+                }
+                else
+                {
                     image_data_for_log = String.valueOf(resultTask.getImages().length);
                 }
-                Log.i("GenTask - Task","Generated Task:\n" +
+                Log.i("GenTask - Task", "Generated Task:\n" +
                         "    Title: " + resultTask.getTitle() + "\n" +
-                        "    Descr: " + String.valueOf(resultTask.getDescription().length()) + "\n" +
+                        "    Descr: " + String.valueOf(resultTask.getDescription().length()) + "\n"
+                        +
                         "    ES ID: " + String.valueOf(resultTask.getElasticId() != null) + "\n" +
                         "    Pics #: " + image_data_for_log + "\n" +
                         "    Loc: " + String.valueOf(resultTask.getLocation() != null)
@@ -512,10 +546,12 @@ public class CreateModifyTaskActivity extends AppCompatActivity implements SetMa
         });
     }
 
-    private boolean validateAllFields() {
+    private boolean validateAllFields()
+    {
         EditText titleField = findViewById(R.id.etxt_Title);
         EditText descrField = findViewById(R.id.etxt_Description);
-        if (titleField.getText().length() == 0) {
+        if (titleField.getText().length() == 0)
+        {
             titleField.setError("You must enter a title for your task.");
         }
         if (descrField.getText().length() == 0)

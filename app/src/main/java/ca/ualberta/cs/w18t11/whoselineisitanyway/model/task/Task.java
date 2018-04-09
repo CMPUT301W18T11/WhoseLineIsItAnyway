@@ -445,7 +445,7 @@ public final class Task implements Detailed, Elastic, Serializable
     }
 
     /**
-     * @param bid        The bid to decline.
+     * @param bid The bid to decline.
      * @return A copy of the task without the bid.
      * @see Bid
      * @see DataSource
@@ -479,7 +479,7 @@ public final class Task implements Detailed, Elastic, Serializable
     }
 
     /**
-     * @param bid        The bid to submit.
+     * @param bid The bid to submit.
      * @return A copy of the task with the given bid on it, replacing any bid previously made by the
      * same provider.
      * @throws IllegalArgumentException For a bid with a taskId different from the task's Id.

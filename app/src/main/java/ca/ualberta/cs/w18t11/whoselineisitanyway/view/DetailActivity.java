@@ -25,8 +25,11 @@ public class DetailActivity extends AppCompatActivity
 {
 
     TextView title;
+
     ListView detailList;
+
     DetailRowAdapter rowAdapter;
+
     ArrayList<Detail> details;
 
     /**
@@ -96,11 +99,13 @@ public class DetailActivity extends AppCompatActivity
             user.showDetails(DetailActivity.class, this);
         }
 
-        detailList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        detailList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
-            public void onItemClick(AdapterView<?> adapter, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapter, View view, int i, long l)
+            {
                 Detail detail = rowAdapter.getItem(i);
-                if(detail.isLinked())
+                if (detail.isLinked())
                 {
                     startActivity(detail.getLink());
                 }

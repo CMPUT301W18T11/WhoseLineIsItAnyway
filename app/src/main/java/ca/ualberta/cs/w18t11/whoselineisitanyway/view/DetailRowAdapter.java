@@ -16,6 +16,7 @@ public class DetailRowAdapter extends ArrayAdapter<Detail>
 {
 
     private final Context context;
+
     private final ArrayList<Detail> details;
 
     /**
@@ -57,7 +58,7 @@ public class DetailRowAdapter extends ArrayAdapter<Detail>
         rowInfo.setText(details.get(position).getInformation());
 
         // Render clickable links
-        if(details.get(position).isLinked())
+        if (details.get(position).isLinked())
         {
             rowInfo.setTextColor(parent.getResources().getColor(R.color.link));
         }

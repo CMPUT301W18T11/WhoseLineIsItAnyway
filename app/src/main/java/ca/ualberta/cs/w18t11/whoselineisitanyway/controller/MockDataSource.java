@@ -103,9 +103,12 @@ final class MockDataSource implements DataSource
         Bid[] mockBidList = {bid3b, bid3c};
 
         //Build a list of tasks
-        Task task1 = new Task("id1", currentUser.getUsername(), "Demo Task 1", "A really good task");
-        Task task2 = new Task("id2", providerUserA.getUsername(), "Demo Task 2", "A really great task");
-        Task task3 = new Task("id3", providerUserA.getUsername(), currentUser.getUsername(), mockBidList, "Demo Task 3", "An alright task", Boolean.FALSE);
+        Task task1 = new Task("id1", currentUser.getUsername(), "Demo Task 1",
+                "A really good task");
+        Task task2 = new Task("id2", providerUserA.getUsername(), "Demo Task 2",
+                "A really great task");
+        Task task3 = new Task("id3", providerUserA.getUsername(), currentUser.getUsername(),
+                mockBidList, "Demo Task 3", "An alright task", Boolean.FALSE);
 
         this.tasks.add(task1);
         this.tasks.add(task2);
@@ -367,9 +370,9 @@ final class MockDataSource implements DataSource
 
     public User getUserById(String elasticId)
     {
-        for(User user: users)
+        for (User user : users)
         {
-            if(user.getElasticId() != null && user.getElasticId().equals(elasticId))
+            if (user.getElasticId() != null && user.getElasticId().equals(elasticId))
             {
                 return user;
             }
@@ -379,9 +382,9 @@ final class MockDataSource implements DataSource
 
     public User getUserByUsername(String username)
     {
-        for(User user: users)
+        for (User user : users)
         {
-            if(user.getUsername().equals(username))
+            if (user.getUsername().equals(username))
             {
                 return user;
             }

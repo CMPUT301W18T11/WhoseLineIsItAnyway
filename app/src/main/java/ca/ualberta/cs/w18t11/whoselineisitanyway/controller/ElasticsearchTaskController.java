@@ -33,6 +33,24 @@ public class ElasticsearchTaskController
     private static JestDroidClient client;
 
     /**
+     * Sets up the configuration of the server if not yet established
+     */
+    public static void verifyConfig()
+    {
+        if (client == null)
+        {
+            Log.i("ElasticSearch", "verifying config...");
+            DroidClientConfig.Builder builder =
+                    new DroidClientConfig.Builder(Constants.ELASTICSEARCH_URL);
+            JestClientFactory factory = new JestClientFactory();
+
+            DroidClientConfig config = builder.build();
+            factory.setDroidClientConfig(config);
+            client = (JestDroidClient) factory.getObject();
+        }
+    }
+
+    /**
      * Async task for updating the tasks in the database
      */
     public static class AddTasksTask extends AsyncTask<Task, Void, Boolean>
@@ -53,7 +71,9 @@ public class ElasticsearchTaskController
             verifyConfig();
 
             if (task == null)
+            {
                 return Boolean.FALSE;
+            }
 
             if (task.getElasticId() != null)
             {
@@ -105,7 +125,7 @@ public class ElasticsearchTaskController
                         try
                         {
                             result = client.execute(newIndex);
-                            if(result.isSucceeded())
+                            if (result.isSucceeded())
                             {
                                 return Boolean.TRUE;
                             }
@@ -159,12 +179,13 @@ public class ElasticsearchTaskController
         {
             verifyConfig();
 
-            Get get = new Get.Builder(Constants.ELASTICSEARCH_INDEX, taskId[0]).type(typeStr).build();
+            Get get = new Get.Builder(Constants.ELASTICSEARCH_INDEX, taskId[0]).type(typeStr)
+                    .build();
 
             try
             {
                 JestResult result = client.execute(get);
-                if(result.isSucceeded())
+                if (result.isSucceeded())
                 {
                     // Task found
                     Task task = result.getSourceAsObject(Task.class);
@@ -209,7 +230,7 @@ public class ElasticsearchTaskController
             // Build the query
             if (query.length < 1)
             {
-                Log.i("Elasticsearch Error","Invalid query");
+                Log.i("Elasticsearch Error", "Invalid query");
                 return null;
             }
 
@@ -221,7 +242,7 @@ public class ElasticsearchTaskController
             try
             {
                 SearchResult result = client.execute(search);
-                if(result.isSucceeded())
+                if (result.isSucceeded())
                 {
                     List<Task> foundTasks = result.getSourceAsObjectList(Task.class);
                     task.addAll(foundTasks);
@@ -261,7 +282,8 @@ public class ElasticsearchTaskController
             verifyConfig();
 
             Delete delete =
-                    new Delete.Builder(task[0].getElasticId()).index(Constants.ELASTICSEARCH_INDEX).type(typeStr).build();
+                    new Delete.Builder(task[0].getElasticId()).index(Constants.ELASTICSEARCH_INDEX)
+                            .type(typeStr).build();
 
             try
             {
@@ -352,7 +374,8 @@ public class ElasticsearchTaskController
 
             for (Task task : tasks)
             {
-                Index idx = new Index.Builder(task).index(Constants.ELASTICSEARCH_INDEX).type(typeStr).build();
+                Index idx = new Index.Builder(task).index(Constants.ELASTICSEARCH_INDEX)
+                        .type(typeStr).build();
 
                 try
                 {
@@ -380,24 +403,6 @@ public class ElasticsearchTaskController
                 }
             }
             return null;
-        }
-    }
-
-    /**
-     * Sets up the configuration of the server if not yet established
-     */
-    public static void verifyConfig()
-    {
-        if (client == null)
-        {
-            Log.i("ElasticSearch", "verifying config...");
-            DroidClientConfig.Builder builder =
-                    new DroidClientConfig.Builder(Constants.ELASTICSEARCH_URL);
-            JestClientFactory factory = new JestClientFactory();
-
-            DroidClientConfig config = builder.build();
-            factory.setDroidClientConfig(config);
-            client = (JestDroidClient) factory.getObject();
         }
     }
 }

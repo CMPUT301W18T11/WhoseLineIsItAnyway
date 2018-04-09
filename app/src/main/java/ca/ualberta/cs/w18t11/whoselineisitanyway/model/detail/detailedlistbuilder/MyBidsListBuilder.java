@@ -12,18 +12,22 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
 /**
  * A class to construct a list of all of the current user's bids.
+ *
  * @author Brad Ofrim
  * @see Detailed
  */
 
-public class MyBidsListBuilder extends DetailedListBuilder {
+public class MyBidsListBuilder extends DetailedListBuilder
+{
     /**
      * Build a list of the current user's bids.
+     *
      * @return ArrayList<Detailed> of all of the current user's bids.
      */
     @NonNull
     @Override
-    public Detailed[] buildDetailedList(Context context) {
+    public Detailed[] buildDetailedList(Context context)
+    {
         ArrayList<Bid> bidArrayList = new ArrayList<>();
         Bid[] allBids = new DataSourceManager(context).getBids();
         User currentUser = new DataSourceManager(context).getCurrentUser();

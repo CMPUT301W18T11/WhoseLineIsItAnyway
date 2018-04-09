@@ -26,11 +26,17 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
  *
  * @author Lucas Thalen
  */
-public class testActivity extends AppCompatActivity implements DIALOG_PlaceBid.PlaceBidReturnListener, SetMapLocationDialog.MapDialogReturnListener, UserRegisterDialog.diagUserRegistrationListener
+public class testActivity extends AppCompatActivity
+        implements DIALOG_PlaceBid.PlaceBidReturnListener,
+        SetMapLocationDialog.MapDialogReturnListener,
+        UserRegisterDialog.diagUserRegistrationListener
 {
     private LatLng location;
+
     private boolean res = false;
+
     private User resultUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -38,21 +44,23 @@ public class testActivity extends AppCompatActivity implements DIALOG_PlaceBid.P
         setContentView(R.layout.activity_test);
         super.onCreate(savedInstanceState);
 
-        TextView debugText = (TextView) findViewById(R.id.debug_textview);
+        TextView debugText = findViewById(R.id.debug_textview);
         Bitmap.Config config = Bitmap.Config.RGB_565;
-        Bitmap test = BitmapFactory.decodeResource(getResources(), R.drawable.bone_chew_dog).copy(config, false);
-        ImageView debugimg = (ImageView) findViewById(R.id.debug_imgview);
+        Bitmap test = BitmapFactory.decodeResource(getResources(), R.drawable.bone_chew_dog)
+                .copy(config, false);
+        ImageView debugimg = findViewById(R.id.debug_imgview);
         debugimg.setImageBitmap(test);
         debugimg.setScaleType(ImageView.ScaleType.FIT_XY);
         double area = test.getWidth() * test.getHeight();
         int size = test.getByteCount();
         int overhead = test.getRowBytes();
 
-        debugText.setText(String.valueOf(area) + "    :    " + String.valueOf(size) + "\n" + String.valueOf(overhead));
+        debugText.setText(String.valueOf(area) + "    :    " + String.valueOf(size) + "\n" + String
+                .valueOf(overhead));
 
-        Button btnTest = (Button) findViewById(R.id.btnTest);
-        Button btnMapSetDialog = (Button) findViewById(R.id.btn_mapdiag);
-        Button button = (Button) findViewById(R.id.debug_Button);
+        Button btnTest = findViewById(R.id.btnTest);
+        Button btnMapSetDialog = findViewById(R.id.btn_mapdiag);
+        Button button = findViewById(R.id.debug_Button);
         btnTest.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -71,9 +79,11 @@ public class testActivity extends AppCompatActivity implements DIALOG_PlaceBid.P
                 dothings();
             }
         });
-        button.setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
 //                DIALOG_WriteReview diag = new DIALOG_WriteReview(testActivity.this);
 //                diag.showDialog();
             }
@@ -82,31 +92,39 @@ public class testActivity extends AppCompatActivity implements DIALOG_PlaceBid.P
 
     }
 
-    private void dothings() {
+    private void dothings()
+    {
         LatLng testLoc = new LatLng(53.5232, -113.5263);
         ShowTaskLocationDialog mapDiag = new ShowTaskLocationDialog(this);
         mapDiag.showDialog(testLoc);
     }
 
     @Override
-    public void MapSetDialog_PosResult(LatLng result) {
-        if (result != null) {
-            Toast.makeText(this, String.valueOf(result.latitude) + " " + String.valueOf(result.longitude), Toast.LENGTH_SHORT).show();
+    public void MapSetDialog_PosResult(LatLng result)
+    {
+        if (result != null)
+        {
+            Toast.makeText(this,
+                    String.valueOf(result.latitude) + " " + String.valueOf(result.longitude),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    public void RegisterDiag_PosResultListener(User result) {
+    public void RegisterDiag_PosResultListener(User result)
+    {
 
     }
 
     @Override
-    public void RegisterDiag_NegResultListener() {
+    public void RegisterDiag_NegResultListener()
+    {
 
     }
 
     @Override
-    public void PlaceBidDialog_PosResult(BigDecimal result) {
+    public void PlaceBidDialog_PosResult(BigDecimal result)
+    {
         Toast.makeText(this, "Bid Value:" + String.valueOf(result), Toast.LENGTH_LONG).show();
     }
 }

@@ -48,7 +48,8 @@ public final class TaskUnitTest
     {
         final String longerDescription = "longer description";
         Assert.assertEquals(longerDescription,
-                new Task("taskId", "requesterUsername", "title", longerDescription).getDescription());
+                new Task("taskId", "requesterUsername", "title", longerDescription)
+                        .getDescription());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -77,7 +78,8 @@ public final class TaskUnitTest
     {
         final String requesterUsername = "requesterUsername";
         Assert.assertEquals(requesterUsername,
-                new Task("taskId", requesterUsername, "title", "description").getRequesterUsername());
+                new Task("taskId", requesterUsername, "title", "description")
+                        .getRequesterUsername());
     }
 
     @Test
@@ -85,9 +87,11 @@ public final class TaskUnitTest
     {
         final String taskId = "taskId";
         final String providerUsername = "providerUsername";
-        Assert.assertEquals(providerUsername, new Task(taskId, "requesterUsername", providerUsername,
-                new Bid[]{new Bid(providerUsername, taskId, BigDecimal.ONE)}, "title", "description",
-                false).getProviderUsername());
+        Assert.assertEquals(providerUsername,
+                new Task(taskId, "requesterUsername", providerUsername,
+                        new Bid[]{new Bid(providerUsername, taskId, BigDecimal.ONE)}, "title",
+                        "description",
+                        false).getProviderUsername());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -113,7 +117,8 @@ public final class TaskUnitTest
         final String taskId = "taskId";
         final String providerUsername = "providerUsername";
         new Task(taskId, "requesterUsername", providerUsername,
-                new Bid[]{new Bid(providerUsername, taskId, BigDecimal.ONE)}, "title", "description",
+                new Bid[]{new Bid(providerUsername, taskId, BigDecimal.ONE)}, "title",
+                "description",
                 false).submitBid(new Bid(providerUsername, taskId, BigDecimal.TEN));
     }
 
@@ -133,7 +138,8 @@ public final class TaskUnitTest
     public final void testMarkDoneOnBiddedTask()
     {
         final String taskId = "taskId";
-        new Task(taskId, "requesterUsername", new Bid[]{new Bid("providerUsername", taskId, BigDecimal.ONE)},
+        new Task(taskId, "requesterUsername",
+                new Bid[]{new Bid("providerUsername", taskId, BigDecimal.ONE)},
                 "title", "description").markDone();
     }
 

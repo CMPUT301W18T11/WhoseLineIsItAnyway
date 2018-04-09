@@ -52,16 +52,24 @@ import static junit.framework.Assert.fail;
 @RunWith(AndroidJUnit4.class)
 public class CreateModifyTaskActivityTest
 {
-    String myUsername = "test";
-    String myTitle = "My Intent Task";
-    String myDescription = "This task is for intent testing";
-    LatLng taskLocation = new LatLng(53.5232, 113.5263);
-    Task myTask;
-    User user;
-    DataSourceManager DSM;
     @Rule
     public ActivityTestRule<UserLoginActivity> activityRule = new ActivityTestRule<>(
             UserLoginActivity.class);
+
+    String myUsername = "test";
+
+    String myTitle = "My Intent Task";
+
+    String myDescription = "This task is for intent testing";
+
+    LatLng taskLocation = new LatLng(53.5232, 113.5263);
+
+    Task myTask;
+
+    User user;
+
+    DataSourceManager DSM;
+
     private UserLoginActivity loginActivity;
 
     @Before
@@ -88,7 +96,9 @@ public class CreateModifyTaskActivityTest
             for (Task task : tasks)
             {
                 if (task.getRequesterUsername().equals(myUsername))
+                {
                     DSM.removeTask(task);
+                }
             }
         }
 
@@ -96,7 +106,9 @@ public class CreateModifyTaskActivityTest
         {
             onView(withId(R.id.signOut)).perform(click());
         }
-        catch (NoMatchingViewException e) {}
+        catch (NoMatchingViewException e)
+        {
+        }
 
         try
         {
@@ -129,7 +141,9 @@ public class CreateModifyTaskActivityTest
             onView(withId(R.id.btn_OK))
                     .perform(click());
         }
-        catch (NoMatchingViewException e) {}
+        catch (NoMatchingViewException e)
+        {
+        }
     }
 
     @After
@@ -141,7 +155,9 @@ public class CreateModifyTaskActivityTest
             for (Task task : tasks)
             {
                 if (task.getRequesterUsername().equals(myUsername))
+                {
                     DSM.removeTask(task);
+                }
             }
         }
         Intents.release();
@@ -244,7 +260,10 @@ public class CreateModifyTaskActivityTest
                 allowPermissions.click();
             }
         }
-        catch (UiObjectNotFoundException ex) { fail("Failed to create UiObject"); }
+        catch (UiObjectNotFoundException ex)
+        {
+            fail("Failed to create UiObject");
+        }
 
         try
         {
@@ -294,7 +313,10 @@ public class CreateModifyTaskActivityTest
                 allowPermissions.click();
             }
         }
-        catch (UiObjectNotFoundException ex) { fail("Failed to create UiObject"); }
+        catch (UiObjectNotFoundException ex)
+        {
+            fail("Failed to create UiObject");
+        }
 
         UiDevice device = UiDevice.getInstance(getInstrumentation());
         UiObject marker = device.findObject(new UiSelector().descriptionContains("Google Maps"));
@@ -339,7 +361,10 @@ public class CreateModifyTaskActivityTest
                 allowPermissions.click();
             }
         }
-        catch (UiObjectNotFoundException ex) { fail("Failed to create UiObject"); }
+        catch (UiObjectNotFoundException ex)
+        {
+            fail("Failed to create UiObject");
+        }
 
         UiDevice device = UiDevice.getInstance(getInstrumentation());
         UiObject marker = device.findObject(new UiSelector().descriptionContains("Google Maps"));

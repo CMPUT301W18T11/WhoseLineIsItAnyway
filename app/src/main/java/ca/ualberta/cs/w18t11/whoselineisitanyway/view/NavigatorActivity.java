@@ -197,7 +197,8 @@ public class NavigatorActivity extends AppCompatActivity
 
             if (tasks != null)
             {
-                intent.putExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE, AdapterType.TASK);
+                intent.putExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE,
+                        AdapterType.TASK);
                 intent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, tasks);
             }
             else

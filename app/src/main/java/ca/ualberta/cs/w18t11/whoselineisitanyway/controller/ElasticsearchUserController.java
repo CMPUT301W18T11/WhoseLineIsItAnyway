@@ -35,6 +35,24 @@ public class ElasticsearchUserController
     private static JestDroidClient client;
 
     /**
+     * Sets up the configuration of the server if not yet established
+     */
+    public static void verifyConfig()
+    {
+        if (client == null)
+        {
+            Log.i("ElasticSearch", "verifying config...");
+            DroidClientConfig.Builder builder =
+                    new DroidClientConfig.Builder(Constants.ELASTICSEARCH_URL);
+            JestClientFactory factory = new JestClientFactory();
+
+            DroidClientConfig config = builder.build();
+            factory.setDroidClientConfig(config);
+            client = (JestDroidClient) factory.getObject();
+        }
+    }
+
+    /**
      * Async task for updating the users in the database
      */
     public static class AddUsersTask extends AsyncTask<User, Void, Boolean>
@@ -55,7 +73,9 @@ public class ElasticsearchUserController
             verifyConfig();
 
             if (user == null)
+            {
                 return Boolean.FALSE;
+            }
 
             if (user.getElasticId() != null)
             {
@@ -116,7 +136,8 @@ public class ElasticsearchUserController
                             if (result.isSucceeded())
                             {
                                 return Boolean.TRUE;
-                            } else
+                            }
+                            else
                             {
                                 Log.i("Elasticsearch Error",
                                         "index missing or could not connect:" +
@@ -166,7 +187,8 @@ public class ElasticsearchUserController
         {
             verifyConfig();
 
-            Get get = new Get.Builder(Constants.ELASTICSEARCH_INDEX, userId[0]).type(typeStr).build();
+            Get get = new Get.Builder(Constants.ELASTICSEARCH_INDEX, userId[0]).type(typeStr)
+                    .build();
 
             try
             {
@@ -270,7 +292,8 @@ public class ElasticsearchUserController
             verifyConfig();
 
             Delete delete =
-                    new Delete.Builder(user[0].getElasticId()).index(Constants.ELASTICSEARCH_INDEX).type(typeStr).build();
+                    new Delete.Builder(user[0].getElasticId()).index(Constants.ELASTICSEARCH_INDEX)
+                            .type(typeStr).build();
 
             try
             {
@@ -312,7 +335,8 @@ public class ElasticsearchUserController
         {
             verifyConfig();
 
-            Index index = new Index.Builder(user[0]).index(Constants.ELASTICSEARCH_INDEX).type(typeStr)
+            Index index = new Index.Builder(user[0]).index(Constants.ELASTICSEARCH_INDEX)
+                    .type(typeStr)
                     .id(user[0].getElasticId()).build();
 
             try
@@ -358,7 +382,8 @@ public class ElasticsearchUserController
 
             for (User user : users)
             {
-                Index idx = new Index.Builder(user).index(Constants.ELASTICSEARCH_INDEX).type(typeStr).build();
+                Index idx = new Index.Builder(user).index(Constants.ELASTICSEARCH_INDEX)
+                        .type(typeStr).build();
 
                 try
                 {
@@ -385,24 +410,6 @@ public class ElasticsearchUserController
                 }
             }
             return null;
-        }
-    }
-
-    /**
-     * Sets up the configuration of the server if not yet established
-     */
-    public static void verifyConfig()
-    {
-        if (client == null)
-        {
-            Log.i("ElasticSearch", "verifying config...");
-            DroidClientConfig.Builder builder =
-                    new DroidClientConfig.Builder(Constants.ELASTICSEARCH_URL);
-            JestClientFactory factory = new JestClientFactory();
-
-            DroidClientConfig config = builder.build();
-            factory.setDroidClientConfig(config);
-            client = (JestDroidClient) factory.getObject();
         }
     }
 }

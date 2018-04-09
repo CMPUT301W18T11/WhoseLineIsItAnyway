@@ -33,6 +33,24 @@ public class ElasticsearchBidController
     private static JestDroidClient client;
 
     /**
+     * Sets up the configuration of the server if not yet established
+     */
+    public static void verifyConfig()
+    {
+        if (client == null)
+        {
+            Log.i("ElasticSearch", "verifying config...");
+            DroidClientConfig.Builder builder =
+                    new DroidClientConfig.Builder(Constants.ELASTICSEARCH_URL);
+            JestClientFactory factory = new JestClientFactory();
+
+            DroidClientConfig config = builder.build();
+            factory.setDroidClientConfig(config);
+            client = (JestDroidClient) factory.getObject();
+        }
+    }
+
+    /**
      * Async task for updating the bids in the database
      */
     public static class AddBidsTask extends AsyncTask<Bid, Void, Boolean>
@@ -53,7 +71,9 @@ public class ElasticsearchBidController
             verifyConfig();
 
             if (bid == null)
+            {
                 return Boolean.FALSE;
+            }
 
             if (bid.getElasticId() != null)
             {
@@ -106,7 +126,7 @@ public class ElasticsearchBidController
                         try
                         {
                             result = client.execute(newIndex);
-                            if(result.isSucceeded())
+                            if (result.isSucceeded())
                             {
                                 return Boolean.TRUE;
                             }
@@ -160,12 +180,13 @@ public class ElasticsearchBidController
         {
             verifyConfig();
 
-            Get get = new Get.Builder(Constants.ELASTICSEARCH_INDEX, bidId[0]).type(typeStr).build();
+            Get get = new Get.Builder(Constants.ELASTICSEARCH_INDEX, bidId[0]).type(typeStr)
+                    .build();
 
             try
             {
                 JestResult result = client.execute(get);
-                if(result.isSucceeded())
+                if (result.isSucceeded())
                 {
                     // Bid found
                     Bid bid = result.getSourceAsObject(Bid.class);
@@ -211,7 +232,7 @@ public class ElasticsearchBidController
             // Build the query
             if (query.length < 1)
             {
-                Log.i("Elasticsearch Error","invalid query");
+                Log.i("Elasticsearch Error", "invalid query");
                 return null;
             }
 
@@ -223,7 +244,7 @@ public class ElasticsearchBidController
             try
             {
                 SearchResult result = client.execute(search);
-                if(result.isSucceeded())
+                if (result.isSucceeded())
                 {
                     List<Bid> foundBids = result.getSourceAsObjectList(Bid.class);
                     bids.addAll(foundBids);
@@ -263,7 +284,8 @@ public class ElasticsearchBidController
             verifyConfig();
 
             Delete delete =
-                    new Delete.Builder(bid[0].getElasticId()).index(Constants.ELASTICSEARCH_INDEX).type(typeStr).build();
+                    new Delete.Builder(bid[0].getElasticId()).index(Constants.ELASTICSEARCH_INDEX)
+                            .type(typeStr).build();
 
             try
             {
@@ -351,9 +373,10 @@ public class ElasticsearchBidController
         {
             verifyConfig();
 
-            for (Bid bid: bids)
+            for (Bid bid : bids)
             {
-                Index idx = new Index.Builder(bid).index(Constants.ELASTICSEARCH_INDEX).type(typeStr).build();
+                Index idx = new Index.Builder(bid).index(Constants.ELASTICSEARCH_INDEX)
+                        .type(typeStr).build();
 
                 try
                 {
@@ -381,24 +404,6 @@ public class ElasticsearchBidController
                 }
             }
             return null;
-        }
-    }
-
-    /**
-     * Sets up the configuration of the server if not yet established
-     */
-    public static void verifyConfig()
-    {
-        if (client == null)
-        {
-            Log.i("ElasticSearch", "verifying config...");
-            DroidClientConfig.Builder builder =
-                    new DroidClientConfig.Builder(Constants.ELASTICSEARCH_URL);
-            JestClientFactory factory = new JestClientFactory();
-
-            DroidClientConfig config = builder.build();
-            factory.setDroidClientConfig(config);
-            client = (JestDroidClient) factory.getObject();
         }
     }
 

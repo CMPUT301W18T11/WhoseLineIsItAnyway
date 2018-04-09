@@ -18,7 +18,7 @@
         android:ems="10"
         android:hint="@string/dialog_place_bid_Hint"
         android:inputType="textPersonName|numberDecimal"
-        android:padding="5dp"/>
+        android:padding="5dp" />
 
     <Button
         android:id="@+id/btn_save"

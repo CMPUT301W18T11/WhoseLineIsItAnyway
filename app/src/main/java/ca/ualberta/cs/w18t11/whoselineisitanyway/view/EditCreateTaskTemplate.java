@@ -18,15 +18,17 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
  * This is an activity to handle creating a task
  *
  * @author Lucas Thalen
- *         Input: Intent with minimum 0/1 to indicate new/edit and if edit, a task object
- *         NO OUTPUT TO RECEIVE
- *         CREATES/SETS NEW TASK
- *         (INCOMPLETE, WILL REFACTOR FOR BACKEND
+ * Input: Intent with minimum 0/1 to indicate new/edit and if edit, a task object
+ * NO OUTPUT TO RECEIVE
+ * CREATES/SETS NEW TASK
+ * (INCOMPLETE, WILL REFACTOR FOR BACKEND
  */
 public abstract class EditCreateTaskTemplate extends AppCompatActivity
 {
     final private DataSourceManager DSM = new DataSourceManager(this);
+
     private Task newTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -40,7 +42,7 @@ public abstract class EditCreateTaskTemplate extends AppCompatActivity
      */
     protected void btn_Cancel_onClick()
     {
-        Button cancel = (Button) findViewById(R.id.btn_Cancel);
+        Button cancel = findViewById(R.id.btn_Cancel);
         cancel.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -60,19 +62,23 @@ public abstract class EditCreateTaskTemplate extends AppCompatActivity
 
     /**
      * This is code that is shareable between thw two activities (Edit/Create Task). Mostly the verification components.
-     *
      */
-    protected void submit_CommonCore() {
+    protected void submit_CommonCore()
+    {
         // MOCK OFFLINE DATA STUFF
-        Button submit = (Button) findViewById(R.id.btn_Submit);
-        submit.setOnClickListener(new View.OnClickListener() {
+        Button submit = findViewById(R.id.btn_Submit);
+        submit.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 String title = ((EditText) findViewById(R.id.etxt_Title)).getText().toString();
-                String descr = ((EditText) findViewById(R.id.etxt_Description)).getText().toString();
+                String descr = ((EditText) findViewById(R.id.etxt_Description)).getText()
+                        .toString();
 
                 createTask(title, descr, "IMAGE_PLACEHOLDER");
-                if (! (newTask == null)) {
+                if (!(newTask == null))
+                {
                     DSM.addTask(newTask);
                 }
                 finish();
@@ -84,6 +90,7 @@ public abstract class EditCreateTaskTemplate extends AppCompatActivity
 
         // finish();
     }
+
     protected void btn_UploadImage_onClick()
     {
 
@@ -97,12 +104,13 @@ public abstract class EditCreateTaskTemplate extends AppCompatActivity
     /**
      * EVENTHANDLER: This is a generic method signature for the TextOnChanged handler, specifically to
      * address for character limited fields when they heat their charlimits so a warning can be shown.
-     * @param ID R.id.x where the ID is for an EditText control.
+     *
+     * @param ID     R.id.x where the ID is for an EditText control.
      * @param maxLen The maximum character limit for this field that triggers a warning when hit
      */
     protected void textFields_onCharLimitReached(final int ID, final int maxLen)
     {
-        final EditText textbox = (EditText) findViewById(ID);
+        final EditText textbox = findViewById(ID);
         textbox.addTextChangedListener(new TextWatcher()
         {
             @Override
@@ -121,7 +129,8 @@ public abstract class EditCreateTaskTemplate extends AppCompatActivity
             {
                 if (textbox.getText().length() == maxLen)
                 {
-                    textbox.setError("This field has a limit of " + String.valueOf(maxLen) + " characters.");
+                    textbox.setError(
+                            "This field has a limit of " + String.valueOf(maxLen) + " characters.");
                 }
                 else
                 {

@@ -51,19 +51,30 @@ import static org.hamcrest.core.IsNot.not;
 @RunWith(AndroidJUnit4.class)
 public class TaskDetailActivityTest
 {
-    String myUsername = "test";
-    String otherUsername = "nottest";
-    String myTitle = "My Intent Task";
-    String otherTitle = "Other Intent Task";
-    String myDescription = "This task is for intent testing";
-    String otherDescription = "This task is also for intent testing";
-    Task myTask = new Task(myUsername, myTitle, myDescription);
-    Task otherTask = new Task(otherUsername, otherTitle, otherDescription);
-    User user;
-    DataSourceManager DSM;
     @Rule
     public ActivityTestRule<UserLoginActivity> activityRule = new ActivityTestRule<>(
             UserLoginActivity.class);
+
+    String myUsername = "test";
+
+    String otherUsername = "nottest";
+
+    String myTitle = "My Intent Task";
+
+    String otherTitle = "Other Intent Task";
+
+    String myDescription = "This task is for intent testing";
+
+    String otherDescription = "This task is also for intent testing";
+
+    Task myTask = new Task(myUsername, myTitle, myDescription);
+
+    Task otherTask = new Task(otherUsername, otherTitle, otherDescription);
+
+    User user;
+
+    DataSourceManager DSM;
+
     private UserLoginActivity loginActivity;
 
     @Before
@@ -80,9 +91,13 @@ public class TaskDetailActivityTest
             for (Task task : tasks)
             {
                 if (task.getRequesterUsername().equals(myUsername))
+                {
                     DSM.removeTask(task);
+                }
                 if (task.getRequesterUsername().equals(otherUsername))
+                {
                     DSM.removeTask(task);
+                }
             }
         }
         Bid[] bids = DSM.getBids();
@@ -91,9 +106,13 @@ public class TaskDetailActivityTest
             for (Bid bid : bids)
             {
                 if (bid.getProviderUsername().equals(myUsername))
+                {
                     DSM.removeBid(bid);
+                }
                 if (bid.getProviderUsername().equals(otherUsername))
+                {
                     DSM.removeBid(bid);
+                }
             }
         }
 
@@ -109,7 +128,9 @@ public class TaskDetailActivityTest
         {
             onView(withId(R.id.signOut)).perform(click());
         }
-        catch (NoMatchingViewException e) {}
+        catch (NoMatchingViewException e)
+        {
+        }
 
         try
         {
@@ -142,7 +163,9 @@ public class TaskDetailActivityTest
             onView(withId(R.id.btn_OK))
                     .perform(click());
         }
-        catch (NoMatchingViewException e) {}
+        catch (NoMatchingViewException e)
+        {
+        }
     }
 
     @After
@@ -155,9 +178,13 @@ public class TaskDetailActivityTest
             for (Task task : tasks)
             {
                 if (task.getRequesterUsername().equals(myUsername))
+                {
                     DSM.removeTask(task);
+                }
                 if (task.getRequesterUsername().equals(otherUsername))
+                {
                     DSM.removeTask(task);
+                }
             }
         }
         Bid[] bids = DSM.getBids();
@@ -166,9 +193,13 @@ public class TaskDetailActivityTest
             for (Bid bid : bids)
             {
                 if (bid.getProviderUsername().equals(myUsername))
+                {
                     DSM.removeBid(bid);
+                }
                 if (bid.getProviderUsername().equals(otherUsername))
+                {
                     DSM.removeBid(bid);
+                }
             }
         }
         Intents.release();

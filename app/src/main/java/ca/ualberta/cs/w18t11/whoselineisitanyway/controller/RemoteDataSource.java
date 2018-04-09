@@ -333,9 +333,9 @@ public class RemoteDataSource implements DataSource
     @Override
     public boolean removeTask(@NonNull Task task)
     {
-        if(task.getBids() != null)
+        if (task.getBids() != null)
         {
-            for(Bid bid: task.getBids())
+            for (Bid bid : task.getBids())
             {
                 removeBid(bid);
             }

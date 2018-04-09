@@ -33,6 +33,7 @@ public final class DetailedListActivity extends NavigatorActivity
             = "NavigatorActivity_adapter";
 
     private ArrayList<Detailed> detaileds = new ArrayList<>();
+
     private ArrayList<Task> tasks = new ArrayList<>();
 
     private ArrayAdapter adapter;
@@ -48,7 +49,8 @@ public final class DetailedListActivity extends NavigatorActivity
         this.setContentView(R.layout.activity_list);
 //        this.loadState();
 
-        detailedListBuilder = (DetailedListBuilder) this.getIntent().getSerializableExtra(DATA_LIST_BUILDER);
+        detailedListBuilder = (DetailedListBuilder) this.getIntent()
+                .getSerializableExtra(DATA_LIST_BUILDER);
         final ActionBar actionBar = this.getSupportActionBar();
         assert actionBar != null;
         actionBar.setTitle(this.getIntent().getStringExtra(DetailedListActivity.DATA_TITLE));
@@ -57,7 +59,8 @@ public final class DetailedListActivity extends NavigatorActivity
 
         adapterType = (AdapterType) this.getIntent()
                 .getSerializableExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE);
-        switch (adapterType) {
+        switch (adapterType)
+        {
             case TASK:
                 adapter = new TaskAdapter(this, R.layout.row_task, tasks);
                 break;
@@ -106,7 +109,7 @@ public final class DetailedListActivity extends NavigatorActivity
         {
             case TASK:
                 tasks.clear();
-                for(Detailed detailed: newData)
+                for (Detailed detailed : newData)
                 {
                     tasks.add((Task) detailed);
                 }

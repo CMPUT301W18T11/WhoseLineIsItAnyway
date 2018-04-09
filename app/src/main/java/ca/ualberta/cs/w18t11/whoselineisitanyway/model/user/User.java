@@ -32,11 +32,13 @@ public final class User implements Detailed, Elastic, Serializable
      * @see Serializable
      */
     private static final long serialVersionUID = 5194623147675047167L;
+
     /**
      * The user's username.
      */
     @NonNull
     private final String username;
+
     /**
      * The user's email address.
      *
@@ -44,6 +46,7 @@ public final class User implements Detailed, Elastic, Serializable
      */
     @NonNull
     private final EmailAddress emailAddress;
+
     /**
      * The user's phone number.
      *
@@ -51,6 +54,7 @@ public final class User implements Detailed, Elastic, Serializable
      */
     @NonNull
     private final PhoneNumber phoneNumber;
+
     /**
      * The user's rating collector
      *
@@ -58,6 +62,7 @@ public final class User implements Detailed, Elastic, Serializable
      */
     @NonNull
     private final RatingCollector ratingCollector;
+
     /**
      * The user's unique ID in Elasticsearch.
      */
@@ -155,7 +160,10 @@ public final class User implements Detailed, Elastic, Serializable
      * @see RatingCollector
      */
     @NonNull
-    public final RatingCollector getRatingCollector() { return this.ratingCollector; }
+    public final RatingCollector getRatingCollector()
+    {
+        return this.ratingCollector;
+    }
 
     /**
      * @return The user's elastic ID.
@@ -185,9 +193,11 @@ public final class User implements Detailed, Elastic, Serializable
         this.elasticId = id;
     }
 
-    public final void addUserReview(@NonNull Rating rev) {
+    public final void addUserReview(@NonNull Rating rev)
+    {
         ratingCollector.addRating(rev);
     }
+
     /**
      * Shows the user's details.
      *

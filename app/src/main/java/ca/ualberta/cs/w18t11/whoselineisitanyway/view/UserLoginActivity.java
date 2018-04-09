@@ -8,15 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
-import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.AllTasksListBuilder;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
@@ -30,9 +25,9 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 public final class UserLoginActivity extends AppCompatActivity
         implements UserRegisterDialog.diagUserRegistrationListener
 {
-    private EditText usernameField;
-
     private final DataSourceManager dataSourceManager = new DataSourceManager(this);
+
+    private EditText usernameField;
 
     @Override
     protected final void onCreate(@Nullable final Bundle savedInstanceState)
@@ -115,7 +110,8 @@ public final class UserLoginActivity extends AppCompatActivity
         this.dataSourceManager.setCurrentUser(user);
 
         outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
-        outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE, AdapterType.TASK);
+        outgoingIntent
+                .putExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE, AdapterType.TASK);
         outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, tasks);
         outgoingIntent.putExtra(DetailedListActivity.DATA_LIST_BUILDER, new AllTasksListBuilder());
         startActivity(outgoingIntent);

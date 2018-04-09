@@ -8,17 +8,17 @@ import java.util.regex.Pattern;
  * <h1>TextValidator</h1>
  *
  * @author Lucas Thalen
- *         This class contains functions for verifying key types of text input on text fields
- *         it outputs error codes, messages, and any found components for the format in question
- *         Quick Summary:
- *         Phonenumber: +# (###) ###-####
- *         ERR: -1 Indicates incorrect formatting
- *         Email: example@example.tld
- *         ERR -1 Indicates formatting is incorrect
- *         ERR -2 Indicates too many @ symbols in email
- *         Currency: ($)#(.##) (with or without $, only needs .## if . used)
- *         ERR -1 Incorrect format
- *         ERR -2 Decimal without decimal values
+ * This class contains functions for verifying key types of text input on text fields
+ * it outputs error codes, messages, and any found components for the format in question
+ * Quick Summary:
+ * Phonenumber: +# (###) ###-####
+ * ERR: -1 Indicates incorrect formatting
+ * Email: example@example.tld
+ * ERR -1 Indicates formatting is incorrect
+ * ERR -2 Indicates too many @ symbols in email
+ * Currency: ($)#(.##) (with or without $, only needs .## if . used)
+ * ERR -1 Incorrect format
+ * ERR -2 Decimal without decimal values
  * @see TextValidatorResult
  */
 public final class TextValidator
