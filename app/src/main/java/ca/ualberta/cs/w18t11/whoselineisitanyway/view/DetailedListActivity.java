@@ -57,15 +57,20 @@ public final class DetailedListActivity extends NavigatorActivity
 
         adapterType = (AdapterType) this.getIntent()
                 .getSerializableExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE);
-        switch (adapterType)
-        {
-            case TASK:
-                adapter = new TaskAdapter(this, R.layout.row_task, tasks);
-                break;
-            case BID:
-                // TODO: Replace with BidAdapter.
-                adapter = new ArrayAdapter<>(this, R.layout.list_object, detaileds);
-                break;
+        if(adapterType != null) {
+            switch (adapterType) {
+                case TASK:
+                    adapter = new TaskAdapter(this, R.layout.row_task, tasks);
+                    break;
+                case BID:
+                    // TODO: Replace with BidAdapter.
+                    adapter = new ArrayAdapter<>(this, R.layout.list_object, detaileds);
+                    break;
+            }
+        }
+        else{
+            // Default adapter
+            adapter = new ArrayAdapter<>(this, R.layout.list_object, detaileds);
         }
 
         listView.setAdapter(adapter);
