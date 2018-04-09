@@ -166,22 +166,4 @@ public final class TaskUnitTest
         task.setElasticId(taskId);
         Assert.assertEquals(taskId, task.getElasticId());
     }
-
-    @Test
-    public final void testEquals()
-    {
-        final String taskId = "taskId";
-        final String requesterUsername = "requesterUsername";
-        final String otherRequesterUsername = "otherRequesterUsername";
-        final String title = "title";
-        final String description = "description";
-        final Task task = new Task(taskId, requesterUsername, title, description);
-        final Task sameTask = new Task(taskId, requesterUsername, title, description);
-        final Task differentTask = new Task(taskId, otherRequesterUsername, title, description);
-        Assert.assertEquals(task, task);
-        Assert.assertEquals(task, sameTask);
-        Assert.assertEquals(sameTask, task);
-        Assert.assertNotEquals(task, differentTask);
-        Assert.assertNotEquals(differentTask, task);
-    }
 }

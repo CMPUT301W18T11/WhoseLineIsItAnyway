@@ -81,22 +81,4 @@ public final class BidUnitTest
         bid.setElasticId(BidUnitTest.bidId);
         Assert.assertEquals(BidUnitTest.bidId, bid.getElasticId());
     }
-
-    @Test
-    public final void testEquals()
-    {
-        final String otherBidId = "otherBidId";
-        final String otherProviderId = "otherProviderId";
-        final Bid bid = new Bid(BidUnitTest.bidId, BidUnitTest.providerId, BidUnitTest.taskId,
-                BidUnitTest.value);
-        final Bid sameBid = new Bid(otherBidId, BidUnitTest.providerId, BidUnitTest.taskId,
-                BidUnitTest.value);
-        final Bid differentBid = new Bid(BidUnitTest.bidId, otherProviderId, BidUnitTest.taskId,
-                BidUnitTest.value);
-        Assert.assertEquals(bid, bid);
-        Assert.assertEquals(bid, sameBid);
-        Assert.assertEquals(sameBid, bid);
-        Assert.assertNotEquals(bid, differentBid);
-        Assert.assertNotEquals(differentBid, bid);
-    }
 }

@@ -54,24 +54,4 @@ public final class UserUnitTest
         user.setElasticId(UserUnitTest.userId);
         Assert.assertEquals(UserUnitTest.userId, user.getElasticId());
     }
-
-    @Test
-    public final void testEquals()
-    {
-        final String otherUserId = "otherUserId";
-        final String otherUsername = "otherUsername";
-        final User user = new User(
-                UserUnitTest.userId, UserUnitTest.username,
-                UserUnitTest.emailAddress, UserUnitTest.phoneNumber);
-        final User sameUser = new User(otherUserId, UserUnitTest.username,
-                UserUnitTest.emailAddress, UserUnitTest.phoneNumber);
-        final User differentUser = new User(
-                UserUnitTest.userId, otherUsername,
-                UserUnitTest.emailAddress, UserUnitTest.phoneNumber);
-        Assert.assertEquals(user, user);
-        Assert.assertEquals(user, sameUser);
-        Assert.assertEquals(sameUser, user);
-        Assert.assertNotEquals(user, differentUser);
-        Assert.assertNotEquals(differentUser, user);
-    }
 }
