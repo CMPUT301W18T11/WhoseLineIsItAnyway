@@ -11,9 +11,8 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.rating.Rating;
 
 /**
- * Created by lucas on 2018-03-24.
+ * Dialog for submitting user reviews
  */
-
 public class FullReviewDialog
 {
     private Rating review;

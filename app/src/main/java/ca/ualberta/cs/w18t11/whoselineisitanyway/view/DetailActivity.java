@@ -21,6 +21,9 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.EmailAddress;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.PhoneNumber;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
+/**
+ * Activity for creating custom activities for Detailed objects
+ */
 public class DetailActivity extends AppCompatActivity
 {
 

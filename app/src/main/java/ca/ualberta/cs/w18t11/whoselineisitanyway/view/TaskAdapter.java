@@ -20,6 +20,9 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.TaskStatus;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
+/**
+ * Custom ArrayAdapter for Task objects
+ */
 public final class TaskAdapter extends ArrayAdapter<Task>
 {
     private final DataSourceManager dataSourceManager = new DataSourceManager(this.getContext());

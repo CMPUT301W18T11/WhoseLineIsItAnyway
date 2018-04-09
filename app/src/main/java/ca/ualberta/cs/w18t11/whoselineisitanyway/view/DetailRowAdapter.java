@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detail;
 
+/**
+ * Custom ArrayAdapter for Bid objects
+ */
 public class DetailRowAdapter extends ArrayAdapter<Detail>
 {
 
