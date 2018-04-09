@@ -48,71 +48,67 @@ public class ElasticsearchBidController
         protected Boolean doInBackground(Bid... bids)
         {
             DocumentResult result;
+            Bid bid = bids[0];
 
             verifyConfig();
 
-            for (Bid bid: bids)
+            if (bid == null)
+                return Boolean.FALSE;
+
+            if (bid.getElasticId() != null)
             {
-                if (bid == null)
-                    return Boolean.FALSE;
+                Index index = new Index.Builder(bid)
+                        .index(Constants.ELASTICSEARCH_INDEX)
+                        .type(typeStr)
+                        .id(bid.getElasticId())
+                        .build();
 
-                if (bid.getElasticId() != null)
+                try
                 {
-                    Index index = new Index.Builder(bid)
-                            .index(Constants.ELASTICSEARCH_INDEX)
-                            .type(typeStr)
-                            .id(bid.getElasticId())
-                            .build();
-
-                    try
+                    result = client.execute(index);
+                    if (result.isSucceeded())
                     {
-                        result = client.execute(index);
-                        if (result.isSucceeded())
-                        {
-                            Log.i("Elasticsearch Success", "updated bid: "
-                                    + bid.getValue());
-                            return Boolean.TRUE;
-                        }
+                        Log.i("Elasticsearch Success", "updated bid: $"
+                                + bid.getValue());
+                        return Boolean.TRUE;
                     }
-                    catch (Exception e)
+                }
+                catch (Exception e)
+                {
+                    Log.i("Elasticsearch Error", "Unexpected exception: " +
+                            e.toString());
+                    return Boolean.FALSE;
+                }
+            } else
+            {
+                Index idx = new Index.Builder(bid)
+                        .index(Constants.ELASTICSEARCH_INDEX)
+                        .type(typeStr)
+                        .build();
+
+                try
+                {
+                    result = client.execute(idx);
+                    if (result.isSucceeded())
                     {
-                        Log.i("Elasticsearch Error", "Unexpected exception: " +
-                                e.toString());
+                        Log.i("Elasticsearch Success", "Added new bid to db: $"
+                                + bid.getValue());
+
+                        bid.setElasticId(result.getId());
+                        return Boolean.TRUE;
+                    } else
+                    {
+                        Log.i("Elasticsearch Error",
+                                "index missing or could not connect:" +
+                                        Integer.toString(result.getResponseCode()));
                         return Boolean.FALSE;
                     }
                 }
-                else
+                catch (Exception e)
                 {
-                    Index idx = new Index.Builder(bid)
-                            .index(Constants.ELASTICSEARCH_INDEX)
-                            .type(typeStr)
-                            .build();
-
-                    try
-                    {
-                        result = client.execute(idx);
-                        if (result.isSucceeded())
-                        {
-                            Log.i("Elasticsearch Success", "Added new bid to db: "
-                            + bid.getValue());
-
-                            bid.setElasticId(result.getId());
-                            return Boolean.TRUE;
-                        }
-                        else
-                        {
-                            Log.i("Elasticsearch Error",
-                                    "index missing or could not connect:" +
-                                            Integer.toString(result.getResponseCode()));
-                            return Boolean.FALSE;
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        // Probably disconnected
-                        Log.i("Elasticsearch Error", "Unexpected exception: " +
-                                e.toString());
-                    }
+                    // Probably disconnected
+                    Log.i("Elasticsearch Error", "Unexpected exception: " +
+                            e.toString());
                 }
             }
             return Boolean.FALSE;
@@ -245,7 +241,8 @@ public class ElasticsearchBidController
                 DocumentResult result = client.execute(delete);
                 if (result.isSucceeded())
                 {
-                    Log.i("Elasticsearch Success", "deleted bid");
+                    Log.i("Elasticsearch Success", "deleted bid of $" +
+                            bid[0].getValue());
                 }
                 else
                 {
