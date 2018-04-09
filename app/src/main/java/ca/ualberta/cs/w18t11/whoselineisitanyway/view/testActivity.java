@@ -74,8 +74,8 @@ public class testActivity extends AppCompatActivity implements DIALOG_PlaceBid.P
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DIALOG_PlaceBid bidDialog = new DIALOG_PlaceBid(testActivity.this);
-                bidDialog.showDialog();
+                DIALOG_WriteReview diag = new DIALOG_WriteReview(testActivity.this);
+                diag.showDialog();
             }
         });
 

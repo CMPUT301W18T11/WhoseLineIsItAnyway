@@ -114,5 +114,6 @@
     <string name="sign_out">Sign out</string>
     <string name="profile">Profile</string>
     <string name="search">Search</string>
+    <string name="writereview_header">How did your provider do?</string>
 
 </resources>
