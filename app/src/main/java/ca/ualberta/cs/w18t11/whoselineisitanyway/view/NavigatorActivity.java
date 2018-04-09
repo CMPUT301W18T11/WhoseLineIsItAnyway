@@ -26,6 +26,7 @@ import ca.ualberta.cs.w18t11.whoselineisitanyway.model.bid.Bid;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.AllTasksListBuilder;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.AssignedTasksListBuilder;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.DetailedListBuilder;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.MyBidTasksListBuilder;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.MyBidsListBuilder;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.MyTasksListBuilder;
@@ -144,45 +145,45 @@ public class NavigatorActivity extends AppCompatActivity
         {
             Detailed[] tasks = null;
             Detailed[] bids = null;
-            Detailed[] list = null;
             String title = null;
+            DetailedListBuilder builder = null;
 
             switch (item.getItemId())
             {
                 case R.id.all_tasks:
                     tasks = new AllTasksListBuilder().buildDetailedList(this);
                     title = "All Tasks";
-
+                    builder = new AllTasksListBuilder();
                     break;
 
                 case R.id.my_tasks:
                     tasks = new MyTasksListBuilder().buildDetailedList(this);
                     title = "My Tasks";
-
+                    builder = new MyTasksListBuilder();
                     break;
 
                 case R.id.assigned_tasks:
                     tasks = new AssignedTasksListBuilder().buildDetailedList(this);
                     title = "Assigned Tasks";
-
+                    builder = new AssignedTasksListBuilder();
                     break;
 
                 case R.id.nearby_tasks:
                     tasks = new NearbyTasksListBuilder().buildDetailedList(this);
                     title = "Nearby Tasks";
-
+                    builder = new NearbyTasksListBuilder();
                     break;
 
                 case R.id.tasks_bidded:
                     tasks = new MyBidTasksListBuilder().buildDetailedList(this);
                     title = "Tasks I've Bidded On";
-
+                    builder = new MyBidTasksListBuilder();
                     break;
 
                 case R.id.my_bids:
                     bids = new MyBidsListBuilder().buildDetailedList(this);
                     title = "My Bids";
-
+                    builder = new MyBidsListBuilder();
                     break;
 
                 default:
@@ -192,6 +193,7 @@ public class NavigatorActivity extends AppCompatActivity
             assert title != null;
             intent = new Intent(this, DetailedListActivity.class);
             intent.putExtra(DetailedListActivity.DATA_TITLE, title);
+            intent.putExtra(DetailedListActivity.DATA_LIST_BUILDER, builder);
 
             if (tasks != null)
             {

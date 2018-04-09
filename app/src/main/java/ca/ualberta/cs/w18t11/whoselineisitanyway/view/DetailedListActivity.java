@@ -41,7 +41,7 @@ public final class DetailedListActivity extends NavigatorActivity
         this.setContentView(R.layout.activity_list);
 //        this.loadState();
 
-        //detailedListBuilder = this.getIntent().getSerializableExtra(DATA_LIST_BUILDER);
+        detailedListBuilder = (DetailedListBuilder) this.getIntent().getSerializableExtra(DATA_LIST_BUILDER);
         detaileds = (Detailed[]) getIntent().getSerializableExtra(DATA_DETAILABLE_LIST);
         final ActionBar actionBar = this.getSupportActionBar();
         assert actionBar != null;
