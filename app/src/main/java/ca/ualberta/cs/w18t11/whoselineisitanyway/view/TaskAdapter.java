@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
@@ -24,7 +25,7 @@ public final class TaskAdapter extends ArrayAdapter<Task>
     private final DataSourceManager dataSourceManager = new DataSourceManager(this.getContext());
 
     public TaskAdapter(@NonNull final Context context, final int resource,
-                       @NonNull final Task[] tasks)
+                       @NonNull final ArrayList<Task> tasks)
     {
         super(context, resource, tasks);
     }

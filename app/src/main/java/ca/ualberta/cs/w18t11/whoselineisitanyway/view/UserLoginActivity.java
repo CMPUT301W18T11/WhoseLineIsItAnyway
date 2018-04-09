@@ -17,6 +17,7 @@ import java.util.Arrays;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.R;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.controller.DataSourceManager;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.Detailed;
+import ca.ualberta.cs.w18t11.whoselineisitanyway.model.detail.detailedlistbuilder.AllTasksListBuilder;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.task.Task;
 import ca.ualberta.cs.w18t11.whoselineisitanyway.model.user.User;
 
@@ -116,6 +117,7 @@ public final class UserLoginActivity extends AppCompatActivity
         outgoingIntent.putExtra(DetailedListActivity.DATA_TITLE, outgoingTitle);
         outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_ADAPTER_TYPE, AdapterType.TASK);
         outgoingIntent.putExtra(DetailedListActivity.DATA_DETAILABLE_LIST, tasks);
+        outgoingIntent.putExtra(DetailedListActivity.DATA_LIST_BUILDER, new AllTasksListBuilder());
         startActivity(outgoingIntent);
         finish();
     }

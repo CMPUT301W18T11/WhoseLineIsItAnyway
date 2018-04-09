@@ -21,5 +21,5 @@ public abstract class DetailedListBuilder implements Serializable {
      * @return ArrayList<Detailed> of 'Detailed' objects
      */
     @NonNull
-    abstract Detailed[] buildDetailedList(Context context);
+    public abstract Detailed[] buildDetailedList(Context context);
 }
