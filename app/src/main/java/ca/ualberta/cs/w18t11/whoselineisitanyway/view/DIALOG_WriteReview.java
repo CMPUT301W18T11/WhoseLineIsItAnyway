@@ -116,9 +116,9 @@ public class DIALOG_WriteReview
                     return;
                 }
 
-                int quality = rbQuality.getNumStars();
-                int ttc = rbTTC.getNumStars();
-                int prof = rbProf.getNumStars();
+                int quality = (int) rbQuality.getRating();
+                int ttc = (int) rbTTC.getRating();
+                int prof = (int) rbProf.getRating();
 
                 log("Construct a rating for the WriteReviewDialog");
                 result = new Rating(quality, ttc, prof);
