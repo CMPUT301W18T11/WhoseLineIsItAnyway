@@ -5,9 +5,7 @@
 **Supervisor**: Sina Dezfuli  
 
 ## Contributors
-* Samuel Dolha ([Sartaglo](https://github.com/Sartaglo))
+* Samuel Dolha ([samueldolha](https://github.com/samueldolha))
 * Mark Griffith ([markygriff](https://github.com/markygriff))
-* Ben Ha ([benha0898](https://github.com/benha0898))
-* Nafee Khan ([nafeekhan](https://github.com/nafeekhan))  
 * Brad Ofrim ([bofrim](https://github.com/bofrim))
 * Lucas Thalen ([lucasthalen](https://github.com/lucasthalen))

@@ -2,5 +2,3 @@ First version by Samuel Dolha
 Second version by Lucas Thalen. 
 Third version by Brad Ofrim
 Fourth version by Mark Griffith
-Fifth version by Ben Ha.
-Sixth version by Nafee Khan
